@@ -8,6 +8,12 @@ All notable changes to this project are documented in this file. The format foll
 
 ### Added
 
+- Generated resources, data sources and list data sources for every CRUD collection of the
+  NetBox 4.7 API (132 resources, 266 data sources), with import and resource identity by ID.
+- Allocation resources `netbox_available_ip_address`, `netbox_available_prefix`,
+  `netbox_available_vlan`, `netbox_available_asn`, and `netbox_device_primary_ip` /
+  `netbox_virtual_machine_primary_ip`.
+- go-netbox compatible API client regenerated for NetBox 4.7 (`netbox/`).
 - Provider scaffolding for NetBox 4.7 on terraform-plugin-framework (protocol 6).
 - Provider configuration (`server_url`, `api_token`, rate limiting, request/write delays,
   request serialisation, retries with backoff, timeouts, extra headers, TLS options,
