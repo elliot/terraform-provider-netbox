@@ -124,6 +124,18 @@ The generator, the overrides format and the testing workflow are described in
 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). Per-app validation reports against the public demo live in
 `docs/validation/`.
 
+### Known limitations
+
+* Bulk endpoints, ETag/`If-Match`, `add_tags`/`remove_tags`, background jobs, custom scripts, plugins, GraphQL
+  and v1 tokens are out of scope.
+* Reverse sides of relations are read-only (`netbox_asn.site_ids`, provider accounts, user permissions); manage
+  them from the owning side. `netbox_circuit.assignments` is not exposed (use `netbox_circuit_group_assignment`).
+* Attributes with a server default are `Optional+Computed`; removing them keeps the current value.
+* Image attachments and per-user UI models (notifications, subscriptions, bookmarks, saved filters, table
+  configs) are not managed.
+
+The full list, the roadmap and the sharp edges found during validation live in [docs/ROADMAP.md](docs/ROADMAP.md).
+
 ### Relationship to go-netbox
 
 `netbox/` is a drop-in-shaped regeneration of [go-netbox](https://github.com/netbox-community/go-netbox)

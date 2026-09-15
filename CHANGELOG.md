@@ -24,3 +24,25 @@ All notable changes to this project are documented in this file. The format foll
   exponential backoff (honouring `Retry-After`), request logging with token redaction.
 - Version check against `GET /api/status/` on configure (warning when the server is not 4.7.x).
 - Local NetBox 4.7 docker compose stack and `scripts/demo-token.sh` for the public demo.
+
+### Changed
+
+- Update requests carry only the attributes whose planned value differs from state; optional nullable
+  fields are omitted on create instead of being sent as null.
+- `form_factor` (rack types), `status` (tunnels), `role` (tunnel terminations) and `version` (IKE policies)
+  are required, matching NetBox validation.
+- Reverse sides of relations are computed-only (`netbox_asn.site_ids`) or not exposed
+  (`netbox_provider.account_ids`, `netbox_circuit.assignments`, `netbox_user.permission_ids`).
+- Nullable numbers, choices and timestamps with server defaults are `Optional+Computed` and are never sent as null.
+
+### Fixed
+
+- Float rounding, whitespace trimming and MAC/WWN upper-casing by NetBox no longer produce diffs.
+- Re-sending unchanged front/rear port mappings no longer fails with "must make a unique set".
+- Nullable choice fields (IKE `mode`, IPsec `pfs_group`, ...) no longer break updates with "may not be blank".
+- Token secrets and keys are exposed once on create and kept in state; device and VM primary IPs set through
+  the primary-IP resources no longer plan a removal on the parent.
+
+### Known limitations
+
+See [docs/ROADMAP.md](docs/ROADMAP.md).

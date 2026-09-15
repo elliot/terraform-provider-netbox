@@ -39,8 +39,11 @@ make sweep                    # remove leftover tfacc-* objects
 ```
 
 Tests can also target a local stack: `make docker-up`, then follow `docker/README.md` to obtain a v2 token
-and export `NETBOX_SERVER_URL=http://localhost:8001` / `NETBOX_API_TOKEN`. If `terraform-plugin-testing`
-cannot download a Terraform CLI, point `TF_ACC_TERRAFORM_PATH` at one.
+and export `NETBOX_SERVER_URL=http://localhost:8000` / `NETBOX_API_TOKEN`. In sandboxes without access to
+`checkpoint-api.hashicorp.com`, point `TF_ACC_TERRAFORM_PATH` at a local Terraform binary or the whole test
+binary fails while the harness looks for one. To run a scenario with a locally built provider, use a CLI
+configuration with a `dev_overrides { "elliot/netbox" = "/path/to/dir" }` block (Terraform 1.16 rejects the
+attribute form). `make sweep` deletes every `tfacc-*` object on the configured server.
 
 ## Bumping the NetBox version
 

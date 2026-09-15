@@ -81,7 +81,10 @@ precision, so normalisation never produces a diff.
 ## Overrides reference
 
 Files in `generator/overrides/` are merged in file-name order; the same
-resource may appear in several files (naming in one, fixtures in another).
+resource may appear in several files (naming in one, fixtures in another), but
+keep each resource's attribute overrides in a single file: later files win
+silently. Overrides that hide or force attributes are listed in
+[ROADMAP.md](ROADMAP.md) and should be revisited on every spec bump.
 Keys are API path segments (`sites`) or `app/segment` when a segment exists
 in several apps (`virtualization/interfaces`).
 
@@ -109,7 +112,7 @@ resources:
         expose: true           # include a read-only API property as a Computed attribute;
                                #   the prior state is kept when the API returns null (token secret)
         optional: true         # make a required property optional
-        precision: 6           # float decimals (documentation for now)
+        precision: 6           # decimals NetBox stores; drives float semantic equality (default 6)
         ordered_list: true     # List instead of Set
         description: "..."
         enum: [a, b]           # replace the allowed values
