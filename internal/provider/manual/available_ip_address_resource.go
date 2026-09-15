@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -19,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -33,23 +33,23 @@ var (
 
 // AvailableIpAddressModel is the Terraform state of netbox_available_ip_address.
 type AvailableIpAddressModel struct {
-	Id                 types.Int64          `tfsdk:"id"`
-	PrefixId           types.Int64          `tfsdk:"prefix_id"`
-	IpRangeId          types.Int64          `tfsdk:"ip_range_id"`
-	Address            types.String         `tfsdk:"address"`
-	VrfId              types.Int64          `tfsdk:"vrf_id"`
-	TenantId           types.Int64          `tfsdk:"tenant_id"`
-	Status             types.String         `tfsdk:"status"`
-	Role               types.String         `tfsdk:"role"`
-	AssignedObjectType types.String         `tfsdk:"assigned_object_type"`
-	AssignedObjectId   types.Int64          `tfsdk:"assigned_object_id"`
-	DnsName            types.String         `tfsdk:"dns_name"`
-	Description        types.String         `tfsdk:"description"`
-	Comments           types.String         `tfsdk:"comments"`
-	Tags               types.Set            `tfsdk:"tags"`
-	CustomFields       jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url                types.String         `tfsdk:"url"`
-	Display            types.String         `tfsdk:"display"`
+	Id                 types.Int64   `tfsdk:"id"`
+	PrefixId           types.Int64   `tfsdk:"prefix_id"`
+	IpRangeId          types.Int64   `tfsdk:"ip_range_id"`
+	Address            types.String  `tfsdk:"address"`
+	VrfId              types.Int64   `tfsdk:"vrf_id"`
+	TenantId           types.Int64   `tfsdk:"tenant_id"`
+	Status             types.String  `tfsdk:"status"`
+	Role               types.String  `tfsdk:"role"`
+	AssignedObjectType types.String  `tfsdk:"assigned_object_type"`
+	AssignedObjectId   types.Int64   `tfsdk:"assigned_object_id"`
+	DnsName            types.String  `tfsdk:"dns_name"`
+	Description        types.String  `tfsdk:"description"`
+	Comments           types.String  `tfsdk:"comments"`
+	Tags               types.Set     `tfsdk:"tags"`
+	CustomFields       types.Dynamic `tfsdk:"custom_fields"`
+	Url                types.String  `tfsdk:"url"`
+	Display            types.String  `tfsdk:"display"`
 }
 
 var (
@@ -63,6 +63,7 @@ var (
 // or an IP range and then manages it like a netbox_ip_address.
 type AvailableIpAddressResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewAvailableIpAddressResource returns a new netbox_available_ip_address resource.
@@ -130,6 +131,7 @@ func (r *AvailableIpAddressResource) IdentitySchema(_ context.Context, _ resourc
 
 func (r *AvailableIpAddressResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	r.client = configureClient(req, resp)
+	r.cf = configureCache(req)
 }
 
 func (r *AvailableIpAddressResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -149,7 +151,7 @@ func (r *AvailableIpAddressResource) Create(ctx context.Context, req resource.Cr
 		return
 	}
 	b := body{}
-	availableIpAddressBody(ctx, b, &plan, &resp.Diagnostics)
+	availableIpAddressBody(ctx, b, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -160,7 +162,7 @@ func (r *AvailableIpAddressResource) Create(ctx context.Context, req resource.Cr
 		return
 	}
 	state := plan
-	availableIpAddressFromAPI(obj, &plan, &state)
+	availableIpAddressFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	provider.SetIdentityID(ctx, resp.Identity, state.Id, &resp.Diagnostics)
 }
@@ -187,7 +189,7 @@ func (r *AvailableIpAddressResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 	prior := state
-	availableIpAddressFromAPI(obj, &prior, &state)
+	availableIpAddressFromAPI(ctx, obj, &prior, &state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	provider.SetIdentityID(ctx, resp.Identity, state.Id, &resp.Diagnostics)
 }
@@ -240,7 +242,7 @@ func (r *AvailableIpAddressResource) Update(ctx context.Context, req resource.Up
 		patch.SetTags(conv.TagsToAPI(ctx, plan.Tags, &resp.Diagnostics))
 	}
 	if conv.Known(plan.CustomFields) {
-		patch.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, &resp.Diagnostics))
+		patch.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, r.cf, "ipam.ipaddress", &resp.Diagnostics))
 	}
 	if resp.Diagnostics.HasError() {
 		return
@@ -253,7 +255,7 @@ func (r *AvailableIpAddressResource) Update(ctx context.Context, req resource.Up
 	out := plan
 	// The parent is not readable from the IP address; keep whatever state has.
 	out.PrefixId, out.IpRangeId = state.PrefixId, state.IpRangeId
-	availableIpAddressFromAPI(obj, &plan, &out)
+	availableIpAddressFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &out)...)
 	provider.SetIdentityID(ctx, resp.Identity, out.Id, &resp.Diagnostics)
 }
@@ -282,7 +284,7 @@ func (r *AvailableIpAddressResource) ImportState(ctx context.Context, req resour
 
 // availableIpAddressBody fills the allocation request from the plan. The VRF
 // and the address itself are chosen by NetBox.
-func availableIpAddressBody(ctx context.Context, b body, plan *AvailableIpAddressModel, diags *diag.Diagnostics) {
+func availableIpAddressBody(ctx context.Context, b body, plan *AvailableIpAddressModel, cf *customfields.Cache, diags *diag.Diagnostics) {
 	b.nullableInt("tenant", plan.TenantId)
 	b.str("status", plan.Status)
 	b.nullableStr("role", plan.Role)
@@ -292,12 +294,12 @@ func availableIpAddressBody(ctx context.Context, b body, plan *AvailableIpAddres
 	b.str("description", plan.Description)
 	b.str("comments", plan.Comments)
 	b.tags(ctx, plan.Tags, diags)
-	b.customFields(plan.CustomFields, diags)
+	b.customFields(ctx, plan.CustomFields, cf, "ipam.ipaddress", diags)
 }
 
 // availableIpAddressFromAPI copies the API object into out. prior carries the
 // previous state or plan (for custom field key selection).
-func availableIpAddressFromAPI(obj *netbox.IPAddress, prior, out *AvailableIpAddressModel) {
+func availableIpAddressFromAPI(ctx context.Context, obj *netbox.IPAddress, prior, out *AvailableIpAddressModel, diags *diag.Diagnostics) {
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Address = conv.String(obj.GetAddressOk())
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
@@ -310,7 +312,7 @@ func availableIpAddressFromAPI(obj *netbox.IPAddress, prior, out *AvailableIpAdd
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), prior.CustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), prior.CustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 }

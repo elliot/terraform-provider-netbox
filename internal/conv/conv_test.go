@@ -22,28 +22,6 @@ func TestFloat64Keep(t *testing.T) {
 	}
 }
 
-func TestCustomFieldsFromAPI(t *testing.T) {
-	m := map[string]any{
-		"cost":   "CC-42",
-		"sel":    map[string]any{"value": "a", "label": "A"},
-		"multi":  []any{map[string]any{"value": "x", "label": "X"}},
-		"unused": nil,
-	}
-	prior := jsontypes.NewNormalizedValue(`{"cost":"","sel":"","multi":[]}`)
-	got := CustomFieldsFromAPI(m, prior)
-	want := jsontypes.NewNormalizedValue(`{"cost":"CC-42","multi":["x"],"sel":"a"}`)
-	eq, diags := got.StringSemanticEquals(t.Context(), want)
-	if diags.HasError() || !eq {
-		t.Fatalf("got %s want %s", got.ValueString(), want.ValueString())
-	}
-	if !CustomFieldsFromAPI(m, jsontypes.NewNormalizedNull()).IsNull() {
-		t.Fatal("unconfigured custom_fields must stay null")
-	}
-	if AllCustomFieldsFromAPI(m).IsNull() {
-		t.Fatal("data sources expose all custom fields")
-	}
-}
-
 func TestJSONFromAPIWithPrior(t *testing.T) {
 	if !JSONFromAPIWithPrior(map[string]any{}, jsontypes.NewNormalizedNull()).IsNull() {
 		t.Fatal("empty object with null prior must stay null")

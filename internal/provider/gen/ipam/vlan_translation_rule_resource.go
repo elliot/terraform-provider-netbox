@@ -19,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -46,6 +47,7 @@ var (
 // VlanTranslationRuleResource manages netbox_vlan_translation_rule objects (/api/ipam/vlan-translation-rules/).
 type VlanTranslationRuleResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewVlanTranslationRuleResource returns a new netbox_vlan_translation_rule resource.
@@ -80,6 +82,7 @@ func (r *VlanTranslationRuleResource) Configure(_ context.Context, req resource.
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // vlanTranslationRuleResourceAttributes returns the schema attributes of netbox_vlan_translation_rule.
@@ -136,6 +139,7 @@ func (r *VlanTranslationRuleResource) Create(ctx context.Context, req resource.C
 		resp.Diagnostics.AddError("Error creating netbox_vlan_translation_rule", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state VlanTranslationRuleModel
 	vlanTranslationRuleFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -196,6 +200,7 @@ func (r *VlanTranslationRuleResource) Update(ctx context.Context, req resource.U
 		resp.Diagnostics.AddError("Error updating netbox_vlan_translation_rule", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out VlanTranslationRuleModel
 	vlanTranslationRuleFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

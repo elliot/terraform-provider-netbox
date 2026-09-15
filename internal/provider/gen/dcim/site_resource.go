@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -25,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -38,29 +38,29 @@ var siteStatusValues = []string{
 
 // SiteModel is the Terraform state of netbox_site.
 type SiteModel struct {
-	Id              types.Int64          `tfsdk:"id"`
-	Name            types.String         `tfsdk:"name"`
-	Slug            types.String         `tfsdk:"slug"`
-	Status          types.String         `tfsdk:"status"`
-	RegionId        types.Int64          `tfsdk:"region_id"`
-	GroupId         types.Int64          `tfsdk:"group_id"`
-	TenantId        types.Int64          `tfsdk:"tenant_id"`
-	Facility        types.String         `tfsdk:"facility"`
-	TimeZone        types.String         `tfsdk:"time_zone"`
-	Description     types.String         `tfsdk:"description"`
-	PhysicalAddress types.String         `tfsdk:"physical_address"`
-	ShippingAddress types.String         `tfsdk:"shipping_address"`
-	Latitude        types.Float64        `tfsdk:"latitude"`
-	Longitude       types.Float64        `tfsdk:"longitude"`
-	OwnerId         types.Int64          `tfsdk:"owner_id"`
-	Comments        types.String         `tfsdk:"comments"`
-	AsnIds          types.Set            `tfsdk:"asn_ids"`
-	Tags            types.Set            `tfsdk:"tags"`
-	CustomFields    jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url             types.String         `tfsdk:"url"`
-	Display         types.String         `tfsdk:"display"`
-	Created         timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated     timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id              types.Int64       `tfsdk:"id"`
+	Name            types.String      `tfsdk:"name"`
+	Slug            types.String      `tfsdk:"slug"`
+	Status          types.String      `tfsdk:"status"`
+	RegionId        types.Int64       `tfsdk:"region_id"`
+	GroupId         types.Int64       `tfsdk:"group_id"`
+	TenantId        types.Int64       `tfsdk:"tenant_id"`
+	Facility        types.String      `tfsdk:"facility"`
+	TimeZone        types.String      `tfsdk:"time_zone"`
+	Description     types.String      `tfsdk:"description"`
+	PhysicalAddress types.String      `tfsdk:"physical_address"`
+	ShippingAddress types.String      `tfsdk:"shipping_address"`
+	Latitude        types.Float64     `tfsdk:"latitude"`
+	Longitude       types.Float64     `tfsdk:"longitude"`
+	OwnerId         types.Int64       `tfsdk:"owner_id"`
+	Comments        types.String      `tfsdk:"comments"`
+	AsnIds          types.Set         `tfsdk:"asn_ids"`
+	Tags            types.Set         `tfsdk:"tags"`
+	CustomFields    types.Dynamic     `tfsdk:"custom_fields"`
+	Url             types.String      `tfsdk:"url"`
+	Display         types.String      `tfsdk:"display"`
+	Created         timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated     timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -73,6 +73,7 @@ var (
 // SiteResource manages netbox_site objects (/api/dcim/sites/).
 type SiteResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewSiteResource returns a new netbox_site resource.
@@ -107,6 +108,7 @@ func (r *SiteResource) Configure(_ context.Context, req resource.ConfigureReques
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // siteResourceAttributes returns the schema attributes of netbox_site.
@@ -214,9 +216,8 @@ func siteResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -248,7 +249,7 @@ func (r *SiteResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := siteToCreate(ctx, &plan, &resp.Diagnostics)
+	body := siteToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -257,6 +258,7 @@ func (r *SiteResource) Create(ctx context.Context, req resource.CreateRequest, r
 		resp.Diagnostics.AddError("Error creating netbox_site", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state SiteModel
 	siteFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -308,7 +310,7 @@ func (r *SiteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := siteToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := siteToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -317,6 +319,7 @@ func (r *SiteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Error updating netbox_site", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out SiteModel
 	siteFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -350,7 +353,8 @@ func (r *SiteResource) ImportState(ctx context.Context, req resource.ImportState
 }
 
 // siteToCreate builds the WritableSiteRequest request body from the plan.
-func siteToCreate(ctx context.Context, plan *SiteModel, diags *diag.Diagnostics) *netbox.WritableSiteRequest {
+func siteToCreate(ctx context.Context, plan *SiteModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableSiteRequest {
+	const objectType = "dcim.site"
 	body := netbox.NewWritableSiteRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
@@ -398,13 +402,14 @@ func siteToCreate(ctx context.Context, plan *SiteModel, diags *diag.Diagnostics)
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // siteToPatch builds the PatchedWritableSiteRequest request body with every attribute whose planned value differs from state.
-func siteToPatch(ctx context.Context, plan, state *SiteModel, diags *diag.Diagnostics) *netbox.PatchedWritableSiteRequest {
+func siteToPatch(ctx context.Context, plan, state *SiteModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableSiteRequest {
+	const objectType = "dcim.site"
 	body := netbox.NewPatchedWritableSiteRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -503,7 +508,7 @@ func siteToPatch(ctx context.Context, plan, state *SiteModel, diags *diag.Diagno
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -511,7 +516,7 @@ func siteToPatch(ctx context.Context, plan, state *SiteModel, diags *diag.Diagno
 
 // siteFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func siteFromAPI(ctx context.Context, obj *netbox.Site, prior *SiteModel, out *SiteModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -534,7 +539,7 @@ func siteFromAPI(ctx context.Context, obj *netbox.Site, prior *SiteModel, out *S
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.Comments }), false)
 	out.AsnIds = conv.BriefIDs(obj.GetAsns())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

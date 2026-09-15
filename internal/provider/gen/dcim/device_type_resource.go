@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -26,6 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -55,30 +55,30 @@ var deviceTypeWeightUnitValues = []string{
 
 // DeviceTypeModel is the Terraform state of netbox_device_type.
 type DeviceTypeModel struct {
-	Id                     types.Int64          `tfsdk:"id"`
-	ManufacturerId         types.Int64          `tfsdk:"manufacturer_id"`
-	DefaultPlatformId      types.Int64          `tfsdk:"default_platform_id"`
-	Model                  types.String         `tfsdk:"model"`
-	Slug                   types.String         `tfsdk:"slug"`
-	PartNumber             types.String         `tfsdk:"part_number"`
-	UHeight                types.Float64        `tfsdk:"u_height"`
-	ExcludeFromUtilization types.Bool           `tfsdk:"exclude_from_utilization"`
-	IsFullDepth            types.Bool           `tfsdk:"is_full_depth"`
-	SubdeviceRole          types.String         `tfsdk:"subdevice_role"`
-	Airflow                types.String         `tfsdk:"airflow"`
-	CoolingMethod          types.String         `tfsdk:"cooling_method"`
-	Weight                 types.Float64        `tfsdk:"weight"`
-	WeightUnit             types.String         `tfsdk:"weight_unit"`
-	EndOfLife              types.String         `tfsdk:"end_of_life"`
-	Description            types.String         `tfsdk:"description"`
-	OwnerId                types.Int64          `tfsdk:"owner_id"`
-	Comments               types.String         `tfsdk:"comments"`
-	Tags                   types.Set            `tfsdk:"tags"`
-	CustomFields           jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url                    types.String         `tfsdk:"url"`
-	Display                types.String         `tfsdk:"display"`
-	Created                timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated            timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                     types.Int64       `tfsdk:"id"`
+	ManufacturerId         types.Int64       `tfsdk:"manufacturer_id"`
+	DefaultPlatformId      types.Int64       `tfsdk:"default_platform_id"`
+	Model                  types.String      `tfsdk:"model"`
+	Slug                   types.String      `tfsdk:"slug"`
+	PartNumber             types.String      `tfsdk:"part_number"`
+	UHeight                types.Float64     `tfsdk:"u_height"`
+	ExcludeFromUtilization types.Bool        `tfsdk:"exclude_from_utilization"`
+	IsFullDepth            types.Bool        `tfsdk:"is_full_depth"`
+	SubdeviceRole          types.String      `tfsdk:"subdevice_role"`
+	Airflow                types.String      `tfsdk:"airflow"`
+	CoolingMethod          types.String      `tfsdk:"cooling_method"`
+	Weight                 types.Float64     `tfsdk:"weight"`
+	WeightUnit             types.String      `tfsdk:"weight_unit"`
+	EndOfLife              types.String      `tfsdk:"end_of_life"`
+	Description            types.String      `tfsdk:"description"`
+	OwnerId                types.Int64       `tfsdk:"owner_id"`
+	Comments               types.String      `tfsdk:"comments"`
+	Tags                   types.Set         `tfsdk:"tags"`
+	CustomFields           types.Dynamic     `tfsdk:"custom_fields"`
+	Url                    types.String      `tfsdk:"url"`
+	Display                types.String      `tfsdk:"display"`
+	Created                timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated            timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -91,6 +91,7 @@ var (
 // DeviceTypeResource manages netbox_device_type objects (/api/dcim/device-types/).
 type DeviceTypeResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewDeviceTypeResource returns a new netbox_device_type resource.
@@ -125,6 +126,7 @@ func (r *DeviceTypeResource) Configure(_ context.Context, req resource.Configure
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // deviceTypeResourceAttributes returns the schema attributes of netbox_device_type.
@@ -240,9 +242,8 @@ func deviceTypeResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -274,7 +275,7 @@ func (r *DeviceTypeResource) Create(ctx context.Context, req resource.CreateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := deviceTypeToCreate(ctx, &plan, &resp.Diagnostics)
+	body := deviceTypeToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -283,6 +284,7 @@ func (r *DeviceTypeResource) Create(ctx context.Context, req resource.CreateRequ
 		resp.Diagnostics.AddError("Error creating netbox_device_type", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state DeviceTypeModel
 	deviceTypeFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -334,7 +336,7 @@ func (r *DeviceTypeResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := deviceTypeToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := deviceTypeToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -343,6 +345,7 @@ func (r *DeviceTypeResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Error updating netbox_device_type", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out DeviceTypeModel
 	deviceTypeFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -376,7 +379,8 @@ func (r *DeviceTypeResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 // deviceTypeToCreate builds the WritableDeviceTypeRequest request body from the plan.
-func deviceTypeToCreate(ctx context.Context, plan *DeviceTypeModel, diags *diag.Diagnostics) *netbox.WritableDeviceTypeRequest {
+func deviceTypeToCreate(ctx context.Context, plan *DeviceTypeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableDeviceTypeRequest {
+	const objectType = "dcim.devicetype"
 	body := netbox.NewWritableDeviceTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.DefaultPlatformId) {
 		body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
@@ -424,13 +428,14 @@ func deviceTypeToCreate(ctx context.Context, plan *DeviceTypeModel, diags *diag.
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // deviceTypeToPatch builds the PatchedWritableDeviceTypeRequest request body with every attribute whose planned value differs from state.
-func deviceTypeToPatch(ctx context.Context, plan, state *DeviceTypeModel, diags *diag.Diagnostics) *netbox.PatchedWritableDeviceTypeRequest {
+func deviceTypeToPatch(ctx context.Context, plan, state *DeviceTypeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableDeviceTypeRequest {
+	const objectType = "dcim.devicetype"
 	body := netbox.NewPatchedWritableDeviceTypeRequest()
 	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
 		if conv.Known(plan.ManufacturerId) {
@@ -530,7 +535,7 @@ func deviceTypeToPatch(ctx context.Context, plan, state *DeviceTypeModel, diags 
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -538,7 +543,7 @@ func deviceTypeToPatch(ctx context.Context, plan, state *DeviceTypeModel, diags 
 
 // deviceTypeFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func deviceTypeFromAPI(ctx context.Context, obj *netbox.DeviceType, prior *DeviceTypeModel, out *DeviceTypeModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -562,7 +567,7 @@ func deviceTypeFromAPI(ctx context.Context, obj *netbox.DeviceType, prior *Devic
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *DeviceTypeModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

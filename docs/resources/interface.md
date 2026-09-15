@@ -88,7 +88,7 @@ resource "netbox_interface" "te1_1_1" {
 - `bridge_id` (Number) ID of the Interface (`netbox_interface`).
 - `channel_id` (Number) The channel on the parent interface to which this subinterface is bound. Defaults to the NetBox server default when omitted.
 - `channels` (Number) The number of channels into which this interface is channelized. Defaults to the NetBox server default when omitted.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `description` (String) Description. Defaults to an empty string.
 - `duplex` (String) Duplex. Valid values: `half`, `full`, `auto`. Defaults to the NetBox server default when omitted.
 - `enabled` (Boolean) Enabled. Defaults to the NetBox server default when omitted.

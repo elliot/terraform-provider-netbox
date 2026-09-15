@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -55,6 +56,7 @@ var (
 // ConfigContextProfileResource manages netbox_config_context_profile objects (/api/extras/config-context-profiles/).
 type ConfigContextProfileResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewConfigContextProfileResource returns a new netbox_config_context_profile resource.
@@ -89,6 +91,7 @@ func (r *ConfigContextProfileResource) Configure(_ context.Context, req resource
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // configContextProfileResourceAttributes returns the schema attributes of netbox_config_context_profile.
@@ -175,6 +178,7 @@ func (r *ConfigContextProfileResource) Create(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error creating netbox_config_context_profile", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ConfigContextProfileModel
 	configContextProfileFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -235,6 +239,7 @@ func (r *ConfigContextProfileResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error updating netbox_config_context_profile", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ConfigContextProfileModel
 	configContextProfileFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

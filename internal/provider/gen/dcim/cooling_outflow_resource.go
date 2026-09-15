@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -42,23 +42,23 @@ var coolingOutflowDiameterUnitValues = []string{
 
 // CoolingOutflowModel is the Terraform state of netbox_cooling_outflow.
 type CoolingOutflowModel struct {
-	Id              types.Int64          `tfsdk:"id"`
-	DeviceId        types.Int64          `tfsdk:"device_id"`
-	ModuleId        types.Int64          `tfsdk:"module_id"`
-	Name            types.String         `tfsdk:"name"`
-	Label           types.String         `tfsdk:"label"`
-	Type            types.String         `tfsdk:"type"`
-	Diameter        types.Float64        `tfsdk:"diameter"`
-	DiameterUnit    types.String         `tfsdk:"diameter_unit"`
-	CoolingIntakeId types.Int64          `tfsdk:"cooling_intake_id"`
-	Description     types.String         `tfsdk:"description"`
-	OwnerId         types.Int64          `tfsdk:"owner_id"`
-	Tags            types.Set            `tfsdk:"tags"`
-	CustomFields    jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url             types.String         `tfsdk:"url"`
-	Display         types.String         `tfsdk:"display"`
-	Created         timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated     timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id              types.Int64       `tfsdk:"id"`
+	DeviceId        types.Int64       `tfsdk:"device_id"`
+	ModuleId        types.Int64       `tfsdk:"module_id"`
+	Name            types.String      `tfsdk:"name"`
+	Label           types.String      `tfsdk:"label"`
+	Type            types.String      `tfsdk:"type"`
+	Diameter        types.Float64     `tfsdk:"diameter"`
+	DiameterUnit    types.String      `tfsdk:"diameter_unit"`
+	CoolingIntakeId types.Int64       `tfsdk:"cooling_intake_id"`
+	Description     types.String      `tfsdk:"description"`
+	OwnerId         types.Int64       `tfsdk:"owner_id"`
+	Tags            types.Set         `tfsdk:"tags"`
+	CustomFields    types.Dynamic     `tfsdk:"custom_fields"`
+	Url             types.String      `tfsdk:"url"`
+	Display         types.String      `tfsdk:"display"`
+	Created         timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated     timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -71,6 +71,7 @@ var (
 // CoolingOutflowResource manages netbox_cooling_outflow objects (/api/dcim/cooling-outflows/).
 type CoolingOutflowResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCoolingOutflowResource returns a new netbox_cooling_outflow resource.
@@ -105,6 +106,7 @@ func (r *CoolingOutflowResource) Configure(_ context.Context, req resource.Confi
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // coolingOutflowResourceAttributes returns the schema attributes of netbox_cooling_outflow.
@@ -177,9 +179,8 @@ func coolingOutflowResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -211,7 +212,7 @@ func (r *CoolingOutflowResource) Create(ctx context.Context, req resource.Create
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := coolingOutflowToCreate(ctx, &plan, &resp.Diagnostics)
+	body := coolingOutflowToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -220,6 +221,7 @@ func (r *CoolingOutflowResource) Create(ctx context.Context, req resource.Create
 		resp.Diagnostics.AddError("Error creating netbox_cooling_outflow", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CoolingOutflowModel
 	coolingOutflowFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -271,7 +273,7 @@ func (r *CoolingOutflowResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := coolingOutflowToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := coolingOutflowToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -280,6 +282,7 @@ func (r *CoolingOutflowResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Error updating netbox_cooling_outflow", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CoolingOutflowModel
 	coolingOutflowFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -313,7 +316,8 @@ func (r *CoolingOutflowResource) ImportState(ctx context.Context, req resource.I
 }
 
 // coolingOutflowToCreate builds the WritableCoolingOutflowRequest request body from the plan.
-func coolingOutflowToCreate(ctx context.Context, plan *CoolingOutflowModel, diags *diag.Diagnostics) *netbox.WritableCoolingOutflowRequest {
+func coolingOutflowToCreate(ctx context.Context, plan *CoolingOutflowModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCoolingOutflowRequest {
+	const objectType = "dcim.coolingoutflow"
 	body := netbox.NewWritableCoolingOutflowRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
 	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
@@ -343,13 +347,14 @@ func coolingOutflowToCreate(ctx context.Context, plan *CoolingOutflowModel, diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // coolingOutflowToPatch builds the PatchedWritableCoolingOutflowRequest request body with every attribute whose planned value differs from state.
-func coolingOutflowToPatch(ctx context.Context, plan, state *CoolingOutflowModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingOutflowRequest {
+func coolingOutflowToPatch(ctx context.Context, plan, state *CoolingOutflowModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingOutflowRequest {
+	const objectType = "dcim.coolingoutflow"
 	body := netbox.NewPatchedWritableCoolingOutflowRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -414,7 +419,7 @@ func coolingOutflowToPatch(ctx context.Context, plan, state *CoolingOutflowModel
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -422,7 +427,7 @@ func coolingOutflowToPatch(ctx context.Context, plan, state *CoolingOutflowModel
 
 // coolingOutflowFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func coolingOutflowFromAPI(ctx context.Context, obj *netbox.CoolingOutflow, prior *CoolingOutflowModel, out *CoolingOutflowModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -439,7 +444,7 @@ func coolingOutflowFromAPI(ctx context.Context, obj *netbox.CoolingOutflow, prio
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CoolingOutflowModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

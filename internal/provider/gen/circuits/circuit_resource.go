@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -42,27 +42,27 @@ var circuitDistanceUnitValues = []string{
 
 // CircuitModel is the Terraform state of netbox_circuit.
 type CircuitModel struct {
-	Id                types.Int64          `tfsdk:"id"`
-	Cid               types.String         `tfsdk:"cid"`
-	ProviderId        types.Int64          `tfsdk:"provider_id"`
-	ProviderAccountId types.Int64          `tfsdk:"provider_account_id"`
-	TypeId            types.Int64          `tfsdk:"type_id"`
-	Status            types.String         `tfsdk:"status"`
-	TenantId          types.Int64          `tfsdk:"tenant_id"`
-	InstallDate       types.String         `tfsdk:"install_date"`
-	TerminationDate   types.String         `tfsdk:"termination_date"`
-	CommitRate        types.Int64          `tfsdk:"commit_rate"`
-	Description       types.String         `tfsdk:"description"`
-	Distance          types.Float64        `tfsdk:"distance"`
-	DistanceUnit      types.String         `tfsdk:"distance_unit"`
-	OwnerId           types.Int64          `tfsdk:"owner_id"`
-	Comments          types.String         `tfsdk:"comments"`
-	Tags              types.Set            `tfsdk:"tags"`
-	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
-	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                types.Int64       `tfsdk:"id"`
+	Cid               types.String      `tfsdk:"cid"`
+	ProviderId        types.Int64       `tfsdk:"provider_id"`
+	ProviderAccountId types.Int64       `tfsdk:"provider_account_id"`
+	TypeId            types.Int64       `tfsdk:"type_id"`
+	Status            types.String      `tfsdk:"status"`
+	TenantId          types.Int64       `tfsdk:"tenant_id"`
+	InstallDate       types.String      `tfsdk:"install_date"`
+	TerminationDate   types.String      `tfsdk:"termination_date"`
+	CommitRate        types.Int64       `tfsdk:"commit_rate"`
+	Description       types.String      `tfsdk:"description"`
+	Distance          types.Float64     `tfsdk:"distance"`
+	DistanceUnit      types.String      `tfsdk:"distance_unit"`
+	OwnerId           types.Int64       `tfsdk:"owner_id"`
+	Comments          types.String      `tfsdk:"comments"`
+	Tags              types.Set         `tfsdk:"tags"`
+	CustomFields      types.Dynamic     `tfsdk:"custom_fields"`
+	Url               types.String      `tfsdk:"url"`
+	Display           types.String      `tfsdk:"display"`
+	Created           timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated       timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -75,6 +75,7 @@ var (
 // CircuitResource manages netbox_circuit objects (/api/circuits/circuits/).
 type CircuitResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCircuitResource returns a new netbox_circuit resource.
@@ -109,6 +110,7 @@ func (r *CircuitResource) Configure(_ context.Context, req resource.ConfigureReq
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // circuitResourceAttributes returns the schema attributes of netbox_circuit.
@@ -198,9 +200,8 @@ func circuitResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -232,7 +233,7 @@ func (r *CircuitResource) Create(ctx context.Context, req resource.CreateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := circuitToCreate(ctx, &plan, &resp.Diagnostics)
+	body := circuitToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -241,6 +242,7 @@ func (r *CircuitResource) Create(ctx context.Context, req resource.CreateRequest
 		resp.Diagnostics.AddError("Error creating netbox_circuit", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CircuitModel
 	circuitFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -292,7 +294,7 @@ func (r *CircuitResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := circuitToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := circuitToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -301,6 +303,7 @@ func (r *CircuitResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Error updating netbox_circuit", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CircuitModel
 	circuitFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -334,7 +337,8 @@ func (r *CircuitResource) ImportState(ctx context.Context, req resource.ImportSt
 }
 
 // circuitToCreate builds the WritableCircuitRequest request body from the plan.
-func circuitToCreate(ctx context.Context, plan *CircuitModel, diags *diag.Diagnostics) *netbox.WritableCircuitRequest {
+func circuitToCreate(ctx context.Context, plan *CircuitModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCircuitRequest {
+	const objectType = "circuits.circuit"
 	body := netbox.NewWritableCircuitRequest(plan.Cid.ValueString(), conv.Int32(plan.ProviderId), conv.Int32(plan.TypeId))
 	if conv.Known(plan.ProviderAccountId) {
 		body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
@@ -373,13 +377,14 @@ func circuitToCreate(ctx context.Context, plan *CircuitModel, diags *diag.Diagno
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // circuitToPatch builds the PatchedWritableCircuitRequest request body with every attribute whose planned value differs from state.
-func circuitToPatch(ctx context.Context, plan, state *CircuitModel, diags *diag.Diagnostics) *netbox.PatchedWritableCircuitRequest {
+func circuitToPatch(ctx context.Context, plan, state *CircuitModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableCircuitRequest {
+	const objectType = "circuits.circuit"
 	body := netbox.NewPatchedWritableCircuitRequest()
 	if !plan.Cid.Equal(state.Cid) {
 		if conv.Known(plan.Cid) {
@@ -468,7 +473,7 @@ func circuitToPatch(ctx context.Context, plan, state *CircuitModel, diags *diag.
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -476,7 +481,7 @@ func circuitToPatch(ctx context.Context, plan, state *CircuitModel, diags *diag.
 
 // circuitFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func circuitFromAPI(ctx context.Context, obj *netbox.Circuit, prior *CircuitModel, out *CircuitModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -497,7 +502,7 @@ func circuitFromAPI(ctx context.Context, obj *netbox.Circuit, prior *CircuitMode
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *CircuitModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

@@ -18,6 +18,12 @@ func dataSourceFile(r *model.Resource, version string) string {
 
 	g, lg := r.GoName, lower(r.GoName)
 	all := append(append([]model.Attr{}, r.Attrs...), r.ReadOnlyAttrs...)
+	for i := range all {
+		if all[i].Kind == model.KindCustomFields {
+			all[i].Kind = model.KindCustomFieldsJSON
+			all[i].Description = "All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID."
+		}
+	}
 	lookups := map[string]bool{"id": true}
 	for _, l := range r.Lookups {
 		lookups[l] = true

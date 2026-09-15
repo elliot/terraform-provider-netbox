@@ -45,7 +45,7 @@ output "virtual_machine_id" {
 - `config_context` (String) Config Context.
 - `config_template_id` (Number) ID of the Config Template (`netbox_config_template`).
 - `created` (String) Created.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `device_id` (Number) ID of the Device (`netbox_device`).
 - `disk` (Number) Total disk size in MB. Managed by NetBox once virtual disks are attached. Defaults to the NetBox server default when omitted.

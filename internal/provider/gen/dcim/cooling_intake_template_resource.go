@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -71,6 +72,7 @@ var (
 // CoolingIntakeTemplateResource manages netbox_cooling_intake_template objects (/api/dcim/cooling-intake-templates/).
 type CoolingIntakeTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCoolingIntakeTemplateResource returns a new netbox_cooling_intake_template resource.
@@ -105,6 +107,7 @@ func (r *CoolingIntakeTemplateResource) Configure(_ context.Context, req resourc
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // coolingIntakeTemplateResourceAttributes returns the schema attributes of netbox_cooling_intake_template.
@@ -213,6 +216,7 @@ func (r *CoolingIntakeTemplateResource) Create(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Error creating netbox_cooling_intake_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CoolingIntakeTemplateModel
 	coolingIntakeTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -273,6 +277,7 @@ func (r *CoolingIntakeTemplateResource) Update(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Error updating netbox_cooling_intake_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CoolingIntakeTemplateModel
 	coolingIntakeTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

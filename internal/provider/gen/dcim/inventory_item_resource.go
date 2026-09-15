@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -37,28 +37,28 @@ var inventoryItemStatusValues = []string{
 
 // InventoryItemModel is the Terraform state of netbox_inventory_item.
 type InventoryItemModel struct {
-	Id             types.Int64          `tfsdk:"id"`
-	DeviceId       types.Int64          `tfsdk:"device_id"`
-	ParentId       types.Int64          `tfsdk:"parent_id"`
-	Name           types.String         `tfsdk:"name"`
-	Label          types.String         `tfsdk:"label"`
-	Status         types.String         `tfsdk:"status"`
-	RoleId         types.Int64          `tfsdk:"role_id"`
-	ManufacturerId types.Int64          `tfsdk:"manufacturer_id"`
-	PartId         types.String         `tfsdk:"part_id"`
-	Serial         types.String         `tfsdk:"serial"`
-	AssetTag       types.String         `tfsdk:"asset_tag"`
-	Discovered     types.Bool           `tfsdk:"discovered"`
-	Description    types.String         `tfsdk:"description"`
-	ComponentType  types.String         `tfsdk:"component_type"`
-	ComponentId    types.Int64          `tfsdk:"component_id"`
-	OwnerId        types.Int64          `tfsdk:"owner_id"`
-	Tags           types.Set            `tfsdk:"tags"`
-	CustomFields   jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url            types.String         `tfsdk:"url"`
-	Display        types.String         `tfsdk:"display"`
-	Created        timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated    timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id             types.Int64       `tfsdk:"id"`
+	DeviceId       types.Int64       `tfsdk:"device_id"`
+	ParentId       types.Int64       `tfsdk:"parent_id"`
+	Name           types.String      `tfsdk:"name"`
+	Label          types.String      `tfsdk:"label"`
+	Status         types.String      `tfsdk:"status"`
+	RoleId         types.Int64       `tfsdk:"role_id"`
+	ManufacturerId types.Int64       `tfsdk:"manufacturer_id"`
+	PartId         types.String      `tfsdk:"part_id"`
+	Serial         types.String      `tfsdk:"serial"`
+	AssetTag       types.String      `tfsdk:"asset_tag"`
+	Discovered     types.Bool        `tfsdk:"discovered"`
+	Description    types.String      `tfsdk:"description"`
+	ComponentType  types.String      `tfsdk:"component_type"`
+	ComponentId    types.Int64       `tfsdk:"component_id"`
+	OwnerId        types.Int64       `tfsdk:"owner_id"`
+	Tags           types.Set         `tfsdk:"tags"`
+	CustomFields   types.Dynamic     `tfsdk:"custom_fields"`
+	Url            types.String      `tfsdk:"url"`
+	Display        types.String      `tfsdk:"display"`
+	Created        timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated    timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -71,6 +71,7 @@ var (
 // InventoryItemResource manages netbox_inventory_item objects (/api/dcim/inventory-items/).
 type InventoryItemResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewInventoryItemResource returns a new netbox_inventory_item resource.
@@ -105,6 +106,7 @@ func (r *InventoryItemResource) Configure(_ context.Context, req resource.Config
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // inventoryItemResourceAttributes returns the schema attributes of netbox_inventory_item.
@@ -203,9 +205,8 @@ func inventoryItemResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -237,7 +238,7 @@ func (r *InventoryItemResource) Create(ctx context.Context, req resource.CreateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := inventoryItemToCreate(ctx, &plan, &resp.Diagnostics)
+	body := inventoryItemToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -246,6 +247,7 @@ func (r *InventoryItemResource) Create(ctx context.Context, req resource.CreateR
 		resp.Diagnostics.AddError("Error creating netbox_inventory_item", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state InventoryItemModel
 	inventoryItemFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -297,7 +299,7 @@ func (r *InventoryItemResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := inventoryItemToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := inventoryItemToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -306,6 +308,7 @@ func (r *InventoryItemResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Error updating netbox_inventory_item", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out InventoryItemModel
 	inventoryItemFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -339,7 +342,8 @@ func (r *InventoryItemResource) ImportState(ctx context.Context, req resource.Im
 }
 
 // inventoryItemToCreate builds the WritableInventoryItemRequest request body from the plan.
-func inventoryItemToCreate(ctx context.Context, plan *InventoryItemModel, diags *diag.Diagnostics) *netbox.WritableInventoryItemRequest {
+func inventoryItemToCreate(ctx context.Context, plan *InventoryItemModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableInventoryItemRequest {
+	const objectType = "dcim.inventoryitem"
 	body := netbox.NewWritableInventoryItemRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
 	if conv.Known(plan.ParentId) {
 		body.SetParent(conv.Int32(plan.ParentId))
@@ -384,13 +388,14 @@ func inventoryItemToCreate(ctx context.Context, plan *InventoryItemModel, diags 
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // inventoryItemToPatch builds the PatchedWritableInventoryItemRequest request body with every attribute whose planned value differs from state.
-func inventoryItemToPatch(ctx context.Context, plan, state *InventoryItemModel, diags *diag.Diagnostics) *netbox.PatchedWritableInventoryItemRequest {
+func inventoryItemToPatch(ctx context.Context, plan, state *InventoryItemModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableInventoryItemRequest {
+	const objectType = "dcim.inventoryitem"
 	body := netbox.NewPatchedWritableInventoryItemRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -486,7 +491,7 @@ func inventoryItemToPatch(ctx context.Context, plan, state *InventoryItemModel, 
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -494,7 +499,7 @@ func inventoryItemToPatch(ctx context.Context, plan, state *InventoryItemModel, 
 
 // inventoryItemFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func inventoryItemFromAPI(ctx context.Context, obj *netbox.InventoryItem, prior *InventoryItemModel, out *InventoryItemModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -516,7 +521,7 @@ func inventoryItemFromAPI(ctx context.Context, obj *netbox.InventoryItem, prior 
 	out.ComponentId = conv.Int64From64(obj.GetComponentIdOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

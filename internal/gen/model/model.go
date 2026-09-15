@@ -2,28 +2,33 @@
 // generator's builder and renderers: one Resource per NetBox CRUD collection.
 package model
 
+import "strings"
+
 // Kind classifies how an API property maps to Terraform and to the client.
 type Kind string
 
 // Attribute kinds.
 const (
-	KindString       Kind = "string"         // string scalar (also date, binary is skipped)
-	KindInt          Kind = "int"            // integer
-	KindFloat        Kind = "float"          // number
-	KindBool         Kind = "bool"           // boolean
-	KindDateTime     Kind = "datetime"       // string in TF, time.Time in the client
-	KindChoice       Kind = "choice"         // string with a fixed set of values
-	KindChoiceInt    Kind = "choice_int"     // integer with a fixed set of values
-	KindFK           Kind = "fk"             // foreign key -> <name>_id Int64
-	KindFKList       Kind = "fk_list"        // []int M2M -> <singular>_ids Set(Int64)
-	KindIntList      Kind = "int_list"       // []int plain -> Set(Int64)
-	KindStringList   Kind = "string_list"    // []string -> Set/List(String)
-	KindTags         Kind = "tags"           // []NestedTagRequest -> Set(String) of slugs
-	KindCustomFields Kind = "custom_fields"  // free object -> jsontypes.Normalized
-	KindJSON         Kind = "json"           // untyped -> jsontypes.Normalized
-	KindNestedList   Kind = "nested_list"    // []struct -> ListNestedAttribute
-	KindIntRangeList Kind = "int_range_list" // [][]int -> List(List(Int64))
-	KindAnyList      Kind = "any_list"       // [][]any -> List(List(String))
+	KindString       Kind = "string"        // string scalar (also date, binary is skipped)
+	KindInt          Kind = "int"           // integer
+	KindFloat        Kind = "float"         // number
+	KindBool         Kind = "bool"          // boolean
+	KindDateTime     Kind = "datetime"      // string in TF, time.Time in the client
+	KindChoice       Kind = "choice"        // string with a fixed set of values
+	KindChoiceInt    Kind = "choice_int"    // integer with a fixed set of values
+	KindFK           Kind = "fk"            // foreign key -> <name>_id Int64
+	KindFKList       Kind = "fk_list"       // []int M2M -> <singular>_ids Set(Int64)
+	KindIntList      Kind = "int_list"      // []int plain -> Set(Int64)
+	KindStringList   Kind = "string_list"   // []string -> Set/List(String)
+	KindTags         Kind = "tags"          // []NestedTagRequest -> Set(String) of slugs
+	KindCustomFields Kind = "custom_fields" // free object -> jsontypes.Normalized
+	// KindCustomFieldsJSON is the data-source form: a JSON string, because
+	// dynamic values cannot be nested inside list data source items.
+	KindCustomFieldsJSON Kind = "custom_fields_json"
+	KindJSON             Kind = "json"           // untyped -> jsontypes.Normalized
+	KindNestedList       Kind = "nested_list"    // []struct -> ListNestedAttribute
+	KindIntRangeList     Kind = "int_range_list" // [][]int -> List(List(Int64))
+	KindAnyList          Kind = "any_list"       // [][]any -> List(List(String))
 )
 
 // ReadKind classifies the shape of the same property on the read schema.
@@ -200,3 +205,7 @@ func (r *Resource) TFType() string { return "netbox_" + r.Name }
 
 // TFPluralType returns the list data source type name.
 func (r *Resource) TFPluralType() string { return "netbox_" + r.Plural }
+
+// ObjectType returns the NetBox content type label ("dcim.site") of the
+// resource, derived from the app and the read schema (Django model) name.
+func (r *Resource) ObjectType() string { return r.App + "." + strings.ToLower(r.ReadType) }

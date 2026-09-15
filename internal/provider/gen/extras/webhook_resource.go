@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -37,25 +37,25 @@ var webhookHttpMethodValues = []string{
 
 // WebhookModel is the Terraform state of netbox_webhook.
 type WebhookModel struct {
-	Id                types.Int64          `tfsdk:"id"`
-	Name              types.String         `tfsdk:"name"`
-	Description       types.String         `tfsdk:"description"`
-	PayloadUrl        types.String         `tfsdk:"payload_url"`
-	HttpMethod        types.String         `tfsdk:"http_method"`
-	HttpContentType   types.String         `tfsdk:"http_content_type"`
-	AdditionalHeaders types.String         `tfsdk:"additional_headers"`
-	BodyTemplate      types.String         `tfsdk:"body_template"`
-	Secret            types.String         `tfsdk:"secret"`
-	SslVerification   types.Bool           `tfsdk:"ssl_verification"`
-	CaFilePath        types.String         `tfsdk:"ca_file_path"`
-	Timeout           types.Int64          `tfsdk:"timeout"`
-	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	OwnerId           types.Int64          `tfsdk:"owner_id"`
-	Tags              types.Set            `tfsdk:"tags"`
-	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
-	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                types.Int64       `tfsdk:"id"`
+	Name              types.String      `tfsdk:"name"`
+	Description       types.String      `tfsdk:"description"`
+	PayloadUrl        types.String      `tfsdk:"payload_url"`
+	HttpMethod        types.String      `tfsdk:"http_method"`
+	HttpContentType   types.String      `tfsdk:"http_content_type"`
+	AdditionalHeaders types.String      `tfsdk:"additional_headers"`
+	BodyTemplate      types.String      `tfsdk:"body_template"`
+	Secret            types.String      `tfsdk:"secret"`
+	SslVerification   types.Bool        `tfsdk:"ssl_verification"`
+	CaFilePath        types.String      `tfsdk:"ca_file_path"`
+	Timeout           types.Int64       `tfsdk:"timeout"`
+	CustomFields      types.Dynamic     `tfsdk:"custom_fields"`
+	OwnerId           types.Int64       `tfsdk:"owner_id"`
+	Tags              types.Set         `tfsdk:"tags"`
+	Url               types.String      `tfsdk:"url"`
+	Display           types.String      `tfsdk:"display"`
+	Created           timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated       timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -68,6 +68,7 @@ var (
 // WebhookResource manages netbox_webhook objects (/api/extras/webhooks/).
 type WebhookResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewWebhookResource returns a new netbox_webhook resource.
@@ -102,6 +103,7 @@ func (r *WebhookResource) Configure(_ context.Context, req resource.ConfigureReq
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // webhookResourceAttributes returns the schema attributes of netbox_webhook.
@@ -179,9 +181,8 @@ func webhookResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"owner_id": schema.Int64Attribute{
@@ -224,7 +225,7 @@ func (r *WebhookResource) Create(ctx context.Context, req resource.CreateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := webhookToCreate(ctx, &plan, &resp.Diagnostics)
+	body := webhookToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -233,6 +234,7 @@ func (r *WebhookResource) Create(ctx context.Context, req resource.CreateRequest
 		resp.Diagnostics.AddError("Error creating netbox_webhook", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state WebhookModel
 	webhookFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -284,7 +286,7 @@ func (r *WebhookResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := webhookToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := webhookToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -293,6 +295,7 @@ func (r *WebhookResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Error updating netbox_webhook", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out WebhookModel
 	webhookFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -326,7 +329,8 @@ func (r *WebhookResource) ImportState(ctx context.Context, req resource.ImportSt
 }
 
 // webhookToCreate builds the WebhookRequest request body from the plan.
-func webhookToCreate(ctx context.Context, plan *WebhookModel, diags *diag.Diagnostics) *netbox.WebhookRequest {
+func webhookToCreate(ctx context.Context, plan *WebhookModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WebhookRequest {
+	const objectType = "extras.webhook"
 	body := netbox.NewWebhookRequest(plan.Name.ValueString(), plan.PayloadUrl.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -356,7 +360,7 @@ func webhookToCreate(ctx context.Context, plan *WebhookModel, diags *diag.Diagno
 		body.SetTimeout(conv.Int32(plan.Timeout))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
@@ -368,7 +372,8 @@ func webhookToCreate(ctx context.Context, plan *WebhookModel, diags *diag.Diagno
 }
 
 // webhookToPatch builds the PatchedWebhookRequest request body with every attribute whose planned value differs from state.
-func webhookToPatch(ctx context.Context, plan, state *WebhookModel, diags *diag.Diagnostics) *netbox.PatchedWebhookRequest {
+func webhookToPatch(ctx context.Context, plan, state *WebhookModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWebhookRequest {
+	const objectType = "extras.webhook"
 	body := netbox.NewPatchedWebhookRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -429,7 +434,7 @@ func webhookToPatch(ctx context.Context, plan, state *WebhookModel, diags *diag.
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
@@ -449,7 +454,7 @@ func webhookToPatch(ctx context.Context, plan, state *WebhookModel, diags *diag.
 
 // webhookFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func webhookFromAPI(ctx context.Context, obj *netbox.Webhook, prior *WebhookModel, out *WebhookModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -466,7 +471,7 @@ func webhookFromAPI(ctx context.Context, obj *netbox.Webhook, prior *WebhookMode
 	out.SslVerification = conv.Bool(obj.GetSslVerificationOk())
 	out.CaFilePath = conv.StringKeep(conv.String(obj.GetCaFilePathOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.CaFilePath }), false)
 	out.Timeout = conv.Int64From32(obj.GetTimeoutOk())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.Url = conv.String(obj.GetUrlOk())

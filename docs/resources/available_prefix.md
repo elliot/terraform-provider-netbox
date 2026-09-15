@@ -64,7 +64,7 @@ output "hq_users_prefix" {
 ### Optional
 
 - `comments` (String) Comments.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (Dynamic) Custom field values as an object of field name to value (`{ cost_center = "CC-42", owner_site = 12 }`). Only keys present in the configuration are tracked; names are validated against the NetBox definitions.
 - `description` (String) Description.
 - `is_pool` (Boolean) All IP addresses within this prefix are considered usable. Defaults to the NetBox server default when omitted.
 - `mark_utilized` (Boolean) Treat as fully utilized. Defaults to the NetBox server default when omitted.

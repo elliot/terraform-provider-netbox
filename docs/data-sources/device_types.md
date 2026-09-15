@@ -61,7 +61,7 @@ Read-Only:
 - `cooling_method` (String) Cooling Method. Valid values: `air`, `liquid`, `hybrid`, `immersion`. Defaults to the NetBox server default when omitted.
 - `cooling_outflow_template_count` (Number) Cooling Outflow Template Count.
 - `created` (String) Created.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `default_platform_id` (Number) ID of the Platform (`netbox_platform`).
 - `description` (String) Description. Defaults to an empty string.
 - `device_bay_template_count` (Number) Device Bay Template Count.

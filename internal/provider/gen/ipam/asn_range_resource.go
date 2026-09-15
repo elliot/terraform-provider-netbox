@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,22 +32,22 @@ func init() { provider.RegisterResource(NewAsnRangeResource) }
 
 // AsnRangeModel is the Terraform state of netbox_asn_range.
 type AsnRangeModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	RirId        types.Int64          `tfsdk:"rir_id"`
-	Start        types.Int64          `tfsdk:"start"`
-	End          types.Int64          `tfsdk:"end"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	RirId        types.Int64       `tfsdk:"rir_id"`
+	Start        types.Int64       `tfsdk:"start"`
+	End          types.Int64       `tfsdk:"end"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -60,6 +60,7 @@ var (
 // AsnRangeResource manages netbox_asn_range objects (/api/ipam/asn-ranges/).
 type AsnRangeResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewAsnRangeResource returns a new netbox_asn_range resource.
@@ -94,6 +95,7 @@ func (r *AsnRangeResource) Configure(_ context.Context, req resource.ConfigureRe
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // asnRangeResourceAttributes returns the schema attributes of netbox_asn_range.
@@ -154,9 +156,8 @@ func asnRangeResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -188,7 +189,7 @@ func (r *AsnRangeResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := asnRangeToCreate(ctx, &plan, &resp.Diagnostics)
+	body := asnRangeToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -197,6 +198,7 @@ func (r *AsnRangeResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Error creating netbox_asn_range", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state AsnRangeModel
 	asnRangeFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -248,7 +250,7 @@ func (r *AsnRangeResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := asnRangeToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := asnRangeToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -257,6 +259,7 @@ func (r *AsnRangeResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Error updating netbox_asn_range", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out AsnRangeModel
 	asnRangeFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -290,7 +293,8 @@ func (r *AsnRangeResource) ImportState(ctx context.Context, req resource.ImportS
 }
 
 // asnRangeToCreate builds the ASNRangeRequest request body from the plan.
-func asnRangeToCreate(ctx context.Context, plan *AsnRangeModel, diags *diag.Diagnostics) *netbox.ASNRangeRequest {
+func asnRangeToCreate(ctx context.Context, plan *AsnRangeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ASNRangeRequest {
+	const objectType = "ipam.asnrange"
 	body := netbox.NewASNRangeRequest(plan.Name.ValueString(), plan.Slug.ValueString(), conv.Int32(plan.RirId), plan.Start.ValueInt64(), plan.End.ValueInt64())
 	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
@@ -308,13 +312,14 @@ func asnRangeToCreate(ctx context.Context, plan *AsnRangeModel, diags *diag.Diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // asnRangeToPatch builds the PatchedASNRangeRequest request body with every attribute whose planned value differs from state.
-func asnRangeToPatch(ctx context.Context, plan, state *AsnRangeModel, diags *diag.Diagnostics) *netbox.PatchedASNRangeRequest {
+func asnRangeToPatch(ctx context.Context, plan, state *AsnRangeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedASNRangeRequest {
+	const objectType = "ipam.asnrange"
 	body := netbox.NewPatchedASNRangeRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -372,7 +377,7 @@ func asnRangeToPatch(ctx context.Context, plan, state *AsnRangeModel, diags *dia
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -380,7 +385,7 @@ func asnRangeToPatch(ctx context.Context, plan, state *AsnRangeModel, diags *dia
 
 // asnRangeFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func asnRangeFromAPI(ctx context.Context, obj *netbox.ASNRange, prior *AsnRangeModel, out *AsnRangeModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -396,7 +401,7 @@ func asnRangeFromAPI(ctx context.Context, obj *netbox.ASNRange, prior *AsnRangeM
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *AsnRangeModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

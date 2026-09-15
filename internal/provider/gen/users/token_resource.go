@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -59,6 +60,7 @@ var (
 // TokenResource manages netbox_token objects (/api/users/tokens/).
 type TokenResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewTokenResource returns a new netbox_token resource.
@@ -93,6 +95,7 @@ func (r *TokenResource) Configure(_ context.Context, req resource.ConfigureReque
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // tokenResourceAttributes returns the schema attributes of netbox_token.
@@ -195,6 +198,7 @@ func (r *TokenResource) Create(ctx context.Context, req resource.CreateRequest, 
 		resp.Diagnostics.AddError("Error creating netbox_token", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state TokenModel
 	tokenFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -255,6 +259,7 @@ func (r *TokenResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Error updating netbox_token", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out TokenModel
 	tokenFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

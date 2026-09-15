@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -65,6 +66,7 @@ var (
 // CoolingOutflowTemplateResource manages netbox_cooling_outflow_template objects (/api/dcim/cooling-outflow-templates/).
 type CoolingOutflowTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCoolingOutflowTemplateResource returns a new netbox_cooling_outflow_template resource.
@@ -99,6 +101,7 @@ func (r *CoolingOutflowTemplateResource) Configure(_ context.Context, req resour
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // coolingOutflowTemplateResourceAttributes returns the schema attributes of netbox_cooling_outflow_template.
@@ -198,6 +201,7 @@ func (r *CoolingOutflowTemplateResource) Create(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Error creating netbox_cooling_outflow_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CoolingOutflowTemplateModel
 	coolingOutflowTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -258,6 +262,7 @@ func (r *CoolingOutflowTemplateResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Error updating netbox_cooling_outflow_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CoolingOutflowTemplateModel
 	coolingOutflowTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

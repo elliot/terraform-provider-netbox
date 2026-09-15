@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -25,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -45,24 +45,24 @@ var frontPortTypeValues = []string{
 
 // FrontPortModel is the Terraform state of netbox_front_port.
 type FrontPortModel struct {
-	Id            types.Int64          `tfsdk:"id"`
-	DeviceId      types.Int64          `tfsdk:"device_id"`
-	ModuleId      types.Int64          `tfsdk:"module_id"`
-	Name          types.String         `tfsdk:"name"`
-	Label         types.String         `tfsdk:"label"`
-	Type          types.String         `tfsdk:"type"`
-	Color         types.String         `tfsdk:"color"`
-	Positions     types.Int64          `tfsdk:"positions"`
-	RearPorts     types.List           `tfsdk:"rear_ports"`
-	Description   types.String         `tfsdk:"description"`
-	MarkConnected types.Bool           `tfsdk:"mark_connected"`
-	OwnerId       types.Int64          `tfsdk:"owner_id"`
-	Tags          types.Set            `tfsdk:"tags"`
-	CustomFields  jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url           types.String         `tfsdk:"url"`
-	Display       types.String         `tfsdk:"display"`
-	Created       timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id            types.Int64       `tfsdk:"id"`
+	DeviceId      types.Int64       `tfsdk:"device_id"`
+	ModuleId      types.Int64       `tfsdk:"module_id"`
+	Name          types.String      `tfsdk:"name"`
+	Label         types.String      `tfsdk:"label"`
+	Type          types.String      `tfsdk:"type"`
+	Color         types.String      `tfsdk:"color"`
+	Positions     types.Int64       `tfsdk:"positions"`
+	RearPorts     types.List        `tfsdk:"rear_ports"`
+	Description   types.String      `tfsdk:"description"`
+	MarkConnected types.Bool        `tfsdk:"mark_connected"`
+	OwnerId       types.Int64       `tfsdk:"owner_id"`
+	Tags          types.Set         `tfsdk:"tags"`
+	CustomFields  types.Dynamic     `tfsdk:"custom_fields"`
+	Url           types.String      `tfsdk:"url"`
+	Display       types.String      `tfsdk:"display"`
+	Created       timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated   timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 // FrontPortRearPortsItem is one element of netbox_front_port.rear_ports.
@@ -88,6 +88,7 @@ var (
 // FrontPortResource manages netbox_front_port objects (/api/dcim/front-ports/).
 type FrontPortResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewFrontPortResource returns a new netbox_front_port resource.
@@ -122,6 +123,7 @@ func (r *FrontPortResource) Configure(_ context.Context, req resource.ConfigureR
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // frontPortResourceAttributes returns the schema attributes of netbox_front_port.
@@ -212,9 +214,8 @@ func frontPortResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -246,7 +247,7 @@ func (r *FrontPortResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := frontPortToCreate(ctx, &plan, &resp.Diagnostics)
+	body := frontPortToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -255,6 +256,7 @@ func (r *FrontPortResource) Create(ctx context.Context, req resource.CreateReque
 		resp.Diagnostics.AddError("Error creating netbox_front_port", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state FrontPortModel
 	frontPortFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -306,7 +308,7 @@ func (r *FrontPortResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := frontPortToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := frontPortToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -315,6 +317,7 @@ func (r *FrontPortResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Error updating netbox_front_port", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out FrontPortModel
 	frontPortFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -348,7 +351,8 @@ func (r *FrontPortResource) ImportState(ctx context.Context, req resource.Import
 }
 
 // frontPortToCreate builds the WritableFrontPortRequest request body from the plan.
-func frontPortToCreate(ctx context.Context, plan *FrontPortModel, diags *diag.Diagnostics) *netbox.WritableFrontPortRequest {
+func frontPortToCreate(ctx context.Context, plan *FrontPortModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableFrontPortRequest {
+	const objectType = "dcim.frontport"
 	body := netbox.NewWritableFrontPortRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString(), plan.Type.ValueString())
 	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
@@ -390,13 +394,14 @@ func frontPortToCreate(ctx context.Context, plan *FrontPortModel, diags *diag.Di
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // frontPortToPatch builds the PatchedWritableFrontPortRequest request body with every attribute whose planned value differs from state.
-func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, diags *diag.Diagnostics) *netbox.PatchedWritableFrontPortRequest {
+func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableFrontPortRequest {
+	const objectType = "dcim.frontport"
 	body := netbox.NewPatchedWritableFrontPortRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -476,7 +481,7 @@ func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, diags *d
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -484,7 +489,7 @@ func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, diags *d
 
 // frontPortFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func frontPortFromAPI(ctx context.Context, obj *netbox.FrontPort, prior *FrontPortModel, out *FrontPortModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -518,7 +523,7 @@ func frontPortFromAPI(ctx context.Context, obj *netbox.FrontPort, prior *FrontPo
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

@@ -52,7 +52,7 @@ Read-Only:
 - `body_template` (String) Jinja2 template for a custom request body. If blank, a JSON object representing the change will be included. Available context data includes: <code>event</code>, <code>model</code>, <code>timestamp</code>, <code>request</code>, and <code>data</code>. Defaults to an empty string.
 - `ca_file_path` (String) The specific CA certificate file to use for SSL verification. Leave blank to use the system defaults.
 - `created` (String) Created.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.

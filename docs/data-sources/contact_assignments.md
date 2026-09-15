@@ -54,7 +54,7 @@ Read-Only:
 
 - `contact_id` (Number) ID of the Contact (`netbox_contact`).
 - `created` (String) Created.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `last_updated` (String) Last Updated.

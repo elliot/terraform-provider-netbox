@@ -3,6 +3,7 @@ package render
 
 import (
 	"fmt"
+	"go/format"
 	"os"
 	"path/filepath"
 	"sort"
@@ -75,6 +76,11 @@ func All(resources []*model.Resource, netboxVersion string, opts Options) error 
 	}
 	if err := writeAllPackage(onDisk, version, opts.OutDir); err != nil {
 		return err
+	}
+	if !opts.Partial {
+		if err := writeObjectTypes(resources, version, opts.OutDir); err != nil {
+			return err
+		}
 	}
 	for _, r := range resources {
 		if r.Skip {
@@ -250,4 +256,41 @@ func writeDocTemplates(r *model.Resource, dir string) error {
 		}
 	}
 	return nil
+}
+
+// writeObjectTypes emits a map from NetBox content type label ("dcim.site") to
+// API path for every collection, used by hand-written resources that address
+// arbitrary objects (netbox_custom_field_value).
+func writeObjectTypes(resources []*model.Resource, version, outDir string) error {
+	dir := filepath.Join(outDir, "objecttypes")
+	if err := os.MkdirAll(dir, 0o750); err != nil {
+		return err
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, generatedHeader, version)
+	b.WriteString("// Package objecttypes maps NetBox content type labels to API paths.\npackage objecttypes\n\n")
+	b.WriteString("// Paths maps a content type label (\"dcim.site\") to its collection path.\nvar Paths = map[string]string{\n")
+	for _, r := range resources {
+		if r.Skip {
+			continue
+		}
+		fmt.Fprintf(&b, "\t%q: %q,\n", r.ObjectType(), r.Path)
+	}
+	b.WriteString("}\n\n// TerraformTypes maps a content type label to the Terraform resource type managing it (\"\" for read-only).\nvar TerraformTypes = map[string]string{\n")
+	for _, r := range resources {
+		if r.Skip {
+			continue
+		}
+		tf := r.TFType()
+		if r.DataSourceOnly {
+			tf = ""
+		}
+		fmt.Fprintf(&b, "\t%q: %q,\n", r.ObjectType(), tf)
+	}
+	b.WriteString("}\n")
+	src, err := format.Source([]byte(b.String()))
+	if err != nil {
+		return fmt.Errorf("format objecttypes.go: %w", err)
+	}
+	return os.WriteFile(filepath.Join(dir, "objecttypes.go"), src, 0o600)
 }

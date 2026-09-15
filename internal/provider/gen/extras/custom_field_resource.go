@@ -24,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -95,6 +96,7 @@ var (
 // CustomFieldResource manages netbox_custom_field objects (/api/extras/custom-fields/).
 type CustomFieldResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCustomFieldResource returns a new netbox_custom_field resource.
@@ -129,6 +131,7 @@ func (r *CustomFieldResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // customFieldResourceAttributes returns the schema attributes of netbox_custom_field.
@@ -324,6 +327,8 @@ func (r *CustomFieldResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_custom_field", netbox.WrapError(err, res).Error())
 		return
 	}
+	r.cf.Invalidate() // definitions changed
+
 	var state CustomFieldModel
 	customFieldFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -384,6 +389,8 @@ func (r *CustomFieldResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_custom_field", netbox.WrapError(err, res).Error())
 		return
 	}
+	r.cf.Invalidate() // definitions changed
+
 	var out CustomFieldModel
 	customFieldFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -410,6 +417,7 @@ func (r *CustomFieldResource) Delete(ctx context.Context, req resource.DeleteReq
 			resp.Diagnostics.AddError("Error deleting netbox_custom_field", werr.Error())
 		}
 	}
+	r.cf.Invalidate() // definitions changed
 }
 
 func (r *CustomFieldResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

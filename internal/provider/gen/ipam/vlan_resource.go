@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -41,25 +41,25 @@ var vlanQinqRoleValues = []string{
 
 // VlanModel is the Terraform state of netbox_vlan.
 type VlanModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	SiteId       types.Int64          `tfsdk:"site_id"`
-	GroupId      types.Int64          `tfsdk:"group_id"`
-	Vid          types.Int64          `tfsdk:"vid"`
-	Name         types.String         `tfsdk:"name"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	Status       types.String         `tfsdk:"status"`
-	RoleId       types.Int64          `tfsdk:"role_id"`
-	Description  types.String         `tfsdk:"description"`
-	QinqRole     types.String         `tfsdk:"qinq_role"`
-	QinqSvlanId  types.Int64          `tfsdk:"qinq_svlan_id"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	SiteId       types.Int64       `tfsdk:"site_id"`
+	GroupId      types.Int64       `tfsdk:"group_id"`
+	Vid          types.Int64       `tfsdk:"vid"`
+	Name         types.String      `tfsdk:"name"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	Status       types.String      `tfsdk:"status"`
+	RoleId       types.Int64       `tfsdk:"role_id"`
+	Description  types.String      `tfsdk:"description"`
+	QinqRole     types.String      `tfsdk:"qinq_role"`
+	QinqSvlanId  types.Int64       `tfsdk:"qinq_svlan_id"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -72,6 +72,7 @@ var (
 // VlanResource manages netbox_vlan objects (/api/ipam/vlans/).
 type VlanResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewVlanResource returns a new netbox_vlan resource.
@@ -106,6 +107,7 @@ func (r *VlanResource) Configure(_ context.Context, req resource.ConfigureReques
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // vlanResourceAttributes returns the schema attributes of netbox_vlan.
@@ -183,9 +185,8 @@ func vlanResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -217,7 +218,7 @@ func (r *VlanResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := vlanToCreate(ctx, &plan, &resp.Diagnostics)
+	body := vlanToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -226,6 +227,7 @@ func (r *VlanResource) Create(ctx context.Context, req resource.CreateRequest, r
 		resp.Diagnostics.AddError("Error creating netbox_vlan", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state VlanModel
 	vlanFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -277,7 +279,7 @@ func (r *VlanResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := vlanToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := vlanToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -286,6 +288,7 @@ func (r *VlanResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Error updating netbox_vlan", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out VlanModel
 	vlanFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -319,7 +322,8 @@ func (r *VlanResource) ImportState(ctx context.Context, req resource.ImportState
 }
 
 // vlanToCreate builds the WritableVLANRequest request body from the plan.
-func vlanToCreate(ctx context.Context, plan *VlanModel, diags *diag.Diagnostics) *netbox.WritableVLANRequest {
+func vlanToCreate(ctx context.Context, plan *VlanModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVLANRequest {
+	const objectType = "ipam.vlan"
 	body := netbox.NewWritableVLANRequest(conv.Int32(plan.Vid), plan.Name.ValueString())
 	if conv.Known(plan.SiteId) {
 		body.SetSite(conv.Int32(plan.SiteId))
@@ -355,13 +359,14 @@ func vlanToCreate(ctx context.Context, plan *VlanModel, diags *diag.Diagnostics)
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // vlanToPatch builds the PatchedWritableVLANRequest request body with every attribute whose planned value differs from state.
-func vlanToPatch(ctx context.Context, plan, state *VlanModel, diags *diag.Diagnostics) *netbox.PatchedWritableVLANRequest {
+func vlanToPatch(ctx context.Context, plan, state *VlanModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableVLANRequest {
+	const objectType = "ipam.vlan"
 	body := netbox.NewPatchedWritableVLANRequest()
 	if !plan.SiteId.Equal(state.SiteId) {
 		if plan.SiteId.IsNull() {
@@ -442,7 +447,7 @@ func vlanToPatch(ctx context.Context, plan, state *VlanModel, diags *diag.Diagno
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -450,7 +455,7 @@ func vlanToPatch(ctx context.Context, plan, state *VlanModel, diags *diag.Diagno
 
 // vlanFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func vlanFromAPI(ctx context.Context, obj *netbox.VLAN, prior *VlanModel, out *VlanModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -469,7 +474,7 @@ func vlanFromAPI(ctx context.Context, obj *netbox.VLAN, prior *VlanModel, out *V
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VlanModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

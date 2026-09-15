@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -54,6 +55,7 @@ var (
 // PermissionResource manages netbox_permission objects (/api/users/permissions/).
 type PermissionResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewPermissionResource returns a new netbox_permission resource.
@@ -88,6 +90,7 @@ func (r *PermissionResource) Configure(_ context.Context, req resource.Configure
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // permissionResourceAttributes returns the schema attributes of netbox_permission.
@@ -172,6 +175,7 @@ func (r *PermissionResource) Create(ctx context.Context, req resource.CreateRequ
 		resp.Diagnostics.AddError("Error creating netbox_permission", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state PermissionModel
 	permissionFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -232,6 +236,7 @@ func (r *PermissionResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Error updating netbox_permission", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out PermissionModel
 	permissionFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

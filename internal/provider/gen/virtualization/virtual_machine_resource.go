@@ -24,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -65,7 +66,7 @@ type VirtualMachineModel struct {
 	Tags                 types.Set            `tfsdk:"tags"`
 	LocalContextData     jsontypes.Normalized `tfsdk:"local_context_data"`
 	ConfigTemplateId     types.Int64          `tfsdk:"config_template_id"`
-	CustomFields         jsontypes.Normalized `tfsdk:"custom_fields"`
+	CustomFields         types.Dynamic        `tfsdk:"custom_fields"`
 	Url                  types.String         `tfsdk:"url"`
 	Display              types.String         `tfsdk:"display"`
 	Created              timetypes.RFC3339    `tfsdk:"created"`
@@ -82,6 +83,7 @@ var (
 // VirtualMachineResource manages netbox_virtual_machine objects (/api/virtualization/virtual-machines/).
 type VirtualMachineResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewVirtualMachineResource returns a new netbox_virtual_machine resource.
@@ -116,6 +118,7 @@ func (r *VirtualMachineResource) Configure(_ context.Context, req resource.Confi
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // virtualMachineResourceAttributes returns the schema attributes of netbox_virtual_machine.
@@ -243,9 +246,8 @@ func virtualMachineResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "ID of the Config Template (`netbox_config_template`).",
 			Optional:            true,
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -277,7 +279,7 @@ func (r *VirtualMachineResource) Create(ctx context.Context, req resource.Create
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := virtualMachineToCreate(ctx, &plan, &resp.Diagnostics)
+	body := virtualMachineToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -286,6 +288,7 @@ func (r *VirtualMachineResource) Create(ctx context.Context, req resource.Create
 		resp.Diagnostics.AddError("Error creating netbox_virtual_machine", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state VirtualMachineModel
 	virtualMachineFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -337,7 +340,7 @@ func (r *VirtualMachineResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualMachineToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := virtualMachineToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -346,6 +349,7 @@ func (r *VirtualMachineResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Error updating netbox_virtual_machine", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out VirtualMachineModel
 	virtualMachineFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -379,7 +383,8 @@ func (r *VirtualMachineResource) ImportState(ctx context.Context, req resource.I
 }
 
 // virtualMachineToCreate builds the WritableVirtualMachineRequest request body from the plan.
-func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, diags *diag.Diagnostics) *netbox.WritableVirtualMachineRequest {
+func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVirtualMachineRequest {
+	const objectType = "virtualization.virtualmachine"
 	body := netbox.NewWritableVirtualMachineRequest(plan.Name.ValueString())
 	if conv.Known(plan.VirtualMachineTypeId) {
 		body.SetVirtualMachineType(conv.Int32(plan.VirtualMachineTypeId))
@@ -445,13 +450,14 @@ func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, diag
 		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // virtualMachineToPatch builds the PatchedWritableVirtualMachineRequest request body with every attribute whose planned value differs from state.
-func virtualMachineToPatch(ctx context.Context, plan, state *VirtualMachineModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualMachineRequest {
+func virtualMachineToPatch(ctx context.Context, plan, state *VirtualMachineModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualMachineRequest {
+	const objectType = "virtualization.virtualmachine"
 	body := netbox.NewPatchedWritableVirtualMachineRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -583,7 +589,7 @@ func virtualMachineToPatch(ctx context.Context, plan, state *VirtualMachineModel
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -591,7 +597,7 @@ func virtualMachineToPatch(ctx context.Context, plan, state *VirtualMachineModel
 
 // virtualMachineFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func virtualMachineFromAPI(ctx context.Context, obj *netbox.VirtualMachine, prior *VirtualMachineModel, out *VirtualMachineModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -619,7 +625,7 @@ func virtualMachineFromAPI(ctx context.Context, obj *netbox.VirtualMachine, prio
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.LocalContextData = conv.JSONFromAPIWithPrior(obj.GetLocalContextData(), conv.PriorJSON(prior, func(m *VirtualMachineModel) jsontypes.Normalized { return m.LocalContextData }))
 	out.ConfigTemplateId = conv.BriefID(obj.GetConfigTemplateOk())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

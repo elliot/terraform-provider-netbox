@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,19 +32,19 @@ func init() { provider.RegisterResource(NewIpamRoleResource) }
 
 // IpamRoleModel is the Terraform state of netbox_ipam_role.
 type IpamRoleModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	Weight       types.Int64          `tfsdk:"weight"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	Weight       types.Int64       `tfsdk:"weight"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -57,6 +57,7 @@ var (
 // IpamRoleResource manages netbox_ipam_role objects (/api/ipam/roles/).
 type IpamRoleResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewIpamRoleResource returns a new netbox_ipam_role resource.
@@ -91,6 +92,7 @@ func (r *IpamRoleResource) Configure(_ context.Context, req resource.ConfigureRe
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // ipamRoleResourceAttributes returns the schema attributes of netbox_ipam_role.
@@ -141,9 +143,8 @@ func ipamRoleResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -175,7 +176,7 @@ func (r *IpamRoleResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := ipamRoleToCreate(ctx, &plan, &resp.Diagnostics)
+	body := ipamRoleToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -184,6 +185,7 @@ func (r *IpamRoleResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Error creating netbox_ipam_role", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state IpamRoleModel
 	ipamRoleFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -235,7 +237,7 @@ func (r *IpamRoleResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ipamRoleToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := ipamRoleToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -244,6 +246,7 @@ func (r *IpamRoleResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Error updating netbox_ipam_role", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out IpamRoleModel
 	ipamRoleFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -277,7 +280,8 @@ func (r *IpamRoleResource) ImportState(ctx context.Context, req resource.ImportS
 }
 
 // ipamRoleToCreate builds the RoleRequest request body from the plan.
-func ipamRoleToCreate(ctx context.Context, plan *IpamRoleModel, diags *diag.Diagnostics) *netbox.RoleRequest {
+func ipamRoleToCreate(ctx context.Context, plan *IpamRoleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.RoleRequest {
+	const objectType = "ipam.role"
 	body := netbox.NewRoleRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.Weight) {
 		body.SetWeight(conv.Int32(plan.Weight))
@@ -295,13 +299,14 @@ func ipamRoleToCreate(ctx context.Context, plan *IpamRoleModel, diags *diag.Diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // ipamRoleToPatch builds the PatchedRoleRequest request body with every attribute whose planned value differs from state.
-func ipamRoleToPatch(ctx context.Context, plan, state *IpamRoleModel, diags *diag.Diagnostics) *netbox.PatchedRoleRequest {
+func ipamRoleToPatch(ctx context.Context, plan, state *IpamRoleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedRoleRequest {
+	const objectType = "ipam.role"
 	body := netbox.NewPatchedRoleRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -342,7 +347,7 @@ func ipamRoleToPatch(ctx context.Context, plan, state *IpamRoleModel, diags *dia
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -350,7 +355,7 @@ func ipamRoleToPatch(ctx context.Context, plan, state *IpamRoleModel, diags *dia
 
 // ipamRoleFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func ipamRoleFromAPI(ctx context.Context, obj *netbox.Role, prior *IpamRoleModel, out *IpamRoleModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -363,7 +368,7 @@ func ipamRoleFromAPI(ctx context.Context, obj *netbox.Role, prior *IpamRoleModel
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IpamRoleModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -36,21 +36,21 @@ var rackReservationStatusValues = []string{
 
 // RackReservationModel is the Terraform state of netbox_rack_reservation.
 type RackReservationModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	RackId       types.Int64          `tfsdk:"rack_id"`
-	Units        types.Set            `tfsdk:"units"`
-	Status       types.String         `tfsdk:"status"`
-	UserId       types.Int64          `tfsdk:"user_id"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	RackId       types.Int64       `tfsdk:"rack_id"`
+	Units        types.Set         `tfsdk:"units"`
+	Status       types.String      `tfsdk:"status"`
+	UserId       types.Int64       `tfsdk:"user_id"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -63,6 +63,7 @@ var (
 // RackReservationResource manages netbox_rack_reservation objects (/api/dcim/rack-reservations/).
 type RackReservationResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewRackReservationResource returns a new netbox_rack_reservation resource.
@@ -97,6 +98,7 @@ func (r *RackReservationResource) Configure(_ context.Context, req resource.Conf
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // rackReservationResourceAttributes returns the schema attributes of netbox_rack_reservation.
@@ -153,9 +155,8 @@ func rackReservationResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -187,7 +188,7 @@ func (r *RackReservationResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := rackReservationToCreate(ctx, &plan, &resp.Diagnostics)
+	body := rackReservationToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -196,6 +197,7 @@ func (r *RackReservationResource) Create(ctx context.Context, req resource.Creat
 		resp.Diagnostics.AddError("Error creating netbox_rack_reservation", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state RackReservationModel
 	rackReservationFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -247,7 +249,7 @@ func (r *RackReservationResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rackReservationToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := rackReservationToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -256,6 +258,7 @@ func (r *RackReservationResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Error updating netbox_rack_reservation", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out RackReservationModel
 	rackReservationFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -289,7 +292,8 @@ func (r *RackReservationResource) ImportState(ctx context.Context, req resource.
 }
 
 // rackReservationToCreate builds the WritableRackReservationRequest request body from the plan.
-func rackReservationToCreate(ctx context.Context, plan *RackReservationModel, diags *diag.Diagnostics) *netbox.WritableRackReservationRequest {
+func rackReservationToCreate(ctx context.Context, plan *RackReservationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableRackReservationRequest {
+	const objectType = "dcim.rackreservation"
 	body := netbox.NewWritableRackReservationRequest(conv.Int32(plan.RackId), conv.Int32s(ctx, plan.Units, diags), conv.Int32(plan.UserId), plan.Description.ValueString())
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
@@ -307,13 +311,14 @@ func rackReservationToCreate(ctx context.Context, plan *RackReservationModel, di
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // rackReservationToPatch builds the PatchedWritableRackReservationRequest request body with every attribute whose planned value differs from state.
-func rackReservationToPatch(ctx context.Context, plan, state *RackReservationModel, diags *diag.Diagnostics) *netbox.PatchedWritableRackReservationRequest {
+func rackReservationToPatch(ctx context.Context, plan, state *RackReservationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableRackReservationRequest {
+	const objectType = "dcim.rackreservation"
 	body := netbox.NewPatchedWritableRackReservationRequest()
 	if !plan.RackId.Equal(state.RackId) {
 		if conv.Known(plan.RackId) {
@@ -366,7 +371,7 @@ func rackReservationToPatch(ctx context.Context, plan, state *RackReservationMod
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -374,7 +379,7 @@ func rackReservationToPatch(ctx context.Context, plan, state *RackReservationMod
 
 // rackReservationFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func rackReservationFromAPI(ctx context.Context, obj *netbox.RackReservation, prior *RackReservationModel, out *RackReservationModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -389,7 +394,7 @@ func rackReservationFromAPI(ctx context.Context, obj *netbox.RackReservation, pr
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *RackReservationModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

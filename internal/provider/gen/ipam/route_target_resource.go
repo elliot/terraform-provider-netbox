@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -31,18 +31,18 @@ func init() { provider.RegisterResource(NewRouteTargetResource) }
 
 // RouteTargetModel is the Terraform state of netbox_route_target.
 type RouteTargetModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -55,6 +55,7 @@ var (
 // RouteTargetResource manages netbox_route_target objects (/api/ipam/route-targets/).
 type RouteTargetResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewRouteTargetResource returns a new netbox_route_target resource.
@@ -89,6 +90,7 @@ func (r *RouteTargetResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // routeTargetResourceAttributes returns the schema attributes of netbox_route_target.
@@ -132,9 +134,8 @@ func routeTargetResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -166,7 +167,7 @@ func (r *RouteTargetResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := routeTargetToCreate(ctx, &plan, &resp.Diagnostics)
+	body := routeTargetToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -175,6 +176,7 @@ func (r *RouteTargetResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_route_target", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state RouteTargetModel
 	routeTargetFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -226,7 +228,7 @@ func (r *RouteTargetResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := routeTargetToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := routeTargetToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -235,6 +237,7 @@ func (r *RouteTargetResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_route_target", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out RouteTargetModel
 	routeTargetFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -268,7 +271,8 @@ func (r *RouteTargetResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 // routeTargetToCreate builds the RouteTargetRequest request body from the plan.
-func routeTargetToCreate(ctx context.Context, plan *RouteTargetModel, diags *diag.Diagnostics) *netbox.RouteTargetRequest {
+func routeTargetToCreate(ctx context.Context, plan *RouteTargetModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.RouteTargetRequest {
+	const objectType = "ipam.routetarget"
 	body := netbox.NewRouteTargetRequest(plan.Name.ValueString())
 	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
@@ -286,13 +290,14 @@ func routeTargetToCreate(ctx context.Context, plan *RouteTargetModel, diags *dia
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // routeTargetToPatch builds the PatchedRouteTargetRequest request body with every attribute whose planned value differs from state.
-func routeTargetToPatch(ctx context.Context, plan, state *RouteTargetModel, diags *diag.Diagnostics) *netbox.PatchedRouteTargetRequest {
+func routeTargetToPatch(ctx context.Context, plan, state *RouteTargetModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedRouteTargetRequest {
+	const objectType = "ipam.routetarget"
 	body := netbox.NewPatchedRouteTargetRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -330,7 +335,7 @@ func routeTargetToPatch(ctx context.Context, plan, state *RouteTargetModel, diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -338,7 +343,7 @@ func routeTargetToPatch(ctx context.Context, plan, state *RouteTargetModel, diag
 
 // routeTargetFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func routeTargetFromAPI(ctx context.Context, obj *netbox.RouteTarget, prior *RouteTargetModel, out *RouteTargetModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -350,7 +355,7 @@ func routeTargetFromAPI(ctx context.Context, obj *netbox.RouteTarget, prior *Rou
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *RouteTargetModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

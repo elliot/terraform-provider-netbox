@@ -24,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -70,6 +71,7 @@ var (
 // ConfigContextResource manages netbox_config_context objects (/api/extras/config-contexts/).
 type ConfigContextResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewConfigContextResource returns a new netbox_config_context resource.
@@ -104,6 +106,7 @@ func (r *ConfigContextResource) Configure(_ context.Context, req resource.Config
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // configContextResourceAttributes returns the schema attributes of netbox_config_context.
@@ -284,6 +287,7 @@ func (r *ConfigContextResource) Create(ctx context.Context, req resource.CreateR
 		resp.Diagnostics.AddError("Error creating netbox_config_context", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ConfigContextModel
 	configContextFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -344,6 +348,7 @@ func (r *ConfigContextResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Error updating netbox_config_context", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ConfigContextModel
 	configContextFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

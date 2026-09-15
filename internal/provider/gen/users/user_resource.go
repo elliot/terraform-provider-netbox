@@ -24,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -56,6 +57,7 @@ var (
 // UserResource manages netbox_user objects (/api/users/users/).
 type UserResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewUserResource returns a new netbox_user resource.
@@ -90,6 +92,7 @@ func (r *UserResource) Configure(_ context.Context, req resource.ConfigureReques
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // userResourceAttributes returns the schema attributes of netbox_user.
@@ -186,6 +189,7 @@ func (r *UserResource) Create(ctx context.Context, req resource.CreateRequest, r
 		resp.Diagnostics.AddError("Error creating netbox_user", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state UserModel
 	userFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -246,6 +250,7 @@ func (r *UserResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Error updating netbox_user", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out UserModel
 	userFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

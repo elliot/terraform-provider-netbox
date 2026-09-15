@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -35,19 +35,19 @@ var ipsecPolicyPfsGroupValues = []int64{1, 2, 5, 14, 15, 16, 17, 18, 19, 20, 21,
 
 // IpsecPolicyModel is the Terraform state of netbox_ipsec_policy.
 type IpsecPolicyModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Description  types.String         `tfsdk:"description"`
-	ProposalIds  types.Set            `tfsdk:"proposal_ids"`
-	PfsGroup     types.Int64          `tfsdk:"pfs_group"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Description  types.String      `tfsdk:"description"`
+	ProposalIds  types.Set         `tfsdk:"proposal_ids"`
+	PfsGroup     types.Int64       `tfsdk:"pfs_group"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -60,6 +60,7 @@ var (
 // IpsecPolicyResource manages netbox_ipsec_policy objects (/api/vpn/ipsec-policies/).
 type IpsecPolicyResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewIpsecPolicyResource returns a new netbox_ipsec_policy resource.
@@ -94,6 +95,7 @@ func (r *IpsecPolicyResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // ipsecPolicyResourceAttributes returns the schema attributes of netbox_ipsec_policy.
@@ -147,9 +149,8 @@ func ipsecPolicyResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -181,7 +182,7 @@ func (r *IpsecPolicyResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := ipsecPolicyToCreate(ctx, &plan, &resp.Diagnostics)
+	body := ipsecPolicyToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -190,6 +191,7 @@ func (r *IpsecPolicyResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_ipsec_policy", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state IpsecPolicyModel
 	ipsecPolicyFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -241,7 +243,7 @@ func (r *IpsecPolicyResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ipsecPolicyToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := ipsecPolicyToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -250,6 +252,7 @@ func (r *IpsecPolicyResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_ipsec_policy", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out IpsecPolicyModel
 	ipsecPolicyFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -283,7 +286,8 @@ func (r *IpsecPolicyResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 // ipsecPolicyToCreate builds the WritableIPSecPolicyRequest request body from the plan.
-func ipsecPolicyToCreate(ctx context.Context, plan *IpsecPolicyModel, diags *diag.Diagnostics) *netbox.WritableIPSecPolicyRequest {
+func ipsecPolicyToCreate(ctx context.Context, plan *IpsecPolicyModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableIPSecPolicyRequest {
+	const objectType = "vpn.ipsecpolicy"
 	body := netbox.NewWritableIPSecPolicyRequest(plan.Name.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -304,13 +308,14 @@ func ipsecPolicyToCreate(ctx context.Context, plan *IpsecPolicyModel, diags *dia
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // ipsecPolicyToPatch builds the PatchedWritableIPSecPolicyRequest request body with every attribute whose planned value differs from state.
-func ipsecPolicyToPatch(ctx context.Context, plan, state *IpsecPolicyModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPSecPolicyRequest {
+func ipsecPolicyToPatch(ctx context.Context, plan, state *IpsecPolicyModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableIPSecPolicyRequest {
+	const objectType = "vpn.ipsecpolicy"
 	body := netbox.NewPatchedWritableIPSecPolicyRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -351,7 +356,7 @@ func ipsecPolicyToPatch(ctx context.Context, plan, state *IpsecPolicyModel, diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -359,7 +364,7 @@ func ipsecPolicyToPatch(ctx context.Context, plan, state *IpsecPolicyModel, diag
 
 // ipsecPolicyFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func ipsecPolicyFromAPI(ctx context.Context, obj *netbox.IPSecPolicy, prior *IpsecPolicyModel, out *IpsecPolicyModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -372,7 +377,7 @@ func ipsecPolicyFromAPI(ctx context.Context, obj *netbox.IPSecPolicy, prior *Ips
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IpsecPolicyModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

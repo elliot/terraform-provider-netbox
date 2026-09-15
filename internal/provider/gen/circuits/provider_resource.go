@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,19 +32,19 @@ func init() { provider.RegisterResource(NewProviderResource) }
 
 // ProviderModel is the Terraform state of netbox_provider.
 type ProviderModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	AsnIds       types.Set            `tfsdk:"asn_ids"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	AsnIds       types.Set         `tfsdk:"asn_ids"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -57,6 +57,7 @@ var (
 // ProviderResource manages netbox_provider objects (/api/circuits/providers/).
 type ProviderResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewProviderResource returns a new netbox_provider resource.
@@ -91,6 +92,7 @@ func (r *ProviderResource) Configure(_ context.Context, req resource.ConfigureRe
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // providerResourceAttributes returns the schema attributes of netbox_provider.
@@ -142,9 +144,8 @@ func providerResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -176,7 +177,7 @@ func (r *ProviderResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := providerToCreate(ctx, &plan, &resp.Diagnostics)
+	body := providerToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -185,6 +186,7 @@ func (r *ProviderResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Error creating netbox_provider", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ProviderModel
 	providerFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -236,7 +238,7 @@ func (r *ProviderResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := providerToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := providerToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -245,6 +247,7 @@ func (r *ProviderResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Error updating netbox_provider", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ProviderModel
 	providerFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -278,7 +281,8 @@ func (r *ProviderResource) ImportState(ctx context.Context, req resource.ImportS
 }
 
 // providerToCreate builds the ProviderRequest request body from the plan.
-func providerToCreate(ctx context.Context, plan *ProviderModel, diags *diag.Diagnostics) *netbox.ProviderRequest {
+func providerToCreate(ctx context.Context, plan *ProviderModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ProviderRequest {
+	const objectType = "circuits.provider"
 	body := netbox.NewProviderRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -296,13 +300,14 @@ func providerToCreate(ctx context.Context, plan *ProviderModel, diags *diag.Diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // providerToPatch builds the PatchedProviderRequest request body with every attribute whose planned value differs from state.
-func providerToPatch(ctx context.Context, plan, state *ProviderModel, diags *diag.Diagnostics) *netbox.PatchedProviderRequest {
+func providerToPatch(ctx context.Context, plan, state *ProviderModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedProviderRequest {
+	const objectType = "circuits.provider"
 	body := netbox.NewPatchedProviderRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -343,7 +348,7 @@ func providerToPatch(ctx context.Context, plan, state *ProviderModel, diags *dia
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -351,7 +356,7 @@ func providerToPatch(ctx context.Context, plan, state *ProviderModel, diags *dia
 
 // providerFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func providerFromAPI(ctx context.Context, obj *netbox.Provider, prior *ProviderModel, out *ProviderModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -364,7 +369,7 @@ func providerFromAPI(ctx context.Context, obj *netbox.Provider, prior *ProviderM
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Comments }), false)
 	out.AsnIds = conv.BriefIDs(obj.GetAsns())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

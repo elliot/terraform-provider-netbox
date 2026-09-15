@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -109,6 +110,7 @@ var (
 // InterfaceTemplateResource manages netbox_interface_template objects (/api/dcim/interface-templates/).
 type InterfaceTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewInterfaceTemplateResource returns a new netbox_interface_template resource.
@@ -143,6 +145,7 @@ func (r *InterfaceTemplateResource) Configure(_ context.Context, req resource.Co
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // interfaceTemplateResourceAttributes returns the schema attributes of netbox_interface_template.
@@ -276,6 +279,7 @@ func (r *InterfaceTemplateResource) Create(ctx context.Context, req resource.Cre
 		resp.Diagnostics.AddError("Error creating netbox_interface_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state InterfaceTemplateModel
 	interfaceTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -336,6 +340,7 @@ func (r *InterfaceTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Error updating netbox_interface_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out InterfaceTemplateModel
 	interfaceTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

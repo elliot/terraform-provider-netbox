@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -16,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -26,18 +26,18 @@ var availableVlanStatusValues = []string{"active", "reserved", "deprecated"}
 
 // AvailableVlanModel is the Terraform state of netbox_available_vlan.
 type AvailableVlanModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	VlanGroupId  types.Int64          `tfsdk:"vlan_group_id"`
-	Vid          types.Int64          `tfsdk:"vid"`
-	Name         types.String         `tfsdk:"name"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	Status       types.String         `tfsdk:"status"`
-	RoleId       types.Int64          `tfsdk:"role_id"`
-	Description  types.String         `tfsdk:"description"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
+	Id           types.Int64   `tfsdk:"id"`
+	VlanGroupId  types.Int64   `tfsdk:"vlan_group_id"`
+	Vid          types.Int64   `tfsdk:"vid"`
+	Name         types.String  `tfsdk:"name"`
+	TenantId     types.Int64   `tfsdk:"tenant_id"`
+	Status       types.String  `tfsdk:"status"`
+	RoleId       types.Int64   `tfsdk:"role_id"`
+	Description  types.String  `tfsdk:"description"`
+	Tags         types.Set     `tfsdk:"tags"`
+	CustomFields types.Dynamic `tfsdk:"custom_fields"`
+	Url          types.String  `tfsdk:"url"`
+	Display      types.String  `tfsdk:"display"`
 }
 
 var (
@@ -51,6 +51,7 @@ var (
 // then manages the VLAN like a netbox_vlan.
 type AvailableVlanResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewAvailableVlanResource returns a new netbox_available_vlan resource.
@@ -97,6 +98,7 @@ func (r *AvailableVlanResource) IdentitySchema(_ context.Context, _ resource.Ide
 
 func (r *AvailableVlanResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	r.client = configureClient(req, resp)
+	r.cf = configureCache(req)
 }
 
 func (r *AvailableVlanResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -107,7 +109,7 @@ func (r *AvailableVlanResource) Create(ctx context.Context, req resource.CreateR
 	}
 	apiPath := fmt.Sprintf("/api/ipam/vlan-groups/%d/available-vlans/", plan.VlanGroupId.ValueInt64())
 	b := body{"name": plan.Name.ValueString()}
-	availableVlanBody(ctx, b, &plan, &resp.Diagnostics)
+	availableVlanBody(ctx, b, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -118,7 +120,7 @@ func (r *AvailableVlanResource) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 	state := plan
-	availableVlanFromAPI(obj, &plan, &state)
+	availableVlanFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	provider.SetIdentityID(ctx, resp.Identity, state.Id, &resp.Diagnostics)
 }
@@ -145,7 +147,7 @@ func (r *AvailableVlanResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 	prior := state
-	availableVlanFromAPI(obj, &prior, &state)
+	availableVlanFromAPI(ctx, obj, &prior, &state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	provider.SetIdentityID(ctx, resp.Identity, state.Id, &resp.Diagnostics)
 }
@@ -183,7 +185,7 @@ func (r *AvailableVlanResource) Update(ctx context.Context, req resource.UpdateR
 		patch.SetTags(conv.TagsToAPI(ctx, plan.Tags, &resp.Diagnostics))
 	}
 	if conv.Known(plan.CustomFields) {
-		patch.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, &resp.Diagnostics))
+		patch.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, r.cf, "ipam.vlan", &resp.Diagnostics))
 	}
 	if resp.Diagnostics.HasError() {
 		return
@@ -194,7 +196,7 @@ func (r *AvailableVlanResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 	out := plan
-	availableVlanFromAPI(obj, &plan, &out)
+	availableVlanFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &out)...)
 	provider.SetIdentityID(ctx, resp.Identity, out.Id, &resp.Diagnostics)
 }
@@ -223,18 +225,18 @@ func (r *AvailableVlanResource) ImportState(ctx context.Context, req resource.Im
 
 // availableVlanBody fills the allocation request from the plan. The VID and
 // group are chosen by NetBox.
-func availableVlanBody(ctx context.Context, b body, plan *AvailableVlanModel, diags *diag.Diagnostics) {
+func availableVlanBody(ctx context.Context, b body, plan *AvailableVlanModel, cf *customfields.Cache, diags *diag.Diagnostics) {
 	b.nullableInt("tenant", plan.TenantId)
 	b.str("status", plan.Status)
 	b.nullableInt("role", plan.RoleId)
 	b.str("description", plan.Description)
 	b.tags(ctx, plan.Tags, diags)
-	b.customFields(plan.CustomFields, diags)
+	b.customFields(ctx, plan.CustomFields, cf, "ipam.vlan", diags)
 }
 
 // availableVlanFromAPI copies the API object into out. The group is readable
 // from the VLAN, so vlan_group_id is always refreshed (imports included).
-func availableVlanFromAPI(obj *netbox.VLAN, prior, out *AvailableVlanModel) {
+func availableVlanFromAPI(ctx context.Context, obj *netbox.VLAN, prior, out *AvailableVlanModel, diags *diag.Diagnostics) {
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.VlanGroupId = conv.BriefID(obj.GetGroupOk())
 	out.Vid = conv.Int64From32(obj.GetVidOk())
@@ -244,7 +246,7 @@ func availableVlanFromAPI(obj *netbox.VLAN, prior, out *AvailableVlanModel) {
 	out.RoleId = conv.BriefID(obj.GetRoleOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), prior.CustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), prior.CustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 }

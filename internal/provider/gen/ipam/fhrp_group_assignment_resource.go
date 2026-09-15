@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -46,6 +47,7 @@ var (
 // FhrpGroupAssignmentResource manages netbox_fhrp_group_assignment objects (/api/ipam/fhrp-group-assignments/).
 type FhrpGroupAssignmentResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewFhrpGroupAssignmentResource returns a new netbox_fhrp_group_assignment resource.
@@ -80,6 +82,7 @@ func (r *FhrpGroupAssignmentResource) Configure(_ context.Context, req resource.
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // fhrpGroupAssignmentResourceAttributes returns the schema attributes of netbox_fhrp_group_assignment.
@@ -144,6 +147,7 @@ func (r *FhrpGroupAssignmentResource) Create(ctx context.Context, req resource.C
 		resp.Diagnostics.AddError("Error creating netbox_fhrp_group_assignment", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state FhrpGroupAssignmentModel
 	fhrpGroupAssignmentFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -204,6 +208,7 @@ func (r *FhrpGroupAssignmentResource) Update(ctx context.Context, req resource.U
 		resp.Diagnostics.AddError("Error updating netbox_fhrp_group_assignment", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out FhrpGroupAssignmentModel
 	fhrpGroupAssignmentFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

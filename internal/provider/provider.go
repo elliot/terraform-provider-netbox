@@ -33,6 +33,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/elliot/terraform-provider-netbox/internal/client"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 )
 
 // Environment variables understood by the provider.
@@ -232,6 +233,7 @@ func (p *netboxProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		API:        netbox.NewClient(s.client.ServerURL, httpClient, ""),
 	}
 	pd.API.GetConfig().UserAgent = s.client.UserAgent
+	pd.CustomFields = customfields.NewCache(pd.API)
 
 	if s.skipVersionCheck {
 		tflog.Debug(ctx, "netbox: skipping version check")

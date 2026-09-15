@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -36,24 +36,24 @@ var moduleStatusValues = []string{
 
 // ModuleModel is the Terraform state of netbox_module.
 type ModuleModel struct {
-	Id                  types.Int64          `tfsdk:"id"`
-	DeviceId            types.Int64          `tfsdk:"device_id"`
-	ModuleBayId         types.Int64          `tfsdk:"module_bay_id"`
-	ModuleTypeId        types.Int64          `tfsdk:"module_type_id"`
-	Status              types.String         `tfsdk:"status"`
-	Serial              types.String         `tfsdk:"serial"`
-	AssetTag            types.String         `tfsdk:"asset_tag"`
-	Description         types.String         `tfsdk:"description"`
-	OwnerId             types.Int64          `tfsdk:"owner_id"`
-	Comments            types.String         `tfsdk:"comments"`
-	Tags                types.Set            `tfsdk:"tags"`
-	CustomFields        jsontypes.Normalized `tfsdk:"custom_fields"`
-	ReplicateComponents types.Bool           `tfsdk:"replicate_components"`
-	AdoptComponents     types.Bool           `tfsdk:"adopt_components"`
-	Url                 types.String         `tfsdk:"url"`
-	Display             types.String         `tfsdk:"display"`
-	Created             timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                  types.Int64       `tfsdk:"id"`
+	DeviceId            types.Int64       `tfsdk:"device_id"`
+	ModuleBayId         types.Int64       `tfsdk:"module_bay_id"`
+	ModuleTypeId        types.Int64       `tfsdk:"module_type_id"`
+	Status              types.String      `tfsdk:"status"`
+	Serial              types.String      `tfsdk:"serial"`
+	AssetTag            types.String      `tfsdk:"asset_tag"`
+	Description         types.String      `tfsdk:"description"`
+	OwnerId             types.Int64       `tfsdk:"owner_id"`
+	Comments            types.String      `tfsdk:"comments"`
+	Tags                types.Set         `tfsdk:"tags"`
+	CustomFields        types.Dynamic     `tfsdk:"custom_fields"`
+	ReplicateComponents types.Bool        `tfsdk:"replicate_components"`
+	AdoptComponents     types.Bool        `tfsdk:"adopt_components"`
+	Url                 types.String      `tfsdk:"url"`
+	Display             types.String      `tfsdk:"display"`
+	Created             timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated         timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -66,6 +66,7 @@ var (
 // ModuleResource manages netbox_module objects (/api/dcim/modules/).
 type ModuleResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewModuleResource returns a new netbox_module resource.
@@ -100,6 +101,7 @@ func (r *ModuleResource) Configure(_ context.Context, req resource.ConfigureRequ
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // moduleResourceAttributes returns the schema attributes of netbox_module.
@@ -165,9 +167,8 @@ func moduleResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"replicate_components": schema.BoolAttribute{
@@ -207,7 +208,7 @@ func (r *ModuleResource) Create(ctx context.Context, req resource.CreateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := moduleToCreate(ctx, &plan, &resp.Diagnostics)
+	body := moduleToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -216,6 +217,7 @@ func (r *ModuleResource) Create(ctx context.Context, req resource.CreateRequest,
 		resp.Diagnostics.AddError("Error creating netbox_module", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ModuleModel
 	moduleFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -267,7 +269,7 @@ func (r *ModuleResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := moduleToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := moduleToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -276,6 +278,7 @@ func (r *ModuleResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Error updating netbox_module", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ModuleModel
 	moduleFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -309,7 +312,8 @@ func (r *ModuleResource) ImportState(ctx context.Context, req resource.ImportSta
 }
 
 // moduleToCreate builds the WritableModuleRequest request body from the plan.
-func moduleToCreate(ctx context.Context, plan *ModuleModel, diags *diag.Diagnostics) *netbox.WritableModuleRequest {
+func moduleToCreate(ctx context.Context, plan *ModuleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableModuleRequest {
+	const objectType = "dcim.module"
 	body := netbox.NewWritableModuleRequest(conv.Int32(plan.DeviceId), conv.Int32(plan.ModuleBayId), conv.Int32(plan.ModuleTypeId))
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
@@ -333,7 +337,7 @@ func moduleToCreate(ctx context.Context, plan *ModuleModel, diags *diag.Diagnost
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	if conv.Known(plan.ReplicateComponents) {
 		body.SetReplicateComponents(plan.ReplicateComponents.ValueBool())
@@ -345,7 +349,8 @@ func moduleToCreate(ctx context.Context, plan *ModuleModel, diags *diag.Diagnost
 }
 
 // moduleToPatch builds the PatchedWritableModuleRequest request body with every attribute whose planned value differs from state.
-func moduleToPatch(ctx context.Context, plan, state *ModuleModel, diags *diag.Diagnostics) *netbox.PatchedWritableModuleRequest {
+func moduleToPatch(ctx context.Context, plan, state *ModuleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableModuleRequest {
+	const objectType = "dcim.module"
 	body := netbox.NewPatchedWritableModuleRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -403,7 +408,7 @@ func moduleToPatch(ctx context.Context, plan, state *ModuleModel, diags *diag.Di
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	if !plan.ReplicateComponents.Equal(state.ReplicateComponents) {
@@ -421,7 +426,7 @@ func moduleToPatch(ctx context.Context, plan, state *ModuleModel, diags *diag.Di
 
 // moduleFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func moduleFromAPI(ctx context.Context, obj *netbox.Module, prior *ModuleModel, out *ModuleModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -437,7 +442,7 @@ func moduleFromAPI(ctx context.Context, obj *netbox.Module, prior *ModuleModel, 
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ModuleModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	if prior != nil {
 		out.ReplicateComponents = prior.ReplicateComponents
 	}

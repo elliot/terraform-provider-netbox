@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -42,25 +42,25 @@ var ipAddressRoleValues = []string{
 
 // IpAddressModel is the Terraform state of netbox_ip_address.
 type IpAddressModel struct {
-	Id                 types.Int64          `tfsdk:"id"`
-	Address            types.String         `tfsdk:"address"`
-	VrfId              types.Int64          `tfsdk:"vrf_id"`
-	TenantId           types.Int64          `tfsdk:"tenant_id"`
-	Status             types.String         `tfsdk:"status"`
-	Role               types.String         `tfsdk:"role"`
-	AssignedObjectType types.String         `tfsdk:"assigned_object_type"`
-	AssignedObjectId   types.Int64          `tfsdk:"assigned_object_id"`
-	NatInsideId        types.Int64          `tfsdk:"nat_inside_id"`
-	DnsName            types.String         `tfsdk:"dns_name"`
-	Description        types.String         `tfsdk:"description"`
-	OwnerId            types.Int64          `tfsdk:"owner_id"`
-	Comments           types.String         `tfsdk:"comments"`
-	Tags               types.Set            `tfsdk:"tags"`
-	CustomFields       jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url                types.String         `tfsdk:"url"`
-	Display            types.String         `tfsdk:"display"`
-	Created            timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                 types.Int64       `tfsdk:"id"`
+	Address            types.String      `tfsdk:"address"`
+	VrfId              types.Int64       `tfsdk:"vrf_id"`
+	TenantId           types.Int64       `tfsdk:"tenant_id"`
+	Status             types.String      `tfsdk:"status"`
+	Role               types.String      `tfsdk:"role"`
+	AssignedObjectType types.String      `tfsdk:"assigned_object_type"`
+	AssignedObjectId   types.Int64       `tfsdk:"assigned_object_id"`
+	NatInsideId        types.Int64       `tfsdk:"nat_inside_id"`
+	DnsName            types.String      `tfsdk:"dns_name"`
+	Description        types.String      `tfsdk:"description"`
+	OwnerId            types.Int64       `tfsdk:"owner_id"`
+	Comments           types.String      `tfsdk:"comments"`
+	Tags               types.Set         `tfsdk:"tags"`
+	CustomFields       types.Dynamic     `tfsdk:"custom_fields"`
+	Url                types.String      `tfsdk:"url"`
+	Display            types.String      `tfsdk:"display"`
+	Created            timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated        timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -73,6 +73,7 @@ var (
 // IpAddressResource manages netbox_ip_address objects (/api/ipam/ip-addresses/).
 type IpAddressResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewIpAddressResource returns a new netbox_ip_address resource.
@@ -107,6 +108,7 @@ func (r *IpAddressResource) Configure(_ context.Context, req resource.ConfigureR
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // ipAddressResourceAttributes returns the schema attributes of netbox_ip_address.
@@ -188,9 +190,8 @@ func ipAddressResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -222,7 +223,7 @@ func (r *IpAddressResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := ipAddressToCreate(ctx, &plan, &resp.Diagnostics)
+	body := ipAddressToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -231,6 +232,7 @@ func (r *IpAddressResource) Create(ctx context.Context, req resource.CreateReque
 		resp.Diagnostics.AddError("Error creating netbox_ip_address", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state IpAddressModel
 	ipAddressFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -282,7 +284,7 @@ func (r *IpAddressResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ipAddressToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := ipAddressToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -291,6 +293,7 @@ func (r *IpAddressResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Error updating netbox_ip_address", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out IpAddressModel
 	ipAddressFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -324,7 +327,8 @@ func (r *IpAddressResource) ImportState(ctx context.Context, req resource.Import
 }
 
 // ipAddressToCreate builds the WritableIPAddressRequest request body from the plan.
-func ipAddressToCreate(ctx context.Context, plan *IpAddressModel, diags *diag.Diagnostics) *netbox.WritableIPAddressRequest {
+func ipAddressToCreate(ctx context.Context, plan *IpAddressModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableIPAddressRequest {
+	const objectType = "ipam.ipaddress"
 	body := netbox.NewWritableIPAddressRequest(plan.Address.ValueString())
 	if conv.Known(plan.VrfId) {
 		body.SetVrf(conv.Int32(plan.VrfId))
@@ -363,13 +367,14 @@ func ipAddressToCreate(ctx context.Context, plan *IpAddressModel, diags *diag.Di
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // ipAddressToPatch builds the PatchedWritableIPAddressRequest request body with every attribute whose planned value differs from state.
-func ipAddressToPatch(ctx context.Context, plan, state *IpAddressModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPAddressRequest {
+func ipAddressToPatch(ctx context.Context, plan, state *IpAddressModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableIPAddressRequest {
+	const objectType = "ipam.ipaddress"
 	body := netbox.NewPatchedWritableIPAddressRequest()
 	if !plan.Address.Equal(state.Address) {
 		if conv.Known(plan.Address) {
@@ -448,7 +453,7 @@ func ipAddressToPatch(ctx context.Context, plan, state *IpAddressModel, diags *d
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -456,7 +461,7 @@ func ipAddressToPatch(ctx context.Context, plan, state *IpAddressModel, diags *d
 
 // ipAddressFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func ipAddressFromAPI(ctx context.Context, obj *netbox.IPAddress, prior *IpAddressModel, out *IpAddressModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -475,7 +480,7 @@ func ipAddressFromAPI(ctx context.Context, obj *netbox.IPAddress, prior *IpAddre
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IpAddressModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

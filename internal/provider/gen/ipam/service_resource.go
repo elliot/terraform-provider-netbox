@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -31,21 +31,21 @@ func init() { provider.RegisterResource(NewServiceResource) }
 
 // ServiceModel is the Terraform state of netbox_service.
 type ServiceModel struct {
-	Id               types.Int64          `tfsdk:"id"`
-	ParentObjectType types.String         `tfsdk:"parent_object_type"`
-	ParentObjectId   types.Int64          `tfsdk:"parent_object_id"`
-	Name             types.String         `tfsdk:"name"`
-	PortMappings     types.Set            `tfsdk:"port_mappings"`
-	IpaddressIds     types.Set            `tfsdk:"ipaddress_ids"`
-	Description      types.String         `tfsdk:"description"`
-	OwnerId          types.Int64          `tfsdk:"owner_id"`
-	Comments         types.String         `tfsdk:"comments"`
-	Tags             types.Set            `tfsdk:"tags"`
-	CustomFields     jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url              types.String         `tfsdk:"url"`
-	Display          types.String         `tfsdk:"display"`
-	Created          timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated      timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id               types.Int64       `tfsdk:"id"`
+	ParentObjectType types.String      `tfsdk:"parent_object_type"`
+	ParentObjectId   types.Int64       `tfsdk:"parent_object_id"`
+	Name             types.String      `tfsdk:"name"`
+	PortMappings     types.Set         `tfsdk:"port_mappings"`
+	IpaddressIds     types.Set         `tfsdk:"ipaddress_ids"`
+	Description      types.String      `tfsdk:"description"`
+	OwnerId          types.Int64       `tfsdk:"owner_id"`
+	Comments         types.String      `tfsdk:"comments"`
+	Tags             types.Set         `tfsdk:"tags"`
+	CustomFields     types.Dynamic     `tfsdk:"custom_fields"`
+	Url              types.String      `tfsdk:"url"`
+	Display          types.String      `tfsdk:"display"`
+	Created          timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated      timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -58,6 +58,7 @@ var (
 // ServiceResource manages netbox_service objects (/api/ipam/services/).
 type ServiceResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewServiceResource returns a new netbox_service resource.
@@ -92,6 +93,7 @@ func (r *ServiceResource) Configure(_ context.Context, req resource.ConfigureReq
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // serviceResourceAttributes returns the schema attributes of netbox_service.
@@ -153,9 +155,8 @@ func serviceResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -187,7 +188,7 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := serviceToCreate(ctx, &plan, &resp.Diagnostics)
+	body := serviceToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -196,6 +197,7 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 		resp.Diagnostics.AddError("Error creating netbox_service", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ServiceModel
 	serviceFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -247,7 +249,7 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := serviceToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := serviceToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -256,6 +258,7 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Error updating netbox_service", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ServiceModel
 	serviceFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -289,7 +292,8 @@ func (r *ServiceResource) ImportState(ctx context.Context, req resource.ImportSt
 }
 
 // serviceToCreate builds the WritableServiceRequest request body from the plan.
-func serviceToCreate(ctx context.Context, plan *ServiceModel, diags *diag.Diagnostics) *netbox.WritableServiceRequest {
+func serviceToCreate(ctx context.Context, plan *ServiceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableServiceRequest {
+	const objectType = "ipam.service"
 	body := netbox.NewWritableServiceRequest(plan.ParentObjectType.ValueString(), plan.ParentObjectId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.PortMappings) {
 		body.SetPortMappings(conv.Strings(ctx, plan.PortMappings, diags))
@@ -310,13 +314,14 @@ func serviceToCreate(ctx context.Context, plan *ServiceModel, diags *diag.Diagno
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // serviceToPatch builds the PatchedWritableServiceRequest request body with every attribute whose planned value differs from state.
-func serviceToPatch(ctx context.Context, plan, state *ServiceModel, diags *diag.Diagnostics) *netbox.PatchedWritableServiceRequest {
+func serviceToPatch(ctx context.Context, plan, state *ServiceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableServiceRequest {
+	const objectType = "ipam.service"
 	body := netbox.NewPatchedWritableServiceRequest()
 	if !plan.ParentObjectType.Equal(state.ParentObjectType) {
 		if conv.Known(plan.ParentObjectType) {
@@ -367,7 +372,7 @@ func serviceToPatch(ctx context.Context, plan, state *ServiceModel, diags *diag.
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -375,7 +380,7 @@ func serviceToPatch(ctx context.Context, plan, state *ServiceModel, diags *diag.
 
 // serviceFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func serviceFromAPI(ctx context.Context, obj *netbox.Service, prior *ServiceModel, out *ServiceModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -390,7 +395,7 @@ func serviceFromAPI(ctx context.Context, obj *netbox.Service, prior *ServiceMode
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ServiceModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

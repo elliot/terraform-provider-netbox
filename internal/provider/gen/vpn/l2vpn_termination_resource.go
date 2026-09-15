@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -20,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -28,16 +28,16 @@ func init() { provider.RegisterResource(NewL2vpnTerminationResource) }
 
 // L2vpnTerminationModel is the Terraform state of netbox_l2vpn_termination.
 type L2vpnTerminationModel struct {
-	Id                 types.Int64          `tfsdk:"id"`
-	L2vpnId            types.Int64          `tfsdk:"l2vpn_id"`
-	AssignedObjectType types.String         `tfsdk:"assigned_object_type"`
-	AssignedObjectId   types.Int64          `tfsdk:"assigned_object_id"`
-	Tags               types.Set            `tfsdk:"tags"`
-	CustomFields       jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url                types.String         `tfsdk:"url"`
-	Display            types.String         `tfsdk:"display"`
-	Created            timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                 types.Int64       `tfsdk:"id"`
+	L2vpnId            types.Int64       `tfsdk:"l2vpn_id"`
+	AssignedObjectType types.String      `tfsdk:"assigned_object_type"`
+	AssignedObjectId   types.Int64       `tfsdk:"assigned_object_id"`
+	Tags               types.Set         `tfsdk:"tags"`
+	CustomFields       types.Dynamic     `tfsdk:"custom_fields"`
+	Url                types.String      `tfsdk:"url"`
+	Display            types.String      `tfsdk:"display"`
+	Created            timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated        timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -50,6 +50,7 @@ var (
 // L2vpnTerminationResource manages netbox_l2vpn_termination objects (/api/vpn/l2vpn-terminations/).
 type L2vpnTerminationResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewL2vpnTerminationResource returns a new netbox_l2vpn_termination resource.
@@ -84,6 +85,7 @@ func (r *L2vpnTerminationResource) Configure(_ context.Context, req resource.Con
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // l2vpnTerminationResourceAttributes returns the schema attributes of netbox_l2vpn_termination.
@@ -113,9 +115,8 @@ func l2vpnTerminationResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -147,7 +148,7 @@ func (r *L2vpnTerminationResource) Create(ctx context.Context, req resource.Crea
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := l2vpnTerminationToCreate(ctx, &plan, &resp.Diagnostics)
+	body := l2vpnTerminationToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -156,6 +157,7 @@ func (r *L2vpnTerminationResource) Create(ctx context.Context, req resource.Crea
 		resp.Diagnostics.AddError("Error creating netbox_l2vpn_termination", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state L2vpnTerminationModel
 	l2vpnTerminationFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -207,7 +209,7 @@ func (r *L2vpnTerminationResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := l2vpnTerminationToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := l2vpnTerminationToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -216,6 +218,7 @@ func (r *L2vpnTerminationResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Error updating netbox_l2vpn_termination", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out L2vpnTerminationModel
 	l2vpnTerminationFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -249,19 +252,21 @@ func (r *L2vpnTerminationResource) ImportState(ctx context.Context, req resource
 }
 
 // l2vpnTerminationToCreate builds the L2VPNTerminationRequest request body from the plan.
-func l2vpnTerminationToCreate(ctx context.Context, plan *L2vpnTerminationModel, diags *diag.Diagnostics) *netbox.L2VPNTerminationRequest {
+func l2vpnTerminationToCreate(ctx context.Context, plan *L2vpnTerminationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.L2VPNTerminationRequest {
+	const objectType = "vpn.l2vpntermination"
 	body := netbox.NewL2VPNTerminationRequest(conv.Int32(plan.L2vpnId), plan.AssignedObjectType.ValueString(), plan.AssignedObjectId.ValueInt64())
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // l2vpnTerminationToPatch builds the PatchedL2VPNTerminationRequest request body with every attribute whose planned value differs from state.
-func l2vpnTerminationToPatch(ctx context.Context, plan, state *L2vpnTerminationModel, diags *diag.Diagnostics) *netbox.PatchedL2VPNTerminationRequest {
+func l2vpnTerminationToPatch(ctx context.Context, plan, state *L2vpnTerminationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedL2VPNTerminationRequest {
+	const objectType = "vpn.l2vpntermination"
 	body := netbox.NewPatchedL2VPNTerminationRequest()
 	if !plan.L2vpnId.Equal(state.L2vpnId) {
 		if conv.Known(plan.L2vpnId) {
@@ -285,7 +290,7 @@ func l2vpnTerminationToPatch(ctx context.Context, plan, state *L2vpnTerminationM
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -293,7 +298,7 @@ func l2vpnTerminationToPatch(ctx context.Context, plan, state *L2vpnTerminationM
 
 // l2vpnTerminationFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func l2vpnTerminationFromAPI(ctx context.Context, obj *netbox.L2VPNTermination, prior *L2vpnTerminationModel, out *L2vpnTerminationModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -303,7 +308,7 @@ func l2vpnTerminationFromAPI(ctx context.Context, obj *netbox.L2VPNTermination, 
 	out.AssignedObjectType = conv.StringKeep(conv.String(obj.GetAssignedObjectTypeOk()), conv.PriorString(prior, func(m *L2vpnTerminationModel) types.String { return m.AssignedObjectType }), false)
 	out.AssignedObjectId = conv.Int64From64(obj.GetAssignedObjectIdOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

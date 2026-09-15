@@ -25,6 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -53,7 +54,7 @@ type EventRuleModel struct {
 	ActionObjectType types.String         `tfsdk:"action_object_type"`
 	ActionObjectId   types.Int64          `tfsdk:"action_object_id"`
 	Description      types.String         `tfsdk:"description"`
-	CustomFields     jsontypes.Normalized `tfsdk:"custom_fields"`
+	CustomFields     types.Dynamic        `tfsdk:"custom_fields"`
 	OwnerId          types.Int64          `tfsdk:"owner_id"`
 	Tags             types.Set            `tfsdk:"tags"`
 	Url              types.String         `tfsdk:"url"`
@@ -72,6 +73,7 @@ var (
 // EventRuleResource manages netbox_event_rule objects (/api/extras/event-rules/).
 type EventRuleResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewEventRuleResource returns a new netbox_event_rule resource.
@@ -106,6 +108,7 @@ func (r *EventRuleResource) Configure(_ context.Context, req resource.ConfigureR
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // eventRuleResourceAttributes returns the schema attributes of netbox_event_rule.
@@ -165,9 +168,8 @@ func eventRuleResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
 			Default:             stringdefault.StaticString(""),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"owner_id": schema.Int64Attribute{
@@ -210,7 +212,7 @@ func (r *EventRuleResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := eventRuleToCreate(ctx, &plan, &resp.Diagnostics)
+	body := eventRuleToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -219,6 +221,7 @@ func (r *EventRuleResource) Create(ctx context.Context, req resource.CreateReque
 		resp.Diagnostics.AddError("Error creating netbox_event_rule", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state EventRuleModel
 	eventRuleFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -270,7 +273,7 @@ func (r *EventRuleResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := eventRuleToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := eventRuleToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -279,6 +282,7 @@ func (r *EventRuleResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Error updating netbox_event_rule", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out EventRuleModel
 	eventRuleFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -312,7 +316,8 @@ func (r *EventRuleResource) ImportState(ctx context.Context, req resource.Import
 }
 
 // eventRuleToCreate builds the WritableEventRuleRequest request body from the plan.
-func eventRuleToCreate(ctx context.Context, plan *EventRuleModel, diags *diag.Diagnostics) *netbox.WritableEventRuleRequest {
+func eventRuleToCreate(ctx context.Context, plan *EventRuleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableEventRuleRequest {
+	const objectType = "extras.eventrule"
 	body := netbox.NewWritableEventRuleRequest(conv.Strings(ctx, plan.ObjectTypes, diags), plan.Name.ValueString(), conv.Strings(ctx, plan.EventTypes, diags), plan.ActionType.ValueString())
 	if conv.Known(plan.Enabled) {
 		body.SetEnabled(plan.Enabled.ValueBool())
@@ -330,7 +335,7 @@ func eventRuleToCreate(ctx context.Context, plan *EventRuleModel, diags *diag.Di
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
@@ -342,7 +347,8 @@ func eventRuleToCreate(ctx context.Context, plan *EventRuleModel, diags *diag.Di
 }
 
 // eventRuleToPatch builds the PatchedWritableEventRuleRequest request body with every attribute whose planned value differs from state.
-func eventRuleToPatch(ctx context.Context, plan, state *EventRuleModel, diags *diag.Diagnostics) *netbox.PatchedWritableEventRuleRequest {
+func eventRuleToPatch(ctx context.Context, plan, state *EventRuleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableEventRuleRequest {
+	const objectType = "extras.eventrule"
 	body := netbox.NewPatchedWritableEventRuleRequest()
 	if !plan.ObjectTypes.Equal(state.ObjectTypes) {
 		if conv.Known(plan.ObjectTypes) {
@@ -393,7 +399,7 @@ func eventRuleToPatch(ctx context.Context, plan, state *EventRuleModel, diags *d
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
@@ -413,7 +419,7 @@ func eventRuleToPatch(ctx context.Context, plan, state *EventRuleModel, diags *d
 
 // eventRuleFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func eventRuleFromAPI(ctx context.Context, obj *netbox.EventRule, prior *EventRuleModel, out *EventRuleModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -428,7 +434,7 @@ func eventRuleFromAPI(ctx context.Context, obj *netbox.EventRule, prior *EventRu
 	out.ActionObjectType = conv.StringKeep(conv.String(obj.GetActionObjectTypeOk()), conv.PriorString(prior, func(m *EventRuleModel) types.String { return m.ActionObjectType }), false)
 	out.ActionObjectId = conv.Int64From64(obj.GetActionObjectIdOk())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *EventRuleModel) types.String { return m.Description }), false)
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.Url = conv.String(obj.GetUrlOk())

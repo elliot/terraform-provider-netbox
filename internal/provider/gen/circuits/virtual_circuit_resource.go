@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -36,22 +36,22 @@ var virtualCircuitStatusValues = []string{
 
 // VirtualCircuitModel is the Terraform state of netbox_virtual_circuit.
 type VirtualCircuitModel struct {
-	Id                types.Int64          `tfsdk:"id"`
-	Cid               types.String         `tfsdk:"cid"`
-	ProviderNetworkId types.Int64          `tfsdk:"provider_network_id"`
-	ProviderAccountId types.Int64          `tfsdk:"provider_account_id"`
-	TypeId            types.Int64          `tfsdk:"type_id"`
-	Status            types.String         `tfsdk:"status"`
-	TenantId          types.Int64          `tfsdk:"tenant_id"`
-	Description       types.String         `tfsdk:"description"`
-	OwnerId           types.Int64          `tfsdk:"owner_id"`
-	Comments          types.String         `tfsdk:"comments"`
-	Tags              types.Set            `tfsdk:"tags"`
-	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
-	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                types.Int64       `tfsdk:"id"`
+	Cid               types.String      `tfsdk:"cid"`
+	ProviderNetworkId types.Int64       `tfsdk:"provider_network_id"`
+	ProviderAccountId types.Int64       `tfsdk:"provider_account_id"`
+	TypeId            types.Int64       `tfsdk:"type_id"`
+	Status            types.String      `tfsdk:"status"`
+	TenantId          types.Int64       `tfsdk:"tenant_id"`
+	Description       types.String      `tfsdk:"description"`
+	OwnerId           types.Int64       `tfsdk:"owner_id"`
+	Comments          types.String      `tfsdk:"comments"`
+	Tags              types.Set         `tfsdk:"tags"`
+	CustomFields      types.Dynamic     `tfsdk:"custom_fields"`
+	Url               types.String      `tfsdk:"url"`
+	Display           types.String      `tfsdk:"display"`
+	Created           timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated       timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -64,6 +64,7 @@ var (
 // VirtualCircuitResource manages netbox_virtual_circuit objects (/api/circuits/virtual-circuits/).
 type VirtualCircuitResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewVirtualCircuitResource returns a new netbox_virtual_circuit resource.
@@ -98,6 +99,7 @@ func (r *VirtualCircuitResource) Configure(_ context.Context, req resource.Confi
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // virtualCircuitResourceAttributes returns the schema attributes of netbox_virtual_circuit.
@@ -160,9 +162,8 @@ func virtualCircuitResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -194,7 +195,7 @@ func (r *VirtualCircuitResource) Create(ctx context.Context, req resource.Create
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := virtualCircuitToCreate(ctx, &plan, &resp.Diagnostics)
+	body := virtualCircuitToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -203,6 +204,7 @@ func (r *VirtualCircuitResource) Create(ctx context.Context, req resource.Create
 		resp.Diagnostics.AddError("Error creating netbox_virtual_circuit", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state VirtualCircuitModel
 	virtualCircuitFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -254,7 +256,7 @@ func (r *VirtualCircuitResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualCircuitToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := virtualCircuitToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -263,6 +265,7 @@ func (r *VirtualCircuitResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Error updating netbox_virtual_circuit", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out VirtualCircuitModel
 	virtualCircuitFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -296,7 +299,8 @@ func (r *VirtualCircuitResource) ImportState(ctx context.Context, req resource.I
 }
 
 // virtualCircuitToCreate builds the WritableVirtualCircuitRequest request body from the plan.
-func virtualCircuitToCreate(ctx context.Context, plan *VirtualCircuitModel, diags *diag.Diagnostics) *netbox.WritableVirtualCircuitRequest {
+func virtualCircuitToCreate(ctx context.Context, plan *VirtualCircuitModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVirtualCircuitRequest {
+	const objectType = "circuits.virtualcircuit"
 	body := netbox.NewWritableVirtualCircuitRequest(plan.Cid.ValueString(), conv.Int32(plan.ProviderNetworkId), conv.Int32(plan.TypeId))
 	if conv.Known(plan.ProviderAccountId) {
 		body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
@@ -320,13 +324,14 @@ func virtualCircuitToCreate(ctx context.Context, plan *VirtualCircuitModel, diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // virtualCircuitToPatch builds the PatchedWritableVirtualCircuitRequest request body with every attribute whose planned value differs from state.
-func virtualCircuitToPatch(ctx context.Context, plan, state *VirtualCircuitModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualCircuitRequest {
+func virtualCircuitToPatch(ctx context.Context, plan, state *VirtualCircuitModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualCircuitRequest {
+	const objectType = "circuits.virtualcircuit"
 	body := netbox.NewPatchedWritableVirtualCircuitRequest()
 	if !plan.Cid.Equal(state.Cid) {
 		if conv.Known(plan.Cid) {
@@ -386,7 +391,7 @@ func virtualCircuitToPatch(ctx context.Context, plan, state *VirtualCircuitModel
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -394,7 +399,7 @@ func virtualCircuitToPatch(ctx context.Context, plan, state *VirtualCircuitModel
 
 // virtualCircuitFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func virtualCircuitFromAPI(ctx context.Context, obj *netbox.VirtualCircuit, prior *VirtualCircuitModel, out *VirtualCircuitModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -410,7 +415,7 @@ func virtualCircuitFromAPI(ctx context.Context, obj *netbox.VirtualCircuit, prio
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VirtualCircuitModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

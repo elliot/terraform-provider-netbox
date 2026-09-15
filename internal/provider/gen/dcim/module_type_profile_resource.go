@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -38,7 +39,7 @@ type ModuleTypeProfileModel struct {
 	OwnerId      types.Int64          `tfsdk:"owner_id"`
 	Comments     types.String         `tfsdk:"comments"`
 	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
+	CustomFields types.Dynamic        `tfsdk:"custom_fields"`
 	Url          types.String         `tfsdk:"url"`
 	Display      types.String         `tfsdk:"display"`
 	Created      timetypes.RFC3339    `tfsdk:"created"`
@@ -55,6 +56,7 @@ var (
 // ModuleTypeProfileResource manages netbox_module_type_profile objects (/api/dcim/module-type-profiles/).
 type ModuleTypeProfileResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewModuleTypeProfileResource returns a new netbox_module_type_profile resource.
@@ -89,6 +91,7 @@ func (r *ModuleTypeProfileResource) Configure(_ context.Context, req resource.Co
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // moduleTypeProfileResourceAttributes returns the schema attributes of netbox_module_type_profile.
@@ -133,9 +136,8 @@ func moduleTypeProfileResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -167,7 +169,7 @@ func (r *ModuleTypeProfileResource) Create(ctx context.Context, req resource.Cre
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := moduleTypeProfileToCreate(ctx, &plan, &resp.Diagnostics)
+	body := moduleTypeProfileToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -176,6 +178,7 @@ func (r *ModuleTypeProfileResource) Create(ctx context.Context, req resource.Cre
 		resp.Diagnostics.AddError("Error creating netbox_module_type_profile", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ModuleTypeProfileModel
 	moduleTypeProfileFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -227,7 +230,7 @@ func (r *ModuleTypeProfileResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := moduleTypeProfileToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := moduleTypeProfileToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -236,6 +239,7 @@ func (r *ModuleTypeProfileResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Error updating netbox_module_type_profile", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ModuleTypeProfileModel
 	moduleTypeProfileFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -269,7 +273,8 @@ func (r *ModuleTypeProfileResource) ImportState(ctx context.Context, req resourc
 }
 
 // moduleTypeProfileToCreate builds the ModuleTypeProfileRequest request body from the plan.
-func moduleTypeProfileToCreate(ctx context.Context, plan *ModuleTypeProfileModel, diags *diag.Diagnostics) *netbox.ModuleTypeProfileRequest {
+func moduleTypeProfileToCreate(ctx context.Context, plan *ModuleTypeProfileModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ModuleTypeProfileRequest {
+	const objectType = "dcim.moduletypeprofile"
 	body := netbox.NewModuleTypeProfileRequest(plan.Name.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -287,13 +292,14 @@ func moduleTypeProfileToCreate(ctx context.Context, plan *ModuleTypeProfileModel
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // moduleTypeProfileToPatch builds the PatchedModuleTypeProfileRequest request body with every attribute whose planned value differs from state.
-func moduleTypeProfileToPatch(ctx context.Context, plan, state *ModuleTypeProfileModel, diags *diag.Diagnostics) *netbox.PatchedModuleTypeProfileRequest {
+func moduleTypeProfileToPatch(ctx context.Context, plan, state *ModuleTypeProfileModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedModuleTypeProfileRequest {
+	const objectType = "dcim.moduletypeprofile"
 	body := netbox.NewPatchedModuleTypeProfileRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -329,7 +335,7 @@ func moduleTypeProfileToPatch(ctx context.Context, plan, state *ModuleTypeProfil
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -337,7 +343,7 @@ func moduleTypeProfileToPatch(ctx context.Context, plan, state *ModuleTypeProfil
 
 // moduleTypeProfileFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func moduleTypeProfileFromAPI(ctx context.Context, obj *netbox.ModuleTypeProfile, prior *ModuleTypeProfileModel, out *ModuleTypeProfileModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -349,7 +355,7 @@ func moduleTypeProfileFromAPI(ctx context.Context, obj *netbox.ModuleTypeProfile
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ModuleTypeProfileModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

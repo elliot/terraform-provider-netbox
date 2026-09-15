@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -51,6 +52,7 @@ var (
 // DeviceBayTemplateResource manages netbox_device_bay_template objects (/api/dcim/device-bay-templates/).
 type DeviceBayTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewDeviceBayTemplateResource returns a new netbox_device_bay_template resource.
@@ -85,6 +87,7 @@ func (r *DeviceBayTemplateResource) Configure(_ context.Context, req resource.Co
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // deviceBayTemplateResourceAttributes returns the schema attributes of netbox_device_bay_template.
@@ -162,6 +165,7 @@ func (r *DeviceBayTemplateResource) Create(ctx context.Context, req resource.Cre
 		resp.Diagnostics.AddError("Error creating netbox_device_bay_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state DeviceBayTemplateModel
 	deviceBayTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -222,6 +226,7 @@ func (r *DeviceBayTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Error updating netbox_device_bay_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out DeviceBayTemplateModel
 	deviceBayTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

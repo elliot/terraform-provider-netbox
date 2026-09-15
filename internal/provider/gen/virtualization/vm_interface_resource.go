@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -37,29 +37,29 @@ var vmInterfaceModeValues = []string{
 
 // VmInterfaceModel is the Terraform state of netbox_vm_interface.
 type VmInterfaceModel struct {
-	Id                      types.Int64          `tfsdk:"id"`
-	VirtualMachineId        types.Int64          `tfsdk:"virtual_machine_id"`
-	Name                    types.String         `tfsdk:"name"`
-	Enabled                 types.Bool           `tfsdk:"enabled"`
-	ParentId                types.Int64          `tfsdk:"parent_id"`
-	BridgeId                types.Int64          `tfsdk:"bridge_id"`
-	Mtu                     types.Int64          `tfsdk:"mtu"`
-	MacAddress              types.String         `tfsdk:"mac_address"`
-	PrimaryMacAddressId     types.Int64          `tfsdk:"primary_mac_address_id"`
-	Description             types.String         `tfsdk:"description"`
-	Mode                    types.String         `tfsdk:"mode"`
-	UntaggedVlanId          types.Int64          `tfsdk:"untagged_vlan_id"`
-	TaggedVlanIds           types.Set            `tfsdk:"tagged_vlan_ids"`
-	QinqSvlanId             types.Int64          `tfsdk:"qinq_svlan_id"`
-	VlanTranslationPolicyId types.Int64          `tfsdk:"vlan_translation_policy_id"`
-	VrfId                   types.Int64          `tfsdk:"vrf_id"`
-	OwnerId                 types.Int64          `tfsdk:"owner_id"`
-	Tags                    types.Set            `tfsdk:"tags"`
-	CustomFields            jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url                     types.String         `tfsdk:"url"`
-	Display                 types.String         `tfsdk:"display"`
-	Created                 timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated             timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                      types.Int64       `tfsdk:"id"`
+	VirtualMachineId        types.Int64       `tfsdk:"virtual_machine_id"`
+	Name                    types.String      `tfsdk:"name"`
+	Enabled                 types.Bool        `tfsdk:"enabled"`
+	ParentId                types.Int64       `tfsdk:"parent_id"`
+	BridgeId                types.Int64       `tfsdk:"bridge_id"`
+	Mtu                     types.Int64       `tfsdk:"mtu"`
+	MacAddress              types.String      `tfsdk:"mac_address"`
+	PrimaryMacAddressId     types.Int64       `tfsdk:"primary_mac_address_id"`
+	Description             types.String      `tfsdk:"description"`
+	Mode                    types.String      `tfsdk:"mode"`
+	UntaggedVlanId          types.Int64       `tfsdk:"untagged_vlan_id"`
+	TaggedVlanIds           types.Set         `tfsdk:"tagged_vlan_ids"`
+	QinqSvlanId             types.Int64       `tfsdk:"qinq_svlan_id"`
+	VlanTranslationPolicyId types.Int64       `tfsdk:"vlan_translation_policy_id"`
+	VrfId                   types.Int64       `tfsdk:"vrf_id"`
+	OwnerId                 types.Int64       `tfsdk:"owner_id"`
+	Tags                    types.Set         `tfsdk:"tags"`
+	CustomFields            types.Dynamic     `tfsdk:"custom_fields"`
+	Url                     types.String      `tfsdk:"url"`
+	Display                 types.String      `tfsdk:"display"`
+	Created                 timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated             timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -72,6 +72,7 @@ var (
 // VmInterfaceResource manages netbox_vm_interface objects (/api/virtualization/interfaces/).
 type VmInterfaceResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewVmInterfaceResource returns a new netbox_vm_interface resource.
@@ -106,6 +107,7 @@ func (r *VmInterfaceResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // vmInterfaceResourceAttributes returns the schema attributes of netbox_vm_interface.
@@ -201,9 +203,8 @@ func vmInterfaceResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -235,7 +236,7 @@ func (r *VmInterfaceResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := vmInterfaceToCreate(ctx, &plan, &resp.Diagnostics)
+	body := vmInterfaceToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -244,6 +245,7 @@ func (r *VmInterfaceResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_vm_interface", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state VmInterfaceModel
 	vmInterfaceFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -295,7 +297,7 @@ func (r *VmInterfaceResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := vmInterfaceToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := vmInterfaceToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -304,6 +306,7 @@ func (r *VmInterfaceResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_vm_interface", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out VmInterfaceModel
 	vmInterfaceFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -337,7 +340,8 @@ func (r *VmInterfaceResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 // vmInterfaceToCreate builds the WritableVMInterfaceRequest request body from the plan.
-func vmInterfaceToCreate(ctx context.Context, plan *VmInterfaceModel, diags *diag.Diagnostics) *netbox.WritableVMInterfaceRequest {
+func vmInterfaceToCreate(ctx context.Context, plan *VmInterfaceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVMInterfaceRequest {
+	const objectType = "virtualization.vminterface"
 	body := netbox.NewWritableVMInterfaceRequest(conv.Int32(plan.VirtualMachineId), plan.Name.ValueString())
 	if conv.Known(plan.Enabled) {
 		body.SetEnabled(plan.Enabled.ValueBool())
@@ -385,13 +389,14 @@ func vmInterfaceToCreate(ctx context.Context, plan *VmInterfaceModel, diags *dia
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // vmInterfaceToPatch builds the PatchedWritableVMInterfaceRequest request body with every attribute whose planned value differs from state.
-func vmInterfaceToPatch(ctx context.Context, plan, state *VmInterfaceModel, diags *diag.Diagnostics) *netbox.PatchedWritableVMInterfaceRequest {
+func vmInterfaceToPatch(ctx context.Context, plan, state *VmInterfaceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableVMInterfaceRequest {
+	const objectType = "virtualization.vminterface"
 	body := netbox.NewPatchedWritableVMInterfaceRequest()
 	if !plan.VirtualMachineId.Equal(state.VirtualMachineId) {
 		if conv.Known(plan.VirtualMachineId) {
@@ -498,7 +503,7 @@ func vmInterfaceToPatch(ctx context.Context, plan, state *VmInterfaceModel, diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -506,7 +511,7 @@ func vmInterfaceToPatch(ctx context.Context, plan, state *VmInterfaceModel, diag
 
 // vmInterfaceFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func vmInterfaceFromAPI(ctx context.Context, obj *netbox.VMInterface, prior *VmInterfaceModel, out *VmInterfaceModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -529,7 +534,7 @@ func vmInterfaceFromAPI(ctx context.Context, obj *netbox.VMInterface, prior *VmI
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

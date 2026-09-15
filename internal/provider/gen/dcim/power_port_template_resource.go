@@ -20,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -71,6 +72,7 @@ var (
 // PowerPortTemplateResource manages netbox_power_port_template objects (/api/dcim/power-port-templates/).
 type PowerPortTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewPowerPortTemplateResource returns a new netbox_power_port_template resource.
@@ -105,6 +107,7 @@ func (r *PowerPortTemplateResource) Configure(_ context.Context, req resource.Co
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // powerPortTemplateResourceAttributes returns the schema attributes of netbox_power_port_template.
@@ -199,6 +202,7 @@ func (r *PowerPortTemplateResource) Create(ctx context.Context, req resource.Cre
 		resp.Diagnostics.AddError("Error creating netbox_power_port_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state PowerPortTemplateModel
 	powerPortTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -259,6 +263,7 @@ func (r *PowerPortTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Error updating netbox_power_port_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out PowerPortTemplateModel
 	powerPortTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

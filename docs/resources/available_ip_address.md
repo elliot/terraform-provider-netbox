@@ -59,7 +59,7 @@ output "web01_address" {
 - `assigned_object_id` (Number) ID of the object the address is assigned to (for example a `netbox_interface`).
 - `assigned_object_type` (String) Content type of the object the address is assigned to: `dcim.interface`, `virtualization.vminterface` or `dcim.fhrpgroup`.
 - `comments` (String) Comments.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (Dynamic) Custom field values as an object of field name to value (`{ cost_center = "CC-42", owner_site = 12 }`). Only keys present in the configuration are tracked; names are validated against the NetBox definitions.
 - `description` (String) Description.
 - `dns_name` (String) Hostname or FQDN (not case-sensitive).
 - `ip_range_id` (Number) ID of the IP range (`netbox_ip_range`) to allocate from. Conflicts with `prefix_id`.

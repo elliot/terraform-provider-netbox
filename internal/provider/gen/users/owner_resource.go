@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -49,6 +50,7 @@ var (
 // OwnerResource manages netbox_owner objects (/api/users/owners/).
 type OwnerResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewOwnerResource returns a new netbox_owner resource.
@@ -83,6 +85,7 @@ func (r *OwnerResource) Configure(_ context.Context, req resource.ConfigureReque
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // ownerResourceAttributes returns the schema attributes of netbox_owner.
@@ -150,6 +153,7 @@ func (r *OwnerResource) Create(ctx context.Context, req resource.CreateRequest, 
 		resp.Diagnostics.AddError("Error creating netbox_owner", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state OwnerModel
 	ownerFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -210,6 +214,7 @@ func (r *OwnerResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Error updating netbox_owner", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out OwnerModel
 	ownerFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

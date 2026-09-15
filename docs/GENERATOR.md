@@ -47,8 +47,13 @@ make gen && git diff --exit-code            # what CI enforces
 * Foreign keys: `<field>_id` (Int64). Many-to-many integer lists:
   `<singular>_ids` (Set of Int64). Generic FKs keep `*_object_type` /
   `*_object_id`.
-* `tags` is a set of tag **slugs**. `custom_fields` and untyped JSON fields
-  are JSON strings (`jsonencode({...})`).
+* `tags` is a set of tag **slugs**. `custom_fields` is a `DynamicAttribute`
+  handled by `internal/customfields` (definition cache per object type,
+  validation of names, coercion of NetBox's `{value,label}` and related-object
+  representations to the configured scalar types). Data sources expose
+  `custom_fields` as a JSON string instead, because the framework does not
+  allow dynamic values inside list data source items. Untyped JSON fields are
+  JSON strings (`jsonencode({...})`).
 
 ## Attribute rules (see `internal/gen/build/build.go`)
 

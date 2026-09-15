@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,18 +32,18 @@ func init() { provider.RegisterResource(NewContactRoleResource) }
 
 // ContactRoleModel is the Terraform state of netbox_contact_role.
 type ContactRoleModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -56,6 +56,7 @@ var (
 // ContactRoleResource manages netbox_contact_role objects (/api/tenancy/contact-roles/).
 type ContactRoleResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewContactRoleResource returns a new netbox_contact_role resource.
@@ -90,6 +91,7 @@ func (r *ContactRoleResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // contactRoleResourceAttributes returns the schema attributes of netbox_contact_role.
@@ -134,9 +136,8 @@ func contactRoleResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -168,7 +169,7 @@ func (r *ContactRoleResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := contactRoleToCreate(ctx, &plan, &resp.Diagnostics)
+	body := contactRoleToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -177,6 +178,7 @@ func (r *ContactRoleResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_contact_role", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ContactRoleModel
 	contactRoleFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -228,7 +230,7 @@ func (r *ContactRoleResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := contactRoleToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := contactRoleToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -237,6 +239,7 @@ func (r *ContactRoleResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_contact_role", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ContactRoleModel
 	contactRoleFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -270,7 +273,8 @@ func (r *ContactRoleResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 // contactRoleToCreate builds the ContactRoleRequest request body from the plan.
-func contactRoleToCreate(ctx context.Context, plan *ContactRoleModel, diags *diag.Diagnostics) *netbox.ContactRoleRequest {
+func contactRoleToCreate(ctx context.Context, plan *ContactRoleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ContactRoleRequest {
+	const objectType = "tenancy.contactrole"
 	body := netbox.NewContactRoleRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -285,13 +289,14 @@ func contactRoleToCreate(ctx context.Context, plan *ContactRoleModel, diags *dia
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // contactRoleToPatch builds the PatchedContactRoleRequest request body with every attribute whose planned value differs from state.
-func contactRoleToPatch(ctx context.Context, plan, state *ContactRoleModel, diags *diag.Diagnostics) *netbox.PatchedContactRoleRequest {
+func contactRoleToPatch(ctx context.Context, plan, state *ContactRoleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedContactRoleRequest {
+	const objectType = "tenancy.contactrole"
 	body := netbox.NewPatchedContactRoleRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -327,7 +332,7 @@ func contactRoleToPatch(ctx context.Context, plan, state *ContactRoleModel, diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -335,7 +340,7 @@ func contactRoleToPatch(ctx context.Context, plan, state *ContactRoleModel, diag
 
 // contactRoleFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func contactRoleFromAPI(ctx context.Context, obj *netbox.ContactRole, prior *ContactRoleModel, out *ContactRoleModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -347,7 +352,7 @@ func contactRoleFromAPI(ctx context.Context, obj *netbox.ContactRole, prior *Con
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ContactRoleModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

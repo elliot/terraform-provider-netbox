@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,20 +32,20 @@ func init() { provider.RegisterResource(NewDeviceBayResource) }
 
 // DeviceBayModel is the Terraform state of netbox_device_bay.
 type DeviceBayModel struct {
-	Id                types.Int64          `tfsdk:"id"`
-	DeviceId          types.Int64          `tfsdk:"device_id"`
-	Name              types.String         `tfsdk:"name"`
-	Label             types.String         `tfsdk:"label"`
-	Enabled           types.Bool           `tfsdk:"enabled"`
-	Description       types.String         `tfsdk:"description"`
-	InstalledDeviceId types.Int64          `tfsdk:"installed_device_id"`
-	OwnerId           types.Int64          `tfsdk:"owner_id"`
-	Tags              types.Set            `tfsdk:"tags"`
-	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
-	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                types.Int64       `tfsdk:"id"`
+	DeviceId          types.Int64       `tfsdk:"device_id"`
+	Name              types.String      `tfsdk:"name"`
+	Label             types.String      `tfsdk:"label"`
+	Enabled           types.Bool        `tfsdk:"enabled"`
+	Description       types.String      `tfsdk:"description"`
+	InstalledDeviceId types.Int64       `tfsdk:"installed_device_id"`
+	OwnerId           types.Int64       `tfsdk:"owner_id"`
+	Tags              types.Set         `tfsdk:"tags"`
+	CustomFields      types.Dynamic     `tfsdk:"custom_fields"`
+	Url               types.String      `tfsdk:"url"`
+	Display           types.String      `tfsdk:"display"`
+	Created           timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated       timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -58,6 +58,7 @@ var (
 // DeviceBayResource manages netbox_device_bay objects (/api/dcim/device-bays/).
 type DeviceBayResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewDeviceBayResource returns a new netbox_device_bay resource.
@@ -92,6 +93,7 @@ func (r *DeviceBayResource) Configure(_ context.Context, req resource.ConfigureR
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // deviceBayResourceAttributes returns the schema attributes of netbox_device_bay.
@@ -146,9 +148,8 @@ func deviceBayResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -180,7 +181,7 @@ func (r *DeviceBayResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := deviceBayToCreate(ctx, &plan, &resp.Diagnostics)
+	body := deviceBayToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -189,6 +190,7 @@ func (r *DeviceBayResource) Create(ctx context.Context, req resource.CreateReque
 		resp.Diagnostics.AddError("Error creating netbox_device_bay", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state DeviceBayModel
 	deviceBayFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -240,7 +242,7 @@ func (r *DeviceBayResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := deviceBayToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := deviceBayToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -249,6 +251,7 @@ func (r *DeviceBayResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Error updating netbox_device_bay", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out DeviceBayModel
 	deviceBayFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -282,7 +285,8 @@ func (r *DeviceBayResource) ImportState(ctx context.Context, req resource.Import
 }
 
 // deviceBayToCreate builds the DeviceBayRequest request body from the plan.
-func deviceBayToCreate(ctx context.Context, plan *DeviceBayModel, diags *diag.Diagnostics) *netbox.DeviceBayRequest {
+func deviceBayToCreate(ctx context.Context, plan *DeviceBayModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.DeviceBayRequest {
+	const objectType = "dcim.devicebay"
 	body := netbox.NewDeviceBayRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -303,13 +307,14 @@ func deviceBayToCreate(ctx context.Context, plan *DeviceBayModel, diags *diag.Di
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // deviceBayToPatch builds the PatchedDeviceBayRequest request body with every attribute whose planned value differs from state.
-func deviceBayToPatch(ctx context.Context, plan, state *DeviceBayModel, diags *diag.Diagnostics) *netbox.PatchedDeviceBayRequest {
+func deviceBayToPatch(ctx context.Context, plan, state *DeviceBayModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedDeviceBayRequest {
+	const objectType = "dcim.devicebay"
 	body := netbox.NewPatchedDeviceBayRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -357,7 +362,7 @@ func deviceBayToPatch(ctx context.Context, plan, state *DeviceBayModel, diags *d
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -365,7 +370,7 @@ func deviceBayToPatch(ctx context.Context, plan, state *DeviceBayModel, diags *d
 
 // deviceBayFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func deviceBayFromAPI(ctx context.Context, obj *netbox.DeviceBay, prior *DeviceBayModel, out *DeviceBayModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -379,7 +384,7 @@ func deviceBayFromAPI(ctx context.Context, obj *netbox.DeviceBay, prior *DeviceB
 	out.InstalledDeviceId = conv.BriefID(obj.GetInstalledDeviceOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

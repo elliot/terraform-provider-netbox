@@ -3,6 +3,7 @@ package provider
 import (
 	"net/http"
 
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
 
@@ -25,4 +26,7 @@ type ProviderData struct {
 	// API is the generated NetBox API client (package netbox). Authentication,
 	// pacing and retries are provided by HTTPClient's transport.
 	API *netbox.APIClient
+	// CustomFields caches custom field definitions per object type for the
+	// validation and typing of the custom_fields attribute.
+	CustomFields *customfields.Cache
 }

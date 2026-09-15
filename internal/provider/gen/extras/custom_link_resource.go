@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -62,6 +63,7 @@ var (
 // CustomLinkResource manages netbox_custom_link objects (/api/extras/custom-links/).
 type CustomLinkResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCustomLinkResource returns a new netbox_custom_link resource.
@@ -96,6 +98,7 @@ func (r *CustomLinkResource) Configure(_ context.Context, req resource.Configure
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // customLinkResourceAttributes returns the schema attributes of netbox_custom_link.
@@ -198,6 +201,7 @@ func (r *CustomLinkResource) Create(ctx context.Context, req resource.CreateRequ
 		resp.Diagnostics.AddError("Error creating netbox_custom_link", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CustomLinkModel
 	customLinkFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -258,6 +262,7 @@ func (r *CustomLinkResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Error updating netbox_custom_link", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CustomLinkModel
 	customLinkFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

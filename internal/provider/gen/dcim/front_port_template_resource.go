@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -81,6 +82,7 @@ var (
 // FrontPortTemplateResource manages netbox_front_port_template objects (/api/dcim/front-port-templates/).
 type FrontPortTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewFrontPortTemplateResource returns a new netbox_front_port_template resource.
@@ -115,6 +117,7 @@ func (r *FrontPortTemplateResource) Configure(_ context.Context, req resource.Co
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // frontPortTemplateResourceAttributes returns the schema attributes of netbox_front_port_template.
@@ -226,6 +229,7 @@ func (r *FrontPortTemplateResource) Create(ctx context.Context, req resource.Cre
 		resp.Diagnostics.AddError("Error creating netbox_front_port_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state FrontPortTemplateModel
 	frontPortTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -286,6 +290,7 @@ func (r *FrontPortTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Error updating netbox_front_port_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out FrontPortTemplateModel
 	frontPortTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

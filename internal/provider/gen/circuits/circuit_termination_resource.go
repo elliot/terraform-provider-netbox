@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -37,23 +37,23 @@ var circuitTerminationTermSideValues = []string{
 
 // CircuitTerminationModel is the Terraform state of netbox_circuit_termination.
 type CircuitTerminationModel struct {
-	Id              types.Int64          `tfsdk:"id"`
-	CircuitId       types.Int64          `tfsdk:"circuit_id"`
-	TermSide        types.String         `tfsdk:"term_side"`
-	TerminationType types.String         `tfsdk:"termination_type"`
-	TerminationId   types.Int64          `tfsdk:"termination_id"`
-	PortSpeed       types.Int64          `tfsdk:"port_speed"`
-	UpstreamSpeed   types.Int64          `tfsdk:"upstream_speed"`
-	XconnectId      types.String         `tfsdk:"xconnect_id"`
-	PpInfo          types.String         `tfsdk:"pp_info"`
-	Description     types.String         `tfsdk:"description"`
-	MarkConnected   types.Bool           `tfsdk:"mark_connected"`
-	Tags            types.Set            `tfsdk:"tags"`
-	CustomFields    jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url             types.String         `tfsdk:"url"`
-	Display         types.String         `tfsdk:"display"`
-	Created         timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated     timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id              types.Int64       `tfsdk:"id"`
+	CircuitId       types.Int64       `tfsdk:"circuit_id"`
+	TermSide        types.String      `tfsdk:"term_side"`
+	TerminationType types.String      `tfsdk:"termination_type"`
+	TerminationId   types.Int64       `tfsdk:"termination_id"`
+	PortSpeed       types.Int64       `tfsdk:"port_speed"`
+	UpstreamSpeed   types.Int64       `tfsdk:"upstream_speed"`
+	XconnectId      types.String      `tfsdk:"xconnect_id"`
+	PpInfo          types.String      `tfsdk:"pp_info"`
+	Description     types.String      `tfsdk:"description"`
+	MarkConnected   types.Bool        `tfsdk:"mark_connected"`
+	Tags            types.Set         `tfsdk:"tags"`
+	CustomFields    types.Dynamic     `tfsdk:"custom_fields"`
+	Url             types.String      `tfsdk:"url"`
+	Display         types.String      `tfsdk:"display"`
+	Created         timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated     timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -66,6 +66,7 @@ var (
 // CircuitTerminationResource manages netbox_circuit_termination objects (/api/circuits/circuit-terminations/).
 type CircuitTerminationResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCircuitTerminationResource returns a new netbox_circuit_termination resource.
@@ -100,6 +101,7 @@ func (r *CircuitTerminationResource) Configure(_ context.Context, req resource.C
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // circuitTerminationResourceAttributes returns the schema attributes of netbox_circuit_termination.
@@ -175,9 +177,8 @@ func circuitTerminationResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -209,7 +210,7 @@ func (r *CircuitTerminationResource) Create(ctx context.Context, req resource.Cr
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := circuitTerminationToCreate(ctx, &plan, &resp.Diagnostics)
+	body := circuitTerminationToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -218,6 +219,7 @@ func (r *CircuitTerminationResource) Create(ctx context.Context, req resource.Cr
 		resp.Diagnostics.AddError("Error creating netbox_circuit_termination", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CircuitTerminationModel
 	circuitTerminationFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -269,7 +271,7 @@ func (r *CircuitTerminationResource) Update(ctx context.Context, req resource.Up
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := circuitTerminationToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := circuitTerminationToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -278,6 +280,7 @@ func (r *CircuitTerminationResource) Update(ctx context.Context, req resource.Up
 		resp.Diagnostics.AddError("Error updating netbox_circuit_termination", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CircuitTerminationModel
 	circuitTerminationFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -311,7 +314,8 @@ func (r *CircuitTerminationResource) ImportState(ctx context.Context, req resour
 }
 
 // circuitTerminationToCreate builds the CircuitTerminationRequest request body from the plan.
-func circuitTerminationToCreate(ctx context.Context, plan *CircuitTerminationModel, diags *diag.Diagnostics) *netbox.CircuitTerminationRequest {
+func circuitTerminationToCreate(ctx context.Context, plan *CircuitTerminationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.CircuitTerminationRequest {
+	const objectType = "circuits.circuittermination"
 	body := netbox.NewCircuitTerminationRequest(conv.Int32(plan.CircuitId), plan.TermSide.ValueString())
 	if conv.Known(plan.TerminationType) {
 		body.SetTerminationType(plan.TerminationType.ValueString())
@@ -341,13 +345,14 @@ func circuitTerminationToCreate(ctx context.Context, plan *CircuitTerminationMod
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // circuitTerminationToPatch builds the PatchedCircuitTerminationRequest request body with every attribute whose planned value differs from state.
-func circuitTerminationToPatch(ctx context.Context, plan, state *CircuitTerminationModel, diags *diag.Diagnostics) *netbox.PatchedCircuitTerminationRequest {
+func circuitTerminationToPatch(ctx context.Context, plan, state *CircuitTerminationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedCircuitTerminationRequest {
+	const objectType = "circuits.circuittermination"
 	body := netbox.NewPatchedCircuitTerminationRequest()
 	if !plan.CircuitId.Equal(state.CircuitId) {
 		if conv.Known(plan.CircuitId) {
@@ -408,7 +413,7 @@ func circuitTerminationToPatch(ctx context.Context, plan, state *CircuitTerminat
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -416,7 +421,7 @@ func circuitTerminationToPatch(ctx context.Context, plan, state *CircuitTerminat
 
 // circuitTerminationFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func circuitTerminationFromAPI(ctx context.Context, obj *netbox.CircuitTermination, prior *CircuitTerminationModel, out *CircuitTerminationModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -433,7 +438,7 @@ func circuitTerminationFromAPI(ctx context.Context, obj *netbox.CircuitTerminati
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CircuitTerminationModel) types.String { return m.Description }), false)
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

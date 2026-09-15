@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -66,6 +67,7 @@ var (
 // RearPortTemplateResource manages netbox_rear_port_template objects (/api/dcim/rear-port-templates/).
 type RearPortTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewRearPortTemplateResource returns a new netbox_rear_port_template resource.
@@ -100,6 +102,7 @@ func (r *RearPortTemplateResource) Configure(_ context.Context, req resource.Con
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // rearPortTemplateResourceAttributes returns the schema attributes of netbox_rear_port_template.
@@ -193,6 +196,7 @@ func (r *RearPortTemplateResource) Create(ctx context.Context, req resource.Crea
 		resp.Diagnostics.AddError("Error creating netbox_rear_port_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state RearPortTemplateModel
 	rearPortTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -253,6 +257,7 @@ func (r *RearPortTemplateResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Error updating netbox_rear_port_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out RearPortTemplateModel
 	rearPortTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

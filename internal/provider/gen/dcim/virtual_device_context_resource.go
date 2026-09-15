@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -36,23 +36,23 @@ var virtualDeviceContextStatusValues = []string{
 
 // VirtualDeviceContextModel is the Terraform state of netbox_virtual_device_context.
 type VirtualDeviceContextModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	DeviceId     types.Int64          `tfsdk:"device_id"`
-	Identifier   types.Int64          `tfsdk:"identifier"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	PrimaryIp4Id types.Int64          `tfsdk:"primary_ip4_id"`
-	PrimaryIp6Id types.Int64          `tfsdk:"primary_ip6_id"`
-	Status       types.String         `tfsdk:"status"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	DeviceId     types.Int64       `tfsdk:"device_id"`
+	Identifier   types.Int64       `tfsdk:"identifier"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	PrimaryIp4Id types.Int64       `tfsdk:"primary_ip4_id"`
+	PrimaryIp6Id types.Int64       `tfsdk:"primary_ip6_id"`
+	Status       types.String      `tfsdk:"status"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -65,6 +65,7 @@ var (
 // VirtualDeviceContextResource manages netbox_virtual_device_context objects (/api/dcim/virtual-device-contexts/).
 type VirtualDeviceContextResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewVirtualDeviceContextResource returns a new netbox_virtual_device_context resource.
@@ -99,6 +100,7 @@ func (r *VirtualDeviceContextResource) Configure(_ context.Context, req resource
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // virtualDeviceContextResourceAttributes returns the schema attributes of netbox_virtual_device_context.
@@ -165,9 +167,8 @@ func virtualDeviceContextResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -199,7 +200,7 @@ func (r *VirtualDeviceContextResource) Create(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := virtualDeviceContextToCreate(ctx, &plan, &resp.Diagnostics)
+	body := virtualDeviceContextToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -208,6 +209,7 @@ func (r *VirtualDeviceContextResource) Create(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error creating netbox_virtual_device_context", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state VirtualDeviceContextModel
 	virtualDeviceContextFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -259,7 +261,7 @@ func (r *VirtualDeviceContextResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualDeviceContextToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := virtualDeviceContextToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -268,6 +270,7 @@ func (r *VirtualDeviceContextResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error updating netbox_virtual_device_context", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out VirtualDeviceContextModel
 	virtualDeviceContextFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -301,7 +304,8 @@ func (r *VirtualDeviceContextResource) ImportState(ctx context.Context, req reso
 }
 
 // virtualDeviceContextToCreate builds the WritableVirtualDeviceContextRequest request body from the plan.
-func virtualDeviceContextToCreate(ctx context.Context, plan *VirtualDeviceContextModel, diags *diag.Diagnostics) *netbox.WritableVirtualDeviceContextRequest {
+func virtualDeviceContextToCreate(ctx context.Context, plan *VirtualDeviceContextModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVirtualDeviceContextRequest {
+	const objectType = "dcim.virtualdevicecontext"
 	body := netbox.NewWritableVirtualDeviceContextRequest(plan.Name.ValueString(), conv.Int32(plan.DeviceId), plan.Status.ValueString())
 	if conv.Known(plan.Identifier) {
 		body.SetIdentifier(conv.Int32(plan.Identifier))
@@ -328,13 +332,14 @@ func virtualDeviceContextToCreate(ctx context.Context, plan *VirtualDeviceContex
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // virtualDeviceContextToPatch builds the PatchedWritableVirtualDeviceContextRequest request body with every attribute whose planned value differs from state.
-func virtualDeviceContextToPatch(ctx context.Context, plan, state *VirtualDeviceContextModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualDeviceContextRequest {
+func virtualDeviceContextToPatch(ctx context.Context, plan, state *VirtualDeviceContextModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualDeviceContextRequest {
+	const objectType = "dcim.virtualdevicecontext"
 	body := netbox.NewPatchedWritableVirtualDeviceContextRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -401,7 +406,7 @@ func virtualDeviceContextToPatch(ctx context.Context, plan, state *VirtualDevice
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -409,7 +414,7 @@ func virtualDeviceContextToPatch(ctx context.Context, plan, state *VirtualDevice
 
 // virtualDeviceContextFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func virtualDeviceContextFromAPI(ctx context.Context, obj *netbox.VirtualDeviceContext, prior *VirtualDeviceContextModel, out *VirtualDeviceContextModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -426,7 +431,7 @@ func virtualDeviceContextFromAPI(ctx context.Context, obj *netbox.VirtualDeviceC
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VirtualDeviceContextModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

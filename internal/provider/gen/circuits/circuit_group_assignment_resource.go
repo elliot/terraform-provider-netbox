@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -56,6 +57,7 @@ var (
 // CircuitGroupAssignmentResource manages netbox_circuit_group_assignment objects (/api/circuits/circuit-group-assignments/).
 type CircuitGroupAssignmentResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCircuitGroupAssignmentResource returns a new netbox_circuit_group_assignment resource.
@@ -90,6 +92,7 @@ func (r *CircuitGroupAssignmentResource) Configure(_ context.Context, req resour
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // circuitGroupAssignmentResourceAttributes returns the schema attributes of netbox_circuit_group_assignment.
@@ -164,6 +167,7 @@ func (r *CircuitGroupAssignmentResource) Create(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Error creating netbox_circuit_group_assignment", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CircuitGroupAssignmentModel
 	circuitGroupAssignmentFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -224,6 +228,7 @@ func (r *CircuitGroupAssignmentResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Error updating netbox_circuit_group_assignment", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CircuitGroupAssignmentModel
 	circuitGroupAssignmentFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

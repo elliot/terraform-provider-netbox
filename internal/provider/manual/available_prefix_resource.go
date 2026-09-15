@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -19,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -29,24 +29,24 @@ var availablePrefixStatusValues = []string{"container", "active", "reserved", "d
 
 // AvailablePrefixModel is the Terraform state of netbox_available_prefix.
 type AvailablePrefixModel struct {
-	Id             types.Int64          `tfsdk:"id"`
-	ParentPrefixId types.Int64          `tfsdk:"parent_prefix_id"`
-	PrefixLength   types.Int64          `tfsdk:"prefix_length"`
-	Prefix         types.String         `tfsdk:"prefix"`
-	VrfId          types.Int64          `tfsdk:"vrf_id"`
-	ScopeType      types.String         `tfsdk:"scope_type"`
-	ScopeId        types.Int64          `tfsdk:"scope_id"`
-	TenantId       types.Int64          `tfsdk:"tenant_id"`
-	Status         types.String         `tfsdk:"status"`
-	RoleId         types.Int64          `tfsdk:"role_id"`
-	IsPool         types.Bool           `tfsdk:"is_pool"`
-	MarkUtilized   types.Bool           `tfsdk:"mark_utilized"`
-	Description    types.String         `tfsdk:"description"`
-	Comments       types.String         `tfsdk:"comments"`
-	Tags           types.Set            `tfsdk:"tags"`
-	CustomFields   jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url            types.String         `tfsdk:"url"`
-	Display        types.String         `tfsdk:"display"`
+	Id             types.Int64   `tfsdk:"id"`
+	ParentPrefixId types.Int64   `tfsdk:"parent_prefix_id"`
+	PrefixLength   types.Int64   `tfsdk:"prefix_length"`
+	Prefix         types.String  `tfsdk:"prefix"`
+	VrfId          types.Int64   `tfsdk:"vrf_id"`
+	ScopeType      types.String  `tfsdk:"scope_type"`
+	ScopeId        types.Int64   `tfsdk:"scope_id"`
+	TenantId       types.Int64   `tfsdk:"tenant_id"`
+	Status         types.String  `tfsdk:"status"`
+	RoleId         types.Int64   `tfsdk:"role_id"`
+	IsPool         types.Bool    `tfsdk:"is_pool"`
+	MarkUtilized   types.Bool    `tfsdk:"mark_utilized"`
+	Description    types.String  `tfsdk:"description"`
+	Comments       types.String  `tfsdk:"comments"`
+	Tags           types.Set     `tfsdk:"tags"`
+	CustomFields   types.Dynamic `tfsdk:"custom_fields"`
+	Url            types.String  `tfsdk:"url"`
+	Display        types.String  `tfsdk:"display"`
 }
 
 var (
@@ -60,6 +60,7 @@ var (
 // prefix and then manages it like a netbox_prefix.
 type AvailablePrefixResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewAvailablePrefixResource returns a new netbox_available_prefix resource.
@@ -133,6 +134,7 @@ func (r *AvailablePrefixResource) IdentitySchema(_ context.Context, _ resource.I
 
 func (r *AvailablePrefixResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	r.client = configureClient(req, resp)
+	r.cf = configureCache(req)
 }
 
 func (r *AvailablePrefixResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -143,7 +145,7 @@ func (r *AvailablePrefixResource) Create(ctx context.Context, req resource.Creat
 	}
 	apiPath := fmt.Sprintf("/api/ipam/prefixes/%d/available-prefixes/", plan.ParentPrefixId.ValueInt64())
 	b := body{"prefix_length": plan.PrefixLength.ValueInt64()}
-	availablePrefixBody(ctx, b, &plan, &resp.Diagnostics)
+	availablePrefixBody(ctx, b, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -154,7 +156,7 @@ func (r *AvailablePrefixResource) Create(ctx context.Context, req resource.Creat
 		return
 	}
 	state := plan
-	availablePrefixFromAPI(obj, &plan, &state)
+	availablePrefixFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	provider.SetIdentityID(ctx, resp.Identity, state.Id, &resp.Diagnostics)
 }
@@ -181,7 +183,7 @@ func (r *AvailablePrefixResource) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 	prior := state
-	availablePrefixFromAPI(obj, &prior, &state)
+	availablePrefixFromAPI(ctx, obj, &prior, &state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	provider.SetIdentityID(ctx, resp.Identity, state.Id, &resp.Diagnostics)
 }
@@ -237,7 +239,7 @@ func (r *AvailablePrefixResource) Update(ctx context.Context, req resource.Updat
 		patch.SetTags(conv.TagsToAPI(ctx, plan.Tags, &resp.Diagnostics))
 	}
 	if conv.Known(plan.CustomFields) {
-		patch.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, &resp.Diagnostics))
+		patch.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, r.cf, "ipam.prefix", &resp.Diagnostics))
 	}
 	if resp.Diagnostics.HasError() {
 		return
@@ -249,7 +251,7 @@ func (r *AvailablePrefixResource) Update(ctx context.Context, req resource.Updat
 	}
 	out := plan
 	out.ParentPrefixId, out.PrefixLength = state.ParentPrefixId, state.PrefixLength
-	availablePrefixFromAPI(obj, &plan, &out)
+	availablePrefixFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &out)...)
 	provider.SetIdentityID(ctx, resp.Identity, out.Id, &resp.Diagnostics)
 }
@@ -278,7 +280,7 @@ func (r *AvailablePrefixResource) ImportState(ctx context.Context, req resource.
 
 // availablePrefixBody fills the allocation request from the plan. The prefix
 // itself and the VRF are chosen by NetBox.
-func availablePrefixBody(ctx context.Context, b body, plan *AvailablePrefixModel, diags *diag.Diagnostics) {
+func availablePrefixBody(ctx context.Context, b body, plan *AvailablePrefixModel, cf *customfields.Cache, diags *diag.Diagnostics) {
 	b.nullableStr("scope_type", plan.ScopeType)
 	b.nullableInt("scope_id", plan.ScopeId)
 	b.nullableInt("tenant", plan.TenantId)
@@ -289,11 +291,11 @@ func availablePrefixBody(ctx context.Context, b body, plan *AvailablePrefixModel
 	b.str("description", plan.Description)
 	b.str("comments", plan.Comments)
 	b.tags(ctx, plan.Tags, diags)
-	b.customFields(plan.CustomFields, diags)
+	b.customFields(ctx, plan.CustomFields, cf, "ipam.prefix", diags)
 }
 
 // availablePrefixFromAPI copies the API object into out.
-func availablePrefixFromAPI(obj *netbox.Prefix, prior, out *AvailablePrefixModel) {
+func availablePrefixFromAPI(ctx context.Context, obj *netbox.Prefix, prior, out *AvailablePrefixModel, diags *diag.Diagnostics) {
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Prefix = conv.String(obj.GetPrefixOk())
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
@@ -307,7 +309,7 @@ func availablePrefixFromAPI(obj *netbox.Prefix, prior, out *AvailablePrefixModel
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), prior.CustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), prior.CustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 }

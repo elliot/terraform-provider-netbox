@@ -20,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -55,6 +56,7 @@ var (
 // InventoryItemTemplateResource manages netbox_inventory_item_template objects (/api/dcim/inventory-item-templates/).
 type InventoryItemTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewInventoryItemTemplateResource returns a new netbox_inventory_item_template resource.
@@ -89,6 +91,7 @@ func (r *InventoryItemTemplateResource) Configure(_ context.Context, req resourc
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // inventoryItemTemplateResourceAttributes returns the schema attributes of netbox_inventory_item_template.
@@ -189,6 +192,7 @@ func (r *InventoryItemTemplateResource) Create(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Error creating netbox_inventory_item_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state InventoryItemTemplateModel
 	inventoryItemTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -249,6 +253,7 @@ func (r *InventoryItemTemplateResource) Update(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Error updating netbox_inventory_item_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out InventoryItemTemplateModel
 	inventoryItemTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

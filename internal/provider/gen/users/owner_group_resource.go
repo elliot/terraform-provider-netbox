@@ -19,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -44,6 +45,7 @@ var (
 // OwnerGroupResource manages netbox_owner_group objects (/api/users/owner-groups/).
 type OwnerGroupResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewOwnerGroupResource returns a new netbox_owner_group resource.
@@ -78,6 +80,7 @@ func (r *OwnerGroupResource) Configure(_ context.Context, req resource.Configure
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // ownerGroupResourceAttributes returns the schema attributes of netbox_owner_group.
@@ -127,6 +130,7 @@ func (r *OwnerGroupResource) Create(ctx context.Context, req resource.CreateRequ
 		resp.Diagnostics.AddError("Error creating netbox_owner_group", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state OwnerGroupModel
 	ownerGroupFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -187,6 +191,7 @@ func (r *OwnerGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Error updating netbox_owner_group", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out OwnerGroupModel
 	ownerGroupFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

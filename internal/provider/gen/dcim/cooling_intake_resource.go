@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -47,25 +47,25 @@ var coolingIntakeMaxFlowUnitValues = []string{
 
 // CoolingIntakeModel is the Terraform state of netbox_cooling_intake.
 type CoolingIntakeModel struct {
-	Id               types.Int64          `tfsdk:"id"`
-	DeviceId         types.Int64          `tfsdk:"device_id"`
-	ModuleId         types.Int64          `tfsdk:"module_id"`
-	Name             types.String         `tfsdk:"name"`
-	Label            types.String         `tfsdk:"label"`
-	Type             types.String         `tfsdk:"type"`
-	Diameter         types.Float64        `tfsdk:"diameter"`
-	DiameterUnit     types.String         `tfsdk:"diameter_unit"`
-	MaxFlow          types.Float64        `tfsdk:"max_flow"`
-	MaxFlowUnit      types.String         `tfsdk:"max_flow_unit"`
-	CoolingOutflowId types.Int64          `tfsdk:"cooling_outflow_id"`
-	Description      types.String         `tfsdk:"description"`
-	OwnerId          types.Int64          `tfsdk:"owner_id"`
-	Tags             types.Set            `tfsdk:"tags"`
-	CustomFields     jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url              types.String         `tfsdk:"url"`
-	Display          types.String         `tfsdk:"display"`
-	Created          timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated      timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id               types.Int64       `tfsdk:"id"`
+	DeviceId         types.Int64       `tfsdk:"device_id"`
+	ModuleId         types.Int64       `tfsdk:"module_id"`
+	Name             types.String      `tfsdk:"name"`
+	Label            types.String      `tfsdk:"label"`
+	Type             types.String      `tfsdk:"type"`
+	Diameter         types.Float64     `tfsdk:"diameter"`
+	DiameterUnit     types.String      `tfsdk:"diameter_unit"`
+	MaxFlow          types.Float64     `tfsdk:"max_flow"`
+	MaxFlowUnit      types.String      `tfsdk:"max_flow_unit"`
+	CoolingOutflowId types.Int64       `tfsdk:"cooling_outflow_id"`
+	Description      types.String      `tfsdk:"description"`
+	OwnerId          types.Int64       `tfsdk:"owner_id"`
+	Tags             types.Set         `tfsdk:"tags"`
+	CustomFields     types.Dynamic     `tfsdk:"custom_fields"`
+	Url              types.String      `tfsdk:"url"`
+	Display          types.String      `tfsdk:"display"`
+	Created          timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated      timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -78,6 +78,7 @@ var (
 // CoolingIntakeResource manages netbox_cooling_intake objects (/api/dcim/cooling-intakes/).
 type CoolingIntakeResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCoolingIntakeResource returns a new netbox_cooling_intake resource.
@@ -112,6 +113,7 @@ func (r *CoolingIntakeResource) Configure(_ context.Context, req resource.Config
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // coolingIntakeResourceAttributes returns the schema attributes of netbox_cooling_intake.
@@ -197,9 +199,8 @@ func coolingIntakeResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -231,7 +232,7 @@ func (r *CoolingIntakeResource) Create(ctx context.Context, req resource.CreateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := coolingIntakeToCreate(ctx, &plan, &resp.Diagnostics)
+	body := coolingIntakeToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -240,6 +241,7 @@ func (r *CoolingIntakeResource) Create(ctx context.Context, req resource.CreateR
 		resp.Diagnostics.AddError("Error creating netbox_cooling_intake", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CoolingIntakeModel
 	coolingIntakeFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -291,7 +293,7 @@ func (r *CoolingIntakeResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := coolingIntakeToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := coolingIntakeToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -300,6 +302,7 @@ func (r *CoolingIntakeResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Error updating netbox_cooling_intake", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CoolingIntakeModel
 	coolingIntakeFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -333,7 +336,8 @@ func (r *CoolingIntakeResource) ImportState(ctx context.Context, req resource.Im
 }
 
 // coolingIntakeToCreate builds the WritableCoolingIntakeRequest request body from the plan.
-func coolingIntakeToCreate(ctx context.Context, plan *CoolingIntakeModel, diags *diag.Diagnostics) *netbox.WritableCoolingIntakeRequest {
+func coolingIntakeToCreate(ctx context.Context, plan *CoolingIntakeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCoolingIntakeRequest {
+	const objectType = "dcim.coolingintake"
 	body := netbox.NewWritableCoolingIntakeRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
 	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
@@ -369,13 +373,14 @@ func coolingIntakeToCreate(ctx context.Context, plan *CoolingIntakeModel, diags 
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // coolingIntakeToPatch builds the PatchedWritableCoolingIntakeRequest request body with every attribute whose planned value differs from state.
-func coolingIntakeToPatch(ctx context.Context, plan, state *CoolingIntakeModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingIntakeRequest {
+func coolingIntakeToPatch(ctx context.Context, plan, state *CoolingIntakeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingIntakeRequest {
+	const objectType = "dcim.coolingintake"
 	body := netbox.NewPatchedWritableCoolingIntakeRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -450,7 +455,7 @@ func coolingIntakeToPatch(ctx context.Context, plan, state *CoolingIntakeModel, 
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -458,7 +463,7 @@ func coolingIntakeToPatch(ctx context.Context, plan, state *CoolingIntakeModel, 
 
 // coolingIntakeFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func coolingIntakeFromAPI(ctx context.Context, obj *netbox.CoolingIntake, prior *CoolingIntakeModel, out *CoolingIntakeModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -477,7 +482,7 @@ func coolingIntakeFromAPI(ctx context.Context, obj *netbox.CoolingIntake, prior 
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CoolingIntakeModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

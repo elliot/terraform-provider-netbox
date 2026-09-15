@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -25,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -60,27 +60,27 @@ var cableLengthUnitValues = []string{
 
 // CableModel is the Terraform state of netbox_cable.
 type CableModel struct {
-	Id            types.Int64          `tfsdk:"id"`
-	Type          types.String         `tfsdk:"type"`
-	ATerminations types.List           `tfsdk:"a_terminations"`
-	BTerminations types.List           `tfsdk:"b_terminations"`
-	Status        types.String         `tfsdk:"status"`
-	Profile       types.String         `tfsdk:"profile"`
-	TenantId      types.Int64          `tfsdk:"tenant_id"`
-	BundleId      types.Int64          `tfsdk:"bundle_id"`
-	Label         types.String         `tfsdk:"label"`
-	Color         types.String         `tfsdk:"color"`
-	Length        types.Float64        `tfsdk:"length"`
-	LengthUnit    types.String         `tfsdk:"length_unit"`
-	Description   types.String         `tfsdk:"description"`
-	OwnerId       types.Int64          `tfsdk:"owner_id"`
-	Comments      types.String         `tfsdk:"comments"`
-	Tags          types.Set            `tfsdk:"tags"`
-	CustomFields  jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url           types.String         `tfsdk:"url"`
-	Display       types.String         `tfsdk:"display"`
-	Created       timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id            types.Int64       `tfsdk:"id"`
+	Type          types.String      `tfsdk:"type"`
+	ATerminations types.List        `tfsdk:"a_terminations"`
+	BTerminations types.List        `tfsdk:"b_terminations"`
+	Status        types.String      `tfsdk:"status"`
+	Profile       types.String      `tfsdk:"profile"`
+	TenantId      types.Int64       `tfsdk:"tenant_id"`
+	BundleId      types.Int64       `tfsdk:"bundle_id"`
+	Label         types.String      `tfsdk:"label"`
+	Color         types.String      `tfsdk:"color"`
+	Length        types.Float64     `tfsdk:"length"`
+	LengthUnit    types.String      `tfsdk:"length_unit"`
+	Description   types.String      `tfsdk:"description"`
+	OwnerId       types.Int64       `tfsdk:"owner_id"`
+	Comments      types.String      `tfsdk:"comments"`
+	Tags          types.Set         `tfsdk:"tags"`
+	CustomFields  types.Dynamic     `tfsdk:"custom_fields"`
+	Url           types.String      `tfsdk:"url"`
+	Display       types.String      `tfsdk:"display"`
+	Created       timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated   timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 // CableATerminationsItem is one element of netbox_cable.a_terminations.
@@ -115,6 +115,7 @@ var (
 // CableResource manages netbox_cable objects (/api/dcim/cables/).
 type CableResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCableResource returns a new netbox_cable resource.
@@ -149,6 +150,7 @@ func (r *CableResource) Configure(_ context.Context, req resource.ConfigureReque
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // cableResourceAttributes returns the schema attributes of netbox_cable.
@@ -267,9 +269,8 @@ func cableResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -301,7 +302,7 @@ func (r *CableResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := cableToCreate(ctx, &plan, &resp.Diagnostics)
+	body := cableToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -310,6 +311,7 @@ func (r *CableResource) Create(ctx context.Context, req resource.CreateRequest, 
 		resp.Diagnostics.AddError("Error creating netbox_cable", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CableModel
 	cableFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -361,7 +363,7 @@ func (r *CableResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := cableToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := cableToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -370,6 +372,7 @@ func (r *CableResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Error updating netbox_cable", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CableModel
 	cableFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -403,7 +406,8 @@ func (r *CableResource) ImportState(ctx context.Context, req resource.ImportStat
 }
 
 // cableToCreate builds the WritableCableRequest request body from the plan.
-func cableToCreate(ctx context.Context, plan *CableModel, diags *diag.Diagnostics) *netbox.WritableCableRequest {
+func cableToCreate(ctx context.Context, plan *CableModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCableRequest {
+	const objectType = "dcim.cable"
 	body := netbox.NewWritableCableRequest()
 	if conv.Known(plan.Type) {
 		body.SetType(plan.Type.ValueString())
@@ -469,13 +473,14 @@ func cableToCreate(ctx context.Context, plan *CableModel, diags *diag.Diagnostic
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // cableToPatch builds the PatchedWritableCableRequest request body with every attribute whose planned value differs from state.
-func cableToPatch(ctx context.Context, plan, state *CableModel, diags *diag.Diagnostics) *netbox.PatchedWritableCableRequest {
+func cableToPatch(ctx context.Context, plan, state *CableModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableCableRequest {
+	const objectType = "dcim.cable"
 	body := netbox.NewPatchedWritableCableRequest()
 	if !plan.Type.Equal(state.Type) {
 		if conv.Known(plan.Type) {
@@ -578,7 +583,7 @@ func cableToPatch(ctx context.Context, plan, state *CableModel, diags *diag.Diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -586,7 +591,7 @@ func cableToPatch(ctx context.Context, plan, state *CableModel, diags *diag.Diag
 
 // cableFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func cableFromAPI(ctx context.Context, obj *netbox.Cable, prior *CableModel, out *CableModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -637,7 +642,7 @@ func cableFromAPI(ctx context.Context, obj *netbox.Cable, prior *CableModel, out
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *CableModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

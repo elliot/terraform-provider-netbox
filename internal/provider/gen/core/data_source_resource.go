@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -50,7 +51,7 @@ type DataSourceModel struct {
 	IgnoreRules  types.String         `tfsdk:"ignore_rules"`
 	OwnerId      types.Int64          `tfsdk:"owner_id"`
 	Comments     types.String         `tfsdk:"comments"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
+	CustomFields types.Dynamic        `tfsdk:"custom_fields"`
 	Url          types.String         `tfsdk:"url"`
 	Display      types.String         `tfsdk:"display"`
 	Created      timetypes.RFC3339    `tfsdk:"created"`
@@ -67,6 +68,7 @@ var (
 // DataSourceResource manages netbox_data_source objects (/api/core/data-sources/).
 type DataSourceResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewDataSourceResource returns a new netbox_data_source resource.
@@ -101,6 +103,7 @@ func (r *DataSourceResource) Configure(_ context.Context, req resource.Configure
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // dataSourceResourceAttributes returns the schema attributes of netbox_data_source.
@@ -167,9 +170,8 @@ func dataSourceResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -201,7 +203,7 @@ func (r *DataSourceResource) Create(ctx context.Context, req resource.CreateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := dataSourceToCreate(ctx, &plan, &resp.Diagnostics)
+	body := dataSourceToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -210,6 +212,7 @@ func (r *DataSourceResource) Create(ctx context.Context, req resource.CreateRequ
 		resp.Diagnostics.AddError("Error creating netbox_data_source", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state DataSourceModel
 	dataSourceFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -261,7 +264,7 @@ func (r *DataSourceResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := dataSourceToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := dataSourceToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -270,6 +273,7 @@ func (r *DataSourceResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Error updating netbox_data_source", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out DataSourceModel
 	dataSourceFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -303,7 +307,8 @@ func (r *DataSourceResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 // dataSourceToCreate builds the WritableDataSourceRequest request body from the plan.
-func dataSourceToCreate(ctx context.Context, plan *DataSourceModel, diags *diag.Diagnostics) *netbox.WritableDataSourceRequest {
+func dataSourceToCreate(ctx context.Context, plan *DataSourceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableDataSourceRequest {
+	const objectType = "core.datasource"
 	body := netbox.NewWritableDataSourceRequest(plan.Name.ValueString(), plan.Type.ValueString(), plan.SourceUrl.ValueString())
 	if conv.Known(plan.Enabled) {
 		body.SetEnabled(plan.Enabled.ValueBool())
@@ -327,13 +332,14 @@ func dataSourceToCreate(ctx context.Context, plan *DataSourceModel, diags *diag.
 		body.SetComments(plan.Comments.ValueString())
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // dataSourceToPatch builds the PatchedWritableDataSourceRequest request body with every attribute whose planned value differs from state.
-func dataSourceToPatch(ctx context.Context, plan, state *DataSourceModel, diags *diag.Diagnostics) *netbox.PatchedWritableDataSourceRequest {
+func dataSourceToPatch(ctx context.Context, plan, state *DataSourceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableDataSourceRequest {
+	const objectType = "core.datasource"
 	body := netbox.NewPatchedWritableDataSourceRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -389,7 +395,7 @@ func dataSourceToPatch(ctx context.Context, plan, state *DataSourceModel, diags 
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -397,7 +403,7 @@ func dataSourceToPatch(ctx context.Context, plan, state *DataSourceModel, diags 
 
 // dataSourceFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func dataSourceFromAPI(ctx context.Context, obj *netbox.DataSource, prior *DataSourceModel, out *DataSourceModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -413,7 +419,7 @@ func dataSourceFromAPI(ctx context.Context, obj *netbox.DataSource, prior *DataS
 	out.IgnoreRules = conv.StringKeep(conv.StringOrEmpty(obj.GetIgnoreRulesOk()), conv.PriorString(prior, func(m *DataSourceModel) types.String { return m.IgnoreRules }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *DataSourceModel) types.String { return m.Comments }), false)
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

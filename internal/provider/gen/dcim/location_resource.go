@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -37,23 +37,23 @@ var locationStatusValues = []string{
 
 // LocationModel is the Terraform state of netbox_location.
 type LocationModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	SiteId       types.Int64          `tfsdk:"site_id"`
-	ParentId     types.Int64          `tfsdk:"parent_id"`
-	Status       types.String         `tfsdk:"status"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	Facility     types.String         `tfsdk:"facility"`
-	Description  types.String         `tfsdk:"description"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	SiteId       types.Int64       `tfsdk:"site_id"`
+	ParentId     types.Int64       `tfsdk:"parent_id"`
+	Status       types.String      `tfsdk:"status"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	Facility     types.String      `tfsdk:"facility"`
+	Description  types.String      `tfsdk:"description"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -66,6 +66,7 @@ var (
 // LocationResource manages netbox_location objects (/api/dcim/locations/).
 type LocationResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewLocationResource returns a new netbox_location resource.
@@ -100,6 +101,7 @@ func (r *LocationResource) Configure(_ context.Context, req resource.ConfigureRe
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // locationResourceAttributes returns the schema attributes of netbox_location.
@@ -160,9 +162,8 @@ func locationResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"owner_id": schema.Int64Attribute{
@@ -204,7 +205,7 @@ func (r *LocationResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := locationToCreate(ctx, &plan, &resp.Diagnostics)
+	body := locationToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -213,6 +214,7 @@ func (r *LocationResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Error creating netbox_location", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state LocationModel
 	locationFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -264,7 +266,7 @@ func (r *LocationResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := locationToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := locationToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -273,6 +275,7 @@ func (r *LocationResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Error updating netbox_location", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out LocationModel
 	locationFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -306,7 +309,8 @@ func (r *LocationResource) ImportState(ctx context.Context, req resource.ImportS
 }
 
 // locationToCreate builds the WritableLocationRequest request body from the plan.
-func locationToCreate(ctx context.Context, plan *LocationModel, diags *diag.Diagnostics) *netbox.WritableLocationRequest {
+func locationToCreate(ctx context.Context, plan *LocationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableLocationRequest {
+	const objectType = "dcim.location"
 	body := netbox.NewWritableLocationRequest(plan.Name.ValueString(), plan.Slug.ValueString(), conv.Int32(plan.SiteId))
 	if conv.Known(plan.ParentId) {
 		body.SetParent(conv.Int32(plan.ParentId))
@@ -327,7 +331,7 @@ func locationToCreate(ctx context.Context, plan *LocationModel, diags *diag.Diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
@@ -339,7 +343,8 @@ func locationToCreate(ctx context.Context, plan *LocationModel, diags *diag.Diag
 }
 
 // locationToPatch builds the PatchedWritableLocationRequest request body with every attribute whose planned value differs from state.
-func locationToPatch(ctx context.Context, plan, state *LocationModel, diags *diag.Diagnostics) *netbox.PatchedWritableLocationRequest {
+func locationToPatch(ctx context.Context, plan, state *LocationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableLocationRequest {
+	const objectType = "dcim.location"
 	body := netbox.NewPatchedWritableLocationRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -392,7 +397,7 @@ func locationToPatch(ctx context.Context, plan, state *LocationModel, diags *dia
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
@@ -412,7 +417,7 @@ func locationToPatch(ctx context.Context, plan, state *LocationModel, diags *dia
 
 // locationFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func locationFromAPI(ctx context.Context, obj *netbox.Location, prior *LocationModel, out *LocationModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -427,7 +432,7 @@ func locationFromAPI(ctx context.Context, obj *netbox.Location, prior *LocationM
 	out.Facility = conv.StringKeep(conv.StringOrEmpty(obj.GetFacilityOk()), conv.PriorString(prior, func(m *LocationModel) types.String { return m.Facility }), false)
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *LocationModel) types.String { return m.Description }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *LocationModel) types.String { return m.Comments }), false)
 	out.Url = conv.String(obj.GetUrlOk())

@@ -36,7 +36,7 @@ output "journal_comment" {
 - `comments` (String) Comments.
 - `created` (String) Created.
 - `created_by_id` (Number) ID of the User (`netbox_user`). Defaults to the NetBox server default when omitted.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
 - `kind` (String) Kind. Valid values: `info`, `success`, `warning`, `danger`. Defaults to the NetBox server default when omitted.

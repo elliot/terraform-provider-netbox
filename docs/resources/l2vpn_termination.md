@@ -50,7 +50,7 @@ resource "netbox_l2vpn_termination" "interface" {
 
 ### Optional
 
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 
 ### Read-Only

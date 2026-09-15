@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -14,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -22,17 +22,17 @@ func init() { provider.RegisterResource(NewAvailableAsnResource) }
 
 // AvailableAsnModel is the Terraform state of netbox_available_asn.
 type AvailableAsnModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	AsnRangeId   types.Int64          `tfsdk:"asn_range_id"`
-	Asn          types.Int64          `tfsdk:"asn"`
-	RirId        types.Int64          `tfsdk:"rir_id"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	Description  types.String         `tfsdk:"description"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
+	Id           types.Int64   `tfsdk:"id"`
+	AsnRangeId   types.Int64   `tfsdk:"asn_range_id"`
+	Asn          types.Int64   `tfsdk:"asn"`
+	RirId        types.Int64   `tfsdk:"rir_id"`
+	TenantId     types.Int64   `tfsdk:"tenant_id"`
+	Description  types.String  `tfsdk:"description"`
+	Comments     types.String  `tfsdk:"comments"`
+	Tags         types.Set     `tfsdk:"tags"`
+	CustomFields types.Dynamic `tfsdk:"custom_fields"`
+	Url          types.String  `tfsdk:"url"`
+	Display      types.String  `tfsdk:"display"`
 }
 
 var (
@@ -46,6 +46,7 @@ var (
 // manages it like a netbox_asn.
 type AvailableAsnResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewAvailableAsnResource returns a new netbox_available_asn resource.
@@ -88,6 +89,7 @@ func (r *AvailableAsnResource) IdentitySchema(_ context.Context, _ resource.Iden
 
 func (r *AvailableAsnResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	r.client = configureClient(req, resp)
+	r.cf = configureCache(req)
 }
 
 func (r *AvailableAsnResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -98,7 +100,7 @@ func (r *AvailableAsnResource) Create(ctx context.Context, req resource.CreateRe
 	}
 	apiPath := fmt.Sprintf("/api/ipam/asn-ranges/%d/available-asns/", plan.AsnRangeId.ValueInt64())
 	b := body{}
-	availableAsnBody(ctx, b, &plan, &resp.Diagnostics)
+	availableAsnBody(ctx, b, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -109,7 +111,7 @@ func (r *AvailableAsnResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 	state := plan
-	availableAsnFromAPI(obj, &plan, &state)
+	availableAsnFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	provider.SetIdentityID(ctx, resp.Identity, state.Id, &resp.Diagnostics)
 }
@@ -136,7 +138,7 @@ func (r *AvailableAsnResource) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 	prior := state
-	availableAsnFromAPI(obj, &prior, &state)
+	availableAsnFromAPI(ctx, obj, &prior, &state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 	provider.SetIdentityID(ctx, resp.Identity, state.Id, &resp.Diagnostics)
 }
@@ -168,7 +170,7 @@ func (r *AvailableAsnResource) Update(ctx context.Context, req resource.UpdateRe
 		patch.SetTags(conv.TagsToAPI(ctx, plan.Tags, &resp.Diagnostics))
 	}
 	if conv.Known(plan.CustomFields) {
-		patch.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, &resp.Diagnostics))
+		patch.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, r.cf, "ipam.asn", &resp.Diagnostics))
 	}
 	if resp.Diagnostics.HasError() {
 		return
@@ -180,7 +182,7 @@ func (r *AvailableAsnResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 	out := plan
 	out.AsnRangeId = state.AsnRangeId
-	availableAsnFromAPI(obj, &plan, &out)
+	availableAsnFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &out)...)
 	provider.SetIdentityID(ctx, resp.Identity, out.Id, &resp.Diagnostics)
 }
@@ -209,16 +211,16 @@ func (r *AvailableAsnResource) ImportState(ctx context.Context, req resource.Imp
 
 // availableAsnBody fills the allocation request from the plan. The AS number
 // and RIR are chosen by NetBox.
-func availableAsnBody(ctx context.Context, b body, plan *AvailableAsnModel, diags *diag.Diagnostics) {
+func availableAsnBody(ctx context.Context, b body, plan *AvailableAsnModel, cf *customfields.Cache, diags *diag.Diagnostics) {
 	b.nullableInt("tenant", plan.TenantId)
 	b.str("description", plan.Description)
 	b.str("comments", plan.Comments)
 	b.tags(ctx, plan.Tags, diags)
-	b.customFields(plan.CustomFields, diags)
+	b.customFields(ctx, plan.CustomFields, cf, "ipam.asn", diags)
 }
 
 // availableAsnFromAPI copies the API object into out.
-func availableAsnFromAPI(obj *netbox.ASN, prior, out *AvailableAsnModel) {
+func availableAsnFromAPI(ctx context.Context, obj *netbox.ASN, prior, out *AvailableAsnModel, diags *diag.Diagnostics) {
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Asn = conv.Int64From64(obj.GetAsnOk())
 	out.RirId = conv.BriefID(obj.GetRirOk())
@@ -226,7 +228,7 @@ func availableAsnFromAPI(obj *netbox.ASN, prior, out *AvailableAsnModel) {
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), prior.CustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), prior.CustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 }

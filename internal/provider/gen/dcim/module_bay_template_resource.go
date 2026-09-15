@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -56,6 +57,7 @@ var (
 // ModuleBayTemplateResource manages netbox_module_bay_template objects (/api/dcim/module-bay-templates/).
 type ModuleBayTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewModuleBayTemplateResource returns a new netbox_module_bay_template resource.
@@ -90,6 +92,7 @@ func (r *ModuleBayTemplateResource) Configure(_ context.Context, req resource.Co
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // moduleBayTemplateResourceAttributes returns the schema attributes of netbox_module_bay_template.
@@ -185,6 +188,7 @@ func (r *ModuleBayTemplateResource) Create(ctx context.Context, req resource.Cre
 		resp.Diagnostics.AddError("Error creating netbox_module_bay_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ModuleBayTemplateModel
 	moduleBayTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -245,6 +249,7 @@ func (r *ModuleBayTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Error updating netbox_module_bay_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ModuleBayTemplateModel
 	moduleBayTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -77,6 +78,7 @@ var (
 // PowerOutletTemplateResource manages netbox_power_outlet_template objects (/api/dcim/power-outlet-templates/).
 type PowerOutletTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewPowerOutletTemplateResource returns a new netbox_power_outlet_template resource.
@@ -111,6 +113,7 @@ func (r *PowerOutletTemplateResource) Configure(_ context.Context, req resource.
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // powerOutletTemplateResourceAttributes returns the schema attributes of netbox_power_outlet_template.
@@ -211,6 +214,7 @@ func (r *PowerOutletTemplateResource) Create(ctx context.Context, req resource.C
 		resp.Diagnostics.AddError("Error creating netbox_power_outlet_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state PowerOutletTemplateModel
 	powerOutletTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -271,6 +275,7 @@ func (r *PowerOutletTemplateResource) Update(ctx context.Context, req resource.U
 		resp.Diagnostics.AddError("Error updating netbox_power_outlet_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out PowerOutletTemplateModel
 	powerOutletTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -36,23 +36,23 @@ var clusterStatusValues = []string{
 
 // ClusterModel is the Terraform state of netbox_cluster.
 type ClusterModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	TypeId       types.Int64          `tfsdk:"type_id"`
-	GroupId      types.Int64          `tfsdk:"group_id"`
-	Status       types.String         `tfsdk:"status"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	ScopeType    types.String         `tfsdk:"scope_type"`
-	ScopeId      types.Int64          `tfsdk:"scope_id"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	TypeId       types.Int64       `tfsdk:"type_id"`
+	GroupId      types.Int64       `tfsdk:"group_id"`
+	Status       types.String      `tfsdk:"status"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	ScopeType    types.String      `tfsdk:"scope_type"`
+	ScopeId      types.Int64       `tfsdk:"scope_id"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -65,6 +65,7 @@ var (
 // ClusterResource manages netbox_cluster objects (/api/virtualization/clusters/).
 type ClusterResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewClusterResource returns a new netbox_cluster resource.
@@ -99,6 +100,7 @@ func (r *ClusterResource) Configure(_ context.Context, req resource.ConfigureReq
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // clusterResourceAttributes returns the schema attributes of netbox_cluster.
@@ -167,9 +169,8 @@ func clusterResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -201,7 +202,7 @@ func (r *ClusterResource) Create(ctx context.Context, req resource.CreateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := clusterToCreate(ctx, &plan, &resp.Diagnostics)
+	body := clusterToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -210,6 +211,7 @@ func (r *ClusterResource) Create(ctx context.Context, req resource.CreateRequest
 		resp.Diagnostics.AddError("Error creating netbox_cluster", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ClusterModel
 	clusterFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -261,7 +263,7 @@ func (r *ClusterResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := clusterToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := clusterToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -270,6 +272,7 @@ func (r *ClusterResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Error updating netbox_cluster", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ClusterModel
 	clusterFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -303,7 +306,8 @@ func (r *ClusterResource) ImportState(ctx context.Context, req resource.ImportSt
 }
 
 // clusterToCreate builds the WritableClusterRequest request body from the plan.
-func clusterToCreate(ctx context.Context, plan *ClusterModel, diags *diag.Diagnostics) *netbox.WritableClusterRequest {
+func clusterToCreate(ctx context.Context, plan *ClusterModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableClusterRequest {
+	const objectType = "virtualization.cluster"
 	body := netbox.NewWritableClusterRequest(plan.Name.ValueString(), conv.Int32(plan.TypeId))
 	if conv.Known(plan.GroupId) {
 		body.SetGroup(conv.Int32(plan.GroupId))
@@ -333,13 +337,14 @@ func clusterToCreate(ctx context.Context, plan *ClusterModel, diags *diag.Diagno
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // clusterToPatch builds the PatchedWritableClusterRequest request body with every attribute whose planned value differs from state.
-func clusterToPatch(ctx context.Context, plan, state *ClusterModel, diags *diag.Diagnostics) *netbox.PatchedWritableClusterRequest {
+func clusterToPatch(ctx context.Context, plan, state *ClusterModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableClusterRequest {
+	const objectType = "virtualization.cluster"
 	body := netbox.NewPatchedWritableClusterRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -406,7 +411,7 @@ func clusterToPatch(ctx context.Context, plan, state *ClusterModel, diags *diag.
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -414,7 +419,7 @@ func clusterToPatch(ctx context.Context, plan, state *ClusterModel, diags *diag.
 
 // clusterFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func clusterFromAPI(ctx context.Context, obj *netbox.Cluster, prior *ClusterModel, out *ClusterModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -431,7 +436,7 @@ func clusterFromAPI(ctx context.Context, obj *netbox.Cluster, prior *ClusterMode
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ClusterModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

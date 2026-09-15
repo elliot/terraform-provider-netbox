@@ -28,6 +28,8 @@ func tfType(a model.Attr) string {
 	switch a.Kind {
 	case model.KindString, model.KindChoice:
 		return "types.String"
+	case model.KindCustomFieldsJSON:
+		return "jsontypes.Normalized"
 	case model.KindInt, model.KindChoiceInt, model.KindFK:
 		return "types.Int64"
 	case model.KindFloat:
@@ -36,7 +38,9 @@ func tfType(a model.Attr) string {
 		return "types.Bool"
 	case model.KindDateTime:
 		return "timetypes.RFC3339"
-	case model.KindCustomFields, model.KindJSON:
+	case model.KindCustomFields:
+		return "types.Dynamic"
+	case model.KindJSON:
 		return "jsontypes.Normalized"
 	case model.KindFKList, model.KindIntList, model.KindTags:
 		if a.OrderedList {
@@ -67,7 +71,9 @@ func attrType(r *model.Resource, a model.Attr) string {
 		return "types.BoolType"
 	case model.KindDateTime:
 		return "timetypes.RFC3339Type{}"
-	case model.KindCustomFields, model.KindJSON:
+	case model.KindCustomFields:
+		return "types.DynamicType"
+	case model.KindJSON, model.KindCustomFieldsJSON:
 		return "jsontypes.NormalizedType{}"
 	case model.KindFKList, model.KindIntList:
 		if a.OrderedList {
@@ -168,7 +174,9 @@ func schemaAttr(r *model.Resource, a model.Attr, pkg string, dataSource bool, lo
 		typ = "BoolAttribute"
 	case model.KindDateTime:
 		typ = "StringAttribute"
-	case model.KindCustomFields, model.KindJSON:
+	case model.KindCustomFields:
+		typ = "DynamicAttribute"
+	case model.KindJSON, model.KindCustomFieldsJSON:
 		typ = "StringAttribute"
 	case model.KindFKList, model.KindIntList, model.KindStringList, model.KindTags:
 		if a.OrderedList {
@@ -186,7 +194,7 @@ func schemaAttr(r *model.Resource, a model.Attr, pkg string, dataSource bool, lo
 	switch a.Kind {
 	case model.KindDateTime:
 		b.WriteString("CustomType: timetypes.RFC3339Type{},\n")
-	case model.KindCustomFields, model.KindJSON:
+	case model.KindJSON, model.KindCustomFieldsJSON:
 		b.WriteString("CustomType: jsontypes.NormalizedType{},\n")
 	case model.KindFKList, model.KindIntList:
 		b.WriteString("ElementType: types.Int64Type,\n")
@@ -309,8 +317,10 @@ func schemaAttr(r *model.Resource, a model.Attr, pkg string, dataSource bool, lo
 
 func planModifierType(a model.Attr) string {
 	switch a.Kind {
-	case model.KindString, model.KindChoice, model.KindDateTime, model.KindCustomFields, model.KindJSON:
+	case model.KindString, model.KindChoice, model.KindDateTime, model.KindJSON:
 		return "String"
+	case model.KindCustomFields:
+		return "Dynamic"
 	case model.KindInt, model.KindChoiceInt, model.KindFK:
 		return "Int64"
 	case model.KindFloat:
@@ -430,7 +440,7 @@ func collectionExpr(a model.Attr, v string) string {
 	case model.KindTags:
 		return "conv.TagsToAPI(ctx, " + v + ", diags)"
 	case model.KindCustomFields:
-		return "conv.JSONObjectToAPI(" + v + ", diags)"
+		return "customfields.ToAPI(ctx, " + v + ", cf, objectType, diags)"
 	case model.KindJSON:
 		if a.StringMap {
 			return "conv.JSONStringMapToAPI(" + v + ", diags)"
@@ -577,12 +587,19 @@ func toAPIFunc(r *model.Resource, patch bool) (string, error) {
 	if patch {
 		name, typ = lower(r.GoName)+"ToPatch", r.PatchType
 	}
+	cfParams := ""
+	if r.HasCustomFields {
+		cfParams = ", cf *customfields.Cache"
+	}
 	if patch {
 		fmt.Fprintf(&b, "// %s builds the %s request body with every attribute whose planned value differs from state.\n", name, typ)
-		fmt.Fprintf(&b, "func %s(ctx context.Context, plan, state *%sModel, diags *diag.Diagnostics) *netbox.%s {\n", name, r.GoName, typ)
+		fmt.Fprintf(&b, "func %s(ctx context.Context, plan, state *%sModel%s, diags *diag.Diagnostics) *netbox.%s {\n", name, r.GoName, cfParams, typ)
 	} else {
 		fmt.Fprintf(&b, "// %s builds the %s request body from the plan.\n", name, typ)
-		fmt.Fprintf(&b, "func %s(ctx context.Context, plan *%sModel, diags *diag.Diagnostics) *netbox.%s {\n", name, r.GoName, typ)
+		fmt.Fprintf(&b, "func %s(ctx context.Context, plan *%sModel%s, diags *diag.Diagnostics) *netbox.%s {\n", name, r.GoName, cfParams, typ)
+	}
+	if r.HasCustomFields {
+		fmt.Fprintf(&b, "const objectType = %q\n", r.ObjectType())
 	}
 	required := map[string]bool{}
 	if patch {
@@ -649,11 +666,11 @@ func readExpr(a model.Attr, obj string, dataSource bool) string {
 	case model.ReadTags:
 		return "conv.TagsFromAPI(" + get + "())"
 	case model.ReadMap:
+		if a.Kind == model.KindCustomFieldsJSON {
+			return "customfields.InferJSON(" + get + "())"
+		}
 		if a.Kind == model.KindCustomFields {
-			if dataSource {
-				return "conv.AllCustomFieldsFromAPI(" + get + "())"
-			}
-			return "conv.CustomFieldsFromAPI(" + get + "(), priorCustomFields)"
+			return "customfields.FromAPI(ctx, " + get + "(), priorCustomFields, diags)"
 		}
 		if !dataSource && !a.Required {
 			return "conv.JSONFromAPIWithPrior(" + get + "(), conv.PriorJSON(prior, func(m *" + modelForPrior + ") jsontypes.Normalized { return m." + field(a) + " }))"
@@ -728,6 +745,11 @@ func fromAPIFunc(r *model.Resource, dataSource bool) string {
 		name = lower(r.GoName) + "DataFromAPI"
 		modelName = r.GoName + "DataModel"
 		attrs = append(append([]model.Attr{}, r.Attrs...), r.ReadOnlyAttrs...)
+		for i := range attrs {
+			if attrs[i].Kind == model.KindCustomFields {
+				attrs[i].Kind = model.KindCustomFieldsJSON
+			}
+		}
 	}
 	modelForPrior = modelName
 	fmt.Fprintf(&b, "// %s copies an API object into the model.", name)
@@ -740,7 +762,7 @@ func fromAPIFunc(r *model.Resource, dataSource bool) string {
 	} else {
 		fmt.Fprintf(&b, "func %s(ctx context.Context, obj *netbox.%s, prior *%s, out *%s, diags *diag.Diagnostics) {\n", name, r.ReadType, modelName, modelName)
 		if r.HasCustomFields {
-			b.WriteString("priorCustomFields := jsontypes.NewNormalizedNull()\nif prior != nil {\npriorCustomFields = prior.CustomFields\n}\n")
+			b.WriteString("priorCustomFields := types.DynamicNull()\nif prior != nil {\npriorCustomFields = prior.CustomFields\n}\n")
 		}
 	}
 	b.WriteString("_ = ctx\n")
@@ -836,6 +858,8 @@ func nullExpr(a model.Attr) string {
 		return "timetypes.NewRFC3339Null()"
 	case "jsontypes.Normalized":
 		return "jsontypes.NewNormalizedNull()"
+	case "types.Dynamic":
+		return "types.DynamicNull()"
 	case "types.Set":
 		return "types.SetNull(types.StringType)"
 	case "types.List":

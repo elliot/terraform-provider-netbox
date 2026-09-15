@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -43,24 +43,24 @@ var l2vpnStatusValues = []string{
 
 // L2vpnModel is the Terraform state of netbox_l2vpn.
 type L2vpnModel struct {
-	Id              types.Int64          `tfsdk:"id"`
-	Identifier      types.Int64          `tfsdk:"identifier"`
-	Name            types.String         `tfsdk:"name"`
-	Slug            types.String         `tfsdk:"slug"`
-	Type            types.String         `tfsdk:"type"`
-	Status          types.String         `tfsdk:"status"`
-	ImportTargetIds types.Set            `tfsdk:"import_target_ids"`
-	ExportTargetIds types.Set            `tfsdk:"export_target_ids"`
-	Description     types.String         `tfsdk:"description"`
-	OwnerId         types.Int64          `tfsdk:"owner_id"`
-	Comments        types.String         `tfsdk:"comments"`
-	TenantId        types.Int64          `tfsdk:"tenant_id"`
-	Tags            types.Set            `tfsdk:"tags"`
-	CustomFields    jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url             types.String         `tfsdk:"url"`
-	Display         types.String         `tfsdk:"display"`
-	Created         timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated     timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id              types.Int64       `tfsdk:"id"`
+	Identifier      types.Int64       `tfsdk:"identifier"`
+	Name            types.String      `tfsdk:"name"`
+	Slug            types.String      `tfsdk:"slug"`
+	Type            types.String      `tfsdk:"type"`
+	Status          types.String      `tfsdk:"status"`
+	ImportTargetIds types.Set         `tfsdk:"import_target_ids"`
+	ExportTargetIds types.Set         `tfsdk:"export_target_ids"`
+	Description     types.String      `tfsdk:"description"`
+	OwnerId         types.Int64       `tfsdk:"owner_id"`
+	Comments        types.String      `tfsdk:"comments"`
+	TenantId        types.Int64       `tfsdk:"tenant_id"`
+	Tags            types.Set         `tfsdk:"tags"`
+	CustomFields    types.Dynamic     `tfsdk:"custom_fields"`
+	Url             types.String      `tfsdk:"url"`
+	Display         types.String      `tfsdk:"display"`
+	Created         timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated     timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -73,6 +73,7 @@ var (
 // L2vpnResource manages netbox_l2vpn objects (/api/vpn/l2vpns/).
 type L2vpnResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewL2vpnResource returns a new netbox_l2vpn resource.
@@ -107,6 +108,7 @@ func (r *L2vpnResource) Configure(_ context.Context, req resource.ConfigureReque
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // l2vpnResourceAttributes returns the schema attributes of netbox_l2vpn.
@@ -187,9 +189,8 @@ func l2vpnResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -221,7 +222,7 @@ func (r *L2vpnResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := l2vpnToCreate(ctx, &plan, &resp.Diagnostics)
+	body := l2vpnToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -230,6 +231,7 @@ func (r *L2vpnResource) Create(ctx context.Context, req resource.CreateRequest, 
 		resp.Diagnostics.AddError("Error creating netbox_l2vpn", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state L2vpnModel
 	l2vpnFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -281,7 +283,7 @@ func (r *L2vpnResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := l2vpnToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := l2vpnToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -290,6 +292,7 @@ func (r *L2vpnResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Error updating netbox_l2vpn", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out L2vpnModel
 	l2vpnFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -323,7 +326,8 @@ func (r *L2vpnResource) ImportState(ctx context.Context, req resource.ImportStat
 }
 
 // l2vpnToCreate builds the WritableL2VPNRequest request body from the plan.
-func l2vpnToCreate(ctx context.Context, plan *L2vpnModel, diags *diag.Diagnostics) *netbox.WritableL2VPNRequest {
+func l2vpnToCreate(ctx context.Context, plan *L2vpnModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableL2VPNRequest {
+	const objectType = "vpn.l2vpn"
 	body := netbox.NewWritableL2VPNRequest(plan.Name.ValueString(), plan.Slug.ValueString(), plan.Type.ValueString())
 	if conv.Known(plan.Identifier) {
 		body.SetIdentifier(plan.Identifier.ValueInt64())
@@ -353,13 +357,14 @@ func l2vpnToCreate(ctx context.Context, plan *L2vpnModel, diags *diag.Diagnostic
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // l2vpnToPatch builds the PatchedWritableL2VPNRequest request body with every attribute whose planned value differs from state.
-func l2vpnToPatch(ctx context.Context, plan, state *L2vpnModel, diags *diag.Diagnostics) *netbox.PatchedWritableL2VPNRequest {
+func l2vpnToPatch(ctx context.Context, plan, state *L2vpnModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableL2VPNRequest {
+	const objectType = "vpn.l2vpn"
 	body := netbox.NewPatchedWritableL2VPNRequest()
 	if !plan.Identifier.Equal(state.Identifier) {
 		if conv.Known(plan.Identifier) {
@@ -427,7 +432,7 @@ func l2vpnToPatch(ctx context.Context, plan, state *L2vpnModel, diags *diag.Diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -435,7 +440,7 @@ func l2vpnToPatch(ctx context.Context, plan, state *L2vpnModel, diags *diag.Diag
 
 // l2vpnFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func l2vpnFromAPI(ctx context.Context, obj *netbox.L2VPN, prior *L2vpnModel, out *L2vpnModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -453,7 +458,7 @@ func l2vpnFromAPI(ctx context.Context, obj *netbox.L2VPN, prior *L2vpnModel, out
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *L2vpnModel) types.String { return m.Comments }), false)
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

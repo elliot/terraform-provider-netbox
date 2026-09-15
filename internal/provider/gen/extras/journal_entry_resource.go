@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -22,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -35,18 +35,18 @@ var journalEntryKindValues = []string{
 
 // JournalEntryModel is the Terraform state of netbox_journal_entry.
 type JournalEntryModel struct {
-	Id                 types.Int64          `tfsdk:"id"`
-	AssignedObjectType types.String         `tfsdk:"assigned_object_type"`
-	AssignedObjectId   types.Int64          `tfsdk:"assigned_object_id"`
-	CreatedById        types.Int64          `tfsdk:"created_by_id"`
-	Kind               types.String         `tfsdk:"kind"`
-	Comments           types.String         `tfsdk:"comments"`
-	Tags               types.Set            `tfsdk:"tags"`
-	CustomFields       jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url                types.String         `tfsdk:"url"`
-	Display            types.String         `tfsdk:"display"`
-	Created            timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                 types.Int64       `tfsdk:"id"`
+	AssignedObjectType types.String      `tfsdk:"assigned_object_type"`
+	AssignedObjectId   types.Int64       `tfsdk:"assigned_object_id"`
+	CreatedById        types.Int64       `tfsdk:"created_by_id"`
+	Kind               types.String      `tfsdk:"kind"`
+	Comments           types.String      `tfsdk:"comments"`
+	Tags               types.Set         `tfsdk:"tags"`
+	CustomFields       types.Dynamic     `tfsdk:"custom_fields"`
+	Url                types.String      `tfsdk:"url"`
+	Display            types.String      `tfsdk:"display"`
+	Created            timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated        timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -59,6 +59,7 @@ var (
 // JournalEntryResource manages netbox_journal_entry objects (/api/extras/journal-entries/).
 type JournalEntryResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewJournalEntryResource returns a new netbox_journal_entry resource.
@@ -93,6 +94,7 @@ func (r *JournalEntryResource) Configure(_ context.Context, req resource.Configu
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // journalEntryResourceAttributes returns the schema attributes of netbox_journal_entry.
@@ -135,9 +137,8 @@ func journalEntryResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -169,7 +170,7 @@ func (r *JournalEntryResource) Create(ctx context.Context, req resource.CreateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := journalEntryToCreate(ctx, &plan, &resp.Diagnostics)
+	body := journalEntryToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -178,6 +179,7 @@ func (r *JournalEntryResource) Create(ctx context.Context, req resource.CreateRe
 		resp.Diagnostics.AddError("Error creating netbox_journal_entry", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state JournalEntryModel
 	journalEntryFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -229,7 +231,7 @@ func (r *JournalEntryResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := journalEntryToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := journalEntryToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -238,6 +240,7 @@ func (r *JournalEntryResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Error updating netbox_journal_entry", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out JournalEntryModel
 	journalEntryFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -271,7 +274,8 @@ func (r *JournalEntryResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 // journalEntryToCreate builds the WritableJournalEntryRequest request body from the plan.
-func journalEntryToCreate(ctx context.Context, plan *JournalEntryModel, diags *diag.Diagnostics) *netbox.WritableJournalEntryRequest {
+func journalEntryToCreate(ctx context.Context, plan *JournalEntryModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableJournalEntryRequest {
+	const objectType = "extras.journalentry"
 	body := netbox.NewWritableJournalEntryRequest(plan.AssignedObjectType.ValueString(), plan.AssignedObjectId.ValueInt64(), plan.Comments.ValueString())
 	if conv.Known(plan.CreatedById) {
 		body.SetCreatedBy(conv.Int32(plan.CreatedById))
@@ -283,13 +287,14 @@ func journalEntryToCreate(ctx context.Context, plan *JournalEntryModel, diags *d
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // journalEntryToPatch builds the PatchedWritableJournalEntryRequest request body with every attribute whose planned value differs from state.
-func journalEntryToPatch(ctx context.Context, plan, state *JournalEntryModel, diags *diag.Diagnostics) *netbox.PatchedWritableJournalEntryRequest {
+func journalEntryToPatch(ctx context.Context, plan, state *JournalEntryModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableJournalEntryRequest {
+	const objectType = "extras.journalentry"
 	body := netbox.NewPatchedWritableJournalEntryRequest()
 	if !plan.AssignedObjectType.Equal(state.AssignedObjectType) {
 		if conv.Known(plan.AssignedObjectType) {
@@ -323,7 +328,7 @@ func journalEntryToPatch(ctx context.Context, plan, state *JournalEntryModel, di
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -331,7 +336,7 @@ func journalEntryToPatch(ctx context.Context, plan, state *JournalEntryModel, di
 
 // journalEntryFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func journalEntryFromAPI(ctx context.Context, obj *netbox.JournalEntry, prior *JournalEntryModel, out *JournalEntryModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -343,7 +348,7 @@ func journalEntryFromAPI(ctx context.Context, obj *netbox.JournalEntry, prior *J
 	out.Kind = conv.Choice(obj.GetKindOk())
 	out.Comments = conv.StringKeep(conv.String(obj.GetCommentsOk()), conv.PriorString(prior, func(m *JournalEntryModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

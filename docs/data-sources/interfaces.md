@@ -64,7 +64,7 @@ Read-Only:
 - `count_fhrp_groups` (Number) Count Fhrp Groups.
 - `count_ipaddresses` (Number) Count Ipaddresses.
 - `created` (String) Created.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `device_id` (Number) ID of the Device (`netbox_device`).
 - `display` (String) Display.

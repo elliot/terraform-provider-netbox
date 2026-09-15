@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -52,26 +52,26 @@ var wirelessLinkDistanceUnitValues = []string{
 
 // WirelessLinkModel is the Terraform state of netbox_wireless_link.
 type WirelessLinkModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	InterfaceAId types.Int64          `tfsdk:"interface_a_id"`
-	InterfaceBId types.Int64          `tfsdk:"interface_b_id"`
-	Ssid         types.String         `tfsdk:"ssid"`
-	Status       types.String         `tfsdk:"status"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	AuthType     types.String         `tfsdk:"auth_type"`
-	AuthCipher   types.String         `tfsdk:"auth_cipher"`
-	AuthPsk      types.String         `tfsdk:"auth_psk"`
-	Distance     types.Float64        `tfsdk:"distance"`
-	DistanceUnit types.String         `tfsdk:"distance_unit"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	InterfaceAId types.Int64       `tfsdk:"interface_a_id"`
+	InterfaceBId types.Int64       `tfsdk:"interface_b_id"`
+	Ssid         types.String      `tfsdk:"ssid"`
+	Status       types.String      `tfsdk:"status"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	AuthType     types.String      `tfsdk:"auth_type"`
+	AuthCipher   types.String      `tfsdk:"auth_cipher"`
+	AuthPsk      types.String      `tfsdk:"auth_psk"`
+	Distance     types.Float64     `tfsdk:"distance"`
+	DistanceUnit types.String      `tfsdk:"distance_unit"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -84,6 +84,7 @@ var (
 // WirelessLinkResource manages netbox_wireless_link objects (/api/wireless/wireless-links/).
 type WirelessLinkResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewWirelessLinkResource returns a new netbox_wireless_link resource.
@@ -118,6 +119,7 @@ func (r *WirelessLinkResource) Configure(_ context.Context, req resource.Configu
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // wirelessLinkResourceAttributes returns the schema attributes of netbox_wireless_link.
@@ -212,9 +214,8 @@ func wirelessLinkResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -246,7 +247,7 @@ func (r *WirelessLinkResource) Create(ctx context.Context, req resource.CreateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := wirelessLinkToCreate(ctx, &plan, &resp.Diagnostics)
+	body := wirelessLinkToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -255,6 +256,7 @@ func (r *WirelessLinkResource) Create(ctx context.Context, req resource.CreateRe
 		resp.Diagnostics.AddError("Error creating netbox_wireless_link", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state WirelessLinkModel
 	wirelessLinkFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -306,7 +308,7 @@ func (r *WirelessLinkResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := wirelessLinkToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := wirelessLinkToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -315,6 +317,7 @@ func (r *WirelessLinkResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Error updating netbox_wireless_link", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out WirelessLinkModel
 	wirelessLinkFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -348,7 +351,8 @@ func (r *WirelessLinkResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 // wirelessLinkToCreate builds the WritableWirelessLinkRequest request body from the plan.
-func wirelessLinkToCreate(ctx context.Context, plan *WirelessLinkModel, diags *diag.Diagnostics) *netbox.WritableWirelessLinkRequest {
+func wirelessLinkToCreate(ctx context.Context, plan *WirelessLinkModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableWirelessLinkRequest {
+	const objectType = "wireless.wirelesslink"
 	body := netbox.NewWritableWirelessLinkRequest(conv.Int32(plan.InterfaceAId), conv.Int32(plan.InterfaceBId))
 	if !plan.Ssid.IsUnknown() {
 		body.SetSsid(plan.Ssid.ValueString())
@@ -387,13 +391,14 @@ func wirelessLinkToCreate(ctx context.Context, plan *WirelessLinkModel, diags *d
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // wirelessLinkToPatch builds the PatchedWritableWirelessLinkRequest request body with every attribute whose planned value differs from state.
-func wirelessLinkToPatch(ctx context.Context, plan, state *WirelessLinkModel, diags *diag.Diagnostics) *netbox.PatchedWritableWirelessLinkRequest {
+func wirelessLinkToPatch(ctx context.Context, plan, state *WirelessLinkModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableWirelessLinkRequest {
+	const objectType = "wireless.wirelesslink"
 	body := netbox.NewPatchedWritableWirelessLinkRequest()
 	if !plan.InterfaceAId.Equal(state.InterfaceAId) {
 		if conv.Known(plan.InterfaceAId) {
@@ -471,7 +476,7 @@ func wirelessLinkToPatch(ctx context.Context, plan, state *WirelessLinkModel, di
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -479,7 +484,7 @@ func wirelessLinkToPatch(ctx context.Context, plan, state *WirelessLinkModel, di
 
 // wirelessLinkFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func wirelessLinkFromAPI(ctx context.Context, obj *netbox.WirelessLink, prior *WirelessLinkModel, out *WirelessLinkModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -499,7 +504,7 @@ func wirelessLinkFromAPI(ctx context.Context, obj *netbox.WirelessLink, prior *W
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *WirelessLinkModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

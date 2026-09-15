@@ -24,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -84,7 +85,7 @@ type DeviceModel struct {
 	ConfigTemplateId types.Int64          `tfsdk:"config_template_id"`
 	LocalContextData jsontypes.Normalized `tfsdk:"local_context_data"`
 	Tags             types.Set            `tfsdk:"tags"`
-	CustomFields     jsontypes.Normalized `tfsdk:"custom_fields"`
+	CustomFields     types.Dynamic        `tfsdk:"custom_fields"`
 	Url              types.String         `tfsdk:"url"`
 	Display          types.String         `tfsdk:"display"`
 	Created          timetypes.RFC3339    `tfsdk:"created"`
@@ -101,6 +102,7 @@ var (
 // DeviceResource manages netbox_device objects (/api/dcim/devices/).
 type DeviceResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewDeviceResource returns a new netbox_device resource.
@@ -135,6 +137,7 @@ func (r *DeviceResource) Configure(_ context.Context, req resource.ConfigureRequ
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // deviceResourceAttributes returns the schema attributes of netbox_device.
@@ -305,9 +308,8 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -339,7 +341,7 @@ func (r *DeviceResource) Create(ctx context.Context, req resource.CreateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := deviceToCreate(ctx, &plan, &resp.Diagnostics)
+	body := deviceToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -348,6 +350,7 @@ func (r *DeviceResource) Create(ctx context.Context, req resource.CreateRequest,
 		resp.Diagnostics.AddError("Error creating netbox_device", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state DeviceModel
 	deviceFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -399,7 +402,7 @@ func (r *DeviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := deviceToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := deviceToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -408,6 +411,7 @@ func (r *DeviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Error updating netbox_device", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out DeviceModel
 	deviceFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -441,7 +445,8 @@ func (r *DeviceResource) ImportState(ctx context.Context, req resource.ImportSta
 }
 
 // deviceToCreate builds the WritableDeviceRequest request body from the plan.
-func deviceToCreate(ctx context.Context, plan *DeviceModel, diags *diag.Diagnostics) *netbox.WritableDeviceRequest {
+func deviceToCreate(ctx context.Context, plan *DeviceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableDeviceRequest {
+	const objectType = "dcim.device"
 	body := netbox.NewWritableDeviceRequest(conv.Int32(plan.DeviceTypeId), conv.Int32(plan.RoleId), conv.Int32(plan.SiteId))
 	if conv.Known(plan.Name) {
 		body.SetName(plan.Name.ValueString())
@@ -525,13 +530,14 @@ func deviceToCreate(ctx context.Context, plan *DeviceModel, diags *diag.Diagnost
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // deviceToPatch builds the PatchedWritableDeviceRequest request body with every attribute whose planned value differs from state.
-func deviceToPatch(ctx context.Context, plan, state *DeviceModel, diags *diag.Diagnostics) *netbox.PatchedWritableDeviceRequest {
+func deviceToPatch(ctx context.Context, plan, state *DeviceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableDeviceRequest {
+	const objectType = "dcim.device"
 	body := netbox.NewPatchedWritableDeviceRequest()
 	if !plan.Name.Equal(state.Name) {
 		if plan.Name.IsNull() {
@@ -707,7 +713,7 @@ func deviceToPatch(ctx context.Context, plan, state *DeviceModel, diags *diag.Di
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -715,7 +721,7 @@ func deviceToPatch(ctx context.Context, plan, state *DeviceModel, diags *diag.Di
 
 // deviceFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func deviceFromAPI(ctx context.Context, obj *netbox.Device, prior *DeviceModel, out *DeviceModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -751,7 +757,7 @@ func deviceFromAPI(ctx context.Context, obj *netbox.Device, prior *DeviceModel, 
 	out.ConfigTemplateId = conv.BriefID(obj.GetConfigTemplateOk())
 	out.LocalContextData = conv.JSONFromAPIWithPrior(obj.GetLocalContextData(), conv.PriorJSON(prior, func(m *DeviceModel) jsontypes.Normalized { return m.LocalContextData }))
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

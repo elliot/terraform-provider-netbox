@@ -52,9 +52,10 @@ resource "netbox_site" "dc1" {
   status    = "active"
   tenant_id = netbox_tenant.acme.id
   tags      = ["managed-by-terraform"]
-  custom_fields = jsonencode({
+  custom_fields = {
     cost_center = "CC-42"
-  })
+    owner_site  = 12 # object-typed field: the related object's ID
+  }
 }
 
 data "netbox_prefixes" "dc1" {
@@ -86,9 +87,13 @@ data "netbox_prefixes" "dc1" {
 * Foreign keys are numeric IDs named `<field>_id`; many-to-many relations are sets named `<field>_ids`.
   Generic relations keep `*_object_type` (`"dcim.interface"`) and `*_object_id`.
 * `tags` is a set of tag **slugs**.
-* `custom_fields` and other free-form JSON fields (`local_context_data`, `data`, ...) are JSON strings;
-  only the custom-field keys present in your configuration are tracked, so fields managed elsewhere never
-  cause drift. Selection fields, which 4.7 returns as `{value,label}` objects, are unwrapped to their value.
+* `custom_fields` is a native object (`{ cost_center = "CC-42", vlan_id = 5, peers = [3, 7] }`): selection
+  fields take the choice value, object fields the related object ID, multi-value fields a list and JSON fields
+  any value. Field names are validated against the NetBox definitions before anything is sent, and only the keys
+  present in your configuration are tracked, so fields managed elsewhere never cause drift. Data sources expose
+  every field as a JSON string (`jsondecode(data.netbox_site.x.custom_fields)`), because dynamic values cannot
+  be nested in list results. `netbox_custom_field_value` sets a single field on objects this configuration does not manage.
+* Other free-form JSON fields (`local_context_data`, `data`, `parameters`, ...) are JSON strings (`jsonencode({...})`).
 * Choice fields take the machine value (`active`, `1000base-t`, ...); attributes with a server-side default
   are `Optional` + `Computed`.
 * Every resource can be imported by ID (`terraform import netbox_site.x 12`) or with an `import` block using

@@ -20,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -57,6 +58,7 @@ var (
 // ConsoleServerPortTemplateResource manages netbox_console_server_port_template objects (/api/dcim/console-server-port-templates/).
 type ConsoleServerPortTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewConsoleServerPortTemplateResource returns a new netbox_console_server_port_template resource.
@@ -93,6 +95,7 @@ func (r *ConsoleServerPortTemplateResource) Configure(_ context.Context, req res
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // consoleServerPortTemplateResourceAttributes returns the schema attributes of netbox_console_server_port_template.
@@ -175,6 +178,7 @@ func (r *ConsoleServerPortTemplateResource) Create(ctx context.Context, req reso
 		resp.Diagnostics.AddError("Error creating netbox_console_server_port_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ConsoleServerPortTemplateModel
 	consoleServerPortTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -235,6 +239,7 @@ func (r *ConsoleServerPortTemplateResource) Update(ctx context.Context, req reso
 		resp.Diagnostics.AddError("Error updating netbox_console_server_port_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ConsoleServerPortTemplateModel
 	consoleServerPortTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

@@ -45,7 +45,7 @@ resource "netbox_ipsec_policy" "branch" {
 ### Optional
 
 - `comments` (String) Comments. Defaults to an empty string.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `description` (String) Description. Defaults to an empty string.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `pfs_group` (Number) Diffie-Hellman group for Perfect Forward Secrecy. Valid values: `1`, `2`, `5`, `14`, `15`, `16`, `17`, `18`, `19`, `20`, `21`, `22`, `23`, `24`, `25`, `26`, `27`, `28`, `29`, `30`, `31`, `32`, `33`, `34`. Defaults to the NetBox server default when omitted.

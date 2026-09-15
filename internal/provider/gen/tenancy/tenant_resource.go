@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,19 +32,19 @@ func init() { provider.RegisterResource(NewTenantResource) }
 
 // TenantModel is the Terraform state of netbox_tenant.
 type TenantModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	GroupId      types.Int64          `tfsdk:"group_id"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	GroupId      types.Int64       `tfsdk:"group_id"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -57,6 +57,7 @@ var (
 // TenantResource manages netbox_tenant objects (/api/tenancy/tenants/).
 type TenantResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewTenantResource returns a new netbox_tenant resource.
@@ -91,6 +92,7 @@ func (r *TenantResource) Configure(_ context.Context, req resource.ConfigureRequ
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // tenantResourceAttributes returns the schema attributes of netbox_tenant.
@@ -139,9 +141,8 @@ func tenantResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -173,7 +174,7 @@ func (r *TenantResource) Create(ctx context.Context, req resource.CreateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := tenantToCreate(ctx, &plan, &resp.Diagnostics)
+	body := tenantToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -182,6 +183,7 @@ func (r *TenantResource) Create(ctx context.Context, req resource.CreateRequest,
 		resp.Diagnostics.AddError("Error creating netbox_tenant", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state TenantModel
 	tenantFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -233,7 +235,7 @@ func (r *TenantResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := tenantToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := tenantToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -242,6 +244,7 @@ func (r *TenantResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Error updating netbox_tenant", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out TenantModel
 	tenantFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -275,7 +278,8 @@ func (r *TenantResource) ImportState(ctx context.Context, req resource.ImportSta
 }
 
 // tenantToCreate builds the TenantRequest request body from the plan.
-func tenantToCreate(ctx context.Context, plan *TenantModel, diags *diag.Diagnostics) *netbox.TenantRequest {
+func tenantToCreate(ctx context.Context, plan *TenantModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.TenantRequest {
+	const objectType = "tenancy.tenant"
 	body := netbox.NewTenantRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.GroupId) {
 		body.SetGroup(conv.Int32(plan.GroupId))
@@ -293,13 +297,14 @@ func tenantToCreate(ctx context.Context, plan *TenantModel, diags *diag.Diagnost
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // tenantToPatch builds the PatchedTenantRequest request body with every attribute whose planned value differs from state.
-func tenantToPatch(ctx context.Context, plan, state *TenantModel, diags *diag.Diagnostics) *netbox.PatchedTenantRequest {
+func tenantToPatch(ctx context.Context, plan, state *TenantModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedTenantRequest {
+	const objectType = "tenancy.tenant"
 	body := netbox.NewPatchedTenantRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -342,7 +347,7 @@ func tenantToPatch(ctx context.Context, plan, state *TenantModel, diags *diag.Di
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -350,7 +355,7 @@ func tenantToPatch(ctx context.Context, plan, state *TenantModel, diags *diag.Di
 
 // tenantFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func tenantFromAPI(ctx context.Context, obj *netbox.Tenant, prior *TenantModel, out *TenantModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -363,7 +368,7 @@ func tenantFromAPI(ctx context.Context, obj *netbox.Tenant, prior *TenantModel, 
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *TenantModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

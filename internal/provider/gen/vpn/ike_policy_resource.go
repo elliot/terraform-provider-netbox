@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -40,21 +40,21 @@ var ikePolicyModeValues = []string{
 
 // IkePolicyModel is the Terraform state of netbox_ike_policy.
 type IkePolicyModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Description  types.String         `tfsdk:"description"`
-	Version      types.Int64          `tfsdk:"version"`
-	Mode         types.String         `tfsdk:"mode"`
-	ProposalIds  types.Set            `tfsdk:"proposal_ids"`
-	PresharedKey types.String         `tfsdk:"preshared_key"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Description  types.String      `tfsdk:"description"`
+	Version      types.Int64       `tfsdk:"version"`
+	Mode         types.String      `tfsdk:"mode"`
+	ProposalIds  types.Set         `tfsdk:"proposal_ids"`
+	PresharedKey types.String      `tfsdk:"preshared_key"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -67,6 +67,7 @@ var (
 // IkePolicyResource manages netbox_ike_policy objects (/api/vpn/ike-policies/).
 type IkePolicyResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewIkePolicyResource returns a new netbox_ike_policy resource.
@@ -101,6 +102,7 @@ func (r *IkePolicyResource) Configure(_ context.Context, req resource.ConfigureR
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // ikePolicyResourceAttributes returns the schema attributes of netbox_ike_policy.
@@ -165,9 +167,8 @@ func ikePolicyResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -199,7 +200,7 @@ func (r *IkePolicyResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := ikePolicyToCreate(ctx, &plan, &resp.Diagnostics)
+	body := ikePolicyToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -208,6 +209,7 @@ func (r *IkePolicyResource) Create(ctx context.Context, req resource.CreateReque
 		resp.Diagnostics.AddError("Error creating netbox_ike_policy", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state IkePolicyModel
 	ikePolicyFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -259,7 +261,7 @@ func (r *IkePolicyResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ikePolicyToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := ikePolicyToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -268,6 +270,7 @@ func (r *IkePolicyResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Error updating netbox_ike_policy", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out IkePolicyModel
 	ikePolicyFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -301,7 +304,8 @@ func (r *IkePolicyResource) ImportState(ctx context.Context, req resource.Import
 }
 
 // ikePolicyToCreate builds the WritableIKEPolicyRequest request body from the plan.
-func ikePolicyToCreate(ctx context.Context, plan *IkePolicyModel, diags *diag.Diagnostics) *netbox.WritableIKEPolicyRequest {
+func ikePolicyToCreate(ctx context.Context, plan *IkePolicyModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableIKEPolicyRequest {
+	const objectType = "vpn.ikepolicy"
 	body := netbox.NewWritableIKEPolicyRequest(plan.Name.ValueString(), conv.Int32(plan.Version))
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -325,13 +329,14 @@ func ikePolicyToCreate(ctx context.Context, plan *IkePolicyModel, diags *diag.Di
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // ikePolicyToPatch builds the PatchedWritableIKEPolicyRequest request body with every attribute whose planned value differs from state.
-func ikePolicyToPatch(ctx context.Context, plan, state *IkePolicyModel, diags *diag.Diagnostics) *netbox.PatchedWritableIKEPolicyRequest {
+func ikePolicyToPatch(ctx context.Context, plan, state *IkePolicyModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableIKEPolicyRequest {
+	const objectType = "vpn.ikepolicy"
 	body := netbox.NewPatchedWritableIKEPolicyRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -382,7 +387,7 @@ func ikePolicyToPatch(ctx context.Context, plan, state *IkePolicyModel, diags *d
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -390,7 +395,7 @@ func ikePolicyToPatch(ctx context.Context, plan, state *IkePolicyModel, diags *d
 
 // ikePolicyFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func ikePolicyFromAPI(ctx context.Context, obj *netbox.IKEPolicy, prior *IkePolicyModel, out *IkePolicyModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -405,7 +410,7 @@ func ikePolicyFromAPI(ctx context.Context, obj *netbox.IKEPolicy, prior *IkePoli
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IkePolicyModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

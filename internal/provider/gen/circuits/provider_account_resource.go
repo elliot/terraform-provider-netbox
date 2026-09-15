@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -31,19 +31,19 @@ func init() { provider.RegisterResource(NewProviderAccountResource) }
 
 // ProviderAccountModel is the Terraform state of netbox_provider_account.
 type ProviderAccountModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	ProviderId   types.Int64          `tfsdk:"provider_id"`
-	Name         types.String         `tfsdk:"name"`
-	Account      types.String         `tfsdk:"account"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	ProviderId   types.Int64       `tfsdk:"provider_id"`
+	Name         types.String      `tfsdk:"name"`
+	Account      types.String      `tfsdk:"account"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -56,6 +56,7 @@ var (
 // ProviderAccountResource manages netbox_provider_account objects (/api/circuits/provider-accounts/).
 type ProviderAccountResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewProviderAccountResource returns a new netbox_provider_account resource.
@@ -90,6 +91,7 @@ func (r *ProviderAccountResource) Configure(_ context.Context, req resource.Conf
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // providerAccountResourceAttributes returns the schema attributes of netbox_provider_account.
@@ -140,9 +142,8 @@ func providerAccountResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -174,7 +175,7 @@ func (r *ProviderAccountResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := providerAccountToCreate(ctx, &plan, &resp.Diagnostics)
+	body := providerAccountToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -183,6 +184,7 @@ func (r *ProviderAccountResource) Create(ctx context.Context, req resource.Creat
 		resp.Diagnostics.AddError("Error creating netbox_provider_account", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ProviderAccountModel
 	providerAccountFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -234,7 +236,7 @@ func (r *ProviderAccountResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := providerAccountToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := providerAccountToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -243,6 +245,7 @@ func (r *ProviderAccountResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Error updating netbox_provider_account", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ProviderAccountModel
 	providerAccountFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -276,7 +279,8 @@ func (r *ProviderAccountResource) ImportState(ctx context.Context, req resource.
 }
 
 // providerAccountToCreate builds the ProviderAccountRequest request body from the plan.
-func providerAccountToCreate(ctx context.Context, plan *ProviderAccountModel, diags *diag.Diagnostics) *netbox.ProviderAccountRequest {
+func providerAccountToCreate(ctx context.Context, plan *ProviderAccountModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ProviderAccountRequest {
+	const objectType = "circuits.provideraccount"
 	body := netbox.NewProviderAccountRequest(conv.Int32(plan.ProviderId), plan.Account.ValueString())
 	if !plan.Name.IsUnknown() {
 		body.SetName(plan.Name.ValueString())
@@ -294,13 +298,14 @@ func providerAccountToCreate(ctx context.Context, plan *ProviderAccountModel, di
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // providerAccountToPatch builds the PatchedProviderAccountRequest request body with every attribute whose planned value differs from state.
-func providerAccountToPatch(ctx context.Context, plan, state *ProviderAccountModel, diags *diag.Diagnostics) *netbox.PatchedProviderAccountRequest {
+func providerAccountToPatch(ctx context.Context, plan, state *ProviderAccountModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedProviderAccountRequest {
+	const objectType = "circuits.provideraccount"
 	body := netbox.NewPatchedProviderAccountRequest()
 	if !plan.ProviderId.Equal(state.ProviderId) {
 		if conv.Known(plan.ProviderId) {
@@ -341,7 +346,7 @@ func providerAccountToPatch(ctx context.Context, plan, state *ProviderAccountMod
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -349,7 +354,7 @@ func providerAccountToPatch(ctx context.Context, plan, state *ProviderAccountMod
 
 // providerAccountFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func providerAccountFromAPI(ctx context.Context, obj *netbox.ProviderAccount, prior *ProviderAccountModel, out *ProviderAccountModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -362,7 +367,7 @@ func providerAccountFromAPI(ctx context.Context, obj *netbox.ProviderAccount, pr
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ProviderAccountModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

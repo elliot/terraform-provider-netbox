@@ -92,9 +92,9 @@ resource "netbox_site" "ams" {
 
   # Selection values are written as their choice value; NetBox 4.7 returns
   # them as {value,label} objects, which the provider unwraps again.
-  custom_fields = jsonencode({
+  custom_fields = {
     (local.cf_name) = "gold"
-  })
+  }
 
   depends_on = [netbox_custom_field.support_tier]
 }
@@ -223,7 +223,7 @@ resource "netbox_journal_entry" "commissioning" {
   assigned_object_type = "dcim.site"
   assigned_object_id   = netbox_site.ams.id
   kind                 = "info"
-  comments             = "${var.prefix}: site commissioned by Terraform; support tier ${jsondecode(netbox_site.ams.custom_fields)[local.cf_name]}"
+  comments             = "${var.prefix}: site commissioned by Terraform; support tier ${netbox_site.ams.custom_fields[local.cf_name]}"
 }
 
 # --------------------------------------------------------------- wireless

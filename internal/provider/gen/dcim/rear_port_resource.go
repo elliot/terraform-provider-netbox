@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -25,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -45,23 +45,23 @@ var rearPortTypeValues = []string{
 
 // RearPortModel is the Terraform state of netbox_rear_port.
 type RearPortModel struct {
-	Id            types.Int64          `tfsdk:"id"`
-	DeviceId      types.Int64          `tfsdk:"device_id"`
-	ModuleId      types.Int64          `tfsdk:"module_id"`
-	Name          types.String         `tfsdk:"name"`
-	Label         types.String         `tfsdk:"label"`
-	Type          types.String         `tfsdk:"type"`
-	Color         types.String         `tfsdk:"color"`
-	Positions     types.Int64          `tfsdk:"positions"`
-	Description   types.String         `tfsdk:"description"`
-	MarkConnected types.Bool           `tfsdk:"mark_connected"`
-	OwnerId       types.Int64          `tfsdk:"owner_id"`
-	Tags          types.Set            `tfsdk:"tags"`
-	CustomFields  jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url           types.String         `tfsdk:"url"`
-	Display       types.String         `tfsdk:"display"`
-	Created       timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id            types.Int64       `tfsdk:"id"`
+	DeviceId      types.Int64       `tfsdk:"device_id"`
+	ModuleId      types.Int64       `tfsdk:"module_id"`
+	Name          types.String      `tfsdk:"name"`
+	Label         types.String      `tfsdk:"label"`
+	Type          types.String      `tfsdk:"type"`
+	Color         types.String      `tfsdk:"color"`
+	Positions     types.Int64       `tfsdk:"positions"`
+	Description   types.String      `tfsdk:"description"`
+	MarkConnected types.Bool        `tfsdk:"mark_connected"`
+	OwnerId       types.Int64       `tfsdk:"owner_id"`
+	Tags          types.Set         `tfsdk:"tags"`
+	CustomFields  types.Dynamic     `tfsdk:"custom_fields"`
+	Url           types.String      `tfsdk:"url"`
+	Display       types.String      `tfsdk:"display"`
+	Created       timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated   timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -74,6 +74,7 @@ var (
 // RearPortResource manages netbox_rear_port objects (/api/dcim/rear-ports/).
 type RearPortResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewRearPortResource returns a new netbox_rear_port resource.
@@ -108,6 +109,7 @@ func (r *RearPortResource) Configure(_ context.Context, req resource.ConfigureRe
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // rearPortResourceAttributes returns the schema attributes of netbox_rear_port.
@@ -180,9 +182,8 @@ func rearPortResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -214,7 +215,7 @@ func (r *RearPortResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := rearPortToCreate(ctx, &plan, &resp.Diagnostics)
+	body := rearPortToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -223,6 +224,7 @@ func (r *RearPortResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Error creating netbox_rear_port", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state RearPortModel
 	rearPortFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -274,7 +276,7 @@ func (r *RearPortResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rearPortToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := rearPortToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -283,6 +285,7 @@ func (r *RearPortResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Error updating netbox_rear_port", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out RearPortModel
 	rearPortFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -316,7 +319,8 @@ func (r *RearPortResource) ImportState(ctx context.Context, req resource.ImportS
 }
 
 // rearPortToCreate builds the WritableRearPortRequest request body from the plan.
-func rearPortToCreate(ctx context.Context, plan *RearPortModel, diags *diag.Diagnostics) *netbox.WritableRearPortRequest {
+func rearPortToCreate(ctx context.Context, plan *RearPortModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableRearPortRequest {
+	const objectType = "dcim.rearport"
 	body := netbox.NewWritableRearPortRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString(), plan.Type.ValueString())
 	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
@@ -343,13 +347,14 @@ func rearPortToCreate(ctx context.Context, plan *RearPortModel, diags *diag.Diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // rearPortToPatch builds the PatchedWritableRearPortRequest request body with every attribute whose planned value differs from state.
-func rearPortToPatch(ctx context.Context, plan, state *RearPortModel, diags *diag.Diagnostics) *netbox.PatchedWritableRearPortRequest {
+func rearPortToPatch(ctx context.Context, plan, state *RearPortModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableRearPortRequest {
+	const objectType = "dcim.rearport"
 	body := netbox.NewPatchedWritableRearPortRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -412,7 +417,7 @@ func rearPortToPatch(ctx context.Context, plan, state *RearPortModel, diags *dia
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -420,7 +425,7 @@ func rearPortToPatch(ctx context.Context, plan, state *RearPortModel, diags *dia
 
 // rearPortFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func rearPortFromAPI(ctx context.Context, obj *netbox.RearPort, prior *RearPortModel, out *RearPortModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -437,7 +442,7 @@ func rearPortFromAPI(ctx context.Context, obj *netbox.RearPort, prior *RearPortM
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

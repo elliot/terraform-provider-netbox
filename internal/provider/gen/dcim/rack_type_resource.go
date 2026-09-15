@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -27,6 +26,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -58,34 +58,34 @@ var rackTypeCoolingCapabilityValues = []string{
 
 // RackTypeModel is the Terraform state of netbox_rack_type.
 type RackTypeModel struct {
-	Id                types.Int64          `tfsdk:"id"`
-	ManufacturerId    types.Int64          `tfsdk:"manufacturer_id"`
-	Model             types.String         `tfsdk:"model"`
-	Slug              types.String         `tfsdk:"slug"`
-	Description       types.String         `tfsdk:"description"`
-	FormFactor        types.String         `tfsdk:"form_factor"`
-	Width             types.Int64          `tfsdk:"width"`
-	UHeight           types.Int64          `tfsdk:"u_height"`
-	StartingUnit      types.Int64          `tfsdk:"starting_unit"`
-	DescUnits         types.Bool           `tfsdk:"desc_units"`
-	OuterWidth        types.Int64          `tfsdk:"outer_width"`
-	OuterHeight       types.Int64          `tfsdk:"outer_height"`
-	OuterDepth        types.Int64          `tfsdk:"outer_depth"`
-	OuterUnit         types.String         `tfsdk:"outer_unit"`
-	Weight            types.Float64        `tfsdk:"weight"`
-	MaxWeight         types.Int64          `tfsdk:"max_weight"`
-	WeightUnit        types.String         `tfsdk:"weight_unit"`
-	MountingDepth     types.Int64          `tfsdk:"mounting_depth"`
-	CoolingCapability types.String         `tfsdk:"cooling_capability"`
-	CoolingCapacity   types.Float64        `tfsdk:"cooling_capacity"`
-	OwnerId           types.Int64          `tfsdk:"owner_id"`
-	Comments          types.String         `tfsdk:"comments"`
-	Tags              types.Set            `tfsdk:"tags"`
-	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
-	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                types.Int64       `tfsdk:"id"`
+	ManufacturerId    types.Int64       `tfsdk:"manufacturer_id"`
+	Model             types.String      `tfsdk:"model"`
+	Slug              types.String      `tfsdk:"slug"`
+	Description       types.String      `tfsdk:"description"`
+	FormFactor        types.String      `tfsdk:"form_factor"`
+	Width             types.Int64       `tfsdk:"width"`
+	UHeight           types.Int64       `tfsdk:"u_height"`
+	StartingUnit      types.Int64       `tfsdk:"starting_unit"`
+	DescUnits         types.Bool        `tfsdk:"desc_units"`
+	OuterWidth        types.Int64       `tfsdk:"outer_width"`
+	OuterHeight       types.Int64       `tfsdk:"outer_height"`
+	OuterDepth        types.Int64       `tfsdk:"outer_depth"`
+	OuterUnit         types.String      `tfsdk:"outer_unit"`
+	Weight            types.Float64     `tfsdk:"weight"`
+	MaxWeight         types.Int64       `tfsdk:"max_weight"`
+	WeightUnit        types.String      `tfsdk:"weight_unit"`
+	MountingDepth     types.Int64       `tfsdk:"mounting_depth"`
+	CoolingCapability types.String      `tfsdk:"cooling_capability"`
+	CoolingCapacity   types.Float64     `tfsdk:"cooling_capacity"`
+	OwnerId           types.Int64       `tfsdk:"owner_id"`
+	Comments          types.String      `tfsdk:"comments"`
+	Tags              types.Set         `tfsdk:"tags"`
+	CustomFields      types.Dynamic     `tfsdk:"custom_fields"`
+	Url               types.String      `tfsdk:"url"`
+	Display           types.String      `tfsdk:"display"`
+	Created           timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated       timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -98,6 +98,7 @@ var (
 // RackTypeResource manages netbox_rack_type objects (/api/dcim/rack-types/).
 type RackTypeResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewRackTypeResource returns a new netbox_rack_type resource.
@@ -132,6 +133,7 @@ func (r *RackTypeResource) Configure(_ context.Context, req resource.ConfigureRe
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // rackTypeResourceAttributes returns the schema attributes of netbox_rack_type.
@@ -273,9 +275,8 @@ func rackTypeResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -307,7 +308,7 @@ func (r *RackTypeResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := rackTypeToCreate(ctx, &plan, &resp.Diagnostics)
+	body := rackTypeToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -316,6 +317,7 @@ func (r *RackTypeResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Error creating netbox_rack_type", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state RackTypeModel
 	rackTypeFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -367,7 +369,7 @@ func (r *RackTypeResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rackTypeToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := rackTypeToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -376,6 +378,7 @@ func (r *RackTypeResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Error updating netbox_rack_type", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out RackTypeModel
 	rackTypeFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -409,7 +412,8 @@ func (r *RackTypeResource) ImportState(ctx context.Context, req resource.ImportS
 }
 
 // rackTypeToCreate builds the WritableRackTypeRequest request body from the plan.
-func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, diags *diag.Diagnostics) *netbox.WritableRackTypeRequest {
+func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableRackTypeRequest {
+	const objectType = "dcim.racktype"
 	body := netbox.NewWritableRackTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString(), plan.Slug.ValueString(), plan.FormFactor.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -466,13 +470,14 @@ func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, diags *diag.Diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // rackTypeToPatch builds the PatchedWritableRackTypeRequest request body with every attribute whose planned value differs from state.
-func rackTypeToPatch(ctx context.Context, plan, state *RackTypeModel, diags *diag.Diagnostics) *netbox.PatchedWritableRackTypeRequest {
+func rackTypeToPatch(ctx context.Context, plan, state *RackTypeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableRackTypeRequest {
+	const objectType = "dcim.racktype"
 	body := netbox.NewPatchedWritableRackTypeRequest()
 	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
 		if conv.Known(plan.ManufacturerId) {
@@ -588,7 +593,7 @@ func rackTypeToPatch(ctx context.Context, plan, state *RackTypeModel, diags *dia
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -596,7 +601,7 @@ func rackTypeToPatch(ctx context.Context, plan, state *RackTypeModel, diags *dia
 
 // rackTypeFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func rackTypeFromAPI(ctx context.Context, obj *netbox.RackType, prior *RackTypeModel, out *RackTypeModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -624,7 +629,7 @@ func rackTypeFromAPI(ctx context.Context, obj *netbox.RackType, prior *RackTypeM
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *RackTypeModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

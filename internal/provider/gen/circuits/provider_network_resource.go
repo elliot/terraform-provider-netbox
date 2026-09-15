@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -31,19 +31,19 @@ func init() { provider.RegisterResource(NewProviderNetworkResource) }
 
 // ProviderNetworkModel is the Terraform state of netbox_provider_network.
 type ProviderNetworkModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	ProviderId   types.Int64          `tfsdk:"provider_id"`
-	Name         types.String         `tfsdk:"name"`
-	ServiceId    types.String         `tfsdk:"service_id"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	ProviderId   types.Int64       `tfsdk:"provider_id"`
+	Name         types.String      `tfsdk:"name"`
+	ServiceId    types.String      `tfsdk:"service_id"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -56,6 +56,7 @@ var (
 // ProviderNetworkResource manages netbox_provider_network objects (/api/circuits/provider-networks/).
 type ProviderNetworkResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewProviderNetworkResource returns a new netbox_provider_network resource.
@@ -90,6 +91,7 @@ func (r *ProviderNetworkResource) Configure(_ context.Context, req resource.Conf
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // providerNetworkResourceAttributes returns the schema attributes of netbox_provider_network.
@@ -140,9 +142,8 @@ func providerNetworkResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -174,7 +175,7 @@ func (r *ProviderNetworkResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := providerNetworkToCreate(ctx, &plan, &resp.Diagnostics)
+	body := providerNetworkToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -183,6 +184,7 @@ func (r *ProviderNetworkResource) Create(ctx context.Context, req resource.Creat
 		resp.Diagnostics.AddError("Error creating netbox_provider_network", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ProviderNetworkModel
 	providerNetworkFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -234,7 +236,7 @@ func (r *ProviderNetworkResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := providerNetworkToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := providerNetworkToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -243,6 +245,7 @@ func (r *ProviderNetworkResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Error updating netbox_provider_network", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ProviderNetworkModel
 	providerNetworkFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -276,7 +279,8 @@ func (r *ProviderNetworkResource) ImportState(ctx context.Context, req resource.
 }
 
 // providerNetworkToCreate builds the ProviderNetworkRequest request body from the plan.
-func providerNetworkToCreate(ctx context.Context, plan *ProviderNetworkModel, diags *diag.Diagnostics) *netbox.ProviderNetworkRequest {
+func providerNetworkToCreate(ctx context.Context, plan *ProviderNetworkModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ProviderNetworkRequest {
+	const objectType = "circuits.providernetwork"
 	body := netbox.NewProviderNetworkRequest(conv.Int32(plan.ProviderId), plan.Name.ValueString())
 	if !plan.ServiceId.IsUnknown() {
 		body.SetServiceId(plan.ServiceId.ValueString())
@@ -294,13 +298,14 @@ func providerNetworkToCreate(ctx context.Context, plan *ProviderNetworkModel, di
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // providerNetworkToPatch builds the PatchedProviderNetworkRequest request body with every attribute whose planned value differs from state.
-func providerNetworkToPatch(ctx context.Context, plan, state *ProviderNetworkModel, diags *diag.Diagnostics) *netbox.PatchedProviderNetworkRequest {
+func providerNetworkToPatch(ctx context.Context, plan, state *ProviderNetworkModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedProviderNetworkRequest {
+	const objectType = "circuits.providernetwork"
 	body := netbox.NewPatchedProviderNetworkRequest()
 	if !plan.ProviderId.Equal(state.ProviderId) {
 		if conv.Known(plan.ProviderId) {
@@ -341,7 +346,7 @@ func providerNetworkToPatch(ctx context.Context, plan, state *ProviderNetworkMod
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -349,7 +354,7 @@ func providerNetworkToPatch(ctx context.Context, plan, state *ProviderNetworkMod
 
 // providerNetworkFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func providerNetworkFromAPI(ctx context.Context, obj *netbox.ProviderNetwork, prior *ProviderNetworkModel, out *ProviderNetworkModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -362,7 +367,7 @@ func providerNetworkFromAPI(ctx context.Context, obj *netbox.ProviderNetwork, pr
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ProviderNetworkModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

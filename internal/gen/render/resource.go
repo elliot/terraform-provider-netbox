@@ -46,6 +46,7 @@ const commonImports = `import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -76,6 +77,7 @@ func resourceFile(r *model.Resource, version string) (string, error) {
 // %[1]sResource manages %[2]s objects (%[3]s).
 type %[1]sResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // New%[1]sResource returns a new %[2]s resource.
@@ -110,6 +112,7 @@ func (r *%[1]sResource) Configure(_ context.Context, req resource.ConfigureReque
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 `, g, r.TFType(), r.Path, "_"+r.Name, q(resourceDescription(r)), lg)
@@ -122,13 +125,21 @@ func (r *%[1]sResource) Configure(_ context.Context, req resource.ConfigureReque
 	b.WriteString("}\n}\n\n")
 
 	// CRUD.
+	cfArg := ""
+	if r.HasCustomFields {
+		cfArg = "r.cf, "
+	}
+	invalidate := ""
+	if r.Path == "/api/extras/custom-fields/" {
+		invalidate = "\tr.cf.Invalidate() // definitions changed\n"
+	}
 	fmt.Fprintf(&b, `func (r *%[1]sResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan %[1]sModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := %[2]sToCreate(ctx, &plan, &resp.Diagnostics)
+	body := %[2]sToCreate(ctx, &plan, %[8]s&resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -137,6 +148,7 @@ func (r *%[1]sResource) Configure(_ context.Context, req resource.ConfigureReque
 		resp.Diagnostics.AddError("Error creating %[6]s", netbox.WrapError(err, res).Error())
 		return
 	}
+%[9]s
 	var state %[1]sModel
 	%[2]sFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -188,7 +200,7 @@ func (r *%[1]sResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := %[2]sToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := %[2]sToPatch(ctx, &plan, &state, %[8]s&resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -197,6 +209,7 @@ func (r *%[1]sResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Error updating %[6]s", netbox.WrapError(err, res).Error())
 		return
 	}
+%[9]s
 	var out %[1]sModel
 	%[2]sFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -223,13 +236,13 @@ func (r *%[1]sResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 			resp.Diagnostics.AddError("Error deleting %[6]s", werr.Error())
 		}
 	}
-}
+%[9]s}
 
 func (r *%[1]sResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	provider.ImportInt64ID(ctx, req, resp)
 }
 
-`, g, lg, r.Service, r.OpPrefix, r.CreateType, r.TFType(), r.PatchType)
+`, g, lg, r.Service, r.OpPrefix, r.CreateType, r.TFType(), r.PatchType, cfArg, invalidate)
 
 	// Conversions.
 	create, err := toAPIFunc(r, false)

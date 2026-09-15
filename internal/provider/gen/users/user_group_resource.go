@@ -19,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -44,6 +45,7 @@ var (
 // UserGroupResource manages netbox_user_group objects (/api/users/groups/).
 type UserGroupResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewUserGroupResource returns a new netbox_user_group resource.
@@ -78,6 +80,7 @@ func (r *UserGroupResource) Configure(_ context.Context, req resource.ConfigureR
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // userGroupResourceAttributes returns the schema attributes of netbox_user_group.
@@ -127,6 +130,7 @@ func (r *UserGroupResource) Create(ctx context.Context, req resource.CreateReque
 		resp.Diagnostics.AddError("Error creating netbox_user_group", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state UserGroupModel
 	userGroupFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -187,6 +191,7 @@ func (r *UserGroupResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Error updating netbox_user_group", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out UserGroupModel
 	userGroupFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

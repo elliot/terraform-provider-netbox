@@ -644,7 +644,7 @@ func defaultDescription(a *model.Attr) string {
 	case model.KindTags:
 		return "Slugs of the tags assigned to this object."
 	case model.KindCustomFields:
-		return "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked."
+		return "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions."
 	case model.KindJSON:
 		return fmt.Sprintf("%s as a JSON document (`jsonencode({...})`).", naming.Title(a.JSON))
 	}

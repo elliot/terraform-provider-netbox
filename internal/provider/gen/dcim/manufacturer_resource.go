@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,18 +32,18 @@ func init() { provider.RegisterResource(NewManufacturerResource) }
 
 // ManufacturerModel is the Terraform state of netbox_manufacturer.
 type ManufacturerModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -56,6 +56,7 @@ var (
 // ManufacturerResource manages netbox_manufacturer objects (/api/dcim/manufacturers/).
 type ManufacturerResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewManufacturerResource returns a new netbox_manufacturer resource.
@@ -90,6 +91,7 @@ func (r *ManufacturerResource) Configure(_ context.Context, req resource.Configu
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // manufacturerResourceAttributes returns the schema attributes of netbox_manufacturer.
@@ -134,9 +136,8 @@ func manufacturerResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -168,7 +169,7 @@ func (r *ManufacturerResource) Create(ctx context.Context, req resource.CreateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := manufacturerToCreate(ctx, &plan, &resp.Diagnostics)
+	body := manufacturerToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -177,6 +178,7 @@ func (r *ManufacturerResource) Create(ctx context.Context, req resource.CreateRe
 		resp.Diagnostics.AddError("Error creating netbox_manufacturer", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ManufacturerModel
 	manufacturerFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -228,7 +230,7 @@ func (r *ManufacturerResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := manufacturerToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := manufacturerToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -237,6 +239,7 @@ func (r *ManufacturerResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Error updating netbox_manufacturer", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ManufacturerModel
 	manufacturerFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -270,7 +273,8 @@ func (r *ManufacturerResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 // manufacturerToCreate builds the ManufacturerRequest request body from the plan.
-func manufacturerToCreate(ctx context.Context, plan *ManufacturerModel, diags *diag.Diagnostics) *netbox.ManufacturerRequest {
+func manufacturerToCreate(ctx context.Context, plan *ManufacturerModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ManufacturerRequest {
+	const objectType = "dcim.manufacturer"
 	body := netbox.NewManufacturerRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -285,13 +289,14 @@ func manufacturerToCreate(ctx context.Context, plan *ManufacturerModel, diags *d
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // manufacturerToPatch builds the PatchedManufacturerRequest request body with every attribute whose planned value differs from state.
-func manufacturerToPatch(ctx context.Context, plan, state *ManufacturerModel, diags *diag.Diagnostics) *netbox.PatchedManufacturerRequest {
+func manufacturerToPatch(ctx context.Context, plan, state *ManufacturerModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedManufacturerRequest {
+	const objectType = "dcim.manufacturer"
 	body := netbox.NewPatchedManufacturerRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -327,7 +332,7 @@ func manufacturerToPatch(ctx context.Context, plan, state *ManufacturerModel, di
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -335,7 +340,7 @@ func manufacturerToPatch(ctx context.Context, plan, state *ManufacturerModel, di
 
 // manufacturerFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func manufacturerFromAPI(ctx context.Context, obj *netbox.Manufacturer, prior *ManufacturerModel, out *ManufacturerModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -347,7 +352,7 @@ func manufacturerFromAPI(ctx context.Context, obj *netbox.Manufacturer, prior *M
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ManufacturerModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

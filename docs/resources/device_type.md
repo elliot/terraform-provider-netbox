@@ -44,7 +44,7 @@ resource "netbox_device_type" "c9300" {
 - `airflow` (String) Airflow. Valid values: `front-to-rear`, `rear-to-front`, `left-to-right`, `right-to-left`, `side-to-rear`, `rear-to-side`, `bottom-to-top`, `top-to-bottom`, `passive`, `mixed`. Defaults to the NetBox server default when omitted.
 - `comments` (String) Comments. Defaults to an empty string.
 - `cooling_method` (String) Cooling Method. Valid values: `air`, `liquid`, `hybrid`, `immersion`. Defaults to the NetBox server default when omitted.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `default_platform_id` (Number) ID of the Platform (`netbox_platform`).
 - `description` (String) Description. Defaults to an empty string.
 - `end_of_life` (String) The date after which this device type is no longer supported by the manufacturer.

@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -25,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -120,49 +120,49 @@ var interfacePoeTypeValues = []string{
 
 // InterfaceModel is the Terraform state of netbox_interface.
 type InterfaceModel struct {
-	Id                      types.Int64          `tfsdk:"id"`
-	DeviceId                types.Int64          `tfsdk:"device_id"`
-	VdcIds                  types.Set            `tfsdk:"vdc_ids"`
-	ModuleId                types.Int64          `tfsdk:"module_id"`
-	Name                    types.String         `tfsdk:"name"`
-	Label                   types.String         `tfsdk:"label"`
-	Type                    types.String         `tfsdk:"type"`
-	Channels                types.Int64          `tfsdk:"channels"`
-	ChannelId               types.Int64          `tfsdk:"channel_id"`
-	Enabled                 types.Bool           `tfsdk:"enabled"`
-	ParentId                types.Int64          `tfsdk:"parent_id"`
-	BridgeId                types.Int64          `tfsdk:"bridge_id"`
-	LagId                   types.Int64          `tfsdk:"lag_id"`
-	Mtu                     types.Int64          `tfsdk:"mtu"`
-	MacAddress              types.String         `tfsdk:"mac_address"`
-	PrimaryMacAddressId     types.Int64          `tfsdk:"primary_mac_address_id"`
-	Speed                   types.Int64          `tfsdk:"speed"`
-	Duplex                  types.String         `tfsdk:"duplex"`
-	Wwn                     types.String         `tfsdk:"wwn"`
-	MgmtOnly                types.Bool           `tfsdk:"mgmt_only"`
-	Description             types.String         `tfsdk:"description"`
-	Mode                    types.String         `tfsdk:"mode"`
-	RfRole                  types.String         `tfsdk:"rf_role"`
-	RfChannel               types.String         `tfsdk:"rf_channel"`
-	PoeMode                 types.String         `tfsdk:"poe_mode"`
-	PoeType                 types.String         `tfsdk:"poe_type"`
-	RfChannelFrequency      types.Float64        `tfsdk:"rf_channel_frequency"`
-	RfChannelWidth          types.Float64        `tfsdk:"rf_channel_width"`
-	TxPower                 types.Int64          `tfsdk:"tx_power"`
-	UntaggedVlanId          types.Int64          `tfsdk:"untagged_vlan_id"`
-	TaggedVlanIds           types.Set            `tfsdk:"tagged_vlan_ids"`
-	QinqSvlanId             types.Int64          `tfsdk:"qinq_svlan_id"`
-	VlanTranslationPolicyId types.Int64          `tfsdk:"vlan_translation_policy_id"`
-	MarkConnected           types.Bool           `tfsdk:"mark_connected"`
-	WirelessLanIds          types.Set            `tfsdk:"wireless_lan_ids"`
-	VrfId                   types.Int64          `tfsdk:"vrf_id"`
-	OwnerId                 types.Int64          `tfsdk:"owner_id"`
-	Tags                    types.Set            `tfsdk:"tags"`
-	CustomFields            jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url                     types.String         `tfsdk:"url"`
-	Display                 types.String         `tfsdk:"display"`
-	Created                 timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated             timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id                      types.Int64       `tfsdk:"id"`
+	DeviceId                types.Int64       `tfsdk:"device_id"`
+	VdcIds                  types.Set         `tfsdk:"vdc_ids"`
+	ModuleId                types.Int64       `tfsdk:"module_id"`
+	Name                    types.String      `tfsdk:"name"`
+	Label                   types.String      `tfsdk:"label"`
+	Type                    types.String      `tfsdk:"type"`
+	Channels                types.Int64       `tfsdk:"channels"`
+	ChannelId               types.Int64       `tfsdk:"channel_id"`
+	Enabled                 types.Bool        `tfsdk:"enabled"`
+	ParentId                types.Int64       `tfsdk:"parent_id"`
+	BridgeId                types.Int64       `tfsdk:"bridge_id"`
+	LagId                   types.Int64       `tfsdk:"lag_id"`
+	Mtu                     types.Int64       `tfsdk:"mtu"`
+	MacAddress              types.String      `tfsdk:"mac_address"`
+	PrimaryMacAddressId     types.Int64       `tfsdk:"primary_mac_address_id"`
+	Speed                   types.Int64       `tfsdk:"speed"`
+	Duplex                  types.String      `tfsdk:"duplex"`
+	Wwn                     types.String      `tfsdk:"wwn"`
+	MgmtOnly                types.Bool        `tfsdk:"mgmt_only"`
+	Description             types.String      `tfsdk:"description"`
+	Mode                    types.String      `tfsdk:"mode"`
+	RfRole                  types.String      `tfsdk:"rf_role"`
+	RfChannel               types.String      `tfsdk:"rf_channel"`
+	PoeMode                 types.String      `tfsdk:"poe_mode"`
+	PoeType                 types.String      `tfsdk:"poe_type"`
+	RfChannelFrequency      types.Float64     `tfsdk:"rf_channel_frequency"`
+	RfChannelWidth          types.Float64     `tfsdk:"rf_channel_width"`
+	TxPower                 types.Int64       `tfsdk:"tx_power"`
+	UntaggedVlanId          types.Int64       `tfsdk:"untagged_vlan_id"`
+	TaggedVlanIds           types.Set         `tfsdk:"tagged_vlan_ids"`
+	QinqSvlanId             types.Int64       `tfsdk:"qinq_svlan_id"`
+	VlanTranslationPolicyId types.Int64       `tfsdk:"vlan_translation_policy_id"`
+	MarkConnected           types.Bool        `tfsdk:"mark_connected"`
+	WirelessLanIds          types.Set         `tfsdk:"wireless_lan_ids"`
+	VrfId                   types.Int64       `tfsdk:"vrf_id"`
+	OwnerId                 types.Int64       `tfsdk:"owner_id"`
+	Tags                    types.Set         `tfsdk:"tags"`
+	CustomFields            types.Dynamic     `tfsdk:"custom_fields"`
+	Url                     types.String      `tfsdk:"url"`
+	Display                 types.String      `tfsdk:"display"`
+	Created                 timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated             timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -175,6 +175,7 @@ var (
 // InterfaceResource manages netbox_interface objects (/api/dcim/interfaces/).
 type InterfaceResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewInterfaceResource returns a new netbox_interface resource.
@@ -209,6 +210,7 @@ func (r *InterfaceResource) Configure(_ context.Context, req resource.ConfigureR
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // interfaceResourceAttributes returns the schema attributes of netbox_interface.
@@ -425,9 +427,8 @@ func interfaceResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -459,7 +460,7 @@ func (r *InterfaceResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := interfaceToCreate(ctx, &plan, &resp.Diagnostics)
+	body := interfaceToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -468,6 +469,7 @@ func (r *InterfaceResource) Create(ctx context.Context, req resource.CreateReque
 		resp.Diagnostics.AddError("Error creating netbox_interface", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state InterfaceModel
 	interfaceFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -519,7 +521,7 @@ func (r *InterfaceResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := interfaceToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := interfaceToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -528,6 +530,7 @@ func (r *InterfaceResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Error updating netbox_interface", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out InterfaceModel
 	interfaceFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -561,7 +564,8 @@ func (r *InterfaceResource) ImportState(ctx context.Context, req resource.Import
 }
 
 // interfaceToCreate builds the WritableInterfaceRequest request body from the plan.
-func interfaceToCreate(ctx context.Context, plan *InterfaceModel, diags *diag.Diagnostics) *netbox.WritableInterfaceRequest {
+func interfaceToCreate(ctx context.Context, plan *InterfaceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableInterfaceRequest {
+	const objectType = "dcim.interface"
 	body := netbox.NewWritableInterfaceRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString(), plan.Type.ValueString())
 	if conv.Known(plan.VdcIds) {
 		body.SetVdcs(conv.Int32s(ctx, plan.VdcIds, diags))
@@ -666,13 +670,14 @@ func interfaceToCreate(ctx context.Context, plan *InterfaceModel, diags *diag.Di
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // interfaceToPatch builds the PatchedWritableInterfaceRequest request body with every attribute whose planned value differs from state.
-func interfaceToPatch(ctx context.Context, plan, state *InterfaceModel, diags *diag.Diagnostics) *netbox.PatchedWritableInterfaceRequest {
+func interfaceToPatch(ctx context.Context, plan, state *InterfaceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableInterfaceRequest {
+	const objectType = "dcim.interface"
 	body := netbox.NewPatchedWritableInterfaceRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -885,7 +890,7 @@ func interfaceToPatch(ctx context.Context, plan, state *InterfaceModel, diags *d
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -893,7 +898,7 @@ func interfaceToPatch(ctx context.Context, plan, state *InterfaceModel, diags *d
 
 // interfaceFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func interfaceFromAPI(ctx context.Context, obj *netbox.Interface, prior *InterfaceModel, out *InterfaceModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -936,7 +941,7 @@ func interfaceFromAPI(ctx context.Context, obj *netbox.Interface, prior *Interfa
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

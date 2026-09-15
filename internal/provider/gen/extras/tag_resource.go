@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -54,6 +55,7 @@ var (
 // TagResource manages netbox_tag objects (/api/extras/tags/).
 type TagResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewTagResource returns a new netbox_tag resource.
@@ -88,6 +90,7 @@ func (r *TagResource) Configure(_ context.Context, req resource.ConfigureRequest
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // tagResourceAttributes returns the schema attributes of netbox_tag.
@@ -173,6 +176,7 @@ func (r *TagResource) Create(ctx context.Context, req resource.CreateRequest, re
 		resp.Diagnostics.AddError("Error creating netbox_tag", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state TagModel
 	tagFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -233,6 +237,7 @@ func (r *TagResource) Update(ctx context.Context, req resource.UpdateRequest, re
 		resp.Diagnostics.AddError("Error updating netbox_tag", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out TagModel
 	tagFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

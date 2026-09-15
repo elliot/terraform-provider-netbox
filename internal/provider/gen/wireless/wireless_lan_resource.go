@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -46,26 +46,26 @@ var wirelessLanAuthCipherValues = []string{
 
 // WirelessLanModel is the Terraform state of netbox_wireless_lan.
 type WirelessLanModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Ssid         types.String         `tfsdk:"ssid"`
-	Description  types.String         `tfsdk:"description"`
-	GroupId      types.Int64          `tfsdk:"group_id"`
-	Status       types.String         `tfsdk:"status"`
-	VlanId       types.Int64          `tfsdk:"vlan_id"`
-	ScopeType    types.String         `tfsdk:"scope_type"`
-	ScopeId      types.Int64          `tfsdk:"scope_id"`
-	TenantId     types.Int64          `tfsdk:"tenant_id"`
-	AuthType     types.String         `tfsdk:"auth_type"`
-	AuthCipher   types.String         `tfsdk:"auth_cipher"`
-	AuthPsk      types.String         `tfsdk:"auth_psk"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Ssid         types.String      `tfsdk:"ssid"`
+	Description  types.String      `tfsdk:"description"`
+	GroupId      types.Int64       `tfsdk:"group_id"`
+	Status       types.String      `tfsdk:"status"`
+	VlanId       types.Int64       `tfsdk:"vlan_id"`
+	ScopeType    types.String      `tfsdk:"scope_type"`
+	ScopeId      types.Int64       `tfsdk:"scope_id"`
+	TenantId     types.Int64       `tfsdk:"tenant_id"`
+	AuthType     types.String      `tfsdk:"auth_type"`
+	AuthCipher   types.String      `tfsdk:"auth_cipher"`
+	AuthPsk      types.String      `tfsdk:"auth_psk"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -78,6 +78,7 @@ var (
 // WirelessLanResource manages netbox_wireless_lan objects (/api/wireless/wireless-lans/).
 type WirelessLanResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewWirelessLanResource returns a new netbox_wireless_lan resource.
@@ -112,6 +113,7 @@ func (r *WirelessLanResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // wirelessLanResourceAttributes returns the schema attributes of netbox_wireless_lan.
@@ -201,9 +203,8 @@ func wirelessLanResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -235,7 +236,7 @@ func (r *WirelessLanResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := wirelessLanToCreate(ctx, &plan, &resp.Diagnostics)
+	body := wirelessLanToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -244,6 +245,7 @@ func (r *WirelessLanResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_wireless_lan", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state WirelessLanModel
 	wirelessLanFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -295,7 +297,7 @@ func (r *WirelessLanResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := wirelessLanToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := wirelessLanToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -304,6 +306,7 @@ func (r *WirelessLanResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_wireless_lan", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out WirelessLanModel
 	wirelessLanFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -337,7 +340,8 @@ func (r *WirelessLanResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 // wirelessLanToCreate builds the WritableWirelessLANRequest request body from the plan.
-func wirelessLanToCreate(ctx context.Context, plan *WirelessLanModel, diags *diag.Diagnostics) *netbox.WritableWirelessLANRequest {
+func wirelessLanToCreate(ctx context.Context, plan *WirelessLanModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableWirelessLANRequest {
+	const objectType = "wireless.wirelesslan"
 	body := netbox.NewWritableWirelessLANRequest(plan.Ssid.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -379,13 +383,14 @@ func wirelessLanToCreate(ctx context.Context, plan *WirelessLanModel, diags *dia
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // wirelessLanToPatch builds the PatchedWritableWirelessLANRequest request body with every attribute whose planned value differs from state.
-func wirelessLanToPatch(ctx context.Context, plan, state *WirelessLanModel, diags *diag.Diagnostics) *netbox.PatchedWritableWirelessLANRequest {
+func wirelessLanToPatch(ctx context.Context, plan, state *WirelessLanModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableWirelessLANRequest {
+	const objectType = "wireless.wirelesslan"
 	body := netbox.NewPatchedWritableWirelessLANRequest()
 	if !plan.Ssid.Equal(state.Ssid) {
 		if conv.Known(plan.Ssid) {
@@ -469,7 +474,7 @@ func wirelessLanToPatch(ctx context.Context, plan, state *WirelessLanModel, diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -477,7 +482,7 @@ func wirelessLanToPatch(ctx context.Context, plan, state *WirelessLanModel, diag
 
 // wirelessLanFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func wirelessLanFromAPI(ctx context.Context, obj *netbox.WirelessLAN, prior *WirelessLanModel, out *WirelessLanModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -497,7 +502,7 @@ func wirelessLanFromAPI(ctx context.Context, obj *netbox.WirelessLAN, prior *Wir
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *WirelessLanModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

@@ -8,6 +8,8 @@ All notable changes to this project are documented in this file. The format foll
 
 ### Added
 
+- `custom_fields` is a native Terraform object with per-key plans, name validation against the NetBox
+  definitions and coercion of selection/object values; `netbox_custom_field_value` sets one field on any object.
 - Generated resources, data sources and list data sources for every CRUD collection of the
   NetBox 4.7 API (132 resources, 266 data sources), with import and resource identity by ID.
 - Allocation resources `netbox_available_ip_address`, `netbox_available_prefix`,

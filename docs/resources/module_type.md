@@ -49,7 +49,7 @@ resource "netbox_interface_template" "uplinks" {
 - `attributes` (String) Attributes as a JSON document (`jsonencode({...})`).
 - `comments` (String) Comments. Defaults to an empty string.
 - `cooling_method` (String) Cooling Method. Valid values: `air`, `liquid`, `hybrid`, `immersion`. Defaults to the NetBox server default when omitted.
-- `custom_fields` (String) Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.
+- `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `description` (String) Description. Defaults to an empty string.
 - `end_of_life` (String) The date after which this module type is no longer supported by the manufacturer.
 - `module_bay_type_ids` (Set of Number) IDs of the assigned Module Bay Type (`netbox_module_bay_type`). Defaults to an empty set.

@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -59,6 +60,7 @@ var (
 // CustomFieldChoiceSetResource manages netbox_custom_field_choice_set objects (/api/extras/custom-field-choice-sets/).
 type CustomFieldChoiceSetResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCustomFieldChoiceSetResource returns a new netbox_custom_field_choice_set resource.
@@ -93,6 +95,7 @@ func (r *CustomFieldChoiceSetResource) Configure(_ context.Context, req resource
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // customFieldChoiceSetResourceAttributes returns the schema attributes of netbox_custom_field_choice_set.
@@ -180,6 +183,7 @@ func (r *CustomFieldChoiceSetResource) Create(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error creating netbox_custom_field_choice_set", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CustomFieldChoiceSetModel
 	customFieldChoiceSetFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -240,6 +244,7 @@ func (r *CustomFieldChoiceSetResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error updating netbox_custom_field_choice_set", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CustomFieldChoiceSetModel
 	customFieldChoiceSetFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

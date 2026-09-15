@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,19 +32,19 @@ func init() { provider.RegisterResource(NewRackRoleResource) }
 
 // RackRoleModel is the Terraform state of netbox_rack_role.
 type RackRoleModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	Color        types.String         `tfsdk:"color"`
-	Description  types.String         `tfsdk:"description"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	Color        types.String      `tfsdk:"color"`
+	Description  types.String      `tfsdk:"description"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -57,6 +57,7 @@ var (
 // RackRoleResource manages netbox_rack_role objects (/api/dcim/rack-roles/).
 type RackRoleResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewRackRoleResource returns a new netbox_rack_role resource.
@@ -91,6 +92,7 @@ func (r *RackRoleResource) Configure(_ context.Context, req resource.ConfigureRe
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // rackRoleResourceAttributes returns the schema attributes of netbox_rack_role.
@@ -142,9 +144,8 @@ func rackRoleResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -176,7 +177,7 @@ func (r *RackRoleResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := rackRoleToCreate(ctx, &plan, &resp.Diagnostics)
+	body := rackRoleToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -185,6 +186,7 @@ func (r *RackRoleResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.AddError("Error creating netbox_rack_role", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state RackRoleModel
 	rackRoleFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -236,7 +238,7 @@ func (r *RackRoleResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rackRoleToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := rackRoleToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -245,6 +247,7 @@ func (r *RackRoleResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Error updating netbox_rack_role", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out RackRoleModel
 	rackRoleFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -278,7 +281,8 @@ func (r *RackRoleResource) ImportState(ctx context.Context, req resource.ImportS
 }
 
 // rackRoleToCreate builds the RackRoleRequest request body from the plan.
-func rackRoleToCreate(ctx context.Context, plan *RackRoleModel, diags *diag.Diagnostics) *netbox.RackRoleRequest {
+func rackRoleToCreate(ctx context.Context, plan *RackRoleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.RackRoleRequest {
+	const objectType = "dcim.rackrole"
 	body := netbox.NewRackRoleRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.Color) {
 		body.SetColor(plan.Color.ValueString())
@@ -296,13 +300,14 @@ func rackRoleToCreate(ctx context.Context, plan *RackRoleModel, diags *diag.Diag
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // rackRoleToPatch builds the PatchedRackRoleRequest request body with every attribute whose planned value differs from state.
-func rackRoleToPatch(ctx context.Context, plan, state *RackRoleModel, diags *diag.Diagnostics) *netbox.PatchedRackRoleRequest {
+func rackRoleToPatch(ctx context.Context, plan, state *RackRoleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedRackRoleRequest {
+	const objectType = "dcim.rackrole"
 	body := netbox.NewPatchedRackRoleRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -343,7 +348,7 @@ func rackRoleToPatch(ctx context.Context, plan, state *RackRoleModel, diags *dia
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -351,7 +356,7 @@ func rackRoleToPatch(ctx context.Context, plan, state *RackRoleModel, diags *dia
 
 // rackRoleFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func rackRoleFromAPI(ctx context.Context, obj *netbox.RackRole, prior *RackRoleModel, out *RackRoleModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -364,7 +369,7 @@ func rackRoleFromAPI(ctx context.Context, obj *netbox.RackRole, prior *RackRoleM
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *RackRoleModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

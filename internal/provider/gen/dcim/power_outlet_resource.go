@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -25,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -60,25 +60,25 @@ var powerOutletFeedLegValues = []string{
 
 // PowerOutletModel is the Terraform state of netbox_power_outlet.
 type PowerOutletModel struct {
-	Id            types.Int64          `tfsdk:"id"`
-	DeviceId      types.Int64          `tfsdk:"device_id"`
-	ModuleId      types.Int64          `tfsdk:"module_id"`
-	Name          types.String         `tfsdk:"name"`
-	Label         types.String         `tfsdk:"label"`
-	Type          types.String         `tfsdk:"type"`
-	Status        types.String         `tfsdk:"status"`
-	Color         types.String         `tfsdk:"color"`
-	PowerPortId   types.Int64          `tfsdk:"power_port_id"`
-	FeedLeg       types.String         `tfsdk:"feed_leg"`
-	Description   types.String         `tfsdk:"description"`
-	MarkConnected types.Bool           `tfsdk:"mark_connected"`
-	OwnerId       types.Int64          `tfsdk:"owner_id"`
-	Tags          types.Set            `tfsdk:"tags"`
-	CustomFields  jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url           types.String         `tfsdk:"url"`
-	Display       types.String         `tfsdk:"display"`
-	Created       timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id            types.Int64       `tfsdk:"id"`
+	DeviceId      types.Int64       `tfsdk:"device_id"`
+	ModuleId      types.Int64       `tfsdk:"module_id"`
+	Name          types.String      `tfsdk:"name"`
+	Label         types.String      `tfsdk:"label"`
+	Type          types.String      `tfsdk:"type"`
+	Status        types.String      `tfsdk:"status"`
+	Color         types.String      `tfsdk:"color"`
+	PowerPortId   types.Int64       `tfsdk:"power_port_id"`
+	FeedLeg       types.String      `tfsdk:"feed_leg"`
+	Description   types.String      `tfsdk:"description"`
+	MarkConnected types.Bool        `tfsdk:"mark_connected"`
+	OwnerId       types.Int64       `tfsdk:"owner_id"`
+	Tags          types.Set         `tfsdk:"tags"`
+	CustomFields  types.Dynamic     `tfsdk:"custom_fields"`
+	Url           types.String      `tfsdk:"url"`
+	Display       types.String      `tfsdk:"display"`
+	Created       timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated   timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -91,6 +91,7 @@ var (
 // PowerOutletResource manages netbox_power_outlet objects (/api/dcim/power-outlets/).
 type PowerOutletResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewPowerOutletResource returns a new netbox_power_outlet resource.
@@ -125,6 +126,7 @@ func (r *PowerOutletResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // powerOutletResourceAttributes returns the schema attributes of netbox_power_outlet.
@@ -211,9 +213,8 @@ func powerOutletResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -245,7 +246,7 @@ func (r *PowerOutletResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := powerOutletToCreate(ctx, &plan, &resp.Diagnostics)
+	body := powerOutletToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -254,6 +255,7 @@ func (r *PowerOutletResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_power_outlet", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state PowerOutletModel
 	powerOutletFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -305,7 +307,7 @@ func (r *PowerOutletResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := powerOutletToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := powerOutletToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -314,6 +316,7 @@ func (r *PowerOutletResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_power_outlet", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out PowerOutletModel
 	powerOutletFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -347,7 +350,8 @@ func (r *PowerOutletResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 // powerOutletToCreate builds the WritablePowerOutletRequest request body from the plan.
-func powerOutletToCreate(ctx context.Context, plan *PowerOutletModel, diags *diag.Diagnostics) *netbox.WritablePowerOutletRequest {
+func powerOutletToCreate(ctx context.Context, plan *PowerOutletModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritablePowerOutletRequest {
+	const objectType = "dcim.poweroutlet"
 	body := netbox.NewWritablePowerOutletRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
 	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
@@ -383,13 +387,14 @@ func powerOutletToCreate(ctx context.Context, plan *PowerOutletModel, diags *dia
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // powerOutletToPatch builds the PatchedWritablePowerOutletRequest request body with every attribute whose planned value differs from state.
-func powerOutletToPatch(ctx context.Context, plan, state *PowerOutletModel, diags *diag.Diagnostics) *netbox.PatchedWritablePowerOutletRequest {
+func powerOutletToPatch(ctx context.Context, plan, state *PowerOutletModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritablePowerOutletRequest {
+	const objectType = "dcim.poweroutlet"
 	body := netbox.NewPatchedWritablePowerOutletRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -464,7 +469,7 @@ func powerOutletToPatch(ctx context.Context, plan, state *PowerOutletModel, diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -472,7 +477,7 @@ func powerOutletToPatch(ctx context.Context, plan, state *PowerOutletModel, diag
 
 // powerOutletFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func powerOutletFromAPI(ctx context.Context, obj *netbox.PowerOutlet, prior *PowerOutletModel, out *PowerOutletModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -491,7 +496,7 @@ func powerOutletFromAPI(ctx context.Context, obj *netbox.PowerOutlet, prior *Pow
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

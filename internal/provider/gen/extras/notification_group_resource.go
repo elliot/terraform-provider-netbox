@@ -21,6 +21,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -48,6 +49,7 @@ var (
 // NotificationGroupResource manages netbox_notification_group objects (/api/extras/notification-groups/).
 type NotificationGroupResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewNotificationGroupResource returns a new netbox_notification_group resource.
@@ -82,6 +84,7 @@ func (r *NotificationGroupResource) Configure(_ context.Context, req resource.Co
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // notificationGroupResourceAttributes returns the schema attributes of netbox_notification_group.
@@ -145,6 +148,7 @@ func (r *NotificationGroupResource) Create(ctx context.Context, req resource.Cre
 		resp.Diagnostics.AddError("Error creating netbox_notification_group", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state NotificationGroupModel
 	notificationGroupFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -205,6 +209,7 @@ func (r *NotificationGroupResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Error updating netbox_notification_group", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out NotificationGroupModel
 	notificationGroupFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

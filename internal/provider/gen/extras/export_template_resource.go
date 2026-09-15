@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -58,6 +59,7 @@ var (
 // ExportTemplateResource manages netbox_export_template objects (/api/extras/export-templates/).
 type ExportTemplateResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewExportTemplateResource returns a new netbox_export_template resource.
@@ -92,6 +94,7 @@ func (r *ExportTemplateResource) Configure(_ context.Context, req resource.Confi
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // exportTemplateResourceAttributes returns the schema attributes of netbox_export_template.
@@ -201,6 +204,7 @@ func (r *ExportTemplateResource) Create(ctx context.Context, req resource.Create
 		resp.Diagnostics.AddError("Error creating netbox_export_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ExportTemplateModel
 	exportTemplateFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -261,6 +265,7 @@ func (r *ExportTemplateResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Error updating netbox_export_template", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ExportTemplateModel
 	exportTemplateFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {

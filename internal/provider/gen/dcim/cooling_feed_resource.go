@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -42,24 +42,24 @@ var coolingFeedMaxFlowUnitValues = []string{
 
 // CoolingFeedModel is the Terraform state of netbox_cooling_feed.
 type CoolingFeedModel struct {
-	Id              types.Int64          `tfsdk:"id"`
-	CoolingSourceId types.Int64          `tfsdk:"cooling_source_id"`
-	RackId          types.Int64          `tfsdk:"rack_id"`
-	Name            types.String         `tfsdk:"name"`
-	Status          types.String         `tfsdk:"status"`
-	CoolingCapacity types.Float64        `tfsdk:"cooling_capacity"`
-	MaxFlow         types.Float64        `tfsdk:"max_flow"`
-	MaxFlowUnit     types.String         `tfsdk:"max_flow_unit"`
-	Description     types.String         `tfsdk:"description"`
-	TenantId        types.Int64          `tfsdk:"tenant_id"`
-	OwnerId         types.Int64          `tfsdk:"owner_id"`
-	Comments        types.String         `tfsdk:"comments"`
-	Tags            types.Set            `tfsdk:"tags"`
-	CustomFields    jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url             types.String         `tfsdk:"url"`
-	Display         types.String         `tfsdk:"display"`
-	Created         timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated     timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id              types.Int64       `tfsdk:"id"`
+	CoolingSourceId types.Int64       `tfsdk:"cooling_source_id"`
+	RackId          types.Int64       `tfsdk:"rack_id"`
+	Name            types.String      `tfsdk:"name"`
+	Status          types.String      `tfsdk:"status"`
+	CoolingCapacity types.Float64     `tfsdk:"cooling_capacity"`
+	MaxFlow         types.Float64     `tfsdk:"max_flow"`
+	MaxFlowUnit     types.String      `tfsdk:"max_flow_unit"`
+	Description     types.String      `tfsdk:"description"`
+	TenantId        types.Int64       `tfsdk:"tenant_id"`
+	OwnerId         types.Int64       `tfsdk:"owner_id"`
+	Comments        types.String      `tfsdk:"comments"`
+	Tags            types.Set         `tfsdk:"tags"`
+	CustomFields    types.Dynamic     `tfsdk:"custom_fields"`
+	Url             types.String      `tfsdk:"url"`
+	Display         types.String      `tfsdk:"display"`
+	Created         timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated     timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -72,6 +72,7 @@ var (
 // CoolingFeedResource manages netbox_cooling_feed objects (/api/dcim/cooling-feeds/).
 type CoolingFeedResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewCoolingFeedResource returns a new netbox_cooling_feed resource.
@@ -106,6 +107,7 @@ func (r *CoolingFeedResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // coolingFeedResourceAttributes returns the schema attributes of netbox_cooling_feed.
@@ -183,9 +185,8 @@ func coolingFeedResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -217,7 +218,7 @@ func (r *CoolingFeedResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := coolingFeedToCreate(ctx, &plan, &resp.Diagnostics)
+	body := coolingFeedToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -226,6 +227,7 @@ func (r *CoolingFeedResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_cooling_feed", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state CoolingFeedModel
 	coolingFeedFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -277,7 +279,7 @@ func (r *CoolingFeedResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := coolingFeedToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := coolingFeedToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -286,6 +288,7 @@ func (r *CoolingFeedResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_cooling_feed", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out CoolingFeedModel
 	coolingFeedFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -319,7 +322,8 @@ func (r *CoolingFeedResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 // coolingFeedToCreate builds the WritableCoolingFeedRequest request body from the plan.
-func coolingFeedToCreate(ctx context.Context, plan *CoolingFeedModel, diags *diag.Diagnostics) *netbox.WritableCoolingFeedRequest {
+func coolingFeedToCreate(ctx context.Context, plan *CoolingFeedModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCoolingFeedRequest {
+	const objectType = "dcim.coolingfeed"
 	body := netbox.NewWritableCoolingFeedRequest(conv.Int32(plan.CoolingSourceId), plan.Name.ValueString())
 	if conv.Known(plan.RackId) {
 		body.SetRack(conv.Int32(plan.RackId))
@@ -352,13 +356,14 @@ func coolingFeedToCreate(ctx context.Context, plan *CoolingFeedModel, diags *dia
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // coolingFeedToPatch builds the PatchedWritableCoolingFeedRequest request body with every attribute whose planned value differs from state.
-func coolingFeedToPatch(ctx context.Context, plan, state *CoolingFeedModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingFeedRequest {
+func coolingFeedToPatch(ctx context.Context, plan, state *CoolingFeedModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingFeedRequest {
+	const objectType = "dcim.coolingfeed"
 	body := netbox.NewPatchedWritableCoolingFeedRequest()
 	if !plan.CoolingSourceId.Equal(state.CoolingSourceId) {
 		if conv.Known(plan.CoolingSourceId) {
@@ -428,7 +433,7 @@ func coolingFeedToPatch(ctx context.Context, plan, state *CoolingFeedModel, diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -436,7 +441,7 @@ func coolingFeedToPatch(ctx context.Context, plan, state *CoolingFeedModel, diag
 
 // coolingFeedFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func coolingFeedFromAPI(ctx context.Context, obj *netbox.CoolingFeed, prior *CoolingFeedModel, out *CoolingFeedModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -454,7 +459,7 @@ func coolingFeedFromAPI(ctx context.Context, obj *netbox.CoolingFeed, prior *Coo
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *CoolingFeedModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

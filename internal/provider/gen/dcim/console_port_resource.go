@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -25,6 +24,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -42,22 +42,22 @@ var consolePortSpeedValues = []int64{1200, 2400, 4800, 9600, 19200, 38400, 57600
 
 // ConsolePortModel is the Terraform state of netbox_console_port.
 type ConsolePortModel struct {
-	Id            types.Int64          `tfsdk:"id"`
-	DeviceId      types.Int64          `tfsdk:"device_id"`
-	ModuleId      types.Int64          `tfsdk:"module_id"`
-	Name          types.String         `tfsdk:"name"`
-	Label         types.String         `tfsdk:"label"`
-	Type          types.String         `tfsdk:"type"`
-	Speed         types.Int64          `tfsdk:"speed"`
-	Description   types.String         `tfsdk:"description"`
-	MarkConnected types.Bool           `tfsdk:"mark_connected"`
-	OwnerId       types.Int64          `tfsdk:"owner_id"`
-	Tags          types.Set            `tfsdk:"tags"`
-	CustomFields  jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url           types.String         `tfsdk:"url"`
-	Display       types.String         `tfsdk:"display"`
-	Created       timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id            types.Int64       `tfsdk:"id"`
+	DeviceId      types.Int64       `tfsdk:"device_id"`
+	ModuleId      types.Int64       `tfsdk:"module_id"`
+	Name          types.String      `tfsdk:"name"`
+	Label         types.String      `tfsdk:"label"`
+	Type          types.String      `tfsdk:"type"`
+	Speed         types.Int64       `tfsdk:"speed"`
+	Description   types.String      `tfsdk:"description"`
+	MarkConnected types.Bool        `tfsdk:"mark_connected"`
+	OwnerId       types.Int64       `tfsdk:"owner_id"`
+	Tags          types.Set         `tfsdk:"tags"`
+	CustomFields  types.Dynamic     `tfsdk:"custom_fields"`
+	Url           types.String      `tfsdk:"url"`
+	Display       types.String      `tfsdk:"display"`
+	Created       timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated   timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -70,6 +70,7 @@ var (
 // ConsolePortResource manages netbox_console_port objects (/api/dcim/console-ports/).
 type ConsolePortResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewConsolePortResource returns a new netbox_console_port resource.
@@ -104,6 +105,7 @@ func (r *ConsolePortResource) Configure(_ context.Context, req resource.Configur
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // consolePortResourceAttributes returns the schema attributes of netbox_console_port.
@@ -172,9 +174,8 @@ func consolePortResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"url": schema.StringAttribute{
@@ -206,7 +207,7 @@ func (r *ConsolePortResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := consolePortToCreate(ctx, &plan, &resp.Diagnostics)
+	body := consolePortToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -215,6 +216,7 @@ func (r *ConsolePortResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating netbox_console_port", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state ConsolePortModel
 	consolePortFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -266,7 +268,7 @@ func (r *ConsolePortResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := consolePortToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := consolePortToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -275,6 +277,7 @@ func (r *ConsolePortResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error updating netbox_console_port", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out ConsolePortModel
 	consolePortFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -308,7 +311,8 @@ func (r *ConsolePortResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 // consolePortToCreate builds the WritableConsolePortRequest request body from the plan.
-func consolePortToCreate(ctx context.Context, plan *ConsolePortModel, diags *diag.Diagnostics) *netbox.WritableConsolePortRequest {
+func consolePortToCreate(ctx context.Context, plan *ConsolePortModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableConsolePortRequest {
+	const objectType = "dcim.consoleport"
 	body := netbox.NewWritableConsolePortRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
 	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
@@ -335,13 +339,14 @@ func consolePortToCreate(ctx context.Context, plan *ConsolePortModel, diags *dia
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	return body
 }
 
 // consolePortToPatch builds the PatchedWritableConsolePortRequest request body with every attribute whose planned value differs from state.
-func consolePortToPatch(ctx context.Context, plan, state *ConsolePortModel, diags *diag.Diagnostics) *netbox.PatchedWritableConsolePortRequest {
+func consolePortToPatch(ctx context.Context, plan, state *ConsolePortModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableConsolePortRequest {
+	const objectType = "dcim.consoleport"
 	body := netbox.NewPatchedWritableConsolePortRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
@@ -399,7 +404,7 @@ func consolePortToPatch(ctx context.Context, plan, state *ConsolePortModel, diag
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	return body
@@ -407,7 +412,7 @@ func consolePortToPatch(ctx context.Context, plan, state *ConsolePortModel, diag
 
 // consolePortFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func consolePortFromAPI(ctx context.Context, obj *netbox.ConsolePort, prior *ConsolePortModel, out *ConsolePortModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -423,7 +428,7 @@ func consolePortFromAPI(ctx context.Context, obj *netbox.ConsolePort, prior *Con
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

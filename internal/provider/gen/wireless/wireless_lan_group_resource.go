@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -24,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -32,19 +32,19 @@ func init() { provider.RegisterResource(NewWirelessLanGroupResource) }
 
 // WirelessLanGroupModel is the Terraform state of netbox_wireless_lan_group.
 type WirelessLanGroupModel struct {
-	Id           types.Int64          `tfsdk:"id"`
-	Name         types.String         `tfsdk:"name"`
-	Slug         types.String         `tfsdk:"slug"`
-	ParentId     types.Int64          `tfsdk:"parent_id"`
-	Description  types.String         `tfsdk:"description"`
-	Tags         types.Set            `tfsdk:"tags"`
-	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
-	OwnerId      types.Int64          `tfsdk:"owner_id"`
-	Comments     types.String         `tfsdk:"comments"`
-	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
-	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id           types.Int64       `tfsdk:"id"`
+	Name         types.String      `tfsdk:"name"`
+	Slug         types.String      `tfsdk:"slug"`
+	ParentId     types.Int64       `tfsdk:"parent_id"`
+	Description  types.String      `tfsdk:"description"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	OwnerId      types.Int64       `tfsdk:"owner_id"`
+	Comments     types.String      `tfsdk:"comments"`
+	Url          types.String      `tfsdk:"url"`
+	Display      types.String      `tfsdk:"display"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
+	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -57,6 +57,7 @@ var (
 // WirelessLanGroupResource manages netbox_wireless_lan_group objects (/api/wireless/wireless-lan-groups/).
 type WirelessLanGroupResource struct {
 	client *netbox.APIClient
+	cf     *customfields.Cache
 }
 
 // NewWirelessLanGroupResource returns a new netbox_wireless_lan_group resource.
@@ -91,6 +92,7 @@ func (r *WirelessLanGroupResource) Configure(_ context.Context, req resource.Con
 		return
 	}
 	r.client = pd.API
+	r.cf = pd.CustomFields
 }
 
 // wirelessLanGroupResourceAttributes returns the schema attributes of netbox_wireless_lan_group.
@@ -129,9 +131,8 @@ func wirelessLanGroupResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"custom_fields": schema.StringAttribute{
-			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-			CustomType:          jsontypes.NormalizedType{},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
 			Optional:            true,
 		},
 		"owner_id": schema.Int64Attribute{
@@ -173,7 +174,7 @@ func (r *WirelessLanGroupResource) Create(ctx context.Context, req resource.Crea
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := wirelessLanGroupToCreate(ctx, &plan, &resp.Diagnostics)
+	body := wirelessLanGroupToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -182,6 +183,7 @@ func (r *WirelessLanGroupResource) Create(ctx context.Context, req resource.Crea
 		resp.Diagnostics.AddError("Error creating netbox_wireless_lan_group", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var state WirelessLanGroupModel
 	wirelessLanGroupFromAPI(ctx, obj, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -233,7 +235,7 @@ func (r *WirelessLanGroupResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := wirelessLanGroupToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := wirelessLanGroupToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -242,6 +244,7 @@ func (r *WirelessLanGroupResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Error updating netbox_wireless_lan_group", netbox.WrapError(err, res).Error())
 		return
 	}
+
 	var out WirelessLanGroupModel
 	wirelessLanGroupFromAPI(ctx, obj, &plan, &out, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
@@ -275,7 +278,8 @@ func (r *WirelessLanGroupResource) ImportState(ctx context.Context, req resource
 }
 
 // wirelessLanGroupToCreate builds the WritableWirelessLANGroupRequest request body from the plan.
-func wirelessLanGroupToCreate(ctx context.Context, plan *WirelessLanGroupModel, diags *diag.Diagnostics) *netbox.WritableWirelessLANGroupRequest {
+func wirelessLanGroupToCreate(ctx context.Context, plan *WirelessLanGroupModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableWirelessLANGroupRequest {
+	const objectType = "wireless.wirelesslangroup"
 	body := netbox.NewWritableWirelessLANGroupRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.ParentId) {
 		body.SetParent(conv.Int32(plan.ParentId))
@@ -287,7 +291,7 @@ func wirelessLanGroupToCreate(ctx context.Context, plan *WirelessLanGroupModel, 
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
@@ -299,7 +303,8 @@ func wirelessLanGroupToCreate(ctx context.Context, plan *WirelessLanGroupModel, 
 }
 
 // wirelessLanGroupToPatch builds the PatchedWritableWirelessLANGroupRequest request body with every attribute whose planned value differs from state.
-func wirelessLanGroupToPatch(ctx context.Context, plan, state *WirelessLanGroupModel, diags *diag.Diagnostics) *netbox.PatchedWritableWirelessLANGroupRequest {
+func wirelessLanGroupToPatch(ctx context.Context, plan, state *WirelessLanGroupModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableWirelessLANGroupRequest {
+	const objectType = "wireless.wirelesslangroup"
 	body := netbox.NewPatchedWritableWirelessLANGroupRequest()
 	if !plan.Name.Equal(state.Name) {
 		if conv.Known(plan.Name) {
@@ -330,7 +335,7 @@ func wirelessLanGroupToPatch(ctx context.Context, plan, state *WirelessLanGroupM
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {
 		if conv.Known(plan.CustomFields) {
-			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
@@ -350,7 +355,7 @@ func wirelessLanGroupToPatch(ctx context.Context, plan, state *WirelessLanGroupM
 
 // wirelessLanGroupFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func wirelessLanGroupFromAPI(ctx context.Context, obj *netbox.WirelessLANGroup, prior *WirelessLanGroupModel, out *WirelessLanGroupModel, diags *diag.Diagnostics) {
-	priorCustomFields := jsontypes.NewNormalizedNull()
+	priorCustomFields := types.DynamicNull()
 	if prior != nil {
 		priorCustomFields = prior.CustomFields
 	}
@@ -361,7 +366,7 @@ func wirelessLanGroupFromAPI(ctx context.Context, obj *netbox.WirelessLANGroup, 
 	out.ParentId = conv.BriefID(obj.GetParentOk())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *WirelessLanGroupModel) types.String { return m.Description }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *WirelessLanGroupModel) types.String { return m.Comments }), false)
 	out.Url = conv.String(obj.GetUrlOk())

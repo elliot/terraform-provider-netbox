@@ -10,7 +10,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -26,6 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -132,12 +132,19 @@ func tagsAttribute() schema.SetAttribute {
 	}
 }
 
-func customFieldsAttribute() schema.StringAttribute {
-	return schema.StringAttribute{
-		MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
-		CustomType:          jsontypes.NormalizedType{},
+func customFieldsAttribute() schema.DynamicAttribute {
+	return schema.DynamicAttribute{
+		MarkdownDescription: "Custom field values as an object of field name to value (`{ cost_center = \"CC-42\", owner_site = 12 }`). Only keys present in the configuration are tracked; names are validated against the NetBox definitions.",
 		Optional:            true,
 	}
+}
+
+// configureCache extracts the custom field definition cache from the provider data.
+func configureCache(req resource.ConfigureRequest) *customfields.Cache {
+	if pd, ok := req.ProviderData.(*provider.ProviderData); ok {
+		return pd.CustomFields
+	}
+	return nil
 }
 
 // ---- raw request body helpers ----
@@ -189,10 +196,11 @@ func (b body) tags(ctx context.Context, v types.Set, diags *diag.Diagnostics) {
 	}
 }
 
-// customFields sets "custom_fields" when configured.
-func (b body) customFields(v jsontypes.Normalized, diags *diag.Diagnostics) {
+// customFields sets "custom_fields" when configured, validating names against
+// the definitions for objectType.
+func (b body) customFields(ctx context.Context, v types.Dynamic, cf *customfields.Cache, objectType string, diags *diag.Diagnostics) {
 	if conv.Known(v) {
-		b["custom_fields"] = conv.JSONObjectToAPI(v, diags)
+		b["custom_fields"] = customfields.ToAPI(ctx, v, cf, objectType, diags)
 	}
 }
 
