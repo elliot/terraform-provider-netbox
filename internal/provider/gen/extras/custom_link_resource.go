@@ -137,7 +137,7 @@ func customLinkResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"group_name": schema.StringAttribute{
-			MarkdownDescription: "Links with the same group will appear as a dropdown menu. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Links with the same group will appear as a dropdown menu. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},

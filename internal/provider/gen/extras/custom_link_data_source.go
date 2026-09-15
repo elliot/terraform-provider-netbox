@@ -101,7 +101,7 @@ func customLinkDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"group_name": dsschema.StringAttribute{
-			MarkdownDescription: "Links with the same group will appear as a dropdown menu. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Links with the same group will appear as a dropdown menu. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"button_class": dsschema.StringAttribute{

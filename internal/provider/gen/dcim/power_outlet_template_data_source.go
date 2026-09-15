@@ -85,7 +85,7 @@ func powerOutletTemplateDataAttributes(lookup bool) map[string]dsschema.Attribut
 			Computed:            true,
 		},
 		"label": dsschema.StringAttribute{
-			MarkdownDescription: "Physical label. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Physical label. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"type": dsschema.StringAttribute{
@@ -93,7 +93,7 @@ func powerOutletTemplateDataAttributes(lookup bool) map[string]dsschema.Attribut
 			Computed:            true,
 		},
 		"color": dsschema.StringAttribute{
-			MarkdownDescription: "Color. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Color. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"power_port_id": dsschema.Int64Attribute{
@@ -105,7 +105,7 @@ func powerOutletTemplateDataAttributes(lookup bool) map[string]dsschema.Attribut
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"url": dsschema.StringAttribute{

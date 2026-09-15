@@ -107,7 +107,7 @@ func l2vpnTerminationResourceAttributes() map[string]schema.Attribute {
 			Required:            true,
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,

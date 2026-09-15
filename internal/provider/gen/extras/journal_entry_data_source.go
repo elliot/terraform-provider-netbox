@@ -83,7 +83,7 @@ func journalEntryDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

@@ -29,6 +29,11 @@ import (
 
 func init() { provider.RegisterResource(NewDataSourceResource) }
 
+// dataSourceTypeValues lists the valid values of netbox_data_source.type.
+var dataSourceTypeValues = []string{
+	"local", "git", "amazon-s3",
+}
+
 // dataSourceSyncIntervalValues lists the valid values of netbox_data_source.sync_interval.
 var dataSourceSyncIntervalValues = []int64{1, 60, 720, 1440, 10080, 43200}
 
@@ -112,9 +117,9 @@ func dataSourceResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"type": schema.StringAttribute{
-			MarkdownDescription: "Type.",
+			MarkdownDescription: "Type. Valid values: `local`, `git`, `amazon-s3`.",
 			Required:            true,
-			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
+			Validators:          []validator.String{stringvalidator.OneOf(dataSourceTypeValues...)},
 		},
 		"source_url": schema.StringAttribute{
 			MarkdownDescription: "Source Url.",
@@ -128,7 +133,7 @@ func dataSourceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -147,7 +152,7 @@ func dataSourceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"ignore_rules": schema.StringAttribute{
-			MarkdownDescription: "Patterns (one per line) matching files or paths to ignore when syncing. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Patterns (one per line) matching files or paths to ignore when syncing. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
@@ -157,7 +162,7 @@ func dataSourceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
@@ -386,7 +391,7 @@ func dataSourceFromAPI(ctx context.Context, obj *netbox.DataSource, prior *DataS
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.SyncInterval = conv.Int64From32(obj.GetSyncIntervalOk())
-	out.Parameters = conv.JSONFromAPI(obj.GetParameters())
+	out.Parameters = conv.JSONFromAPIWithPrior(obj.GetParameters(), conv.PriorJSON(prior, func(m *DataSourceModel) jsontypes.Normalized { return m.Parameters }))
 	out.IgnoreRules = conv.StringOrEmpty(obj.GetIgnoreRulesOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

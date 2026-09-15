@@ -94,7 +94,7 @@ func ownerGroupResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},

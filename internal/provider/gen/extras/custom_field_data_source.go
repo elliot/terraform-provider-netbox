@@ -128,15 +128,15 @@ func customFieldDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"label": dsschema.StringAttribute{
-			MarkdownDescription: "Name of the field as displayed to users (if not provided, 'the field's name will be used). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Name of the field as displayed to users (if not provided, 'the field's name will be used). Defaults to an empty string.",
 			Computed:            true,
 		},
 		"group_name": dsschema.StringAttribute{
-			MarkdownDescription: "Custom fields within the same group will be displayed together. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Custom fields within the same group will be displayed together. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"required": dsschema.BoolAttribute{
@@ -194,7 +194,7 @@ func customFieldDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"validation_regex": dsschema.StringAttribute{
-			MarkdownDescription: "Regular expression to enforce on text field values. Use ^ and $ to force matching of entire string. For example, <code>^[A-Z]{3}$</code> will limit values to exactly three uppercase letters. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Regular expression to enforce on text field values. Use ^ and $ to force matching of entire string. For example, <code>^[A-Z]{3}$</code> will limit values to exactly three uppercase letters. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"validation_schema": dsschema.StringAttribute{
@@ -211,7 +211,7 @@ func customFieldDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"comments": dsschema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"url": dsschema.StringAttribute{

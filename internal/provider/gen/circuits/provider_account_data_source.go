@@ -74,7 +74,7 @@ func providerAccountDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"name": dsschema.StringAttribute{
-			MarkdownDescription: "Name. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Name. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"account": dsschema.StringAttribute{
@@ -82,7 +82,7 @@ func providerAccountDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{
@@ -90,11 +90,11 @@ func providerAccountDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"comments": dsschema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},
@@ -133,7 +133,7 @@ func providerAccountDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		}
 		attrs["name"] = dsschema.StringAttribute{
-			MarkdownDescription: "Name. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Name. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 		}

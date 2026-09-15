@@ -166,7 +166,7 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"serial": schema.StringAttribute{
-			MarkdownDescription: "Chassis serial number, assigned by the manufacturer. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Chassis serial number, assigned by the manufacturer. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
@@ -258,7 +258,7 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -269,7 +269,7 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
@@ -284,7 +284,7 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,
@@ -734,7 +734,7 @@ func deviceFromAPI(ctx context.Context, obj *netbox.Device, prior *DeviceModel, 
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.ConfigTemplateId = conv.BriefID(obj.GetConfigTemplateOk())
-	out.LocalContextData = conv.JSONFromAPI(obj.GetLocalContextData())
+	out.LocalContextData = conv.JSONFromAPIWithPrior(obj.GetLocalContextData(), conv.PriorJSON(prior, func(m *DeviceModel) jsontypes.Normalized { return m.LocalContextData }))
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

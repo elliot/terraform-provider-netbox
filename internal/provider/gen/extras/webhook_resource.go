@@ -118,7 +118,7 @@ func webhookResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(150)},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -144,19 +144,19 @@ func webhookResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"additional_headers": schema.StringAttribute{
-			MarkdownDescription: "User-supplied HTTP headers to be sent with the request in addition to the HTTP content type. Headers should be defined in the format <code>Name: Value</code>. Jinja2 template processing is supported with the same context as the request body (below). When interpolating untrusted data (such as object attributes) into a header value, apply the <code>header_safe</code> filter to guard against HTTP header injection, e.g. <code>X-Object: {{ data.name | header_safe }}</code>. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "User-supplied HTTP headers to be sent with the request in addition to the HTTP content type. Headers should be defined in the format <code>Name: Value</code>. Jinja2 template processing is supported with the same context as the request body (below). When interpolating untrusted data (such as object attributes) into a header value, apply the <code>header_safe</code> filter to guard against HTTP header injection, e.g. <code>X-Object: {{ data.name | header_safe }}</code>. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
 		"body_template": schema.StringAttribute{
-			MarkdownDescription: "Jinja2 template for a custom request body. If blank, a JSON object representing the change will be included. Available context data includes: <code>event</code>, <code>model</code>, <code>timestamp</code>, <code>request</code>, and <code>data</code>. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Jinja2 template for a custom request body. If blank, a JSON object representing the change will be included. Available context data includes: <code>event</code>, <code>model</code>, <code>timestamp</code>, <code>request</code>, and <code>data</code>. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
 		"secret": schema.StringAttribute{
-			MarkdownDescription: "When provided, the request will include a <code>X-Hook-Signature</code> header containing a HMAC hex digest of the payload body using the secret as the key. The secret is not transmitted in the request. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "When provided, the request will include a <code>X-Hook-Signature</code> header containing a HMAC hex digest of the payload body using the secret as the key. The secret is not transmitted in the request. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(255)},
@@ -187,7 +187,7 @@ func webhookResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,

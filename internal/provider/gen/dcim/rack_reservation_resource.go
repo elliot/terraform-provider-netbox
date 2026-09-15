@@ -141,13 +141,13 @@ func rackReservationResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,

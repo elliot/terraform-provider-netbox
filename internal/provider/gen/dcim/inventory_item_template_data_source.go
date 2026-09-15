@@ -85,7 +85,7 @@ func inventoryItemTemplateDataAttributes(lookup bool) map[string]dsschema.Attrib
 			Computed:            true,
 		},
 		"label": dsschema.StringAttribute{
-			MarkdownDescription: "Physical label. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Physical label. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"role_id": dsschema.Int64Attribute{
@@ -97,11 +97,11 @@ func inventoryItemTemplateDataAttributes(lookup bool) map[string]dsschema.Attrib
 			Computed:            true,
 		},
 		"part_id": dsschema.StringAttribute{
-			MarkdownDescription: "Manufacturer-assigned part identifier. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Manufacturer-assigned part identifier. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"component_type": dsschema.StringAttribute{

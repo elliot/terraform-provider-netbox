@@ -103,7 +103,7 @@ func vlanTranslationRuleResourceAttributes() map[string]schema.Attribute {
 			Required:            true,
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},

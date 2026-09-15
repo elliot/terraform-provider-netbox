@@ -112,7 +112,7 @@ func configTemplateResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -128,21 +128,21 @@ func configTemplateResourceAttributes() map[string]schema.Attribute {
 			Required:            true,
 		},
 		"mime_type": schema.StringAttribute{
-			MarkdownDescription: "Defaults to <code>text/plain; charset=utf-8</code>. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Defaults to <code>text/plain; charset=utf-8</code>. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"file_name": schema.StringAttribute{
-			MarkdownDescription: "Filename to give to the rendered export file. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Filename to give to the rendered export file. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"file_extension": schema.StringAttribute{
-			MarkdownDescription: "Extension to append to the rendered filename. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Extension to append to the rendered filename. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(15)},
@@ -175,7 +175,7 @@ func configTemplateResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,
@@ -405,7 +405,7 @@ func configTemplateFromAPI(ctx context.Context, obj *netbox.ConfigTemplate, prio
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Name = conv.String(obj.GetNameOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
-	out.EnvironmentParams = conv.JSONFromAPI(obj.GetEnvironmentParams())
+	out.EnvironmentParams = conv.JSONFromAPIWithPrior(obj.GetEnvironmentParams(), conv.PriorJSON(prior, func(m *ConfigTemplateModel) jsontypes.Normalized { return m.EnvironmentParams }))
 	out.TemplateCode = conv.String(obj.GetTemplateCodeOk())
 	out.MimeType = conv.StringOrEmpty(obj.GetMimeTypeOk())
 	out.FileName = conv.StringOrEmpty(obj.GetFileNameOk())

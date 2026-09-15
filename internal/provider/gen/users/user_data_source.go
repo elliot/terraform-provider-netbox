@@ -78,15 +78,15 @@ func userDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"first_name": dsschema.StringAttribute{
-			MarkdownDescription: "First Name. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "First Name. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"last_name": dsschema.StringAttribute{
-			MarkdownDescription: "Last Name. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Last Name. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"email": dsschema.StringAttribute{
-			MarkdownDescription: "Email. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Email. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"is_active": dsschema.BoolAttribute{
@@ -104,12 +104,12 @@ func userDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"group_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Group (`netbox_user_group`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Group (`netbox_user_group`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"permission_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},

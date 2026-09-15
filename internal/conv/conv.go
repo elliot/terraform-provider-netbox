@@ -393,6 +393,31 @@ func JSONFromAPI(v any) jsontypes.Normalized {
 	return jsontypes.NewNormalizedValue(string(data))
 }
 
+// JSONFromAPIWithPrior is JSONFromAPI for optional JSON attributes: when the
+// attribute was not configured (prior null) and NetBox returns an empty
+// object/array or null, the attribute stays null so plans remain stable.
+func JSONFromAPIWithPrior(v any, prior jsontypes.Normalized) jsontypes.Normalized {
+	if prior.IsNull() || prior.IsUnknown() {
+		switch t := v.(type) {
+		case nil:
+			return jsontypes.NewNormalizedNull()
+		case map[string]any:
+			if len(t) == 0 {
+				return jsontypes.NewNormalizedNull()
+			}
+		case []any:
+			if len(t) == 0 {
+				return jsontypes.NewNormalizedNull()
+			}
+		case map[string]string:
+			if len(t) == 0 {
+				return jsontypes.NewNormalizedNull()
+			}
+		}
+	}
+	return JSONFromAPI(v)
+}
+
 // CustomFieldsFromAPI converts the custom_fields map returned by NetBox.
 // When prior holds a configured JSON object only its keys are kept, so that
 // custom fields defined in NetBox but not managed here never cause drift.
@@ -528,4 +553,13 @@ func ApplyFilters(ctx context.Context, filters types.List, allowed []string, q u
 		}
 		q.Add(name, f.Value.ValueString())
 	}
+}
+
+// PriorJSON returns the JSON attribute selected by get from prior, or null
+// when prior is nil (used by generated FromAPI functions).
+func PriorJSON[M any](prior *M, get func(*M) jsontypes.Normalized) jsontypes.Normalized {
+	if prior == nil {
+		return jsontypes.NewNormalizedNull()
+	}
+	return get(prior)
 }

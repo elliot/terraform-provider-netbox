@@ -105,7 +105,7 @@ func moduleTypeProfileResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -121,13 +121,13 @@ func moduleTypeProfileResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,
@@ -333,7 +333,7 @@ func moduleTypeProfileFromAPI(ctx context.Context, obj *netbox.ModuleTypeProfile
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Name = conv.String(obj.GetNameOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
-	out.Schema = conv.JSONFromAPI(obj.GetSchema())
+	out.Schema = conv.JSONFromAPIWithPrior(obj.GetSchema(), conv.PriorJSON(prior, func(m *ModuleTypeProfileModel) jsontypes.Normalized { return m.Schema }))
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

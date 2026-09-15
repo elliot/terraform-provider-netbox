@@ -97,14 +97,14 @@ func userGroupResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(150)},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"permission_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Optional:            true,
 			Computed:            true,

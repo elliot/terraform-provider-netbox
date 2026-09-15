@@ -50,16 +50,16 @@ func notificationGroupDataAttributes(lookup bool) map[string]dsschema.Attribute 
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"group_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Group (`netbox_user_group`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Group (`netbox_user_group`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"user_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned User (`netbox_user`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned User (`netbox_user`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},

@@ -140,21 +140,21 @@ func locationResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"facility": schema.StringAttribute{
-			MarkdownDescription: "Local facility ID or description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Local facility ID or description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,
@@ -170,7 +170,7 @@ func locationResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),

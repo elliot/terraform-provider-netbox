@@ -119,14 +119,14 @@ func moduleBayResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(64)},
 		},
 		"label": schema.StringAttribute{
-			MarkdownDescription: "Physical label. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Physical label. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(64)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"position": schema.StringAttribute{
-			MarkdownDescription: "Identifier to reference when renaming installed components. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Identifier to reference when renaming installed components. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(30)},
@@ -139,14 +139,14 @@ func moduleBayResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"module_bay_type_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Module Bay Type (`netbox_module_bay_type`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Module Bay Type (`netbox_module_bay_type`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Optional:            true,
 			Computed:            true,
@@ -161,7 +161,7 @@ func moduleBayResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,

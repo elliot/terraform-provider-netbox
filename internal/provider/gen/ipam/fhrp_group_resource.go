@@ -113,7 +113,7 @@ func fhrpGroupResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"name": schema.StringAttribute{
-			MarkdownDescription: "Name. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Name. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
@@ -136,14 +136,14 @@ func fhrpGroupResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"auth_key": schema.StringAttribute{
-			MarkdownDescription: "Auth Key. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Auth Key. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(255)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -154,13 +154,13 @@ func fhrpGroupResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,

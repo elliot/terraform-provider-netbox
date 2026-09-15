@@ -146,7 +146,7 @@ func rearPortResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(64)},
 		},
 		"label": schema.StringAttribute{
-			MarkdownDescription: "Physical label. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Physical label. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(64)},
@@ -158,7 +158,7 @@ func rearPortResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.OneOf(rearPortTypeValues...)},
 		},
 		"color": schema.StringAttribute{
-			MarkdownDescription: "Color. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Color. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(6), stringvalidator.RegexMatches(regexp.MustCompile("^$|^[0-9a-f]{6}$"), "must match ^$|^[0-9a-f]{6}$")},
@@ -189,7 +189,7 @@ func rearPortResourceAttributes() map[string]schema.Attribute {
 			Optional: true,
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -206,7 +206,7 @@ func rearPortResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,

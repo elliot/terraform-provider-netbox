@@ -154,7 +154,7 @@ func deviceTypeResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100), stringvalidator.RegexMatches(regexp.MustCompile("^[-a-zA-Z0-9_]+$"), "must match ^[-a-zA-Z0-9_]+$")},
 		},
 		"part_number": schema.StringAttribute{
-			MarkdownDescription: "Discrete part number (optional). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Discrete part number (optional). Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
@@ -215,7 +215,7 @@ func deviceTypeResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -226,13 +226,13 @@ func deviceTypeResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,

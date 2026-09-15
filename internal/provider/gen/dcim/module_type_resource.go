@@ -137,7 +137,7 @@ func moduleTypeResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"part_number": schema.StringAttribute{
-			MarkdownDescription: "Discrete part number (optional). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Discrete part number (optional). Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
@@ -173,7 +173,7 @@ func moduleTypeResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -185,7 +185,7 @@ func moduleTypeResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"module_bay_type_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Module Bay Type (`netbox_module_bay_type`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Module Bay Type (`netbox_module_bay_type`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Optional:            true,
 			Computed:            true,
@@ -196,13 +196,13 @@ func moduleTypeResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,
@@ -491,7 +491,7 @@ func moduleTypeFromAPI(ctx context.Context, obj *netbox.ModuleType, prior *Modul
 	out.WeightUnit = conv.Choice(obj.GetWeightUnitOk())
 	out.EndOfLife = conv.String(obj.GetEndOfLifeOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
-	out.Attributes = conv.JSONFromAPI(obj.GetAttributes())
+	out.Attributes = conv.JSONFromAPIWithPrior(obj.GetAttributes(), conv.PriorJSON(prior, func(m *ModuleTypeModel) jsontypes.Normalized { return m.Attributes }))
 	out.ModuleBayTypeIds = conv.BriefIDs(obj.GetModuleBayTypes())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

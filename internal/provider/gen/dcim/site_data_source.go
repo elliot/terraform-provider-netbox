@@ -121,7 +121,7 @@ func siteDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"facility": dsschema.StringAttribute{
-			MarkdownDescription: "Local facility ID or description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Local facility ID or description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"time_zone": dsschema.StringAttribute{
@@ -129,15 +129,15 @@ func siteDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"physical_address": dsschema.StringAttribute{
-			MarkdownDescription: "Physical location of the building. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Physical location of the building. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"shipping_address": dsschema.StringAttribute{
-			MarkdownDescription: "If different from the physical address. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "If different from the physical address. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"latitude": dsschema.Float64Attribute{
@@ -153,16 +153,16 @@ func siteDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"comments": dsschema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"asn_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Asn (`netbox_asn`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Asn (`netbox_asn`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

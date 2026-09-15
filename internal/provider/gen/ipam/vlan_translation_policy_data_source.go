@@ -62,7 +62,7 @@ func vlanTranslationPolicyDataAttributes(lookup bool) map[string]dsschema.Attrib
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{
@@ -70,7 +70,7 @@ func vlanTranslationPolicyDataAttributes(lookup bool) map[string]dsschema.Attrib
 			Computed:            true,
 		},
 		"comments": dsschema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"url": dsschema.StringAttribute{

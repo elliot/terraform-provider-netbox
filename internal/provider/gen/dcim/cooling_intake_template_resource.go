@@ -128,7 +128,7 @@ func coolingIntakeTemplateResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(64)},
 		},
 		"label": schema.StringAttribute{
-			MarkdownDescription: "Physical label. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Physical label. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(64)},
@@ -164,7 +164,7 @@ func coolingIntakeTemplateResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},

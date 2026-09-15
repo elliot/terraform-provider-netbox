@@ -86,7 +86,7 @@ func dataSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"type": dsschema.StringAttribute{
-			MarkdownDescription: "Type.",
+			MarkdownDescription: "Type. Valid values: `local`, `git`, `amazon-s3`.",
 			Computed:            true,
 		},
 		"source_url": dsschema.StringAttribute{
@@ -98,7 +98,7 @@ func dataSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"sync_interval": dsschema.Int64Attribute{
@@ -111,7 +111,7 @@ func dataSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"ignore_rules": dsschema.StringAttribute{
-			MarkdownDescription: "Patterns (one per line) matching files or paths to ignore when syncing. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Patterns (one per line) matching files or paths to ignore when syncing. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{
@@ -119,7 +119,7 @@ func dataSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"comments": dsschema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"custom_fields": dsschema.StringAttribute{

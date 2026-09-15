@@ -72,7 +72,7 @@ func customFieldChoiceSetDataAttributes(lookup bool) map[string]dsschema.Attribu
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"base_choices": dsschema.StringAttribute{

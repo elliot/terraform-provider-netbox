@@ -136,21 +136,21 @@ func circuitTerminationResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"xconnect_id": schema.StringAttribute{
-			MarkdownDescription: "ID of the local cross-connect. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "ID of the local cross-connect. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"pp_info": schema.StringAttribute{
-			MarkdownDescription: "Patch panel ID and port number(s). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Patch panel ID and port number(s). Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -163,7 +163,7 @@ func circuitTerminationResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,

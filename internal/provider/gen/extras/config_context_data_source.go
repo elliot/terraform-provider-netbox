@@ -105,7 +105,7 @@ func configContextDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"is_active": dsschema.BoolAttribute{
@@ -113,62 +113,62 @@ func configContextDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"region_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Region (`netbox_region`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Region (`netbox_region`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"site_group_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Site Group (`netbox_site_group`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Site Group (`netbox_site_group`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"site_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Site (`netbox_site`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Site (`netbox_site`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"location_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Location (`netbox_location`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Location (`netbox_location`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"device_type_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Device Type (`netbox_device_type`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Device Type (`netbox_device_type`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"role_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Role (`netbox_device_role`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Role (`netbox_device_role`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"platform_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Platform (`netbox_platform`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Platform (`netbox_platform`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"cluster_type_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Cluster Type (`netbox_cluster_type`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Cluster Type (`netbox_cluster_type`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"cluster_group_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Cluster Group (`netbox_cluster_group`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Cluster Group (`netbox_cluster_group`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"cluster_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Cluster (`netbox_cluster`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Cluster (`netbox_cluster`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"tenant_group_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Tenant Group (`netbox_tenant_group`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Tenant Group (`netbox_tenant_group`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"tenant_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Tenant (`netbox_tenant`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Tenant (`netbox_tenant`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
@@ -177,7 +177,7 @@ func configContextDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Tags. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Tags. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

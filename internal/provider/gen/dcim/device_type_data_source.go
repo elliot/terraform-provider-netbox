@@ -141,7 +141,7 @@ func deviceTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"part_number": dsschema.StringAttribute{
-			MarkdownDescription: "Discrete part number (optional). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Discrete part number (optional). Defaults to an empty string.",
 			Computed:            true,
 		},
 		"u_height": dsschema.Float64Attribute{
@@ -181,7 +181,7 @@ func deviceTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{
@@ -189,11 +189,11 @@ func deviceTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"comments": dsschema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

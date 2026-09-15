@@ -87,7 +87,7 @@ func configTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"environment_params": dsschema.StringAttribute{
@@ -100,15 +100,15 @@ func configTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"mime_type": dsschema.StringAttribute{
-			MarkdownDescription: "Defaults to <code>text/plain; charset=utf-8</code>. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Defaults to <code>text/plain; charset=utf-8</code>. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"file_name": dsschema.StringAttribute{
-			MarkdownDescription: "Filename to give to the rendered export file. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Filename to give to the rendered export file. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"file_extension": dsschema.StringAttribute{
-			MarkdownDescription: "Extension to append to the rendered filename. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Extension to append to the rendered filename. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"as_attachment": dsschema.BoolAttribute{
@@ -132,7 +132,7 @@ func configTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

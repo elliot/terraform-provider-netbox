@@ -123,7 +123,7 @@ func vmInterfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"mode": dsschema.StringAttribute{
@@ -135,7 +135,7 @@ func vmInterfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"tagged_vlan_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Tagged Vlan (`netbox_vlan`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Tagged Vlan (`netbox_vlan`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
@@ -156,7 +156,7 @@ func vmInterfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

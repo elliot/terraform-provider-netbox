@@ -610,6 +610,10 @@ func toAPIFunc(r *model.Resource, patch bool) (string, error) {
 
 // ---- API -> Terraform ----
 
+// modelForPrior is the model type name used by readExpr for prior lookups; it
+// is set by fromAPIFunc before rendering attributes.
+var modelForPrior string
+
 // readExpr returns the expression converting the API field to the model value,
 // or "" when the attribute needs statement-level code (nested lists).
 func readExpr(a model.Attr, obj string, dataSource bool) string {
@@ -635,6 +639,9 @@ func readExpr(a model.Attr, obj string, dataSource bool) string {
 			}
 			return "conv.CustomFieldsFromAPI(" + get + "(), priorCustomFields)"
 		}
+		if !dataSource && !a.Required {
+			return "conv.JSONFromAPIWithPrior(" + get + "(), conv.PriorJSON(prior, func(m *" + modelForPrior + ") jsontypes.Normalized { return m." + field(a) + " }))"
+		}
 		return "conv.JSONFromAPI(" + get + "())"
 	case model.ReadJSON:
 		switch a.Kind {
@@ -643,6 +650,9 @@ func readExpr(a model.Attr, obj string, dataSource bool) string {
 				return "conv.AnyOrEmpty(" + get + "Ok())"
 			}
 			return "conv.Any(" + get + "Ok())"
+		}
+		if !dataSource && !a.Required {
+			return "conv.JSONFromAPIWithPrior(" + get + "(), conv.PriorJSON(prior, func(m *" + modelForPrior + ") jsontypes.Normalized { return m." + field(a) + " }))"
 		}
 		return "conv.JSONFromAPI(" + get + "())"
 	case model.ReadIntList:
@@ -700,6 +710,7 @@ func fromAPIFunc(r *model.Resource, dataSource bool) string {
 		modelName = r.GoName + "DataModel"
 		attrs = append(append([]model.Attr{}, r.Attrs...), r.ReadOnlyAttrs...)
 	}
+	modelForPrior = modelName
 	fmt.Fprintf(&b, "// %s copies an API object into the model.", name)
 	if !dataSource {
 		b.WriteString(" prior carries the previous state or plan (may be nil).")

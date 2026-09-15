@@ -82,12 +82,12 @@ func providerDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"account_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Account (`netbox_provider_account`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Account (`netbox_provider_account`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{
@@ -95,16 +95,16 @@ func providerDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"comments": dsschema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"asn_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Asn (`netbox_asn`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Asn (`netbox_asn`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

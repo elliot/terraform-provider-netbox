@@ -160,21 +160,21 @@ func customFieldResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50), stringvalidator.RegexMatches(regexp.MustCompile("^[a-z0-9_]+$"), "must match ^[a-z0-9_]+$")},
 		},
 		"label": schema.StringAttribute{
-			MarkdownDescription: "Name of the field as displayed to users (if not provided, 'the field's name will be used). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Name of the field as displayed to users (if not provided, 'the field's name will be used). Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"group_name": schema.StringAttribute{
-			MarkdownDescription: "Custom fields within the same group will be displayed together. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Custom fields within the same group will be displayed together. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -256,7 +256,7 @@ func customFieldResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"validation_regex": schema.StringAttribute{
-			MarkdownDescription: "Regular expression to enforce on text field values. Use ^ and $ to force matching of entire string. For example, <code>^[A-Z]{3}$</code> will limit values to exactly three uppercase letters. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Regular expression to enforce on text field values. Use ^ and $ to force matching of entire string. For example, <code>^[A-Z]{3}$</code> will limit values to exactly three uppercase letters. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(500)},
@@ -276,7 +276,7 @@ func customFieldResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
@@ -606,13 +606,13 @@ func customFieldFromAPI(ctx context.Context, obj *netbox.CustomField, prior *Cus
 	out.UiEditable = conv.Choice(obj.GetUiEditableOk())
 	out.IsCloneable = conv.Bool(obj.GetIsCloneableOk())
 	out.NullsFirst = conv.Bool(obj.GetNullsFirstOk())
-	out.Default = conv.JSONFromAPI(obj.GetDefault())
-	out.RelatedObjectFilter = conv.JSONFromAPI(obj.GetRelatedObjectFilter())
+	out.Default = conv.JSONFromAPIWithPrior(obj.GetDefault(), conv.PriorJSON(prior, func(m *CustomFieldModel) jsontypes.Normalized { return m.Default }))
+	out.RelatedObjectFilter = conv.JSONFromAPIWithPrior(obj.GetRelatedObjectFilter(), conv.PriorJSON(prior, func(m *CustomFieldModel) jsontypes.Normalized { return m.RelatedObjectFilter }))
 	out.Weight = conv.Int64From32(obj.GetWeightOk())
 	out.ValidationMinimum = conv.Float64From(obj.GetValidationMinimumOk())
 	out.ValidationMaximum = conv.Float64From(obj.GetValidationMaximumOk())
 	out.ValidationRegex = conv.StringOrEmpty(obj.GetValidationRegexOk())
-	out.ValidationSchema = conv.JSONFromAPI(obj.GetValidationSchema())
+	out.ValidationSchema = conv.JSONFromAPIWithPrior(obj.GetValidationSchema(), conv.PriorJSON(prior, func(m *CustomFieldModel) jsontypes.Normalized { return m.ValidationSchema }))
 	out.ChoiceSetId = conv.BriefID(obj.GetChoiceSetOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

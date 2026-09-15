@@ -189,14 +189,14 @@ func virtualMachineResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
 			Default:             stringdefault.StaticString(""),
 		},
 		"serial": schema.StringAttribute{
-			MarkdownDescription: "Serial. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Serial. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(50)},
@@ -211,13 +211,13 @@ func virtualMachineResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"comments": schema.StringAttribute{
-			MarkdownDescription: "Comments. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Comments. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,
@@ -598,7 +598,7 @@ func virtualMachineFromAPI(ctx context.Context, obj *netbox.VirtualMachine, prio
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
-	out.LocalContextData = conv.JSONFromAPI(obj.GetLocalContextData())
+	out.LocalContextData = conv.JSONFromAPIWithPrior(obj.GetLocalContextData(), conv.PriorJSON(prior, func(m *VirtualMachineModel) jsontypes.Normalized { return m.LocalContextData }))
 	out.ConfigTemplateId = conv.BriefID(obj.GetConfigTemplateOk())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

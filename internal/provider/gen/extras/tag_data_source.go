@@ -82,7 +82,7 @@ func tagDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"weight": dsschema.Int64Attribute{
@@ -90,7 +90,7 @@ func tagDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"object_types": dsschema.SetAttribute{
-			MarkdownDescription: "Object Types. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Object Types. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

@@ -157,7 +157,7 @@ func eventRuleResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -173,7 +173,7 @@ func eventRuleResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"tags": schema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Optional:            true,
 			Computed:            true,
@@ -405,7 +405,7 @@ func eventRuleFromAPI(ctx context.Context, obj *netbox.EventRule, prior *EventRu
 	out.Name = conv.String(obj.GetNameOk())
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
 	out.EventTypes = conv.StringSet(obj.GetEventTypes())
-	out.Conditions = conv.JSONFromAPI(obj.GetConditions())
+	out.Conditions = conv.JSONFromAPIWithPrior(obj.GetConditions(), conv.PriorJSON(prior, func(m *EventRuleModel) jsontypes.Normalized { return m.Conditions }))
 	out.ActionType = conv.Choice(obj.GetActionTypeOk())
 	out.ActionObjectType = conv.String(obj.GetActionObjectTypeOk())
 	out.ActionObjectId = conv.Int64From64(obj.GetActionObjectIdOk())

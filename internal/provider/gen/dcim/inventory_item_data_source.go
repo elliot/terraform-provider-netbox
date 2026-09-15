@@ -111,7 +111,7 @@ func inventoryItemDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"label": dsschema.StringAttribute{
-			MarkdownDescription: "Physical label. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Physical label. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"status": dsschema.StringAttribute{
@@ -127,11 +127,11 @@ func inventoryItemDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"part_id": dsschema.StringAttribute{
-			MarkdownDescription: "Manufacturer-assigned part identifier. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Manufacturer-assigned part identifier. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"serial": dsschema.StringAttribute{
-			MarkdownDescription: "Serial. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Serial. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"asset_tag": dsschema.StringAttribute{
@@ -143,7 +143,7 @@ func inventoryItemDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"component_type": dsschema.StringAttribute{
@@ -159,7 +159,7 @@ func inventoryItemDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"tags": dsschema.SetAttribute{
-			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
 			Computed:            true,
 		},

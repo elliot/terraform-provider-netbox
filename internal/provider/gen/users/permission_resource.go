@@ -104,7 +104,7 @@ func permissionResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -132,14 +132,14 @@ func permissionResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"group_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Group (`netbox_user_group`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Group (`netbox_user_group`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Optional:            true,
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.Int64Type, []attr.Value{})),
 		},
 		"user_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned User (`netbox_user`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned User (`netbox_user`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Optional:            true,
 			Computed:            true,
@@ -324,7 +324,7 @@ func permissionFromAPI(ctx context.Context, obj *netbox.ObjectPermission, prior 
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
 	out.ObjectTypes = conv.StringSet(obj.GetObjectTypes())
 	out.Actions = conv.StringSet(obj.GetActions())
-	out.Constraints = conv.JSONFromAPI(obj.GetConstraints())
+	out.Constraints = conv.JSONFromAPIWithPrior(obj.GetConstraints(), conv.PriorJSON(prior, func(m *PermissionModel) jsontypes.Normalized { return m.Constraints }))
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
 	out.UserIds = conv.BriefIDs(obj.GetUsers())
 	out.Url = conv.String(obj.GetUrlOk())

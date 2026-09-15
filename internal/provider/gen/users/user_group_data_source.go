@@ -59,11 +59,11 @@ func userGroupDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
 		},
 		"permission_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},

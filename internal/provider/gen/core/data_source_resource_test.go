@@ -13,18 +13,19 @@ import (
 )
 
 const dataSourceTestConfigBasic = `resource "netbox_data_source" "test" {
-  name = "{{.Name}}"
-  type = "{{.Name}}"
-  source_url = "{{.Name}}"
-  description = "created by acceptance test"
+  name       = "{{.Name}}"
+  type       = "git"
+  source_url = "https://github.com/netbox-community/netbox-demo-data.git"
+  enabled    = false
 }
 `
 
 const dataSourceTestConfigUpdate = `resource "netbox_data_source" "test" {
-  name = "{{.Name}}"
-  type = "{{.Name}}"
-  source_url = "{{.Name}}"
-  description = "updated by acceptance test"
+  name        = "{{.Name}}"
+  type        = "git"
+  source_url  = "https://github.com/netbox-community/netbox-demo-data.git"
+  enabled     = false
+  description = "updated"
 }
 `
 

@@ -109,7 +109,7 @@ func customFieldChoiceSetResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"description": schema.StringAttribute{
-			MarkdownDescription: "Description. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Description. Defaults to an empty string.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
@@ -336,7 +336,7 @@ func customFieldChoiceSetFromAPI(ctx context.Context, obj *netbox.CustomFieldCho
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.BaseChoices = conv.Choice(obj.GetBaseChoicesOk())
 	out.ExtraChoices = conv.AnyListFromAPI(obj.GetExtraChoices())
-	out.ChoiceColors = conv.JSONFromAPI(obj.GetChoiceColors())
+	out.ChoiceColors = conv.JSONFromAPIWithPrior(obj.GetChoiceColors(), conv.PriorJSON(prior, func(m *CustomFieldChoiceSetModel) jsontypes.Normalized { return m.ChoiceColors }))
 	out.OrderAlphabetically = conv.Bool(obj.GetOrderAlphabeticallyOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Url = conv.String(obj.GetUrlOk())
