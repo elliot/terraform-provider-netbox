@@ -108,6 +108,31 @@ func Build(doc *openapi.Document, ov map[string]*overrides.Resource) ([]*model.R
 			return nil, nil, fmt.Errorf("%s: %w", r.Path, err)
 		}
 	}
+	// Pass 3: the reverse side of a one-to-many relation (provider.accounts
+	// when provider_account.provider is required) is read-only.
+	byName := map[string]*model.Resource{}
+	for _, r := range resources {
+		byName[r.Name] = r
+	}
+	for _, r := range resources {
+		for i := range r.Attrs {
+			a := &r.Attrs[i]
+			if a.Kind != model.KindFKList || a.ReadOnly || a.Target == "" || a.Target == r.Name {
+				continue
+			}
+			t := byName[a.Target]
+			if t == nil {
+				continue
+			}
+			for _, ta := range t.Attrs {
+				if ta.Kind == model.KindFK && ta.Required && ta.Target == r.Name {
+					markReadOnly(a)
+					a.Description += " Managed from `netbox_" + t.Name + "`; read-only here."
+					break
+				}
+			}
+		}
+	}
 	sort.Slice(resources, func(i, j int) bool {
 		if resources[i].App != resources[j].App {
 			return resources[i].App < resources[j].App
@@ -239,8 +264,16 @@ func (b *Builder) buildResource(r *model.Resource) error {
 			if !ok {
 				continue
 			}
-			switch pname {
-			case "url", "display", "created", "last_updated":
+			ao := o.Attributes[pname]
+			switch {
+			case pname == "url" || pname == "display" || pname == "created" || pname == "last_updated":
+				r.Attrs = append(r.Attrs, ro)
+			case ao != nil && ao.Expose:
+				ro.KeepPriorWhenNull = true
+				ro.Sensitive = ao.Sensitive
+				if ao.Description != "" {
+					ro.Description = ao.Description
+				}
 				r.Attrs = append(r.Attrs, ro)
 			default:
 				r.ReadOnlyAttrs = append(r.ReadOnlyAttrs, ro)
@@ -469,6 +502,13 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		return nil, fmt.Errorf("%s: unsupported type %q", pname, rs.Type)
 	}
 	a.Kind = kind
+	if kind == model.KindNestedList && a.ReadKind != model.ReadNestedList {
+		b.warn("%s.%s: request-only nested list not echoed by the read serializer; skipped", r.Name, pname)
+		return nil, nil
+	}
+	if kind == model.KindString && (pname == "mac_address" || pname == "wwn") {
+		a.FoldCase = true
+	}
 
 	// Terraform naming.
 	switch kind {
@@ -496,9 +536,10 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 				a.DefaultEmptyString = blankAllowed(a)
 			}
 		case model.KindInt, model.KindFloat:
-			if !a.Nullable {
-				a.Computed = true
-			}
+			// Non-nullable numbers have server defaults; nullable ones are
+			// frequently derived by NetBox (rack dimensions from the rack type,
+			// VM disk from virtual disks, token pepper), so both track the server.
+			a.Computed = true
 		case model.KindFKList, model.KindIntList, model.KindStringList, model.KindTags:
 			a.Computed = true
 			a.DefaultEmptySet = true
@@ -540,11 +581,23 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		if len(ao.Enum) > 0 {
 			a.Enum = ao.Enum
 		}
+		if ao.ReadOnly {
+			markReadOnly(a)
+		}
 	}
 	if a.Description == "" {
 		a.Description = defaultDescription(a)
 	}
 	return a, nil
+}
+
+// markReadOnly turns an attribute into a computed-only one.
+func markReadOnly(a *model.Attr) {
+	a.ReadOnly = true
+	a.Computed = true
+	a.Required = false
+	a.DefaultEmptySet = false
+	a.DefaultEmptyString = false
 }
 
 // additionalPropertiesType returns the declared type of additionalProperties ("" when free-form).

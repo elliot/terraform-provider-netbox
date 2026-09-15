@@ -36,18 +36,25 @@ type Resource struct {
 
 // Attribute overrides one API property (keyed by API property name).
 type Attribute struct {
-	Name            string   `yaml:"name"`
-	Kind            string   `yaml:"kind"`
-	Target          string   `yaml:"target"`
-	Skip            bool     `yaml:"skip"`
-	RequiresReplace bool     `yaml:"requires_replace"`
-	Sensitive       bool     `yaml:"sensitive"`
-	Computed        *bool    `yaml:"computed"`
-	Optional        *bool    `yaml:"optional"`
-	Precision       int      `yaml:"precision"`
-	OrderedList     bool     `yaml:"ordered_list"`
-	Description     string   `yaml:"description"`
-	Enum            []string `yaml:"enum"`
+	Name            string `yaml:"name"`
+	Kind            string `yaml:"kind"`
+	Target          string `yaml:"target"`
+	Skip            bool   `yaml:"skip"`
+	RequiresReplace bool   `yaml:"requires_replace"`
+	Sensitive       bool   `yaml:"sensitive"`
+	Computed        *bool  `yaml:"computed"`
+	// ReadOnly keeps the attribute as Computed only (never written), e.g. the
+	// reverse side of a relation.
+	ReadOnly bool `yaml:"read_only"`
+	// Expose includes a read-only API property (id/url excluded) as a Computed
+	// resource attribute; the prior state is kept when the API returns null
+	// (write-once values such as token secrets).
+	Expose      bool     `yaml:"expose"`
+	Optional    *bool    `yaml:"optional"`
+	Precision   int      `yaml:"precision"`
+	OrderedList bool     `yaml:"ordered_list"`
+	Description string   `yaml:"description"`
+	Enum        []string `yaml:"enum"`
 	// Nested overrides apply to the item attributes of nested lists.
 	Nested map[string]*Attribute `yaml:"nested"`
 }

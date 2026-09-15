@@ -148,8 +148,10 @@ func ipAddressResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"assigned_object_id": schema.Int64Attribute{
-			MarkdownDescription: "Assigned Object Id.",
+			MarkdownDescription: "Assigned Object Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"nat_inside_id": schema.Int64Attribute{
 			MarkdownDescription: "The IP for which this address is the \"outside\" IP. References `netbox_ip_address`.",
@@ -337,9 +339,7 @@ func ipAddressToCreate(ctx context.Context, plan *IpAddressModel, diags *diag.Di
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.Role.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.Role.IsUnknown() {
+	if conv.Known(plan.Role) {
 		body.SetRole(plan.Role.ValueString())
 	}
 	if plan.AssignedObjectType.IsNull() {
@@ -347,9 +347,7 @@ func ipAddressToCreate(ctx context.Context, plan *IpAddressModel, diags *diag.Di
 	} else if !plan.AssignedObjectType.IsUnknown() {
 		body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
 	}
-	if plan.AssignedObjectId.IsNull() {
-		body.SetAssignedObjectIdNil()
-	} else if !plan.AssignedObjectId.IsUnknown() {
+	if conv.Known(plan.AssignedObjectId) {
 		body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
 	}
 	if plan.NatInsideId.IsNull() {
@@ -399,9 +397,7 @@ func ipAddressToPatch(ctx context.Context, plan *IpAddressModel, diags *diag.Dia
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.Role.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.Role.IsUnknown() {
+	if conv.Known(plan.Role) {
 		body.SetRole(plan.Role.ValueString())
 	}
 	if plan.AssignedObjectType.IsNull() {
@@ -409,9 +405,7 @@ func ipAddressToPatch(ctx context.Context, plan *IpAddressModel, diags *diag.Dia
 	} else if !plan.AssignedObjectType.IsUnknown() {
 		body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
 	}
-	if plan.AssignedObjectId.IsNull() {
-		body.SetAssignedObjectIdNil()
-	} else if !plan.AssignedObjectId.IsUnknown() {
+	if conv.Known(plan.AssignedObjectId) {
 		body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
 	}
 	if plan.NatInsideId.IsNull() {
@@ -450,18 +444,18 @@ func ipAddressFromAPI(ctx context.Context, obj *netbox.IPAddress, prior *IpAddre
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Address = conv.String(obj.GetAddressOk())
+	out.Address = conv.StringKeep(conv.String(obj.GetAddressOk()), conv.PriorString(prior, func(m *IpAddressModel) types.String { return m.Address }), false)
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.Role = conv.Choice(obj.GetRoleOk())
-	out.AssignedObjectType = conv.String(obj.GetAssignedObjectTypeOk())
+	out.AssignedObjectType = conv.StringKeep(conv.String(obj.GetAssignedObjectTypeOk()), conv.PriorString(prior, func(m *IpAddressModel) types.String { return m.AssignedObjectType }), false)
 	out.AssignedObjectId = conv.Int64From64(obj.GetAssignedObjectIdOk())
 	out.NatInsideId = conv.BriefID(obj.GetNatInsideOk())
-	out.DnsName = conv.StringOrEmpty(obj.GetDnsNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.DnsName = conv.StringKeep(conv.StringOrEmpty(obj.GetDnsNameOk()), conv.PriorString(prior, func(m *IpAddressModel) types.String { return m.DnsName }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *IpAddressModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IpAddressModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

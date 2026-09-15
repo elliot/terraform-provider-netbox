@@ -84,7 +84,7 @@ func tunnelDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"status": dsschema.StringAttribute{
-			MarkdownDescription: "Status. Valid values: `planned`, `active`, `disabled`. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Status. Valid values: `planned`, `active`, `disabled`.",
 			Computed:            true,
 		},
 		"group_id": dsschema.Int64Attribute{
@@ -104,7 +104,7 @@ func tunnelDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"tunnel_id": dsschema.Int64Attribute{
-			MarkdownDescription: "Tunnel Id.",
+			MarkdownDescription: "Tunnel Id. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

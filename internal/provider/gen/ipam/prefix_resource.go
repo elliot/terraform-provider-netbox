@@ -126,8 +126,10 @@ func prefixResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"scope_id": schema.Int64Attribute{
-			MarkdownDescription: "Scope Id.",
+			MarkdownDescription: "Scope Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"tenant_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Tenant (`netbox_tenant`).",
@@ -332,9 +334,7 @@ func prefixToCreate(ctx context.Context, plan *PrefixModel, diags *diag.Diagnost
 	} else if !plan.ScopeType.IsUnknown() {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
-	if plan.ScopeId.IsNull() {
-		body.SetScopeIdNil()
-	} else if !plan.ScopeId.IsUnknown() {
+	if conv.Known(plan.ScopeId) {
 		body.SetScopeId(conv.Int32(plan.ScopeId))
 	}
 	if plan.TenantId.IsNull() {
@@ -397,9 +397,7 @@ func prefixToPatch(ctx context.Context, plan *PrefixModel, diags *diag.Diagnosti
 	} else if !plan.ScopeType.IsUnknown() {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
-	if plan.ScopeId.IsNull() {
-		body.SetScopeIdNil()
-	} else if !plan.ScopeId.IsUnknown() {
+	if conv.Known(plan.ScopeId) {
 		body.SetScopeId(conv.Int32(plan.ScopeId))
 	}
 	if plan.TenantId.IsNull() {
@@ -454,9 +452,9 @@ func prefixFromAPI(ctx context.Context, obj *netbox.Prefix, prior *PrefixModel, 
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Prefix = conv.String(obj.GetPrefixOk())
+	out.Prefix = conv.StringKeep(conv.String(obj.GetPrefixOk()), conv.PriorString(prior, func(m *PrefixModel) types.String { return m.Prefix }), false)
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
-	out.ScopeType = conv.String(obj.GetScopeTypeOk())
+	out.ScopeType = conv.StringKeep(conv.String(obj.GetScopeTypeOk()), conv.PriorString(prior, func(m *PrefixModel) types.String { return m.ScopeType }), false)
 	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.VlanId = conv.BriefID(obj.GetVlanOk())
@@ -464,9 +462,9 @@ func prefixFromAPI(ctx context.Context, obj *netbox.Prefix, prior *PrefixModel, 
 	out.RoleId = conv.BriefID(obj.GetRoleOk())
 	out.IsPool = conv.Bool(obj.GetIsPoolOk())
 	out.MarkUtilized = conv.Bool(obj.GetMarkUtilizedOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *PrefixModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *PrefixModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

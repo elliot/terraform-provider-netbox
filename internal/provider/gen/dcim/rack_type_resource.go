@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -163,11 +164,9 @@ func rackTypeResourceAttributes() map[string]schema.Attribute {
 			Default:             stringdefault.StaticString(""),
 		},
 		"form_factor": schema.StringAttribute{
-			MarkdownDescription: "Form Factor. Valid values: `2-post-frame`, `4-post-frame`, `4-post-cabinet`, `wall-frame`, `wall-frame-vertical`, `wall-cabinet`, `wall-cabinet-vertical`. Defaults to the NetBox server default when omitted.",
-			Optional:            true,
-			Computed:            true,
+			MarkdownDescription: "Form Factor. Valid values: `2-post-frame`, `4-post-frame`, `4-post-cabinet`, `wall-frame`, `wall-frame-vertical`, `wall-cabinet`, `wall-cabinet-vertical`.",
+			Required:            true,
 			Validators:          []validator.String{stringvalidator.OneOf(rackTypeFormFactorValues...)},
-			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"width": schema.Int64Attribute{
 			MarkdownDescription: "Rail-to-rail width. Valid values: `10`, `19`, `21`, `23`. Defaults to the NetBox server default when omitted.",
@@ -195,16 +194,22 @@ func rackTypeResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 		},
 		"outer_width": schema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (width).",
+			MarkdownDescription: "Outer dimension of rack (width). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"outer_height": schema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (height).",
+			MarkdownDescription: "Outer dimension of rack (height). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"outer_depth": schema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (depth).",
+			MarkdownDescription: "Outer dimension of rack (depth). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"outer_unit": schema.StringAttribute{
 			MarkdownDescription: "Outer Unit. Valid values: `mm`, `in`. Defaults to the NetBox server default when omitted.",
@@ -214,12 +219,16 @@ func rackTypeResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"weight": schema.Float64Attribute{
-			MarkdownDescription: "Weight.",
+			MarkdownDescription: "Weight. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"max_weight": schema.Int64Attribute{
-			MarkdownDescription: "Maximum load capacity for the rack.",
+			MarkdownDescription: "Maximum load capacity for the rack. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"weight_unit": schema.StringAttribute{
 			MarkdownDescription: "Weight Unit. Valid values: `kg`, `g`, `lb`, `oz`. Defaults to the NetBox server default when omitted.",
@@ -229,8 +238,10 @@ func rackTypeResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"mounting_depth": schema.Int64Attribute{
-			MarkdownDescription: "Maximum depth of a mounted device, in millimeters. For four-post racks, this is the distance between the front and rear rails.",
+			MarkdownDescription: "Maximum depth of a mounted device, in millimeters. For four-post racks, this is the distance between the front and rear rails. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"cooling_capability": schema.StringAttribute{
 			MarkdownDescription: "Cooling Capability. Valid values: `air-only`, `hybrid`, `liquid-only`. Defaults to the NetBox server default when omitted.",
@@ -240,8 +251,10 @@ func rackTypeResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"cooling_capacity": schema.Float64Attribute{
-			MarkdownDescription: "Cooling capacity (kW).",
+			MarkdownDescription: "Cooling capacity (kW). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"owner_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Owner (`netbox_owner`).",
@@ -397,12 +410,9 @@ func (r *RackTypeResource) ImportState(ctx context.Context, req resource.ImportS
 
 // rackTypeToCreate builds the WritableRackTypeRequest request body from the plan.
 func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, diags *diag.Diagnostics) *netbox.WritableRackTypeRequest {
-	body := netbox.NewWritableRackTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString(), plan.Slug.ValueString())
+	body := netbox.NewWritableRackTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString(), plan.Slug.ValueString(), plan.FormFactor.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
-	}
-	if conv.Known(plan.FormFactor) {
-		body.SetFormFactor(plan.FormFactor.ValueString())
 	}
 	if conv.Known(plan.Width) {
 		body.SetWidth(conv.Int32(plan.Width))
@@ -416,54 +426,34 @@ func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, diags *diag.Diag
 	if conv.Known(plan.DescUnits) {
 		body.SetDescUnits(plan.DescUnits.ValueBool())
 	}
-	if plan.OuterWidth.IsNull() {
-		body.SetOuterWidthNil()
-	} else if !plan.OuterWidth.IsUnknown() {
+	if conv.Known(plan.OuterWidth) {
 		body.SetOuterWidth(conv.Int32(plan.OuterWidth))
 	}
-	if plan.OuterHeight.IsNull() {
-		body.SetOuterHeightNil()
-	} else if !plan.OuterHeight.IsUnknown() {
+	if conv.Known(plan.OuterHeight) {
 		body.SetOuterHeight(conv.Int32(plan.OuterHeight))
 	}
-	if plan.OuterDepth.IsNull() {
-		body.SetOuterDepthNil()
-	} else if !plan.OuterDepth.IsUnknown() {
+	if conv.Known(plan.OuterDepth) {
 		body.SetOuterDepth(conv.Int32(plan.OuterDepth))
 	}
-	if plan.OuterUnit.IsNull() {
-		body.SetOuterUnitNil()
-	} else if !plan.OuterUnit.IsUnknown() {
+	if conv.Known(plan.OuterUnit) {
 		body.SetOuterUnit(plan.OuterUnit.ValueString())
 	}
-	if plan.Weight.IsNull() {
-		body.SetWeightNil()
-	} else if !plan.Weight.IsUnknown() {
+	if conv.Known(plan.Weight) {
 		body.SetWeight(plan.Weight.ValueFloat64())
 	}
-	if plan.MaxWeight.IsNull() {
-		body.SetMaxWeightNil()
-	} else if !plan.MaxWeight.IsUnknown() {
+	if conv.Known(plan.MaxWeight) {
 		body.SetMaxWeight(conv.Int32(plan.MaxWeight))
 	}
-	if plan.WeightUnit.IsNull() {
-		body.SetWeightUnitNil()
-	} else if !plan.WeightUnit.IsUnknown() {
+	if conv.Known(plan.WeightUnit) {
 		body.SetWeightUnit(plan.WeightUnit.ValueString())
 	}
-	if plan.MountingDepth.IsNull() {
-		body.SetMountingDepthNil()
-	} else if !plan.MountingDepth.IsUnknown() {
+	if conv.Known(plan.MountingDepth) {
 		body.SetMountingDepth(conv.Int32(plan.MountingDepth))
 	}
-	if plan.CoolingCapability.IsNull() {
-		body.SetCoolingCapabilityNil()
-	} else if !plan.CoolingCapability.IsUnknown() {
+	if conv.Known(plan.CoolingCapability) {
 		body.SetCoolingCapability(plan.CoolingCapability.ValueString())
 	}
-	if plan.CoolingCapacity.IsNull() {
-		body.SetCoolingCapacityNil()
-	} else if !plan.CoolingCapacity.IsUnknown() {
+	if conv.Known(plan.CoolingCapacity) {
 		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
 	}
 	if plan.OwnerId.IsNull() {
@@ -513,54 +503,34 @@ func rackTypeToPatch(ctx context.Context, plan *RackTypeModel, diags *diag.Diagn
 	if conv.Known(plan.DescUnits) {
 		body.SetDescUnits(plan.DescUnits.ValueBool())
 	}
-	if plan.OuterWidth.IsNull() {
-		body.SetOuterWidthNil()
-	} else if !plan.OuterWidth.IsUnknown() {
+	if conv.Known(plan.OuterWidth) {
 		body.SetOuterWidth(conv.Int32(plan.OuterWidth))
 	}
-	if plan.OuterHeight.IsNull() {
-		body.SetOuterHeightNil()
-	} else if !plan.OuterHeight.IsUnknown() {
+	if conv.Known(plan.OuterHeight) {
 		body.SetOuterHeight(conv.Int32(plan.OuterHeight))
 	}
-	if plan.OuterDepth.IsNull() {
-		body.SetOuterDepthNil()
-	} else if !plan.OuterDepth.IsUnknown() {
+	if conv.Known(plan.OuterDepth) {
 		body.SetOuterDepth(conv.Int32(plan.OuterDepth))
 	}
-	if plan.OuterUnit.IsNull() {
-		body.SetOuterUnitNil()
-	} else if !plan.OuterUnit.IsUnknown() {
+	if conv.Known(plan.OuterUnit) {
 		body.SetOuterUnit(plan.OuterUnit.ValueString())
 	}
-	if plan.Weight.IsNull() {
-		body.SetWeightNil()
-	} else if !plan.Weight.IsUnknown() {
+	if conv.Known(plan.Weight) {
 		body.SetWeight(plan.Weight.ValueFloat64())
 	}
-	if plan.MaxWeight.IsNull() {
-		body.SetMaxWeightNil()
-	} else if !plan.MaxWeight.IsUnknown() {
+	if conv.Known(plan.MaxWeight) {
 		body.SetMaxWeight(conv.Int32(plan.MaxWeight))
 	}
-	if plan.WeightUnit.IsNull() {
-		body.SetWeightUnitNil()
-	} else if !plan.WeightUnit.IsUnknown() {
+	if conv.Known(plan.WeightUnit) {
 		body.SetWeightUnit(plan.WeightUnit.ValueString())
 	}
-	if plan.MountingDepth.IsNull() {
-		body.SetMountingDepthNil()
-	} else if !plan.MountingDepth.IsUnknown() {
+	if conv.Known(plan.MountingDepth) {
 		body.SetMountingDepth(conv.Int32(plan.MountingDepth))
 	}
-	if plan.CoolingCapability.IsNull() {
-		body.SetCoolingCapabilityNil()
-	} else if !plan.CoolingCapability.IsUnknown() {
+	if conv.Known(plan.CoolingCapability) {
 		body.SetCoolingCapability(plan.CoolingCapability.ValueString())
 	}
-	if plan.CoolingCapacity.IsNull() {
-		body.SetCoolingCapacityNil()
-	} else if !plan.CoolingCapacity.IsUnknown() {
+	if conv.Known(plan.CoolingCapacity) {
 		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
 	}
 	if plan.OwnerId.IsNull() {
@@ -589,9 +559,9 @@ func rackTypeFromAPI(ctx context.Context, obj *netbox.RackType, prior *RackTypeM
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ManufacturerId = conv.BriefID(obj.GetManufacturerOk())
-	out.Model = conv.String(obj.GetModelOk())
-	out.Slug = conv.String(obj.GetSlugOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Model = conv.StringKeep(conv.String(obj.GetModelOk()), conv.PriorString(prior, func(m *RackTypeModel) types.String { return m.Model }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *RackTypeModel) types.String { return m.Slug }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *RackTypeModel) types.String { return m.Description }), false)
 	out.FormFactor = conv.Choice(obj.GetFormFactorOk())
 	out.Width = conv.ChoiceInt(obj.GetWidthOk())
 	out.UHeight = conv.Int64From32(obj.GetUHeightOk())
@@ -608,7 +578,7 @@ func rackTypeFromAPI(ctx context.Context, obj *netbox.RackType, prior *RackTypeM
 	out.CoolingCapability = conv.Choice(obj.GetCoolingCapabilityOk())
 	out.CoolingCapacity = conv.Float64Keep(conv.Float64From(obj.GetCoolingCapacityOk()), conv.PriorFloat(prior, func(m *RackTypeModel) types.Float64 { return m.CoolingCapacity }), 0)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *RackTypeModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

@@ -33,6 +33,9 @@ resource "netbox_rear_port" "trunk1" {
   color     = "00ffff"
 }
 # ...fans out to 12 LC front ports, each mapped to one trunk position.
+# NetBox 4.7.0 rejects an update that re-sends an unchanged mapping set, so
+# change other attributes together with the mapping or taint the port
+# (see docs/validation/dcim-b.md, G1).
 resource "netbox_front_port" "lc" {
   count     = 12
   device_id = netbox_device.pp01.id

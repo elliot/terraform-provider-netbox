@@ -342,12 +342,12 @@ func ipamRoleFromAPI(ctx context.Context, obj *netbox.Role, prior *IpamRoleModel
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *IpamRoleModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *IpamRoleModel) types.String { return m.Slug }), false)
 	out.Weight = conv.Int64From32(obj.GetWeightOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *IpamRoleModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IpamRoleModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

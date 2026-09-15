@@ -363,14 +363,14 @@ func serviceFromAPI(ctx context.Context, obj *netbox.Service, prior *ServiceMode
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.ParentObjectType = conv.String(obj.GetParentObjectTypeOk())
+	out.ParentObjectType = conv.StringKeep(conv.String(obj.GetParentObjectTypeOk()), conv.PriorString(prior, func(m *ServiceModel) types.String { return m.ParentObjectType }), false)
 	out.ParentObjectId = conv.Int64From64(obj.GetParentObjectIdOk())
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ServiceModel) types.String { return m.Name }), false)
 	out.PortMappings = conv.StringSet(obj.GetPortMappings())
 	out.IpaddressIds = conv.BriefIDs(obj.GetIpaddresses())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ServiceModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ServiceModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

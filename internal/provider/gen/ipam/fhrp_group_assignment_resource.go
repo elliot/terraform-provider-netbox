@@ -265,7 +265,7 @@ func fhrpGroupAssignmentFromAPI(ctx context.Context, obj *netbox.FHRPGroupAssign
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.GroupId = conv.BriefID(obj.GetGroupOk())
-	out.InterfaceType = conv.String(obj.GetInterfaceTypeOk())
+	out.InterfaceType = conv.StringKeep(conv.String(obj.GetInterfaceTypeOk()), conv.PriorString(prior, func(m *FhrpGroupAssignmentModel) types.String { return m.InterfaceType }), false)
 	out.InterfaceId = conv.Int64From64(obj.GetInterfaceIdOk())
 	out.Priority = conv.Int64From32(obj.GetPriorityOk())
 	out.Url = conv.String(obj.GetUrlOk())

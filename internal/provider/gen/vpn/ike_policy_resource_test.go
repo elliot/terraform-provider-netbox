@@ -121,7 +121,7 @@ func TestAccIkePolicy_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_ike_policy", &resource.Sweeper{
 		Name:         "netbox_ike_policy",
-		Dependencies: []string{"netbox_ipsec_profile"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/vpn/ike-policies/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -59,8 +59,11 @@ resource "netbox_front_port_template" "test" {
   label          = "F1"
   color          = "aa1409"
   description    = "{{.Name}} updated"
+  # NetBox 4.7.0 rejects a PATCH that re-sends the current mapping set (400
+  # "rear_port, rear_port_position must make a unique set"), so the update
+  # also moves the mapping to another rear position. See docs/validation/dcim-b.md.
   rear_ports = [
-    { position = 1, rear_port = netbox_rear_port_template.test.id, rear_port_position = 1 },
+    { position = 1, rear_port = netbox_rear_port_template.test.id, rear_port_position = 2 },
   ]
 }
 `

@@ -90,7 +90,7 @@ func TestAccUser_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_user", &resource.Sweeper{
 		Name:         "netbox_user",
-		Dependencies: []string{"netbox_permission", "netbox_token"},
+		Dependencies: []string{"netbox_token"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/users/users/", []string{"username__isw", "q"})
 		},

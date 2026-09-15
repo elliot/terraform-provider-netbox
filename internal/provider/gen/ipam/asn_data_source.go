@@ -112,7 +112,7 @@ func asnDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"site_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Site. Defaults to an empty set.",
+			MarkdownDescription: "IDs of the assigned Site.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},

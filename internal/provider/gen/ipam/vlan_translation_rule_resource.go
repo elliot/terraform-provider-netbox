@@ -262,7 +262,7 @@ func vlanTranslationRuleFromAPI(ctx context.Context, obj *netbox.VLANTranslation
 	out.PolicyId = conv.Int64From32(obj.GetPolicyOk())
 	out.LocalVid = conv.Int64From32(obj.GetLocalVidOk())
 	out.RemoteVid = conv.Int64From32(obj.GetRemoteVidOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VlanTranslationRuleModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 }

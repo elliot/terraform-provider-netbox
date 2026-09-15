@@ -125,7 +125,7 @@ func circuitDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"commit_rate": dsschema.Int64Attribute{
-			MarkdownDescription: "Committed rate.",
+			MarkdownDescription: "Committed rate. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
@@ -133,7 +133,7 @@ func circuitDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"distance": dsschema.Float64Attribute{
-			MarkdownDescription: "Distance.",
+			MarkdownDescription: "Distance. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"distance_unit": dsschema.StringAttribute{

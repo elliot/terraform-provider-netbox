@@ -83,7 +83,7 @@ func ikePolicyDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"version": dsschema.Int64Attribute{
-			MarkdownDescription: "Version. Valid values: `1`, `2`. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Version. Valid values: `1`, `2`.",
 			Computed:            true,
 		},
 		"mode": dsschema.StringAttribute{

@@ -25,7 +25,7 @@ type WritableIKEPolicyRequest struct {
 	Name        string  `json:"name"`
 	Description *string `json:"description,omitempty"`
 	// * `1` - IKEv1 * `2` - IKEv2
-	Version *int32 `json:"version,omitempty"`
+	Version int32 `json:"version"`
 	// * `aggressive` - Aggressive * `main` - Main
 	Mode                 NullableString         `json:"mode,omitempty"`
 	Proposals            []int32                `json:"proposals,omitempty"`
@@ -43,9 +43,10 @@ type _WritableIKEPolicyRequest WritableIKEPolicyRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableIKEPolicyRequest(name string) *WritableIKEPolicyRequest {
+func NewWritableIKEPolicyRequest(name string, version int32) *WritableIKEPolicyRequest {
 	this := WritableIKEPolicyRequest{}
 	this.Name = name
+	this.Version = version
 	return &this
 }
 
@@ -113,36 +114,28 @@ func (o *WritableIKEPolicyRequest) SetDescription(v string) {
 	o.Description = &v
 }
 
-// GetVersion returns the Version field value if set, zero value otherwise.
+// GetVersion returns the Version field value
 func (o *WritableIKEPolicyRequest) GetVersion() int32 {
-	if o == nil || IsNil(o.Version) {
+	if o == nil {
 		var ret int32
 		return ret
 	}
-	return *o.Version
+
+	return o.Version
 }
 
-// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
+// GetVersionOk returns a tuple with the Version field value
 // and a boolean to check if the value has been set.
 func (o *WritableIKEPolicyRequest) GetVersionOk() (*int32, bool) {
-	if o == nil || IsNil(o.Version) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Version, true
+	return &o.Version, true
 }
 
-// HasVersion returns a boolean if a field has been set.
-func (o *WritableIKEPolicyRequest) HasVersion() bool {
-	if o != nil && !IsNil(o.Version) {
-		return true
-	}
-
-	return false
-}
-
-// SetVersion gets a reference to the given int32 and assigns it to the Version field.
+// SetVersion sets field value
 func (o *WritableIKEPolicyRequest) SetVersion(v int32) {
-	o.Version = &v
+	o.Version = v
 }
 
 // GetMode returns the Mode field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -405,9 +398,7 @@ func (o WritableIKEPolicyRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Description) {
 		toSerialize["description"] = o.Description
 	}
-	if !IsNil(o.Version) {
-		toSerialize["version"] = o.Version
-	}
+	toSerialize["version"] = o.Version
 	if o.Mode.IsSet() {
 		toSerialize["mode"] = o.Mode.Get()
 	}
@@ -443,6 +434,7 @@ func (o *WritableIKEPolicyRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"name",
+		"version",
 	}
 
 	// defaultValueFuncMap captures the default values for required properties.

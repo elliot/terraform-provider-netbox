@@ -116,7 +116,7 @@ func TestAccRackType_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_rack_type", &resource.Sweeper{
 		Name:         "netbox_rack_type",
-		Dependencies: []string{"netbox_rack"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/rack-types/", []string{"slug__isw", "description__isw", "q"})
 		},

@@ -352,9 +352,7 @@ func dataSourceToPatch(ctx context.Context, plan *DataSourceModel, diags *diag.D
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.SyncInterval.IsNull() {
-		body.SetSyncIntervalNil()
-	} else if !plan.SyncInterval.IsUnknown() {
+	if conv.Known(plan.SyncInterval) {
 		body.SetSyncInterval(conv.Int32(plan.SyncInterval))
 	}
 	if conv.Known(plan.Parameters) {
@@ -385,16 +383,16 @@ func dataSourceFromAPI(ctx context.Context, obj *netbox.DataSource, prior *DataS
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *DataSourceModel) types.String { return m.Name }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
-	out.SourceUrl = conv.String(obj.GetSourceUrlOk())
+	out.SourceUrl = conv.StringKeep(conv.String(obj.GetSourceUrlOk()), conv.PriorString(prior, func(m *DataSourceModel) types.String { return m.SourceUrl }), false)
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *DataSourceModel) types.String { return m.Description }), false)
 	out.SyncInterval = conv.Int64From32(obj.GetSyncIntervalOk())
 	out.Parameters = conv.JSONFromAPIWithPrior(obj.GetParameters(), conv.PriorJSON(prior, func(m *DataSourceModel) jsontypes.Normalized { return m.Parameters }))
-	out.IgnoreRules = conv.StringOrEmpty(obj.GetIgnoreRulesOk())
+	out.IgnoreRules = conv.StringKeep(conv.StringOrEmpty(obj.GetIgnoreRulesOk()), conv.PriorString(prior, func(m *DataSourceModel) types.String { return m.IgnoreRules }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *DataSourceModel) types.String { return m.Comments }), false)
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())

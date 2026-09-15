@@ -470,10 +470,10 @@ func frontPortFromAPI(ctx context.Context, obj *netbox.FrontPort, prior *FrontPo
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceId = conv.BriefID(obj.GetDeviceOk())
 	out.ModuleId = conv.BriefID(obj.GetModuleOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *FrontPortModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *FrontPortModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
-	out.Color = conv.StringOrEmpty(obj.GetColorOk())
+	out.Color = conv.StringKeep(conv.StringOrEmpty(obj.GetColorOk()), conv.PriorString(prior, func(m *FrontPortModel) types.String { return m.Color }), false)
 	out.Positions = conv.Int64From32(obj.GetPositionsOk())
 	{
 		items := obj.GetRearPorts()
@@ -492,7 +492,7 @@ func frontPortFromAPI(ctx context.Context, obj *netbox.FrontPort, prior *FrontPo
 		}
 		out.RearPorts = conv.ObjectList(ctx, frontPortRearPortsItemAttrTypes, vals, priorVal, diags)
 	}
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *FrontPortModel) types.String { return m.Description }), false)
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

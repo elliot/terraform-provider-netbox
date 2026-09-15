@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -155,8 +156,10 @@ func circuitResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"commit_rate": schema.Int64Attribute{
-			MarkdownDescription: "Committed rate.",
+			MarkdownDescription: "Committed rate. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -166,8 +169,10 @@ func circuitResourceAttributes() map[string]schema.Attribute {
 			Default:             stringdefault.StaticString(""),
 		},
 		"distance": schema.Float64Attribute{
-			MarkdownDescription: "Distance.",
+			MarkdownDescription: "Distance. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"distance_unit": schema.StringAttribute{
 			MarkdownDescription: "Distance Unit. Valid values: `km`, `m`, `mi`, `ft`. Defaults to the NetBox server default when omitted.",
@@ -354,22 +359,16 @@ func circuitToCreate(ctx context.Context, plan *CircuitModel, diags *diag.Diagno
 	} else if !plan.TerminationDate.IsUnknown() {
 		body.SetTerminationDate(plan.TerminationDate.ValueString())
 	}
-	if plan.CommitRate.IsNull() {
-		body.SetCommitRateNil()
-	} else if !plan.CommitRate.IsUnknown() {
+	if conv.Known(plan.CommitRate) {
 		body.SetCommitRate(conv.Int32(plan.CommitRate))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.Distance.IsNull() {
-		body.SetDistanceNil()
-	} else if !plan.Distance.IsUnknown() {
+	if conv.Known(plan.Distance) {
 		body.SetDistance(plan.Distance.ValueFloat64())
 	}
-	if plan.DistanceUnit.IsNull() {
-		body.SetDistanceUnitNil()
-	} else if !plan.DistanceUnit.IsUnknown() {
+	if conv.Known(plan.DistanceUnit) {
 		body.SetDistanceUnit(plan.DistanceUnit.ValueString())
 	}
 	if plan.OwnerId.IsNull() {
@@ -424,22 +423,16 @@ func circuitToPatch(ctx context.Context, plan *CircuitModel, diags *diag.Diagnos
 	} else if !plan.TerminationDate.IsUnknown() {
 		body.SetTerminationDate(plan.TerminationDate.ValueString())
 	}
-	if plan.CommitRate.IsNull() {
-		body.SetCommitRateNil()
-	} else if !plan.CommitRate.IsUnknown() {
+	if conv.Known(plan.CommitRate) {
 		body.SetCommitRate(conv.Int32(plan.CommitRate))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.Distance.IsNull() {
-		body.SetDistanceNil()
-	} else if !plan.Distance.IsUnknown() {
+	if conv.Known(plan.Distance) {
 		body.SetDistance(plan.Distance.ValueFloat64())
 	}
-	if plan.DistanceUnit.IsNull() {
-		body.SetDistanceUnitNil()
-	} else if !plan.DistanceUnit.IsUnknown() {
+	if conv.Known(plan.DistanceUnit) {
 		body.SetDistanceUnit(plan.DistanceUnit.ValueString())
 	}
 	if plan.OwnerId.IsNull() {
@@ -467,20 +460,20 @@ func circuitFromAPI(ctx context.Context, obj *netbox.Circuit, prior *CircuitMode
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Cid = conv.String(obj.GetCidOk())
+	out.Cid = conv.StringKeep(conv.String(obj.GetCidOk()), conv.PriorString(prior, func(m *CircuitModel) types.String { return m.Cid }), false)
 	out.ProviderId = conv.BriefID(obj.GetProviderOk())
 	out.ProviderAccountId = conv.BriefID(obj.GetProviderAccountOk())
 	out.TypeId = conv.BriefID(obj.GetTypeOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
-	out.InstallDate = conv.String(obj.GetInstallDateOk())
-	out.TerminationDate = conv.String(obj.GetTerminationDateOk())
+	out.InstallDate = conv.StringKeep(conv.String(obj.GetInstallDateOk()), conv.PriorString(prior, func(m *CircuitModel) types.String { return m.InstallDate }), false)
+	out.TerminationDate = conv.StringKeep(conv.String(obj.GetTerminationDateOk()), conv.PriorString(prior, func(m *CircuitModel) types.String { return m.TerminationDate }), false)
 	out.CommitRate = conv.Int64From32(obj.GetCommitRateOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CircuitModel) types.String { return m.Description }), false)
 	out.Distance = conv.Float64Keep(conv.Float64From(obj.GetDistanceOk()), conv.PriorFloat(prior, func(m *CircuitModel) types.Float64 { return m.Distance }), 0)
 	out.DistanceUnit = conv.Choice(obj.GetDistanceUnitOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *CircuitModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

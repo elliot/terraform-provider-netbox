@@ -24,7 +24,7 @@ var _ MappedNullable = &WritableTunnelTerminationRequest{}
 type WritableTunnelTerminationRequest struct {
 	Tunnel int32 `json:"tunnel"`
 	// * `peer` - Peer * `hub` - Hub * `spoke` - Spoke
-	Role                 *string                `json:"role,omitempty"`
+	Role                 string                 `json:"role"`
 	TerminationType      string                 `json:"termination_type"`
 	TerminationId        NullableInt64          `json:"termination_id,omitempty"`
 	OutsideIp            NullableInt32          `json:"outside_ip,omitempty"`
@@ -39,9 +39,10 @@ type _WritableTunnelTerminationRequest WritableTunnelTerminationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableTunnelTerminationRequest(tunnel int32, terminationType string) *WritableTunnelTerminationRequest {
+func NewWritableTunnelTerminationRequest(tunnel int32, role string, terminationType string) *WritableTunnelTerminationRequest {
 	this := WritableTunnelTerminationRequest{}
 	this.Tunnel = tunnel
+	this.Role = role
 	this.TerminationType = terminationType
 	return &this
 }
@@ -78,36 +79,28 @@ func (o *WritableTunnelTerminationRequest) SetTunnel(v int32) {
 	o.Tunnel = v
 }
 
-// GetRole returns the Role field value if set, zero value otherwise.
+// GetRole returns the Role field value
 func (o *WritableTunnelTerminationRequest) GetRole() string {
-	if o == nil || IsNil(o.Role) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Role
+
+	return o.Role
 }
 
-// GetRoleOk returns a tuple with the Role field value if set, nil otherwise
+// GetRoleOk returns a tuple with the Role field value
 // and a boolean to check if the value has been set.
 func (o *WritableTunnelTerminationRequest) GetRoleOk() (*string, bool) {
-	if o == nil || IsNil(o.Role) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Role, true
+	return &o.Role, true
 }
 
-// HasRole returns a boolean if a field has been set.
-func (o *WritableTunnelTerminationRequest) HasRole() bool {
-	if o != nil && !IsNil(o.Role) {
-		return true
-	}
-
-	return false
-}
-
-// SetRole gets a reference to the given string and assigns it to the Role field.
+// SetRole sets field value
 func (o *WritableTunnelTerminationRequest) SetRole(v string) {
-	o.Role = &v
+	o.Role = v
 }
 
 // GetTerminationType returns the TerminationType field value
@@ -295,9 +288,7 @@ func (o WritableTunnelTerminationRequest) MarshalJSON() ([]byte, error) {
 func (o WritableTunnelTerminationRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["tunnel"] = o.Tunnel
-	if !IsNil(o.Role) {
-		toSerialize["role"] = o.Role
-	}
+	toSerialize["role"] = o.Role
 	toSerialize["termination_type"] = o.TerminationType
 	if o.TerminationId.IsSet() {
 		toSerialize["termination_id"] = o.TerminationId.Get()
@@ -325,6 +316,7 @@ func (o *WritableTunnelTerminationRequest) UnmarshalJSON(data []byte) (err error
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"tunnel",
+		"role",
 		"termination_type",
 	}
 

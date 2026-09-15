@@ -27,7 +27,7 @@ type WritableRackTypeRequest struct {
 	Slug         string  `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description  *string `json:"description,omitempty"`
 	// * `2-post-frame` - 2-post frame * `4-post-frame` - 4-post frame * `4-post-cabinet` - 4-post cabinet * `wall-frame` - Wall-mounted frame * `wall-frame-vertical` - Wall-mounted frame (vertical) * `wall-cabinet` - Wall-mounted cabinet * `wall-cabinet-vertical` - Wall-mounted cabinet (vertical)
-	FormFactor *string `json:"form_factor,omitempty"`
+	FormFactor string `json:"form_factor"`
 	// Rail-to-rail width  * `10` - 10 inches * `19` - 19 inches * `21` - 21 inches * `23` - 23 inches
 	Width *int32 `json:"width,omitempty"`
 	// Height in rack units
@@ -68,11 +68,12 @@ type _WritableRackTypeRequest WritableRackTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableRackTypeRequest(manufacturer int32, model string, slug string) *WritableRackTypeRequest {
+func NewWritableRackTypeRequest(manufacturer int32, model string, slug string, formFactor string) *WritableRackTypeRequest {
 	this := WritableRackTypeRequest{}
 	this.Manufacturer = manufacturer
 	this.Model = model
 	this.Slug = slug
+	this.FormFactor = formFactor
 	return &this
 }
 
@@ -188,36 +189,28 @@ func (o *WritableRackTypeRequest) SetDescription(v string) {
 	o.Description = &v
 }
 
-// GetFormFactor returns the FormFactor field value if set, zero value otherwise.
+// GetFormFactor returns the FormFactor field value
 func (o *WritableRackTypeRequest) GetFormFactor() string {
-	if o == nil || IsNil(o.FormFactor) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.FormFactor
+
+	return o.FormFactor
 }
 
-// GetFormFactorOk returns a tuple with the FormFactor field value if set, nil otherwise
+// GetFormFactorOk returns a tuple with the FormFactor field value
 // and a boolean to check if the value has been set.
 func (o *WritableRackTypeRequest) GetFormFactorOk() (*string, bool) {
-	if o == nil || IsNil(o.FormFactor) {
+	if o == nil {
 		return nil, false
 	}
-	return o.FormFactor, true
+	return &o.FormFactor, true
 }
 
-// HasFormFactor returns a boolean if a field has been set.
-func (o *WritableRackTypeRequest) HasFormFactor() bool {
-	if o != nil && !IsNil(o.FormFactor) {
-		return true
-	}
-
-	return false
-}
-
-// SetFormFactor gets a reference to the given string and assigns it to the FormFactor field.
+// SetFormFactor sets field value
 func (o *WritableRackTypeRequest) SetFormFactor(v string) {
-	o.FormFactor = &v
+	o.FormFactor = v
 }
 
 // GetWidth returns the Width field value if set, zero value otherwise.
@@ -933,9 +926,7 @@ func (o WritableRackTypeRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Description) {
 		toSerialize["description"] = o.Description
 	}
-	if !IsNil(o.FormFactor) {
-		toSerialize["form_factor"] = o.FormFactor
-	}
+	toSerialize["form_factor"] = o.FormFactor
 	if !IsNil(o.Width) {
 		toSerialize["width"] = o.Width
 	}
@@ -1006,6 +997,7 @@ func (o *WritableRackTypeRequest) UnmarshalJSON(data []byte) (err error) {
 		"manufacturer",
 		"model",
 		"slug",
+		"form_factor",
 	}
 
 	// defaultValueFuncMap captures the default values for required properties.

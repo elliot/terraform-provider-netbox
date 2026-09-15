@@ -573,6 +573,38 @@ func ApplyFilters(ctx context.Context, filters types.List, allowed []string, q u
 	}
 }
 
+// StringKeep returns got unless prior (the planned/configured value) is
+// equivalent after NetBox's normalisation: surrounding whitespace is trimmed by
+// DRF and, when fold is set, letter case is ignored (MAC addresses, WWNs).
+func StringKeep(got types.String, prior types.String, fold bool) types.String {
+	if got.IsNull() || !Known(prior) {
+		return got
+	}
+	a, b := strings.TrimSpace(prior.ValueString()), got.ValueString()
+	if a == b || (fold && strings.EqualFold(a, b)) {
+		return prior
+	}
+	return got
+}
+
+// PriorString returns the string attribute selected by get from prior, or
+// null when prior is nil (used by generated FromAPI functions).
+func PriorString[M any](prior *M, get func(*M) types.String) types.String {
+	if prior == nil {
+		return types.StringNull()
+	}
+	return get(prior)
+}
+
+// KeepWhenNull returns prior when got is null and prior is known: used for
+// values NetBox returns only once (token secrets) or never echoes.
+func KeepWhenNull[V attr.Value](got V, prior V) V {
+	if got.IsNull() && !prior.IsNull() && !prior.IsUnknown() {
+		return prior
+	}
+	return got
+}
+
 // PriorFloat returns the float attribute selected by get from prior, or null
 // when prior is nil (used by generated FromAPI functions).
 func PriorFloat[M any](prior *M, get func(*M) types.Float64) types.Float64 {
@@ -587,6 +619,16 @@ func PriorFloat[M any](prior *M, get func(*M) types.Float64) types.Float64 {
 func PriorJSON[M any](prior *M, get func(*M) jsontypes.Normalized) jsontypes.Normalized {
 	if prior == nil {
 		return jsontypes.NewNormalizedNull()
+	}
+	return get(prior)
+}
+
+// PriorValue returns the attribute selected by get from prior; when prior is
+// nil the zero value of V (a null value for framework types) is returned via zero.
+func PriorValue[M any, V attr.Value](prior *M, get func(*M) V) V {
+	var zero V
+	if prior == nil {
+		return zero
 	}
 	return get(prior)
 }

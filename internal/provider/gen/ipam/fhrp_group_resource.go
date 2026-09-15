@@ -307,9 +307,7 @@ func fhrpGroupToCreate(ctx context.Context, plan *FhrpGroupModel, diags *diag.Di
 	if !plan.Name.IsUnknown() {
 		body.SetName(plan.Name.ValueString())
 	}
-	if plan.AuthType.IsNull() {
-		body.SetAuthTypeNil()
-	} else if !plan.AuthType.IsUnknown() {
+	if conv.Known(plan.AuthType) {
 		body.SetAuthType(plan.AuthType.ValueString())
 	}
 	if !plan.AuthKey.IsUnknown() {
@@ -347,9 +345,7 @@ func fhrpGroupToPatch(ctx context.Context, plan *FhrpGroupModel, diags *diag.Dia
 	if conv.Known(plan.GroupId) {
 		body.SetGroupId(conv.Int32(plan.GroupId))
 	}
-	if plan.AuthType.IsNull() {
-		body.SetAuthTypeNil()
-	} else if !plan.AuthType.IsUnknown() {
+	if conv.Known(plan.AuthType) {
 		body.SetAuthType(plan.AuthType.ValueString())
 	}
 	if !plan.AuthKey.IsUnknown() {
@@ -383,14 +379,14 @@ func fhrpGroupFromAPI(ctx context.Context, obj *netbox.FHRPGroup, prior *FhrpGro
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.StringOrEmpty(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.StringOrEmpty(obj.GetNameOk()), conv.PriorString(prior, func(m *FhrpGroupModel) types.String { return m.Name }), false)
 	out.Protocol = conv.ChoiceScalar(obj.GetProtocolOk())
 	out.GroupId = conv.Int64From32(obj.GetGroupIdOk())
 	out.AuthType = conv.ChoiceScalar(obj.GetAuthTypeOk())
-	out.AuthKey = conv.StringOrEmpty(obj.GetAuthKeyOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.AuthKey = conv.StringKeep(conv.StringOrEmpty(obj.GetAuthKeyOk()), conv.PriorString(prior, func(m *FhrpGroupModel) types.String { return m.AuthKey }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *FhrpGroupModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *FhrpGroupModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

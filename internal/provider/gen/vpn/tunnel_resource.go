@@ -120,11 +120,9 @@ func tunnelResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"status": schema.StringAttribute{
-			MarkdownDescription: "Status. Valid values: `planned`, `active`, `disabled`. Defaults to the NetBox server default when omitted.",
-			Optional:            true,
-			Computed:            true,
+			MarkdownDescription: "Status. Valid values: `planned`, `active`, `disabled`.",
+			Required:            true,
 			Validators:          []validator.String{stringvalidator.OneOf(tunnelStatusValues...)},
-			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"group_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Tunnel Group (`netbox_tunnel_group`).",
@@ -144,8 +142,10 @@ func tunnelResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"tunnel_id": schema.Int64Attribute{
-			MarkdownDescription: "Tunnel Id.",
+			MarkdownDescription: "Tunnel Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -308,10 +308,7 @@ func (r *TunnelResource) ImportState(ctx context.Context, req resource.ImportSta
 
 // tunnelToCreate builds the WritableTunnelRequest request body from the plan.
 func tunnelToCreate(ctx context.Context, plan *TunnelModel, diags *diag.Diagnostics) *netbox.WritableTunnelRequest {
-	body := netbox.NewWritableTunnelRequest(plan.Name.ValueString(), plan.Encapsulation.ValueString())
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
-	}
+	body := netbox.NewWritableTunnelRequest(plan.Name.ValueString(), plan.Status.ValueString(), plan.Encapsulation.ValueString())
 	if plan.GroupId.IsNull() {
 		body.SetGroupNil()
 	} else if !plan.GroupId.IsUnknown() {
@@ -327,9 +324,7 @@ func tunnelToCreate(ctx context.Context, plan *TunnelModel, diags *diag.Diagnost
 	} else if !plan.TenantId.IsUnknown() {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.TunnelId.IsNull() {
-		body.SetTunnelIdNil()
-	} else if !plan.TunnelId.IsUnknown() {
+	if conv.Known(plan.TunnelId) {
 		body.SetTunnelId(plan.TunnelId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
@@ -379,9 +374,7 @@ func tunnelToPatch(ctx context.Context, plan *TunnelModel, diags *diag.Diagnosti
 	} else if !plan.TenantId.IsUnknown() {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.TunnelId.IsNull() {
-		body.SetTunnelIdNil()
-	} else if !plan.TunnelId.IsUnknown() {
+	if conv.Known(plan.TunnelId) {
 		body.SetTunnelId(plan.TunnelId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
@@ -412,16 +405,16 @@ func tunnelFromAPI(ctx context.Context, obj *netbox.Tunnel, prior *TunnelModel, 
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *TunnelModel) types.String { return m.Name }), false)
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.GroupId = conv.BriefID(obj.GetGroupOk())
 	out.Encapsulation = conv.Choice(obj.GetEncapsulationOk())
 	out.IpsecProfileId = conv.BriefID(obj.GetIpsecProfileOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.TunnelId = conv.Int64From64(obj.GetTunnelIdOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *TunnelModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *TunnelModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

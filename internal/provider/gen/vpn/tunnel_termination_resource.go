@@ -108,19 +108,19 @@ func tunnelTerminationResourceAttributes() map[string]schema.Attribute {
 			Required:            true,
 		},
 		"role": schema.StringAttribute{
-			MarkdownDescription: "Role. Valid values: `peer`, `hub`, `spoke`. Defaults to the NetBox server default when omitted.",
-			Optional:            true,
-			Computed:            true,
+			MarkdownDescription: "Role. Valid values: `peer`, `hub`, `spoke`.",
+			Required:            true,
 			Validators:          []validator.String{stringvalidator.OneOf(tunnelTerminationRoleValues...)},
-			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"termination_type": schema.StringAttribute{
 			MarkdownDescription: "Termination Type.",
 			Required:            true,
 		},
 		"termination_id": schema.Int64Attribute{
-			MarkdownDescription: "Termination Id.",
+			MarkdownDescription: "Termination Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"outside_ip_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`).",
@@ -270,13 +270,8 @@ func (r *TunnelTerminationResource) ImportState(ctx context.Context, req resourc
 
 // tunnelTerminationToCreate builds the WritableTunnelTerminationRequest request body from the plan.
 func tunnelTerminationToCreate(ctx context.Context, plan *TunnelTerminationModel, diags *diag.Diagnostics) *netbox.WritableTunnelTerminationRequest {
-	body := netbox.NewWritableTunnelTerminationRequest(conv.Int32(plan.TunnelId), plan.TerminationType.ValueString())
-	if conv.Known(plan.Role) {
-		body.SetRole(plan.Role.ValueString())
-	}
-	if plan.TerminationId.IsNull() {
-		body.SetTerminationIdNil()
-	} else if !plan.TerminationId.IsUnknown() {
+	body := netbox.NewWritableTunnelTerminationRequest(conv.Int32(plan.TunnelId), plan.Role.ValueString(), plan.TerminationType.ValueString())
+	if conv.Known(plan.TerminationId) {
 		body.SetTerminationId(plan.TerminationId.ValueInt64())
 	}
 	if plan.OutsideIpId.IsNull() {
@@ -305,9 +300,7 @@ func tunnelTerminationToPatch(ctx context.Context, plan *TunnelTerminationModel,
 	if conv.Known(plan.TerminationType) {
 		body.SetTerminationType(plan.TerminationType.ValueString())
 	}
-	if plan.TerminationId.IsNull() {
-		body.SetTerminationIdNil()
-	} else if !plan.TerminationId.IsUnknown() {
+	if conv.Known(plan.TerminationId) {
 		body.SetTerminationId(plan.TerminationId.ValueInt64())
 	}
 	if plan.OutsideIpId.IsNull() {
@@ -334,7 +327,7 @@ func tunnelTerminationFromAPI(ctx context.Context, obj *netbox.TunnelTermination
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.TunnelId = conv.BriefID(obj.GetTunnelOk())
 	out.Role = conv.Choice(obj.GetRoleOk())
-	out.TerminationType = conv.String(obj.GetTerminationTypeOk())
+	out.TerminationType = conv.StringKeep(conv.String(obj.GetTerminationTypeOk()), conv.PriorString(prior, func(m *TunnelTerminationModel) types.String { return m.TerminationType }), false)
 	out.TerminationId = conv.Int64From64(obj.GetTerminationIdOk())
 	out.OutsideIpId = conv.BriefID(obj.GetOutsideIpOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

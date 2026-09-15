@@ -343,11 +343,11 @@ func providerFromAPI(ctx context.Context, obj *netbox.Provider, prior *ProviderM
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Slug }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Comments }), false)
 	out.AsnIds = conv.BriefIDs(obj.GetAsns())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)

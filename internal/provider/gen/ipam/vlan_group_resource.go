@@ -119,8 +119,10 @@ func vlanGroupResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"scope_id": schema.Int64Attribute{
-			MarkdownDescription: "Scope Id.",
+			MarkdownDescription: "Scope Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"vid_ranges": schema.ListAttribute{
 			MarkdownDescription: "Vid Ranges.",
@@ -298,9 +300,7 @@ func vlanGroupToCreate(ctx context.Context, plan *VlanGroupModel, diags *diag.Di
 	} else if !plan.ScopeType.IsUnknown() {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
-	if plan.ScopeId.IsNull() {
-		body.SetScopeIdNil()
-	} else if !plan.ScopeId.IsUnknown() {
+	if conv.Known(plan.ScopeId) {
 		body.SetScopeId(conv.Int32(plan.ScopeId))
 	}
 	if conv.Known(plan.VidRanges) {
@@ -345,9 +345,7 @@ func vlanGroupToPatch(ctx context.Context, plan *VlanGroupModel, diags *diag.Dia
 	} else if !plan.ScopeType.IsUnknown() {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
-	if plan.ScopeId.IsNull() {
-		body.SetScopeIdNil()
-	} else if !plan.ScopeId.IsUnknown() {
+	if conv.Known(plan.ScopeId) {
 		body.SetScopeId(conv.Int32(plan.ScopeId))
 	}
 	if conv.Known(plan.VidRanges) {
@@ -386,15 +384,15 @@ func vlanGroupFromAPI(ctx context.Context, obj *netbox.VLANGroup, prior *VlanGro
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
-	out.ScopeType = conv.String(obj.GetScopeTypeOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.Slug }), false)
+	out.ScopeType = conv.StringKeep(conv.String(obj.GetScopeTypeOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.ScopeType }), false)
 	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
 	out.VidRanges = conv.IntRangesFromAPI(obj.GetVidRanges())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

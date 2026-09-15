@@ -514,15 +514,13 @@ func setterCode(a model.Attr, body, v string, patch bool) string {
 			return fmt.Sprintf("if %s.IsNull() {\n%sNil()\n} else if !%s.IsUnknown() {\n%s(%s)\n}\n", v, set, v, set, scalarExpr(a, v))
 		case a.Required:
 			return fmt.Sprintf("if conv.Known(%s) {\n%s(%s)\n}\n", v, set, scalarExpr(a, v))
-		case a.Nullable && (!a.Computed || a.Kind == model.KindChoice || a.Kind == model.KindDateTime):
+		case a.Nullable && !a.Computed:
 			// Optional nullable: null clears explicitly.
 			return fmt.Sprintf("if %s.IsNull() {\n%sNil()\n} else if !%s.IsUnknown() {\n%s(%s)\n}\n", v, set, v, set, scalarExpr(a, v))
 		case a.Nullable && a.Computed:
-			// Optional+Computed nullable (choices, datetimes): null in plan after
-			// UseStateForUnknown means "server has null"; send explicit null only on PATCH.
-			if patch {
-				return fmt.Sprintf("if %s.IsNull() {\n%sNil()\n} else if !%s.IsUnknown() {\n%s(%s)\n}\n", v, set, v, set, scalarExpr(a, v))
-			}
+			// Optional+Computed nullable (choices, numbers, datetimes): a null plan
+			// value only ever mirrors a null server value, and NetBox rejects an
+			// explicit null for choice fields without allow_blank, so never send it.
 			return fmt.Sprintf("if conv.Known(%s) {\n%s(%s)\n}\n", v, set, scalarExpr(a, v))
 		case a.DefaultEmptyString:
 			return fmt.Sprintf("if !%s.IsUnknown() {\n%s(%s)\n}\n", v, set, scalarExpr(a, v))
@@ -745,6 +743,15 @@ func fromAPIFunc(r *model.Resource, dataSource bool) string {
 			}
 			continue
 		}
+		if !dataSource {
+			priorExpr := fmt.Sprintf("conv.Prior%s(prior, func(m *%s) %s { return m.%s })", priorKind(a), modelName, tfType(a), field(a))
+			switch {
+			case a.KeepPriorWhenNull:
+				expr = fmt.Sprintf("conv.KeepWhenNull(%s, %s)", expr, priorExpr)
+			case a.Kind == model.KindString && !a.ReadOnly:
+				expr = fmt.Sprintf("conv.StringKeep(%s, %s, %t)", expr, priorExpr, a.FoldCase)
+			}
+		}
 		fmt.Fprintf(&b, "%s = %s\n", f, expr)
 	}
 	b.WriteString("}\n\n")
@@ -782,6 +789,19 @@ func nestedListRead(r *model.Resource, a model.Attr, obj, f string, dataSource b
 	fmt.Fprintf(&b, "%s = conv.ObjectList(ctx, %sAttrTypes, vals, %s, diags)\n", f, lower(it), prior)
 	b.WriteString("}\n")
 	return b.String()
+}
+
+// priorKind names the conv.Prior* helper for an attribute's model type.
+func priorKind(a model.Attr) string {
+	switch tfType(a) {
+	case "types.String":
+		return "String"
+	case "types.Float64":
+		return "Float"
+	case "jsontypes.Normalized":
+		return "JSON"
+	}
+	return "Value"
 }
 
 func nullExpr(a model.Attr) string {

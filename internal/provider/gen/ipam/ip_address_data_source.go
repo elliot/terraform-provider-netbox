@@ -112,7 +112,7 @@ func ipAddressDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"assigned_object_id": dsschema.Int64Attribute{
-			MarkdownDescription: "Assigned Object Id.",
+			MarkdownDescription: "Assigned Object Id. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"nat_inside_id": dsschema.Int64Attribute{

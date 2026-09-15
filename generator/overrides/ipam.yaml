@@ -17,6 +17,9 @@ resources:
     lookups: [start_address]
   asns:
     lookups: [asn]
+    attributes:
+      # Reverse side of netbox_site.asn_ids.
+      sites: { read_only: true }
   services:
     attributes:
       # deprecated in 4.7 in favour of port_mappings

@@ -347,9 +347,7 @@ func vlanToCreate(ctx context.Context, plan *VlanModel, diags *diag.Diagnostics)
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.QinqRole.IsNull() {
-		body.SetQinqRoleNil()
-	} else if !plan.QinqRole.IsUnknown() {
+	if conv.Known(plan.QinqRole) {
 		body.SetQinqRole(plan.QinqRole.ValueString())
 	}
 	if plan.QinqSvlanId.IsNull() {
@@ -409,9 +407,7 @@ func vlanToPatch(ctx context.Context, plan *VlanModel, diags *diag.Diagnostics) 
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.QinqRole.IsNull() {
-		body.SetQinqRoleNil()
-	} else if !plan.QinqRole.IsUnknown() {
+	if conv.Known(plan.QinqRole) {
 		body.SetQinqRole(plan.QinqRole.ValueString())
 	}
 	if plan.QinqSvlanId.IsNull() {
@@ -447,15 +443,15 @@ func vlanFromAPI(ctx context.Context, obj *netbox.VLAN, prior *VlanModel, out *V
 	out.SiteId = conv.BriefID(obj.GetSiteOk())
 	out.GroupId = conv.BriefID(obj.GetGroupOk())
 	out.Vid = conv.Int64From32(obj.GetVidOk())
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *VlanModel) types.String { return m.Name }), false)
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.RoleId = conv.BriefID(obj.GetRoleOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VlanModel) types.String { return m.Description }), false)
 	out.QinqRole = conv.Choice(obj.GetQinqRoleOk())
 	out.QinqSvlanId = conv.BriefID(obj.GetQinqSvlanOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VlanModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

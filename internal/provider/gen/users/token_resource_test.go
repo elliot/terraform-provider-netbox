@@ -70,9 +70,10 @@ func TestAccToken_basic(t *testing.T) {
 			),
 		},
 		{
-			ResourceName:      "netbox_token.test",
-			ImportState:       true,
-			ImportStateVerify: true,
+			ResourceName:            "netbox_token.test",
+			ImportState:             true,
+			ImportStateVerify:       true,
+			ImportStateVerifyIgnore: []string{"token"},
 		},
 		{
 			Config: acctest.Render(t, tokenTestConfigUpdate, name),

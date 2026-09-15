@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -178,12 +179,16 @@ func siteResourceAttributes() map[string]schema.Attribute {
 			Default:             stringdefault.StaticString(""),
 		},
 		"latitude": schema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy).",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"longitude": schema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy).",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"owner_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Owner (`netbox_owner`).",
@@ -382,14 +387,10 @@ func siteToCreate(ctx context.Context, plan *SiteModel, diags *diag.Diagnostics)
 	if !plan.ShippingAddress.IsUnknown() {
 		body.SetShippingAddress(plan.ShippingAddress.ValueString())
 	}
-	if plan.Latitude.IsNull() {
-		body.SetLatitudeNil()
-	} else if !plan.Latitude.IsUnknown() {
+	if conv.Known(plan.Latitude) {
 		body.SetLatitude(plan.Latitude.ValueFloat64())
 	}
-	if plan.Longitude.IsNull() {
-		body.SetLongitudeNil()
-	} else if !plan.Longitude.IsUnknown() {
+	if conv.Known(plan.Longitude) {
 		body.SetLongitude(plan.Longitude.ValueFloat64())
 	}
 	if plan.OwnerId.IsNull() {
@@ -456,14 +457,10 @@ func siteToPatch(ctx context.Context, plan *SiteModel, diags *diag.Diagnostics) 
 	if !plan.ShippingAddress.IsUnknown() {
 		body.SetShippingAddress(plan.ShippingAddress.ValueString())
 	}
-	if plan.Latitude.IsNull() {
-		body.SetLatitudeNil()
-	} else if !plan.Latitude.IsUnknown() {
+	if conv.Known(plan.Latitude) {
 		body.SetLatitude(plan.Latitude.ValueFloat64())
 	}
-	if plan.Longitude.IsNull() {
-		body.SetLongitudeNil()
-	} else if !plan.Longitude.IsUnknown() {
+	if conv.Known(plan.Longitude) {
 		body.SetLongitude(plan.Longitude.ValueFloat64())
 	}
 	if plan.OwnerId.IsNull() {
@@ -494,21 +491,21 @@ func siteFromAPI(ctx context.Context, obj *netbox.Site, prior *SiteModel, out *S
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.Slug }), false)
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.RegionId = conv.BriefID(obj.GetRegionOk())
 	out.GroupId = conv.BriefID(obj.GetGroupOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
-	out.Facility = conv.StringOrEmpty(obj.GetFacilityOk())
-	out.TimeZone = conv.String(obj.GetTimeZoneOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
-	out.PhysicalAddress = conv.StringOrEmpty(obj.GetPhysicalAddressOk())
-	out.ShippingAddress = conv.StringOrEmpty(obj.GetShippingAddressOk())
+	out.Facility = conv.StringKeep(conv.StringOrEmpty(obj.GetFacilityOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.Facility }), false)
+	out.TimeZone = conv.StringKeep(conv.String(obj.GetTimeZoneOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.TimeZone }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.Description }), false)
+	out.PhysicalAddress = conv.StringKeep(conv.StringOrEmpty(obj.GetPhysicalAddressOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.PhysicalAddress }), false)
+	out.ShippingAddress = conv.StringKeep(conv.StringOrEmpty(obj.GetShippingAddressOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.ShippingAddress }), false)
 	out.Latitude = conv.Float64Keep(conv.Float64From(obj.GetLatitudeOk()), conv.PriorFloat(prior, func(m *SiteModel) types.Float64 { return m.Latitude }), 6)
 	out.Longitude = conv.Float64Keep(conv.Float64From(obj.GetLongitudeOk()), conv.PriorFloat(prior, func(m *SiteModel) types.Float64 { return m.Longitude }), 6)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *SiteModel) types.String { return m.Comments }), false)
 	out.AsnIds = conv.BriefIDs(obj.GetAsns())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)

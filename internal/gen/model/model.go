@@ -85,6 +85,11 @@ type Attr struct {
 
 	// StringMap marks JSON attributes whose client type is map[string]string.
 	StringMap bool
+	// FoldCase marks strings NetBox normalises to upper case (MAC addresses, WWNs).
+	FoldCase bool
+	// KeepPriorWhenNull marks exposed read-only attributes that NetBox returns
+	// only once (token secrets): the prior state is kept when the API returns null.
+	KeepPriorWhenNull bool
 
 	// Client typing.
 	Int64    bool // client scalar is int64 (else int32)

@@ -31,18 +31,17 @@ resource "netbox_tenant" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
 }
+# The site <-> ASN relation is written from the site side; the ASN
+# exposes it read-only as site_ids.
 resource "netbox_site" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  # The site <-> ASN relation is writable from both sides; let the
-  # ASN own it (see docs/validation/ipam-core.md).
-  lifecycle { ignore_changes = [asn_ids] }
+  name    = "{{.Name}}"
+  slug    = "{{.Name}}"
+  asn_ids = [netbox_asn.test.id]
 }
 resource "netbox_asn" "test" {
   asn         = 4200213007
   rir_id      = netbox_rir.test.id
   tenant_id   = netbox_tenant.test.id
-  site_ids    = [netbox_site.test.id]
   description = "{{.Name}} updated"
   comments    = "Private 4-byte ASN (RFC 6996)"
 }

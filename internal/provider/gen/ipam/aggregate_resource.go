@@ -356,13 +356,13 @@ func aggregateFromAPI(ctx context.Context, obj *netbox.Aggregate, prior *Aggrega
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Prefix = conv.String(obj.GetPrefixOk())
+	out.Prefix = conv.StringKeep(conv.String(obj.GetPrefixOk()), conv.PriorString(prior, func(m *AggregateModel) types.String { return m.Prefix }), false)
 	out.RirId = conv.BriefID(obj.GetRirOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
-	out.DateAdded = conv.String(obj.GetDateAddedOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.DateAdded = conv.StringKeep(conv.String(obj.GetDateAddedOk()), conv.PriorString(prior, func(m *AggregateModel) types.String { return m.DateAdded }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *AggregateModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *AggregateModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

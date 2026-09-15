@@ -296,9 +296,7 @@ func userToCreate(ctx context.Context, plan *UserModel, diags *diag.Diagnostics)
 	if conv.Known(plan.DateJoined) {
 		body.SetDateJoined(conv.Time(plan.DateJoined, diags))
 	}
-	if plan.LastLogin.IsNull() {
-		body.SetLastLoginNil()
-	} else if !plan.LastLogin.IsUnknown() {
+	if conv.Known(plan.LastLogin) {
 		body.SetLastLogin(conv.Time(plan.LastLogin, diags))
 	}
 	if conv.Known(plan.GroupIds) {
@@ -331,9 +329,7 @@ func userToPatch(ctx context.Context, plan *UserModel, diags *diag.Diagnostics) 
 	if conv.Known(plan.DateJoined) {
 		body.SetDateJoined(conv.Time(plan.DateJoined, diags))
 	}
-	if plan.LastLogin.IsNull() {
-		body.SetLastLoginNil()
-	} else if !plan.LastLogin.IsUnknown() {
+	if conv.Known(plan.LastLogin) {
 		body.SetLastLogin(conv.Time(plan.LastLogin, diags))
 	}
 	if conv.Known(plan.GroupIds) {
@@ -346,13 +342,13 @@ func userToPatch(ctx context.Context, plan *UserModel, diags *diag.Diagnostics) 
 func userFromAPI(ctx context.Context, obj *netbox.User, prior *UserModel, out *UserModel, diags *diag.Diagnostics) {
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Username = conv.String(obj.GetUsernameOk())
+	out.Username = conv.StringKeep(conv.String(obj.GetUsernameOk()), conv.PriorString(prior, func(m *UserModel) types.String { return m.Username }), false)
 	if prior != nil {
 		out.Password = prior.Password
 	}
-	out.FirstName = conv.StringOrEmpty(obj.GetFirstNameOk())
-	out.LastName = conv.StringOrEmpty(obj.GetLastNameOk())
-	out.Email = conv.StringOrEmpty(obj.GetEmailOk())
+	out.FirstName = conv.StringKeep(conv.StringOrEmpty(obj.GetFirstNameOk()), conv.PriorString(prior, func(m *UserModel) types.String { return m.FirstName }), false)
+	out.LastName = conv.StringKeep(conv.StringOrEmpty(obj.GetLastNameOk()), conv.PriorString(prior, func(m *UserModel) types.String { return m.LastName }), false)
+	out.Email = conv.StringKeep(conv.StringOrEmpty(obj.GetEmailOk()), conv.PriorString(prior, func(m *UserModel) types.String { return m.Email }), false)
 	out.IsActive = conv.Bool(obj.GetIsActiveOk())
 	out.DateJoined = conv.RFC3339(obj.GetDateJoinedOk())
 	out.LastLogin = conv.RFC3339(obj.GetLastLoginOk())

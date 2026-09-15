@@ -148,11 +148,9 @@ func asnResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"site_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Site. Defaults to an empty set.",
+			MarkdownDescription: "IDs of the assigned Site.",
 			ElementType:         types.Int64Type,
-			Optional:            true,
 			Computed:            true,
-			Default:             setdefault.StaticValue(types.SetValueMust(types.Int64Type, []attr.Value{})),
 		},
 		"url": schema.StringAttribute{
 			MarkdownDescription: "Url.",
@@ -319,9 +317,6 @@ func asnToCreate(ctx context.Context, plan *AsnModel, diags *diag.Diagnostics) *
 	if conv.Known(plan.CustomFields) {
 		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
 	}
-	if conv.Known(plan.SiteIds) {
-		body.SetSites(conv.Int32s(ctx, plan.SiteIds, diags))
-	}
 	return body
 }
 
@@ -363,9 +358,6 @@ func asnToPatch(ctx context.Context, plan *AsnModel, diags *diag.Diagnostics) *n
 	if conv.Known(plan.CustomFields) {
 		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
 	}
-	if conv.Known(plan.SiteIds) {
-		body.SetSites(conv.Int32s(ctx, plan.SiteIds, diags))
-	}
 	return body
 }
 
@@ -381,9 +373,9 @@ func asnFromAPI(ctx context.Context, obj *netbox.ASN, prior *AsnModel, out *AsnM
 	out.RirId = conv.BriefID(obj.GetRirOk())
 	out.RoleId = conv.BriefID(obj.GetRoleOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *AsnModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *AsnModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.SiteIds = conv.BriefIDs(obj.GetSites())

@@ -124,7 +124,7 @@ func rackTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"form_factor": dsschema.StringAttribute{
-			MarkdownDescription: "Form Factor. Valid values: `2-post-frame`, `4-post-frame`, `4-post-cabinet`, `wall-frame`, `wall-frame-vertical`, `wall-cabinet`, `wall-cabinet-vertical`. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Form Factor. Valid values: `2-post-frame`, `4-post-frame`, `4-post-cabinet`, `wall-frame`, `wall-frame-vertical`, `wall-cabinet`, `wall-cabinet-vertical`.",
 			Computed:            true,
 		},
 		"width": dsschema.Int64Attribute{
@@ -144,15 +144,15 @@ func rackTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"outer_width": dsschema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (width).",
+			MarkdownDescription: "Outer dimension of rack (width). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"outer_height": dsschema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (height).",
+			MarkdownDescription: "Outer dimension of rack (height). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"outer_depth": dsschema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (depth).",
+			MarkdownDescription: "Outer dimension of rack (depth). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"outer_unit": dsschema.StringAttribute{
@@ -160,11 +160,11 @@ func rackTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"weight": dsschema.Float64Attribute{
-			MarkdownDescription: "Weight.",
+			MarkdownDescription: "Weight. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"max_weight": dsschema.Int64Attribute{
-			MarkdownDescription: "Maximum load capacity for the rack.",
+			MarkdownDescription: "Maximum load capacity for the rack. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"weight_unit": dsschema.StringAttribute{
@@ -172,7 +172,7 @@ func rackTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"mounting_depth": dsschema.Int64Attribute{
-			MarkdownDescription: "Maximum depth of a mounted device, in millimeters. For four-post racks, this is the distance between the front and rear rails.",
+			MarkdownDescription: "Maximum depth of a mounted device, in millimeters. For four-post racks, this is the distance between the front and rear rails. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"cooling_capability": dsschema.StringAttribute{
@@ -180,7 +180,7 @@ func rackTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"cooling_capacity": dsschema.Float64Attribute{
-			MarkdownDescription: "Cooling capacity (kW).",
+			MarkdownDescription: "Cooling capacity (kW). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{

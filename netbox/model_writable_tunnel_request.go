@@ -24,7 +24,7 @@ var _ MappedNullable = &WritableTunnelRequest{}
 type WritableTunnelRequest struct {
 	Name string `json:"name"`
 	// * `planned` - Planned * `active` - Active * `disabled` - Disabled
-	Status *string       `json:"status,omitempty"`
+	Status string        `json:"status"`
 	Group  NullableInt32 `json:"group,omitempty"`
 	// * `ipsec-transport` - IPsec - Transport * `ipsec-tunnel` - IPsec - Tunnel * `ip-ip` - IP-in-IP * `gre` - GRE * `wireguard` - WireGuard * `openvpn` - OpenVPN * `l2tp` - L2TP * `pptp` - PPTP
 	Encapsulation        string                 `json:"encapsulation"`
@@ -45,9 +45,10 @@ type _WritableTunnelRequest WritableTunnelRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableTunnelRequest(name string, encapsulation string) *WritableTunnelRequest {
+func NewWritableTunnelRequest(name string, status string, encapsulation string) *WritableTunnelRequest {
 	this := WritableTunnelRequest{}
 	this.Name = name
+	this.Status = status
 	this.Encapsulation = encapsulation
 	return &this
 }
@@ -84,36 +85,28 @@ func (o *WritableTunnelRequest) SetName(v string) {
 	o.Name = v
 }
 
-// GetStatus returns the Status field value if set, zero value otherwise.
+// GetStatus returns the Status field value
 func (o *WritableTunnelRequest) GetStatus() string {
-	if o == nil || IsNil(o.Status) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Status
+
+	return o.Status
 }
 
-// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// GetStatusOk returns a tuple with the Status field value
 // and a boolean to check if the value has been set.
 func (o *WritableTunnelRequest) GetStatusOk() (*string, bool) {
-	if o == nil || IsNil(o.Status) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Status, true
+	return &o.Status, true
 }
 
-// HasStatus returns a boolean if a field has been set.
-func (o *WritableTunnelRequest) HasStatus() bool {
-	if o != nil && !IsNil(o.Status) {
-		return true
-	}
-
-	return false
-}
-
-// SetStatus gets a reference to the given string and assigns it to the Status field.
+// SetStatus sets field value
 func (o *WritableTunnelRequest) SetStatus(v string) {
-	o.Status = &v
+	o.Status = v
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -494,9 +487,7 @@ func (o WritableTunnelRequest) MarshalJSON() ([]byte, error) {
 func (o WritableTunnelRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["name"] = o.Name
-	if !IsNil(o.Status) {
-		toSerialize["status"] = o.Status
-	}
+	toSerialize["status"] = o.Status
 	if o.Group.IsSet() {
 		toSerialize["group"] = o.Group.Get()
 	}
@@ -539,6 +530,7 @@ func (o *WritableTunnelRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"name",
+		"status",
 		"encapsulation",
 	}
 

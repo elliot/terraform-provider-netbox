@@ -124,11 +124,9 @@ func ikePolicyResourceAttributes() map[string]schema.Attribute {
 			Default:             stringdefault.StaticString(""),
 		},
 		"version": schema.Int64Attribute{
-			MarkdownDescription: "Version. Valid values: `1`, `2`. Defaults to the NetBox server default when omitted.",
-			Optional:            true,
-			Computed:            true,
+			MarkdownDescription: "Version. Valid values: `1`, `2`.",
+			Required:            true,
 			Validators:          []validator.Int64{int64validator.OneOf(ikePolicyVersionValues...)},
-			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"mode": schema.StringAttribute{
 			MarkdownDescription: "Mode. Valid values: `aggressive`, `main`. Defaults to the NetBox server default when omitted.",
@@ -304,16 +302,11 @@ func (r *IkePolicyResource) ImportState(ctx context.Context, req resource.Import
 
 // ikePolicyToCreate builds the WritableIKEPolicyRequest request body from the plan.
 func ikePolicyToCreate(ctx context.Context, plan *IkePolicyModel, diags *diag.Diagnostics) *netbox.WritableIKEPolicyRequest {
-	body := netbox.NewWritableIKEPolicyRequest(plan.Name.ValueString())
+	body := netbox.NewWritableIKEPolicyRequest(plan.Name.ValueString(), conv.Int32(plan.Version))
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if conv.Known(plan.Version) {
-		body.SetVersion(conv.Int32(plan.Version))
-	}
-	if plan.Mode.IsNull() {
-		body.SetModeNil()
-	} else if !plan.Mode.IsUnknown() {
+	if conv.Known(plan.Mode) {
 		body.SetMode(plan.Mode.ValueString())
 	}
 	if conv.Known(plan.ProposalIds) {
@@ -351,9 +344,7 @@ func ikePolicyToPatch(ctx context.Context, plan *IkePolicyModel, diags *diag.Dia
 	if conv.Known(plan.Version) {
 		body.SetVersion(conv.Int32(plan.Version))
 	}
-	if plan.Mode.IsNull() {
-		body.SetModeNil()
-	} else if !plan.Mode.IsUnknown() {
+	if conv.Known(plan.Mode) {
 		body.SetMode(plan.Mode.ValueString())
 	}
 	if conv.Known(plan.ProposalIds) {
@@ -387,14 +378,14 @@ func ikePolicyFromAPI(ctx context.Context, obj *netbox.IKEPolicy, prior *IkePoli
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *IkePolicyModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *IkePolicyModel) types.String { return m.Description }), false)
 	out.Version = conv.ChoiceInt(obj.GetVersionOk())
 	out.Mode = conv.Choice(obj.GetModeOk())
 	out.ProposalIds = conv.BriefIDs(obj.GetProposals())
-	out.PresharedKey = conv.StringOrEmpty(obj.GetPresharedKeyOk())
+	out.PresharedKey = conv.StringKeep(conv.StringOrEmpty(obj.GetPresharedKeyOk()), conv.PriorString(prior, func(m *IkePolicyModel) types.String { return m.PresharedKey }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IkePolicyModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

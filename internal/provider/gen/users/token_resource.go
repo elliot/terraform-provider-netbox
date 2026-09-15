@@ -44,7 +44,9 @@ type TokenModel struct {
 	PepperId     types.Int64       `tfsdk:"pepper_id"`
 	Url          types.String      `tfsdk:"url"`
 	Display      types.String      `tfsdk:"display"`
+	Key          types.String      `tfsdk:"key"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
+	Token        types.String      `tfsdk:"token"`
 }
 
 var (
@@ -160,11 +162,20 @@ func tokenResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
+		"key": schema.StringAttribute{
+			MarkdownDescription: "The v2 token identification key (`nbt_<key>`).",
+			Computed:            true,
+		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+		},
+		"token": schema.StringAttribute{
+			MarkdownDescription: "The token secret (v2: the part after the dot). Only returned by NetBox on creation; kept in state afterwards.",
+			Sensitive:           true,
+			Computed:            true,
 		},
 	}
 }
@@ -285,14 +296,10 @@ func tokenToCreate(ctx context.Context, plan *TokenModel, diags *diag.Diagnostic
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.Expires.IsNull() {
-		body.SetExpiresNil()
-	} else if !plan.Expires.IsUnknown() {
+	if conv.Known(plan.Expires) {
 		body.SetExpires(conv.Time(plan.Expires, diags))
 	}
-	if plan.LastUsed.IsNull() {
-		body.SetLastUsedNil()
-	} else if !plan.LastUsed.IsUnknown() {
+	if conv.Known(plan.LastUsed) {
 		body.SetLastUsed(conv.Time(plan.LastUsed, diags))
 	}
 	if conv.Known(plan.Enabled) {
@@ -319,14 +326,10 @@ func tokenToPatch(ctx context.Context, plan *TokenModel, diags *diag.Diagnostics
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.Expires.IsNull() {
-		body.SetExpiresNil()
-	} else if !plan.Expires.IsUnknown() {
+	if conv.Known(plan.Expires) {
 		body.SetExpires(conv.Time(plan.Expires, diags))
 	}
-	if plan.LastUsed.IsNull() {
-		body.SetLastUsedNil()
-	} else if !plan.LastUsed.IsUnknown() {
+	if conv.Known(plan.LastUsed) {
 		body.SetLastUsed(conv.Time(plan.LastUsed, diags))
 	}
 	if conv.Known(plan.Enabled) {
@@ -335,9 +338,7 @@ func tokenToPatch(ctx context.Context, plan *TokenModel, diags *diag.Diagnostics
 	if conv.Known(plan.WriteEnabled) {
 		body.SetWriteEnabled(plan.WriteEnabled.ValueBool())
 	}
-	if plan.PepperId.IsNull() {
-		body.SetPepperIdNil()
-	} else if !plan.PepperId.IsUnknown() {
+	if conv.Known(plan.PepperId) {
 		body.SetPepperId(conv.Int32(plan.PepperId))
 	}
 	return body
@@ -349,7 +350,7 @@ func tokenFromAPI(ctx context.Context, obj *netbox.Token, prior *TokenModel, out
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Version = conv.Int64From32(obj.GetVersionOk())
 	out.UserId = conv.BriefID(obj.GetUserOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *TokenModel) types.String { return m.Description }), false)
 	out.Expires = conv.RFC3339(obj.GetExpiresOk())
 	out.LastUsed = conv.RFC3339(obj.GetLastUsedOk())
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
@@ -357,5 +358,7 @@ func tokenFromAPI(ctx context.Context, obj *netbox.Token, prior *TokenModel, out
 	out.PepperId = conv.Int64From32(obj.GetPepperIdOk())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
+	out.Key = conv.KeepWhenNull(conv.String(obj.GetKeyOk()), conv.PriorString(prior, func(m *TokenModel) types.String { return m.Key }))
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
+	out.Token = conv.KeepWhenNull(conv.String(obj.GetTokenOk()), conv.PriorString(prior, func(m *TokenModel) types.String { return m.Token }))
 }

@@ -392,13 +392,13 @@ func vrfFromAPI(ctx context.Context, obj *netbox.VRF, prior *VrfModel, out *VrfM
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Rd = conv.String(obj.GetRdOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *VrfModel) types.String { return m.Name }), false)
+	out.Rd = conv.StringKeep(conv.String(obj.GetRdOk()), conv.PriorString(prior, func(m *VrfModel) types.String { return m.Rd }), false)
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.EnforceUnique = conv.Bool(obj.GetEnforceUniqueOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VrfModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VrfModel) types.String { return m.Comments }), false)
 	out.ImportTargetIds = conv.BriefIDs(obj.GetImportTargets())
 	out.ExportTargetIds = conv.BriefIDs(obj.GetExportTargets())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

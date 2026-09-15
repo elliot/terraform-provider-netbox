@@ -70,7 +70,7 @@ func tunnelTerminationDataAttributes(lookup bool) map[string]dsschema.Attribute 
 			Computed:            true,
 		},
 		"role": dsschema.StringAttribute{
-			MarkdownDescription: "Role. Valid values: `peer`, `hub`, `spoke`. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Role. Valid values: `peer`, `hub`, `spoke`.",
 			Computed:            true,
 		},
 		"termination_type": dsschema.StringAttribute{
@@ -78,7 +78,7 @@ func tunnelTerminationDataAttributes(lookup bool) map[string]dsschema.Attribute 
 			Computed:            true,
 		},
 		"termination_id": dsschema.Int64Attribute{
-			MarkdownDescription: "Termination Id.",
+			MarkdownDescription: "Termination Id. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"outside_ip_id": dsschema.Int64Attribute{
