@@ -58,7 +58,7 @@ func Float32(v types.Float64) float32 { return float32(v.ValueFloat64()) }
 func Int32s(ctx context.Context, v attr.Value, diags *diag.Diagnostics) []int32 {
 	out := []int32{}
 	for _, n := range int64Elements(ctx, v, diags) {
-		out = append(out, int32(n))
+		out = append(out, Int32(types.Int64Value(n)))
 	}
 	return out
 }
