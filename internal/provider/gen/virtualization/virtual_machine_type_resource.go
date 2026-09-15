@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -118,12 +119,16 @@ func virtualMachineTypeResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"default_vcpus": schema.Float64Attribute{
-			MarkdownDescription: "Default Vcpus.",
+			MarkdownDescription: "Default Vcpus. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"default_memory": schema.Int64Attribute{
-			MarkdownDescription: "Default Memory.",
+			MarkdownDescription: "Default Memory. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -243,7 +248,7 @@ func (r *VirtualMachineTypeResource) Update(ctx context.Context, req resource.Up
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualMachineTypeToPatch(ctx, &plan, &resp.Diagnostics)
+	body := virtualMachineTypeToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -287,27 +292,19 @@ func (r *VirtualMachineTypeResource) ImportState(ctx context.Context, req resour
 // virtualMachineTypeToCreate builds the VirtualMachineTypeRequest request body from the plan.
 func virtualMachineTypeToCreate(ctx context.Context, plan *VirtualMachineTypeModel, diags *diag.Diagnostics) *netbox.VirtualMachineTypeRequest {
 	body := netbox.NewVirtualMachineTypeRequest(plan.Name.ValueString(), plan.Slug.ValueString())
-	if plan.DefaultPlatformId.IsNull() {
-		body.SetDefaultPlatformNil()
-	} else if !plan.DefaultPlatformId.IsUnknown() {
+	if conv.Known(plan.DefaultPlatformId) {
 		body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
 	}
-	if plan.DefaultVcpus.IsNull() {
-		body.SetDefaultVcpusNil()
-	} else if !plan.DefaultVcpus.IsUnknown() {
+	if conv.Known(plan.DefaultVcpus) {
 		body.SetDefaultVcpus(plan.DefaultVcpus.ValueFloat64())
 	}
-	if plan.DefaultMemory.IsNull() {
-		body.SetDefaultMemoryNil()
-	} else if !plan.DefaultMemory.IsUnknown() {
+	if conv.Known(plan.DefaultMemory) {
 		body.SetDefaultMemory(conv.Int32(plan.DefaultMemory))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -322,46 +319,62 @@ func virtualMachineTypeToCreate(ctx context.Context, plan *VirtualMachineTypeMod
 	return body
 }
 
-// virtualMachineTypeToPatch builds the PatchedVirtualMachineTypeRequest request body from the plan.
-func virtualMachineTypeToPatch(ctx context.Context, plan *VirtualMachineTypeModel, diags *diag.Diagnostics) *netbox.PatchedVirtualMachineTypeRequest {
+// virtualMachineTypeToPatch builds the PatchedVirtualMachineTypeRequest request body with every attribute whose planned value differs from state.
+func virtualMachineTypeToPatch(ctx context.Context, plan, state *VirtualMachineTypeModel, diags *diag.Diagnostics) *netbox.PatchedVirtualMachineTypeRequest {
 	body := netbox.NewPatchedVirtualMachineTypeRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if plan.DefaultPlatformId.IsNull() {
-		body.SetDefaultPlatformNil()
-	} else if !plan.DefaultPlatformId.IsUnknown() {
-		body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
+	if !plan.DefaultPlatformId.Equal(state.DefaultPlatformId) {
+		if plan.DefaultPlatformId.IsNull() {
+			body.SetDefaultPlatformNil()
+		} else if !plan.DefaultPlatformId.IsUnknown() {
+			body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
+		}
 	}
-	if plan.DefaultVcpus.IsNull() {
-		body.SetDefaultVcpusNil()
-	} else if !plan.DefaultVcpus.IsUnknown() {
-		body.SetDefaultVcpus(plan.DefaultVcpus.ValueFloat64())
+	if !plan.DefaultVcpus.Equal(state.DefaultVcpus) {
+		if conv.Known(plan.DefaultVcpus) {
+			body.SetDefaultVcpus(plan.DefaultVcpus.ValueFloat64())
+		}
 	}
-	if plan.DefaultMemory.IsNull() {
-		body.SetDefaultMemoryNil()
-	} else if !plan.DefaultMemory.IsUnknown() {
-		body.SetDefaultMemory(conv.Int32(plan.DefaultMemory))
+	if !plan.DefaultMemory.Equal(state.DefaultMemory) {
+		if conv.Known(plan.DefaultMemory) {
+			body.SetDefaultMemory(conv.Int32(plan.DefaultMemory))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -374,14 +387,14 @@ func virtualMachineTypeFromAPI(ctx context.Context, obj *netbox.VirtualMachineTy
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *VirtualMachineTypeModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *VirtualMachineTypeModel) types.String { return m.Slug }), false)
 	out.DefaultPlatformId = conv.BriefID(obj.GetDefaultPlatformOk())
-	out.DefaultVcpus = conv.Float64From(obj.GetDefaultVcpusOk())
+	out.DefaultVcpus = conv.Float64Keep(conv.Float64From(obj.GetDefaultVcpusOk()), conv.PriorFloat(prior, func(m *VirtualMachineTypeModel) types.Float64 { return m.DefaultVcpus }), 0)
 	out.DefaultMemory = conv.Int64From32(obj.GetDefaultMemoryOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VirtualMachineTypeModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VirtualMachineTypeModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

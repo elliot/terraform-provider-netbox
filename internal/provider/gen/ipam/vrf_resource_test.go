@@ -95,7 +95,7 @@ func TestAccVrf_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_vrf", &resource.Sweeper{
 		Name:         "netbox_vrf",
-		Dependencies: []string{"netbox_ip_address", "netbox_ip_range", "netbox_prefix"},
+		Dependencies: []string{"netbox_interface", "netbox_ip_address", "netbox_ip_range", "netbox_prefix", "netbox_vm_interface"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/vrfs/", []string{"name__isw", "description__isw", "q"})
 		},

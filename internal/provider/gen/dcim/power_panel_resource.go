@@ -231,7 +231,7 @@ func (r *PowerPanelResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := powerPanelToPatch(ctx, &plan, &resp.Diagnostics)
+	body := powerPanelToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -275,17 +275,13 @@ func (r *PowerPanelResource) ImportState(ctx context.Context, req resource.Impor
 // powerPanelToCreate builds the PowerPanelRequest request body from the plan.
 func powerPanelToCreate(ctx context.Context, plan *PowerPanelModel, diags *diag.Diagnostics) *netbox.PowerPanelRequest {
 	body := netbox.NewPowerPanelRequest(conv.Int32(plan.SiteId), plan.Name.ValueString())
-	if plan.LocationId.IsNull() {
-		body.SetLocationNil()
-	} else if !plan.LocationId.IsUnknown() {
+	if conv.Known(plan.LocationId) {
 		body.SetLocation(conv.Int32(plan.LocationId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -300,36 +296,52 @@ func powerPanelToCreate(ctx context.Context, plan *PowerPanelModel, diags *diag.
 	return body
 }
 
-// powerPanelToPatch builds the PatchedPowerPanelRequest request body from the plan.
-func powerPanelToPatch(ctx context.Context, plan *PowerPanelModel, diags *diag.Diagnostics) *netbox.PatchedPowerPanelRequest {
+// powerPanelToPatch builds the PatchedPowerPanelRequest request body with every attribute whose planned value differs from state.
+func powerPanelToPatch(ctx context.Context, plan, state *PowerPanelModel, diags *diag.Diagnostics) *netbox.PatchedPowerPanelRequest {
 	body := netbox.NewPatchedPowerPanelRequest()
-	if conv.Known(plan.SiteId) {
-		body.SetSite(conv.Int32(plan.SiteId))
+	if !plan.SiteId.Equal(state.SiteId) {
+		if conv.Known(plan.SiteId) {
+			body.SetSite(conv.Int32(plan.SiteId))
+		}
 	}
-	if plan.LocationId.IsNull() {
-		body.SetLocationNil()
-	} else if !plan.LocationId.IsUnknown() {
-		body.SetLocation(conv.Int32(plan.LocationId))
+	if !plan.LocationId.Equal(state.LocationId) {
+		if plan.LocationId.IsNull() {
+			body.SetLocationNil()
+		} else if !plan.LocationId.IsUnknown() {
+			body.SetLocation(conv.Int32(plan.LocationId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -344,10 +356,10 @@ func powerPanelFromAPI(ctx context.Context, obj *netbox.PowerPanel, prior *Power
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.SiteId = conv.BriefID(obj.GetSiteOk())
 	out.LocationId = conv.BriefID(obj.GetLocationOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *PowerPanelModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *PowerPanelModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *PowerPanelModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -142,8 +143,10 @@ func coolingIntakeTemplateResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"diameter": schema.Float64Attribute{
-			MarkdownDescription: "Diameter.",
+			MarkdownDescription: "Diameter. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"diameter_unit": schema.StringAttribute{
 			MarkdownDescription: "Diameter Unit. Valid values: `mm`, `cm`, `in`. Defaults to the NetBox server default when omitted.",
@@ -153,8 +156,10 @@ func coolingIntakeTemplateResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"max_flow": schema.Float64Attribute{
-			MarkdownDescription: "Max Flow.",
+			MarkdownDescription: "Max Flow. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"max_flow_unit": schema.StringAttribute{
 			MarkdownDescription: "Max Flow Unit. Valid values: `lpm`, `m3ph`, `gpm`. Defaults to the NetBox server default when omitted.",
@@ -259,7 +264,7 @@ func (r *CoolingIntakeTemplateResource) Update(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := coolingIntakeTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := coolingIntakeTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -303,42 +308,28 @@ func (r *CoolingIntakeTemplateResource) ImportState(ctx context.Context, req res
 // coolingIntakeTemplateToCreate builds the WritableCoolingIntakeTemplateRequest request body from the plan.
 func coolingIntakeTemplateToCreate(ctx context.Context, plan *CoolingIntakeTemplateModel, diags *diag.Diagnostics) *netbox.WritableCoolingIntakeTemplateRequest {
 	body := netbox.NewWritableCoolingIntakeTemplateRequest(plan.Name.ValueString())
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
+	if conv.Known(plan.DeviceTypeId) {
 		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
+	if conv.Known(plan.ModuleTypeId) {
 		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
+	if conv.Known(plan.Type) {
 		body.SetType(plan.Type.ValueString())
 	}
-	if plan.Diameter.IsNull() {
-		body.SetDiameterNil()
-	} else if !plan.Diameter.IsUnknown() {
+	if conv.Known(plan.Diameter) {
 		body.SetDiameter(plan.Diameter.ValueFloat64())
 	}
-	if plan.DiameterUnit.IsNull() {
-		body.SetDiameterUnitNil()
-	} else if !plan.DiameterUnit.IsUnknown() {
+	if conv.Known(plan.DiameterUnit) {
 		body.SetDiameterUnit(plan.DiameterUnit.ValueString())
 	}
-	if plan.MaxFlow.IsNull() {
-		body.SetMaxFlowNil()
-	} else if !plan.MaxFlow.IsUnknown() {
+	if conv.Known(plan.MaxFlow) {
 		body.SetMaxFlow(plan.MaxFlow.ValueFloat64())
 	}
-	if plan.MaxFlowUnit.IsNull() {
-		body.SetMaxFlowUnitNil()
-	} else if !plan.MaxFlowUnit.IsUnknown() {
+	if conv.Known(plan.MaxFlowUnit) {
 		body.SetMaxFlowUnit(plan.MaxFlowUnit.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
@@ -347,52 +338,62 @@ func coolingIntakeTemplateToCreate(ctx context.Context, plan *CoolingIntakeTempl
 	return body
 }
 
-// coolingIntakeTemplateToPatch builds the PatchedWritableCoolingIntakeTemplateRequest request body from the plan.
-func coolingIntakeTemplateToPatch(ctx context.Context, plan *CoolingIntakeTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingIntakeTemplateRequest {
+// coolingIntakeTemplateToPatch builds the PatchedWritableCoolingIntakeTemplateRequest request body with every attribute whose planned value differs from state.
+func coolingIntakeTemplateToPatch(ctx context.Context, plan, state *CoolingIntakeTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingIntakeTemplateRequest {
 	body := netbox.NewPatchedWritableCoolingIntakeTemplateRequest()
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if plan.DeviceTypeId.IsNull() {
+			body.SetDeviceTypeNil()
+		} else if !plan.DeviceTypeId.IsUnknown() {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
+		if plan.ModuleTypeId.IsNull() {
+			body.SetModuleTypeNil()
+		} else if !plan.ModuleTypeId.IsUnknown() {
+			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if plan.Diameter.IsNull() {
-		body.SetDiameterNil()
-	} else if !plan.Diameter.IsUnknown() {
-		body.SetDiameter(plan.Diameter.ValueFloat64())
+	if !plan.Diameter.Equal(state.Diameter) {
+		if conv.Known(plan.Diameter) {
+			body.SetDiameter(plan.Diameter.ValueFloat64())
+		}
 	}
-	if plan.DiameterUnit.IsNull() {
-		body.SetDiameterUnitNil()
-	} else if !plan.DiameterUnit.IsUnknown() {
-		body.SetDiameterUnit(plan.DiameterUnit.ValueString())
+	if !plan.DiameterUnit.Equal(state.DiameterUnit) {
+		if conv.Known(plan.DiameterUnit) {
+			body.SetDiameterUnit(plan.DiameterUnit.ValueString())
+		}
 	}
-	if plan.MaxFlow.IsNull() {
-		body.SetMaxFlowNil()
-	} else if !plan.MaxFlow.IsUnknown() {
-		body.SetMaxFlow(plan.MaxFlow.ValueFloat64())
+	if !plan.MaxFlow.Equal(state.MaxFlow) {
+		if conv.Known(plan.MaxFlow) {
+			body.SetMaxFlow(plan.MaxFlow.ValueFloat64())
+		}
 	}
-	if plan.MaxFlowUnit.IsNull() {
-		body.SetMaxFlowUnitNil()
-	} else if !plan.MaxFlowUnit.IsUnknown() {
-		body.SetMaxFlowUnit(plan.MaxFlowUnit.ValueString())
+	if !plan.MaxFlowUnit.Equal(state.MaxFlowUnit) {
+		if conv.Known(plan.MaxFlowUnit) {
+			body.SetMaxFlowUnit(plan.MaxFlowUnit.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
 	return body
 }
@@ -403,14 +404,14 @@ func coolingIntakeTemplateFromAPI(ctx context.Context, obj *netbox.CoolingIntake
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.ModuleTypeId = conv.BriefID(obj.GetModuleTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *CoolingIntakeTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *CoolingIntakeTemplateModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Diameter = conv.Float64Keep(conv.Float64From(obj.GetDiameterOk()), conv.PriorFloat(prior, func(m *CoolingIntakeTemplateModel) types.Float64 { return m.Diameter }), 0)
 	out.DiameterUnit = conv.Choice(obj.GetDiameterUnitOk())
 	out.MaxFlow = conv.Float64Keep(conv.Float64From(obj.GetMaxFlowOk()), conv.PriorFloat(prior, func(m *CoolingIntakeTemplateModel) types.Float64 { return m.MaxFlow }), 0)
 	out.MaxFlowUnit = conv.Choice(obj.GetMaxFlowUnitOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CoolingIntakeTemplateModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

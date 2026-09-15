@@ -260,7 +260,7 @@ func (r *FhrpGroupResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := fhrpGroupToPatch(ctx, &plan, &resp.Diagnostics)
+	body := fhrpGroupToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -316,9 +316,7 @@ func fhrpGroupToCreate(ctx context.Context, plan *FhrpGroupModel, diags *diag.Di
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -333,40 +331,60 @@ func fhrpGroupToCreate(ctx context.Context, plan *FhrpGroupModel, diags *diag.Di
 	return body
 }
 
-// fhrpGroupToPatch builds the PatchedFHRPGroupRequest request body from the plan.
-func fhrpGroupToPatch(ctx context.Context, plan *FhrpGroupModel, diags *diag.Diagnostics) *netbox.PatchedFHRPGroupRequest {
+// fhrpGroupToPatch builds the PatchedFHRPGroupRequest request body with every attribute whose planned value differs from state.
+func fhrpGroupToPatch(ctx context.Context, plan, state *FhrpGroupModel, diags *diag.Diagnostics) *netbox.PatchedFHRPGroupRequest {
 	body := netbox.NewPatchedFHRPGroupRequest()
-	if !plan.Name.IsUnknown() {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if !plan.Name.IsUnknown() {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Protocol) {
-		body.SetProtocol(plan.Protocol.ValueString())
+	if !plan.Protocol.Equal(state.Protocol) {
+		if conv.Known(plan.Protocol) {
+			body.SetProtocol(plan.Protocol.ValueString())
+		}
 	}
-	if conv.Known(plan.GroupId) {
-		body.SetGroupId(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if conv.Known(plan.GroupId) {
+			body.SetGroupId(conv.Int32(plan.GroupId))
+		}
 	}
-	if conv.Known(plan.AuthType) {
-		body.SetAuthType(plan.AuthType.ValueString())
+	if !plan.AuthType.Equal(state.AuthType) {
+		if conv.Known(plan.AuthType) {
+			body.SetAuthType(plan.AuthType.ValueString())
+		}
 	}
-	if !plan.AuthKey.IsUnknown() {
-		body.SetAuthKey(plan.AuthKey.ValueString())
+	if !plan.AuthKey.Equal(state.AuthKey) {
+		if !plan.AuthKey.IsUnknown() {
+			body.SetAuthKey(plan.AuthKey.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

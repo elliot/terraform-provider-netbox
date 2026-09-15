@@ -234,7 +234,7 @@ func (r *VirtualChassisResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualChassisToPatch(ctx, &plan, &resp.Diagnostics)
+	body := virtualChassisToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -281,17 +281,13 @@ func virtualChassisToCreate(ctx context.Context, plan *VirtualChassisModel, diag
 	if !plan.Domain.IsUnknown() {
 		body.SetDomain(plan.Domain.ValueString())
 	}
-	if plan.MasterId.IsNull() {
-		body.SetMasterNil()
-	} else if !plan.MasterId.IsUnknown() {
+	if conv.Known(plan.MasterId) {
 		body.SetMaster(conv.Int32(plan.MasterId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -306,36 +302,52 @@ func virtualChassisToCreate(ctx context.Context, plan *VirtualChassisModel, diag
 	return body
 }
 
-// virtualChassisToPatch builds the PatchedWritableVirtualChassisRequest request body from the plan.
-func virtualChassisToPatch(ctx context.Context, plan *VirtualChassisModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualChassisRequest {
+// virtualChassisToPatch builds the PatchedWritableVirtualChassisRequest request body with every attribute whose planned value differs from state.
+func virtualChassisToPatch(ctx context.Context, plan, state *VirtualChassisModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualChassisRequest {
 	body := netbox.NewPatchedWritableVirtualChassisRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Domain.IsUnknown() {
-		body.SetDomain(plan.Domain.ValueString())
+	if !plan.Domain.Equal(state.Domain) {
+		if !plan.Domain.IsUnknown() {
+			body.SetDomain(plan.Domain.ValueString())
+		}
 	}
-	if plan.MasterId.IsNull() {
-		body.SetMasterNil()
-	} else if !plan.MasterId.IsUnknown() {
-		body.SetMaster(conv.Int32(plan.MasterId))
+	if !plan.MasterId.Equal(state.MasterId) {
+		if plan.MasterId.IsNull() {
+			body.SetMasterNil()
+		} else if !plan.MasterId.IsUnknown() {
+			body.SetMaster(conv.Int32(plan.MasterId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -348,12 +360,12 @@ func virtualChassisFromAPI(ctx context.Context, obj *netbox.VirtualChassis, prio
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Domain = conv.StringOrEmpty(obj.GetDomainOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *VirtualChassisModel) types.String { return m.Name }), false)
+	out.Domain = conv.StringKeep(conv.StringOrEmpty(obj.GetDomainOk()), conv.PriorString(prior, func(m *VirtualChassisModel) types.String { return m.Domain }), false)
 	out.MasterId = conv.BriefID(obj.GetMasterOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VirtualChassisModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VirtualChassisModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

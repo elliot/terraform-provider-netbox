@@ -267,7 +267,7 @@ func (r *ModuleResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := moduleToPatch(ctx, &plan, &resp.Diagnostics)
+	body := moduleToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -317,17 +317,13 @@ func moduleToCreate(ctx context.Context, plan *ModuleModel, diags *diag.Diagnost
 	if !plan.Serial.IsUnknown() {
 		body.SetSerial(plan.Serial.ValueString())
 	}
-	if plan.AssetTag.IsNull() {
-		body.SetAssetTagNil()
-	} else if !plan.AssetTag.IsUnknown() {
+	if conv.Known(plan.AssetTag) {
 		body.SetAssetTag(plan.AssetTag.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -348,51 +344,77 @@ func moduleToCreate(ctx context.Context, plan *ModuleModel, diags *diag.Diagnost
 	return body
 }
 
-// moduleToPatch builds the PatchedWritableModuleRequest request body from the plan.
-func moduleToPatch(ctx context.Context, plan *ModuleModel, diags *diag.Diagnostics) *netbox.PatchedWritableModuleRequest {
+// moduleToPatch builds the PatchedWritableModuleRequest request body with every attribute whose planned value differs from state.
+func moduleToPatch(ctx context.Context, plan, state *ModuleModel, diags *diag.Diagnostics) *netbox.PatchedWritableModuleRequest {
 	body := netbox.NewPatchedWritableModuleRequest()
-	if conv.Known(plan.DeviceId) {
-		body.SetDevice(conv.Int32(plan.DeviceId))
+	if !plan.DeviceId.Equal(state.DeviceId) {
+		if conv.Known(plan.DeviceId) {
+			body.SetDevice(conv.Int32(plan.DeviceId))
+		}
 	}
-	if conv.Known(plan.ModuleBayId) {
-		body.SetModuleBay(conv.Int32(plan.ModuleBayId))
+	if !plan.ModuleBayId.Equal(state.ModuleBayId) {
+		if conv.Known(plan.ModuleBayId) {
+			body.SetModuleBay(conv.Int32(plan.ModuleBayId))
+		}
 	}
-	if conv.Known(plan.ModuleTypeId) {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
+		if conv.Known(plan.ModuleTypeId) {
+			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if !plan.Serial.IsUnknown() {
-		body.SetSerial(plan.Serial.ValueString())
+	if !plan.Serial.Equal(state.Serial) {
+		if !plan.Serial.IsUnknown() {
+			body.SetSerial(plan.Serial.ValueString())
+		}
 	}
-	if plan.AssetTag.IsNull() {
-		body.SetAssetTagNil()
-	} else if !plan.AssetTag.IsUnknown() {
-		body.SetAssetTag(plan.AssetTag.ValueString())
+	if !plan.AssetTag.Equal(state.AssetTag) {
+		if plan.AssetTag.IsNull() {
+			body.SetAssetTagNil()
+		} else if !plan.AssetTag.IsUnknown() {
+			body.SetAssetTag(plan.AssetTag.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
-	if conv.Known(plan.ReplicateComponents) {
-		body.SetReplicateComponents(plan.ReplicateComponents.ValueBool())
+	if !plan.ReplicateComponents.Equal(state.ReplicateComponents) {
+		if conv.Known(plan.ReplicateComponents) {
+			body.SetReplicateComponents(plan.ReplicateComponents.ValueBool())
+		}
 	}
-	if conv.Known(plan.AdoptComponents) {
-		body.SetAdoptComponents(plan.AdoptComponents.ValueBool())
+	if !plan.AdoptComponents.Equal(state.AdoptComponents) {
+		if conv.Known(plan.AdoptComponents) {
+			body.SetAdoptComponents(plan.AdoptComponents.ValueBool())
+		}
 	}
 	return body
 }
@@ -409,11 +431,11 @@ func moduleFromAPI(ctx context.Context, obj *netbox.Module, prior *ModuleModel, 
 	out.ModuleBayId = conv.BriefID(obj.GetModuleBayOk())
 	out.ModuleTypeId = conv.BriefID(obj.GetModuleTypeOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
-	out.Serial = conv.StringOrEmpty(obj.GetSerialOk())
-	out.AssetTag = conv.String(obj.GetAssetTagOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Serial = conv.StringKeep(conv.StringOrEmpty(obj.GetSerialOk()), conv.PriorString(prior, func(m *ModuleModel) types.String { return m.Serial }), false)
+	out.AssetTag = conv.StringKeep(conv.String(obj.GetAssetTagOk()), conv.PriorString(prior, func(m *ModuleModel) types.String { return m.AssetTag }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ModuleModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ModuleModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	if prior != nil {

@@ -91,7 +91,7 @@ func TestAccConfigTemplate_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_config_template", &resource.Sweeper{
 		Name:         "netbox_config_template",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_device", "netbox_device_role", "netbox_platform", "netbox_virtual_machine"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/extras/config-templates/", []string{"name__isw", "description__isw", "q"})
 		},

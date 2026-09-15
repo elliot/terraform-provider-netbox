@@ -85,7 +85,7 @@ func TestAccRouteTarget_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_route_target", &resource.Sweeper{
 		Name:         "netbox_route_target",
-		Dependencies: []string{"netbox_vrf"},
+		Dependencies: []string{"netbox_l2vpn", "netbox_vrf"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/route-targets/", []string{"name__isw", "description__isw", "q"})
 		},

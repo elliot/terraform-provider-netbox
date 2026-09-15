@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -152,8 +153,10 @@ func coolingSourceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"cooling_capacity": schema.Float64Attribute{
-			MarkdownDescription: "Total rated cooling capacity (kW).",
+			MarkdownDescription: "Total rated cooling capacity (kW). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -273,7 +276,7 @@ func (r *CoolingSourceResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := coolingSourceToPatch(ctx, &plan, &resp.Diagnostics)
+	body := coolingSourceToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -317,30 +320,22 @@ func (r *CoolingSourceResource) ImportState(ctx context.Context, req resource.Im
 // coolingSourceToCreate builds the WritableCoolingSourceRequest request body from the plan.
 func coolingSourceToCreate(ctx context.Context, plan *CoolingSourceModel, diags *diag.Diagnostics) *netbox.WritableCoolingSourceRequest {
 	body := netbox.NewWritableCoolingSourceRequest(conv.Int32(plan.SiteId), plan.Name.ValueString(), plan.Type.ValueString())
-	if plan.LocationId.IsNull() {
-		body.SetLocationNil()
-	} else if !plan.LocationId.IsUnknown() {
+	if conv.Known(plan.LocationId) {
 		body.SetLocation(conv.Int32(plan.LocationId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.FluidType.IsNull() {
-		body.SetFluidTypeNil()
-	} else if !plan.FluidType.IsUnknown() {
+	if conv.Known(plan.FluidType) {
 		body.SetFluidType(plan.FluidType.ValueString())
 	}
-	if plan.CoolingCapacity.IsNull() {
-		body.SetCoolingCapacityNil()
-	} else if !plan.CoolingCapacity.IsUnknown() {
+	if conv.Known(plan.CoolingCapacity) {
 		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -355,52 +350,72 @@ func coolingSourceToCreate(ctx context.Context, plan *CoolingSourceModel, diags 
 	return body
 }
 
-// coolingSourceToPatch builds the PatchedWritableCoolingSourceRequest request body from the plan.
-func coolingSourceToPatch(ctx context.Context, plan *CoolingSourceModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingSourceRequest {
+// coolingSourceToPatch builds the PatchedWritableCoolingSourceRequest request body with every attribute whose planned value differs from state.
+func coolingSourceToPatch(ctx context.Context, plan, state *CoolingSourceModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingSourceRequest {
 	body := netbox.NewPatchedWritableCoolingSourceRequest()
-	if conv.Known(plan.SiteId) {
-		body.SetSite(conv.Int32(plan.SiteId))
+	if !plan.SiteId.Equal(state.SiteId) {
+		if conv.Known(plan.SiteId) {
+			body.SetSite(conv.Int32(plan.SiteId))
+		}
 	}
-	if plan.LocationId.IsNull() {
-		body.SetLocationNil()
-	} else if !plan.LocationId.IsUnknown() {
-		body.SetLocation(conv.Int32(plan.LocationId))
+	if !plan.LocationId.Equal(state.LocationId) {
+		if plan.LocationId.IsNull() {
+			body.SetLocationNil()
+		} else if !plan.LocationId.IsUnknown() {
+			body.SetLocation(conv.Int32(plan.LocationId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.FluidType.IsNull() {
-		body.SetFluidTypeNil()
-	} else if !plan.FluidType.IsUnknown() {
-		body.SetFluidType(plan.FluidType.ValueString())
+	if !plan.FluidType.Equal(state.FluidType) {
+		if conv.Known(plan.FluidType) {
+			body.SetFluidType(plan.FluidType.ValueString())
+		}
 	}
-	if plan.CoolingCapacity.IsNull() {
-		body.SetCoolingCapacityNil()
-	} else if !plan.CoolingCapacity.IsUnknown() {
-		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
+	if !plan.CoolingCapacity.Equal(state.CoolingCapacity) {
+		if conv.Known(plan.CoolingCapacity) {
+			body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -415,14 +430,14 @@ func coolingSourceFromAPI(ctx context.Context, obj *netbox.CoolingSource, prior 
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.SiteId = conv.BriefID(obj.GetSiteOk())
 	out.LocationId = conv.BriefID(obj.GetLocationOk())
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *CoolingSourceModel) types.String { return m.Name }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.FluidType = conv.Choice(obj.GetFluidTypeOk())
 	out.CoolingCapacity = conv.Float64Keep(conv.Float64From(obj.GetCoolingCapacityOk()), conv.PriorFloat(prior, func(m *CoolingSourceModel) types.Float64 { return m.CoolingCapacity }), 0)
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CoolingSourceModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *CoolingSourceModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

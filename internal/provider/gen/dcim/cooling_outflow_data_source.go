@@ -107,7 +107,7 @@ func coolingOutflowDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"diameter": dsschema.Float64Attribute{
-			MarkdownDescription: "Diameter.",
+			MarkdownDescription: "Diameter. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"diameter_unit": dsschema.StringAttribute{

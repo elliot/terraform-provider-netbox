@@ -94,7 +94,7 @@ func TestAccModuleBayType_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_module_bay_type", &resource.Sweeper{
 		Name:         "netbox_module_bay_type",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_module_bay", "netbox_module_bay_template", "netbox_module_type"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/module-bay-types/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

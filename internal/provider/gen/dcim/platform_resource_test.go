@@ -77,7 +77,7 @@ func TestAccPlatform_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_platform", &resource.Sweeper{
 		Name:         "netbox_platform",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_config_context", "netbox_device", "netbox_device_type", "netbox_virtual_machine", "netbox_virtual_machine_type"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/platforms/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

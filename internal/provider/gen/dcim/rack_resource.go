@@ -310,8 +310,10 @@ func rackResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"cooling_capacity": schema.Float64Attribute{
-			MarkdownDescription: "Cooling capacity (kW).",
+			MarkdownDescription: "Cooling capacity (kW). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -431,7 +433,7 @@ func (r *RackResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rackToPatch(ctx, &plan, &resp.Diagnostics)
+	body := rackToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -475,50 +477,34 @@ func (r *RackResource) ImportState(ctx context.Context, req resource.ImportState
 // rackToCreate builds the WritableRackRequest request body from the plan.
 func rackToCreate(ctx context.Context, plan *RackModel, diags *diag.Diagnostics) *netbox.WritableRackRequest {
 	body := netbox.NewWritableRackRequest(plan.Name.ValueString(), conv.Int32(plan.SiteId))
-	if plan.FacilityId.IsNull() {
-		body.SetFacilityIdNil()
-	} else if !plan.FacilityId.IsUnknown() {
+	if conv.Known(plan.FacilityId) {
 		body.SetFacilityId(plan.FacilityId.ValueString())
 	}
-	if plan.LocationId.IsNull() {
-		body.SetLocationNil()
-	} else if !plan.LocationId.IsUnknown() {
+	if conv.Known(plan.LocationId) {
 		body.SetLocation(conv.Int32(plan.LocationId))
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
+	if conv.Known(plan.GroupId) {
 		body.SetGroup(conv.Int32(plan.GroupId))
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
+	if conv.Known(plan.RoleId) {
 		body.SetRole(conv.Int32(plan.RoleId))
 	}
 	if !plan.Serial.IsUnknown() {
 		body.SetSerial(plan.Serial.ValueString())
 	}
-	if plan.AssetTag.IsNull() {
-		body.SetAssetTagNil()
-	} else if !plan.AssetTag.IsUnknown() {
+	if conv.Known(plan.AssetTag) {
 		body.SetAssetTag(plan.AssetTag.ValueString())
 	}
-	if plan.RackTypeId.IsNull() {
-		body.SetRackTypeNil()
-	} else if !plan.RackTypeId.IsUnknown() {
+	if conv.Known(plan.RackTypeId) {
 		body.SetRackType(conv.Int32(plan.RackTypeId))
 	}
-	if plan.FormFactor.IsNull() {
-		body.SetFormFactorNil()
-	} else if !plan.FormFactor.IsUnknown() {
+	if conv.Known(plan.FormFactor) {
 		body.SetFormFactor(plan.FormFactor.ValueString())
 	}
 	if conv.Known(plan.Width) {
@@ -536,9 +522,7 @@ func rackToCreate(ctx context.Context, plan *RackModel, diags *diag.Diagnostics)
 	if conv.Known(plan.MaxWeight) {
 		body.SetMaxWeight(conv.Int32(plan.MaxWeight))
 	}
-	if plan.WeightUnit.IsNull() {
-		body.SetWeightUnitNil()
-	} else if !plan.WeightUnit.IsUnknown() {
+	if conv.Known(plan.WeightUnit) {
 		body.SetWeightUnit(plan.WeightUnit.ValueString())
 	}
 	if conv.Known(plan.DescUnits) {
@@ -553,35 +537,25 @@ func rackToCreate(ctx context.Context, plan *RackModel, diags *diag.Diagnostics)
 	if conv.Known(plan.OuterDepth) {
 		body.SetOuterDepth(conv.Int32(plan.OuterDepth))
 	}
-	if plan.OuterUnit.IsNull() {
-		body.SetOuterUnitNil()
-	} else if !plan.OuterUnit.IsUnknown() {
+	if conv.Known(plan.OuterUnit) {
 		body.SetOuterUnit(plan.OuterUnit.ValueString())
 	}
 	if conv.Known(plan.MountingDepth) {
 		body.SetMountingDepth(conv.Int32(plan.MountingDepth))
 	}
-	if plan.Airflow.IsNull() {
-		body.SetAirflowNil()
-	} else if !plan.Airflow.IsUnknown() {
+	if conv.Known(plan.Airflow) {
 		body.SetAirflow(plan.Airflow.ValueString())
 	}
-	if plan.CoolingCapability.IsNull() {
-		body.SetCoolingCapabilityNil()
-	} else if !plan.CoolingCapability.IsUnknown() {
+	if conv.Known(plan.CoolingCapability) {
 		body.SetCoolingCapability(plan.CoolingCapability.ValueString())
 	}
-	if plan.CoolingCapacity.IsNull() {
-		body.SetCoolingCapacityNil()
-	} else if !plan.CoolingCapacity.IsUnknown() {
+	if conv.Known(plan.CoolingCapacity) {
 		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -596,144 +570,184 @@ func rackToCreate(ctx context.Context, plan *RackModel, diags *diag.Diagnostics)
 	return body
 }
 
-// rackToPatch builds the PatchedWritableRackRequest request body from the plan.
-func rackToPatch(ctx context.Context, plan *RackModel, diags *diag.Diagnostics) *netbox.PatchedWritableRackRequest {
+// rackToPatch builds the PatchedWritableRackRequest request body with every attribute whose planned value differs from state.
+func rackToPatch(ctx context.Context, plan, state *RackModel, diags *diag.Diagnostics) *netbox.PatchedWritableRackRequest {
 	body := netbox.NewPatchedWritableRackRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if plan.FacilityId.IsNull() {
-		body.SetFacilityIdNil()
-	} else if !plan.FacilityId.IsUnknown() {
-		body.SetFacilityId(plan.FacilityId.ValueString())
+	if !plan.FacilityId.Equal(state.FacilityId) {
+		if plan.FacilityId.IsNull() {
+			body.SetFacilityIdNil()
+		} else if !plan.FacilityId.IsUnknown() {
+			body.SetFacilityId(plan.FacilityId.ValueString())
+		}
 	}
-	if conv.Known(plan.SiteId) {
-		body.SetSite(conv.Int32(plan.SiteId))
+	if !plan.SiteId.Equal(state.SiteId) {
+		if conv.Known(plan.SiteId) {
+			body.SetSite(conv.Int32(plan.SiteId))
+		}
 	}
-	if plan.LocationId.IsNull() {
-		body.SetLocationNil()
-	} else if !plan.LocationId.IsUnknown() {
-		body.SetLocation(conv.Int32(plan.LocationId))
+	if !plan.LocationId.Equal(state.LocationId) {
+		if plan.LocationId.IsNull() {
+			body.SetLocationNil()
+		} else if !plan.LocationId.IsUnknown() {
+			body.SetLocation(conv.Int32(plan.LocationId))
+		}
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
-		body.SetGroup(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if plan.GroupId.IsNull() {
+			body.SetGroupNil()
+		} else if !plan.GroupId.IsUnknown() {
+			body.SetGroup(conv.Int32(plan.GroupId))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
-		body.SetRole(conv.Int32(plan.RoleId))
+	if !plan.RoleId.Equal(state.RoleId) {
+		if plan.RoleId.IsNull() {
+			body.SetRoleNil()
+		} else if !plan.RoleId.IsUnknown() {
+			body.SetRole(conv.Int32(plan.RoleId))
+		}
 	}
-	if !plan.Serial.IsUnknown() {
-		body.SetSerial(plan.Serial.ValueString())
+	if !plan.Serial.Equal(state.Serial) {
+		if !plan.Serial.IsUnknown() {
+			body.SetSerial(plan.Serial.ValueString())
+		}
 	}
-	if plan.AssetTag.IsNull() {
-		body.SetAssetTagNil()
-	} else if !plan.AssetTag.IsUnknown() {
-		body.SetAssetTag(plan.AssetTag.ValueString())
+	if !plan.AssetTag.Equal(state.AssetTag) {
+		if plan.AssetTag.IsNull() {
+			body.SetAssetTagNil()
+		} else if !plan.AssetTag.IsUnknown() {
+			body.SetAssetTag(plan.AssetTag.ValueString())
+		}
 	}
-	if plan.RackTypeId.IsNull() {
-		body.SetRackTypeNil()
-	} else if !plan.RackTypeId.IsUnknown() {
-		body.SetRackType(conv.Int32(plan.RackTypeId))
+	if !plan.RackTypeId.Equal(state.RackTypeId) {
+		if plan.RackTypeId.IsNull() {
+			body.SetRackTypeNil()
+		} else if !plan.RackTypeId.IsUnknown() {
+			body.SetRackType(conv.Int32(plan.RackTypeId))
+		}
 	}
-	if plan.FormFactor.IsNull() {
-		body.SetFormFactorNil()
-	} else if !plan.FormFactor.IsUnknown() {
-		body.SetFormFactor(plan.FormFactor.ValueString())
+	if !plan.FormFactor.Equal(state.FormFactor) {
+		if conv.Known(plan.FormFactor) {
+			body.SetFormFactor(plan.FormFactor.ValueString())
+		}
 	}
-	if conv.Known(plan.Width) {
-		body.SetWidth(conv.Int32(plan.Width))
+	if !plan.Width.Equal(state.Width) {
+		if conv.Known(plan.Width) {
+			body.SetWidth(conv.Int32(plan.Width))
+		}
 	}
-	if conv.Known(plan.UHeight) {
-		body.SetUHeight(conv.Int32(plan.UHeight))
+	if !plan.UHeight.Equal(state.UHeight) {
+		if conv.Known(plan.UHeight) {
+			body.SetUHeight(conv.Int32(plan.UHeight))
+		}
 	}
-	if conv.Known(plan.StartingUnit) {
-		body.SetStartingUnit(conv.Int32(plan.StartingUnit))
+	if !plan.StartingUnit.Equal(state.StartingUnit) {
+		if conv.Known(plan.StartingUnit) {
+			body.SetStartingUnit(conv.Int32(plan.StartingUnit))
+		}
 	}
-	if plan.Weight.IsNull() {
-		body.SetWeightNil()
-	} else if !plan.Weight.IsUnknown() {
-		body.SetWeight(plan.Weight.ValueFloat64())
+	if !plan.Weight.Equal(state.Weight) {
+		if conv.Known(plan.Weight) {
+			body.SetWeight(plan.Weight.ValueFloat64())
+		}
 	}
-	if plan.MaxWeight.IsNull() {
-		body.SetMaxWeightNil()
-	} else if !plan.MaxWeight.IsUnknown() {
-		body.SetMaxWeight(conv.Int32(plan.MaxWeight))
+	if !plan.MaxWeight.Equal(state.MaxWeight) {
+		if conv.Known(plan.MaxWeight) {
+			body.SetMaxWeight(conv.Int32(plan.MaxWeight))
+		}
 	}
-	if plan.WeightUnit.IsNull() {
-		body.SetWeightUnitNil()
-	} else if !plan.WeightUnit.IsUnknown() {
-		body.SetWeightUnit(plan.WeightUnit.ValueString())
+	if !plan.WeightUnit.Equal(state.WeightUnit) {
+		if conv.Known(plan.WeightUnit) {
+			body.SetWeightUnit(plan.WeightUnit.ValueString())
+		}
 	}
-	if conv.Known(plan.DescUnits) {
-		body.SetDescUnits(plan.DescUnits.ValueBool())
+	if !plan.DescUnits.Equal(state.DescUnits) {
+		if conv.Known(plan.DescUnits) {
+			body.SetDescUnits(plan.DescUnits.ValueBool())
+		}
 	}
-	if plan.OuterWidth.IsNull() {
-		body.SetOuterWidthNil()
-	} else if !plan.OuterWidth.IsUnknown() {
-		body.SetOuterWidth(conv.Int32(plan.OuterWidth))
+	if !plan.OuterWidth.Equal(state.OuterWidth) {
+		if conv.Known(plan.OuterWidth) {
+			body.SetOuterWidth(conv.Int32(plan.OuterWidth))
+		}
 	}
-	if plan.OuterHeight.IsNull() {
-		body.SetOuterHeightNil()
-	} else if !plan.OuterHeight.IsUnknown() {
-		body.SetOuterHeight(conv.Int32(plan.OuterHeight))
+	if !plan.OuterHeight.Equal(state.OuterHeight) {
+		if conv.Known(plan.OuterHeight) {
+			body.SetOuterHeight(conv.Int32(plan.OuterHeight))
+		}
 	}
-	if plan.OuterDepth.IsNull() {
-		body.SetOuterDepthNil()
-	} else if !plan.OuterDepth.IsUnknown() {
-		body.SetOuterDepth(conv.Int32(plan.OuterDepth))
+	if !plan.OuterDepth.Equal(state.OuterDepth) {
+		if conv.Known(plan.OuterDepth) {
+			body.SetOuterDepth(conv.Int32(plan.OuterDepth))
+		}
 	}
-	if plan.OuterUnit.IsNull() {
-		body.SetOuterUnitNil()
-	} else if !plan.OuterUnit.IsUnknown() {
-		body.SetOuterUnit(plan.OuterUnit.ValueString())
+	if !plan.OuterUnit.Equal(state.OuterUnit) {
+		if conv.Known(plan.OuterUnit) {
+			body.SetOuterUnit(plan.OuterUnit.ValueString())
+		}
 	}
-	if plan.MountingDepth.IsNull() {
-		body.SetMountingDepthNil()
-	} else if !plan.MountingDepth.IsUnknown() {
-		body.SetMountingDepth(conv.Int32(plan.MountingDepth))
+	if !plan.MountingDepth.Equal(state.MountingDepth) {
+		if conv.Known(plan.MountingDepth) {
+			body.SetMountingDepth(conv.Int32(plan.MountingDepth))
+		}
 	}
-	if plan.Airflow.IsNull() {
-		body.SetAirflowNil()
-	} else if !plan.Airflow.IsUnknown() {
-		body.SetAirflow(plan.Airflow.ValueString())
+	if !plan.Airflow.Equal(state.Airflow) {
+		if conv.Known(plan.Airflow) {
+			body.SetAirflow(plan.Airflow.ValueString())
+		}
 	}
-	if plan.CoolingCapability.IsNull() {
-		body.SetCoolingCapabilityNil()
-	} else if !plan.CoolingCapability.IsUnknown() {
-		body.SetCoolingCapability(plan.CoolingCapability.ValueString())
+	if !plan.CoolingCapability.Equal(state.CoolingCapability) {
+		if conv.Known(plan.CoolingCapability) {
+			body.SetCoolingCapability(plan.CoolingCapability.ValueString())
+		}
 	}
-	if plan.CoolingCapacity.IsNull() {
-		body.SetCoolingCapacityNil()
-	} else if !plan.CoolingCapacity.IsUnknown() {
-		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
+	if !plan.CoolingCapacity.Equal(state.CoolingCapacity) {
+		if conv.Known(plan.CoolingCapacity) {
+			body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -746,16 +760,16 @@ func rackFromAPI(ctx context.Context, obj *netbox.Rack, prior *RackModel, out *R
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.FacilityId = conv.String(obj.GetFacilityIdOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *RackModel) types.String { return m.Name }), false)
+	out.FacilityId = conv.StringKeep(conv.String(obj.GetFacilityIdOk()), conv.PriorString(prior, func(m *RackModel) types.String { return m.FacilityId }), false)
 	out.SiteId = conv.BriefID(obj.GetSiteOk())
 	out.LocationId = conv.BriefID(obj.GetLocationOk())
 	out.GroupId = conv.BriefID(obj.GetGroupOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.RoleId = conv.BriefID(obj.GetRoleOk())
-	out.Serial = conv.StringOrEmpty(obj.GetSerialOk())
-	out.AssetTag = conv.String(obj.GetAssetTagOk())
+	out.Serial = conv.StringKeep(conv.StringOrEmpty(obj.GetSerialOk()), conv.PriorString(prior, func(m *RackModel) types.String { return m.Serial }), false)
+	out.AssetTag = conv.StringKeep(conv.String(obj.GetAssetTagOk()), conv.PriorString(prior, func(m *RackModel) types.String { return m.AssetTag }), false)
 	out.RackTypeId = conv.BriefID(obj.GetRackTypeOk())
 	out.FormFactor = conv.Choice(obj.GetFormFactorOk())
 	out.Width = conv.ChoiceInt(obj.GetWidthOk())
@@ -773,9 +787,9 @@ func rackFromAPI(ctx context.Context, obj *netbox.Rack, prior *RackModel, out *R
 	out.Airflow = conv.Choice(obj.GetAirflowOk())
 	out.CoolingCapability = conv.Choice(obj.GetCoolingCapabilityOk())
 	out.CoolingCapacity = conv.Float64Keep(conv.Float64From(obj.GetCoolingCapacityOk()), conv.PriorFloat(prior, func(m *RackModel) types.Float64 { return m.CoolingCapacity }), 0)
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *RackModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *RackModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

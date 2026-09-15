@@ -265,7 +265,7 @@ func (r *TunnelResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := tunnelToPatch(ctx, &plan, &resp.Diagnostics)
+	body := tunnelToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -309,19 +309,13 @@ func (r *TunnelResource) ImportState(ctx context.Context, req resource.ImportSta
 // tunnelToCreate builds the WritableTunnelRequest request body from the plan.
 func tunnelToCreate(ctx context.Context, plan *TunnelModel, diags *diag.Diagnostics) *netbox.WritableTunnelRequest {
 	body := netbox.NewWritableTunnelRequest(plan.Name.ValueString(), plan.Status.ValueString(), plan.Encapsulation.ValueString())
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
+	if conv.Known(plan.GroupId) {
 		body.SetGroup(conv.Int32(plan.GroupId))
 	}
-	if plan.IpsecProfileId.IsNull() {
-		body.SetIpsecProfileNil()
-	} else if !plan.IpsecProfileId.IsUnknown() {
+	if conv.Known(plan.IpsecProfileId) {
 		body.SetIpsecProfile(conv.Int32(plan.IpsecProfileId))
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
 	if conv.Known(plan.TunnelId) {
@@ -330,9 +324,7 @@ func tunnelToCreate(ctx context.Context, plan *TunnelModel, diags *diag.Diagnost
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -347,52 +339,76 @@ func tunnelToCreate(ctx context.Context, plan *TunnelModel, diags *diag.Diagnost
 	return body
 }
 
-// tunnelToPatch builds the PatchedWritableTunnelRequest request body from the plan.
-func tunnelToPatch(ctx context.Context, plan *TunnelModel, diags *diag.Diagnostics) *netbox.PatchedWritableTunnelRequest {
+// tunnelToPatch builds the PatchedWritableTunnelRequest request body with every attribute whose planned value differs from state.
+func tunnelToPatch(ctx context.Context, plan, state *TunnelModel, diags *diag.Diagnostics) *netbox.PatchedWritableTunnelRequest {
 	body := netbox.NewPatchedWritableTunnelRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
-		body.SetGroup(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if plan.GroupId.IsNull() {
+			body.SetGroupNil()
+		} else if !plan.GroupId.IsUnknown() {
+			body.SetGroup(conv.Int32(plan.GroupId))
+		}
 	}
-	if conv.Known(plan.Encapsulation) {
-		body.SetEncapsulation(plan.Encapsulation.ValueString())
+	if !plan.Encapsulation.Equal(state.Encapsulation) {
+		if conv.Known(plan.Encapsulation) {
+			body.SetEncapsulation(plan.Encapsulation.ValueString())
+		}
 	}
-	if plan.IpsecProfileId.IsNull() {
-		body.SetIpsecProfileNil()
-	} else if !plan.IpsecProfileId.IsUnknown() {
-		body.SetIpsecProfile(conv.Int32(plan.IpsecProfileId))
+	if !plan.IpsecProfileId.Equal(state.IpsecProfileId) {
+		if plan.IpsecProfileId.IsNull() {
+			body.SetIpsecProfileNil()
+		} else if !plan.IpsecProfileId.IsUnknown() {
+			body.SetIpsecProfile(conv.Int32(plan.IpsecProfileId))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if conv.Known(plan.TunnelId) {
-		body.SetTunnelId(plan.TunnelId.ValueInt64())
+	if !plan.TunnelId.Equal(state.TunnelId) {
+		if conv.Known(plan.TunnelId) {
+			body.SetTunnelId(plan.TunnelId.ValueInt64())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

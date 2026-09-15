@@ -187,7 +187,7 @@ func (r *VlanTranslationRuleResource) Update(ctx context.Context, req resource.U
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := vlanTranslationRuleToPatch(ctx, &plan, &resp.Diagnostics)
+	body := vlanTranslationRuleToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -237,20 +237,28 @@ func vlanTranslationRuleToCreate(ctx context.Context, plan *VlanTranslationRuleM
 	return body
 }
 
-// vlanTranslationRuleToPatch builds the PatchedVLANTranslationRuleRequest request body from the plan.
-func vlanTranslationRuleToPatch(ctx context.Context, plan *VlanTranslationRuleModel, diags *diag.Diagnostics) *netbox.PatchedVLANTranslationRuleRequest {
+// vlanTranslationRuleToPatch builds the PatchedVLANTranslationRuleRequest request body with every attribute whose planned value differs from state.
+func vlanTranslationRuleToPatch(ctx context.Context, plan, state *VlanTranslationRuleModel, diags *diag.Diagnostics) *netbox.PatchedVLANTranslationRuleRequest {
 	body := netbox.NewPatchedVLANTranslationRuleRequest()
-	if conv.Known(plan.PolicyId) {
-		body.SetPolicy(conv.Int32(plan.PolicyId))
+	if !plan.PolicyId.Equal(state.PolicyId) {
+		if conv.Known(plan.PolicyId) {
+			body.SetPolicy(conv.Int32(plan.PolicyId))
+		}
 	}
-	if conv.Known(plan.LocalVid) {
-		body.SetLocalVid(conv.Int32(plan.LocalVid))
+	if !plan.LocalVid.Equal(state.LocalVid) {
+		if conv.Known(plan.LocalVid) {
+			body.SetLocalVid(conv.Int32(plan.LocalVid))
+		}
 	}
-	if conv.Known(plan.RemoteVid) {
-		body.SetRemoteVid(conv.Int32(plan.RemoteVid))
+	if !plan.RemoteVid.Equal(state.RemoteVid) {
+		if conv.Known(plan.RemoteVid) {
+			body.SetRemoteVid(conv.Int32(plan.RemoteVid))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
 	return body
 }

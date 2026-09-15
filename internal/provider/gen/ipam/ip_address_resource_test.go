@@ -98,7 +98,7 @@ func TestAccIpAddress_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_ip_address", &resource.Sweeper{
 		Name:         "netbox_ip_address",
-		Dependencies: []string{"netbox_service"},
+		Dependencies: []string{"netbox_device", "netbox_service", "netbox_tunnel_termination", "netbox_virtual_device_context", "netbox_virtual_machine"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/ip-addresses/", []string{"description__isw", "q"})
 		},

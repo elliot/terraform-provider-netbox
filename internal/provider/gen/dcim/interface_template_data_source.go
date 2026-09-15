@@ -104,11 +104,11 @@ func interfaceTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute 
 			Computed:            true,
 		},
 		"channels": dsschema.Int64Attribute{
-			MarkdownDescription: "The number of channels into which this interface is channelized.",
+			MarkdownDescription: "The number of channels into which this interface is channelized. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"channel_id": dsschema.Int64Attribute{
-			MarkdownDescription: "The channel on the parent interface to which this subinterface is bound.",
+			MarkdownDescription: "The channel on the parent interface to which this subinterface is bound. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"enabled": dsschema.BoolAttribute{

@@ -92,7 +92,7 @@ func TestAccProviderAccount_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_provider_account", &resource.Sweeper{
 		Name:         "netbox_provider_account",
-		Dependencies: []string{"netbox_circuit", "netbox_provider", "netbox_virtual_circuit"},
+		Dependencies: []string{"netbox_circuit", "netbox_virtual_circuit"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/circuits/provider-accounts/", []string{"name__isw", "description__isw", "q"})
 		},

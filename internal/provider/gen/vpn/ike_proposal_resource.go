@@ -157,8 +157,10 @@ func ikeProposalResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.Int64{int64validator.OneOf(ikeProposalGroupValues...)},
 		},
 		"sa_lifetime": schema.Int64Attribute{
-			MarkdownDescription: "Security association lifetime (in seconds).",
+			MarkdownDescription: "Security association lifetime (in seconds). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"owner_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Owner (`netbox_owner`).",
@@ -271,7 +273,7 @@ func (r *IkeProposalResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ikeProposalToPatch(ctx, &plan, &resp.Diagnostics)
+	body := ikeProposalToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -318,19 +320,13 @@ func ikeProposalToCreate(ctx context.Context, plan *IkeProposalModel, diags *dia
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.AuthenticationAlgorithm.IsNull() {
-		body.SetAuthenticationAlgorithmNil()
-	} else if !plan.AuthenticationAlgorithm.IsUnknown() {
+	if conv.Known(plan.AuthenticationAlgorithm) {
 		body.SetAuthenticationAlgorithm(plan.AuthenticationAlgorithm.ValueString())
 	}
-	if plan.SaLifetime.IsNull() {
-		body.SetSaLifetimeNil()
-	} else if !plan.SaLifetime.IsUnknown() {
+	if conv.Known(plan.SaLifetime) {
 		body.SetSaLifetime(conv.Int32(plan.SaLifetime))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -345,47 +341,65 @@ func ikeProposalToCreate(ctx context.Context, plan *IkeProposalModel, diags *dia
 	return body
 }
 
-// ikeProposalToPatch builds the PatchedWritableIKEProposalRequest request body from the plan.
-func ikeProposalToPatch(ctx context.Context, plan *IkeProposalModel, diags *diag.Diagnostics) *netbox.PatchedWritableIKEProposalRequest {
+// ikeProposalToPatch builds the PatchedWritableIKEProposalRequest request body with every attribute whose planned value differs from state.
+func ikeProposalToPatch(ctx context.Context, plan, state *IkeProposalModel, diags *diag.Diagnostics) *netbox.PatchedWritableIKEProposalRequest {
 	body := netbox.NewPatchedWritableIKEProposalRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.AuthenticationMethod) {
-		body.SetAuthenticationMethod(plan.AuthenticationMethod.ValueString())
+	if !plan.AuthenticationMethod.Equal(state.AuthenticationMethod) {
+		if conv.Known(plan.AuthenticationMethod) {
+			body.SetAuthenticationMethod(plan.AuthenticationMethod.ValueString())
+		}
 	}
-	if conv.Known(plan.EncryptionAlgorithm) {
-		body.SetEncryptionAlgorithm(plan.EncryptionAlgorithm.ValueString())
+	if !plan.EncryptionAlgorithm.Equal(state.EncryptionAlgorithm) {
+		if conv.Known(plan.EncryptionAlgorithm) {
+			body.SetEncryptionAlgorithm(plan.EncryptionAlgorithm.ValueString())
+		}
 	}
-	if plan.AuthenticationAlgorithm.IsNull() {
-		body.SetAuthenticationAlgorithmNil()
-	} else if !plan.AuthenticationAlgorithm.IsUnknown() {
-		body.SetAuthenticationAlgorithm(plan.AuthenticationAlgorithm.ValueString())
+	if !plan.AuthenticationAlgorithm.Equal(state.AuthenticationAlgorithm) {
+		if conv.Known(plan.AuthenticationAlgorithm) {
+			body.SetAuthenticationAlgorithm(plan.AuthenticationAlgorithm.ValueString())
+		}
 	}
-	if conv.Known(plan.Group) {
-		body.SetGroup(conv.Int32(plan.Group))
+	if !plan.Group.Equal(state.Group) {
+		if conv.Known(plan.Group) {
+			body.SetGroup(conv.Int32(plan.Group))
+		}
 	}
-	if plan.SaLifetime.IsNull() {
-		body.SetSaLifetimeNil()
-	} else if !plan.SaLifetime.IsUnknown() {
-		body.SetSaLifetime(conv.Int32(plan.SaLifetime))
+	if !plan.SaLifetime.Equal(state.SaLifetime) {
+		if conv.Known(plan.SaLifetime) {
+			body.SetSaLifetime(conv.Int32(plan.SaLifetime))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -398,15 +412,15 @@ func ikeProposalFromAPI(ctx context.Context, obj *netbox.IKEProposal, prior *Ike
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *IkeProposalModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *IkeProposalModel) types.String { return m.Description }), false)
 	out.AuthenticationMethod = conv.Choice(obj.GetAuthenticationMethodOk())
 	out.EncryptionAlgorithm = conv.Choice(obj.GetEncryptionAlgorithmOk())
 	out.AuthenticationAlgorithm = conv.Choice(obj.GetAuthenticationAlgorithmOk())
 	out.Group = conv.ChoiceInt(obj.GetGroupOk())
 	out.SaLifetime = conv.Int64From32(obj.GetSaLifetimeOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IkeProposalModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

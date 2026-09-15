@@ -106,7 +106,7 @@ func TestAccWirelessLan_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_wireless_lan", &resource.Sweeper{
 		Name:         "netbox_wireless_lan",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_interface"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/wireless/wireless-lans/", []string{"description__isw", "q"})
 		},

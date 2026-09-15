@@ -231,7 +231,7 @@ func (r *CustomFieldChoiceSetResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := customFieldChoiceSetToPatch(ctx, &plan, &resp.Diagnostics)
+	body := customFieldChoiceSetToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -278,9 +278,7 @@ func customFieldChoiceSetToCreate(ctx context.Context, plan *CustomFieldChoiceSe
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.BaseChoices.IsNull() {
-		body.SetBaseChoicesNil()
-	} else if !plan.BaseChoices.IsUnknown() {
+	if conv.Known(plan.BaseChoices) {
 		body.SetBaseChoices(plan.BaseChoices.ValueString())
 	}
 	if conv.Known(plan.ChoiceColors) {
@@ -289,41 +287,51 @@ func customFieldChoiceSetToCreate(ctx context.Context, plan *CustomFieldChoiceSe
 	if conv.Known(plan.OrderAlphabetically) {
 		body.SetOrderAlphabetically(plan.OrderAlphabetically.ValueBool())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	return body
 }
 
-// customFieldChoiceSetToPatch builds the PatchedWritableCustomFieldChoiceSetRequest request body from the plan.
-func customFieldChoiceSetToPatch(ctx context.Context, plan *CustomFieldChoiceSetModel, diags *diag.Diagnostics) *netbox.PatchedWritableCustomFieldChoiceSetRequest {
+// customFieldChoiceSetToPatch builds the PatchedWritableCustomFieldChoiceSetRequest request body with every attribute whose planned value differs from state.
+func customFieldChoiceSetToPatch(ctx context.Context, plan, state *CustomFieldChoiceSetModel, diags *diag.Diagnostics) *netbox.PatchedWritableCustomFieldChoiceSetRequest {
 	body := netbox.NewPatchedWritableCustomFieldChoiceSetRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.BaseChoices.IsNull() {
-		body.SetBaseChoicesNil()
-	} else if !plan.BaseChoices.IsUnknown() {
-		body.SetBaseChoices(plan.BaseChoices.ValueString())
+	if !plan.BaseChoices.Equal(state.BaseChoices) {
+		if conv.Known(plan.BaseChoices) {
+			body.SetBaseChoices(plan.BaseChoices.ValueString())
+		}
 	}
-	if conv.Known(plan.ExtraChoices) {
-		body.SetExtraChoices(conv.AnyListToAPI(ctx, plan.ExtraChoices, diags))
+	if !plan.ExtraChoices.Equal(state.ExtraChoices) {
+		if conv.Known(plan.ExtraChoices) {
+			body.SetExtraChoices(conv.AnyListToAPI(ctx, plan.ExtraChoices, diags))
+		}
 	}
-	if conv.Known(plan.ChoiceColors) {
-		body.SetChoiceColors(conv.JSONStringMapToAPI(plan.ChoiceColors, diags))
+	if !plan.ChoiceColors.Equal(state.ChoiceColors) {
+		if conv.Known(plan.ChoiceColors) {
+			body.SetChoiceColors(conv.JSONStringMapToAPI(plan.ChoiceColors, diags))
+		}
 	}
-	if conv.Known(plan.OrderAlphabetically) {
-		body.SetOrderAlphabetically(plan.OrderAlphabetically.ValueBool())
+	if !plan.OrderAlphabetically.Equal(state.OrderAlphabetically) {
+		if conv.Known(plan.OrderAlphabetically) {
+			body.SetOrderAlphabetically(plan.OrderAlphabetically.ValueBool())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
 	return body
 }
@@ -332,8 +340,8 @@ func customFieldChoiceSetToPatch(ctx context.Context, plan *CustomFieldChoiceSet
 func customFieldChoiceSetFromAPI(ctx context.Context, obj *netbox.CustomFieldChoiceSet, prior *CustomFieldChoiceSetModel, out *CustomFieldChoiceSetModel, diags *diag.Diagnostics) {
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *CustomFieldChoiceSetModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CustomFieldChoiceSetModel) types.String { return m.Description }), false)
 	out.BaseChoices = conv.Choice(obj.GetBaseChoicesOk())
 	out.ExtraChoices = conv.AnyListFromAPI(obj.GetExtraChoices())
 	out.ChoiceColors = conv.JSONFromAPIWithPrior(obj.GetChoiceColors(), conv.PriorJSON(prior, func(m *CustomFieldChoiceSetModel) jsontypes.Normalized { return m.ChoiceColors }))

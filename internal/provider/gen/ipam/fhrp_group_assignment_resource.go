@@ -195,7 +195,7 @@ func (r *FhrpGroupAssignmentResource) Update(ctx context.Context, req resource.U
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := fhrpGroupAssignmentToPatch(ctx, &plan, &resp.Diagnostics)
+	body := fhrpGroupAssignmentToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -242,20 +242,28 @@ func fhrpGroupAssignmentToCreate(ctx context.Context, plan *FhrpGroupAssignmentM
 	return body
 }
 
-// fhrpGroupAssignmentToPatch builds the PatchedFHRPGroupAssignmentRequest request body from the plan.
-func fhrpGroupAssignmentToPatch(ctx context.Context, plan *FhrpGroupAssignmentModel, diags *diag.Diagnostics) *netbox.PatchedFHRPGroupAssignmentRequest {
+// fhrpGroupAssignmentToPatch builds the PatchedFHRPGroupAssignmentRequest request body with every attribute whose planned value differs from state.
+func fhrpGroupAssignmentToPatch(ctx context.Context, plan, state *FhrpGroupAssignmentModel, diags *diag.Diagnostics) *netbox.PatchedFHRPGroupAssignmentRequest {
 	body := netbox.NewPatchedFHRPGroupAssignmentRequest()
-	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if conv.Known(plan.GroupId) {
+			body.SetGroup(conv.Int32(plan.GroupId))
+		}
 	}
-	if conv.Known(plan.InterfaceType) {
-		body.SetInterfaceType(plan.InterfaceType.ValueString())
+	if !plan.InterfaceType.Equal(state.InterfaceType) {
+		if conv.Known(plan.InterfaceType) {
+			body.SetInterfaceType(plan.InterfaceType.ValueString())
+		}
 	}
-	if conv.Known(plan.InterfaceId) {
-		body.SetInterfaceId(plan.InterfaceId.ValueInt64())
+	if !plan.InterfaceId.Equal(state.InterfaceId) {
+		if conv.Known(plan.InterfaceId) {
+			body.SetInterfaceId(plan.InterfaceId.ValueInt64())
+		}
 	}
-	if conv.Known(plan.Priority) {
-		body.SetPriority(conv.Int32(plan.Priority))
+	if !plan.Priority.Equal(state.Priority) {
+		if conv.Known(plan.Priority) {
+			body.SetPriority(conv.Int32(plan.Priority))
+		}
 	}
 	return body
 }

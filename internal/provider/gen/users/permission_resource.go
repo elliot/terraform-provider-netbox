@@ -223,7 +223,7 @@ func (r *PermissionResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := permissionToPatch(ctx, &plan, &resp.Diagnostics)
+	body := permissionToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -285,32 +285,48 @@ func permissionToCreate(ctx context.Context, plan *PermissionModel, diags *diag.
 	return body
 }
 
-// permissionToPatch builds the PatchedObjectPermissionRequest request body from the plan.
-func permissionToPatch(ctx context.Context, plan *PermissionModel, diags *diag.Diagnostics) *netbox.PatchedObjectPermissionRequest {
+// permissionToPatch builds the PatchedObjectPermissionRequest request body with every attribute whose planned value differs from state.
+func permissionToPatch(ctx context.Context, plan, state *PermissionModel, diags *diag.Diagnostics) *netbox.PatchedObjectPermissionRequest {
 	body := netbox.NewPatchedObjectPermissionRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if conv.Known(plan.ObjectTypes) {
-		body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+	if !plan.ObjectTypes.Equal(state.ObjectTypes) {
+		if conv.Known(plan.ObjectTypes) {
+			body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+		}
 	}
-	if conv.Known(plan.Actions) {
-		body.SetActions(conv.Strings(ctx, plan.Actions, diags))
+	if !plan.Actions.Equal(state.Actions) {
+		if conv.Known(plan.Actions) {
+			body.SetActions(conv.Strings(ctx, plan.Actions, diags))
+		}
 	}
-	if conv.Known(plan.Constraints) {
-		body.SetConstraints(conv.JSONToAPI(plan.Constraints, diags))
+	if !plan.Constraints.Equal(state.Constraints) {
+		if conv.Known(plan.Constraints) {
+			body.SetConstraints(conv.JSONToAPI(plan.Constraints, diags))
+		}
 	}
-	if conv.Known(plan.GroupIds) {
-		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+	if !plan.GroupIds.Equal(state.GroupIds) {
+		if conv.Known(plan.GroupIds) {
+			body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+		}
 	}
-	if conv.Known(plan.UserIds) {
-		body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+	if !plan.UserIds.Equal(state.UserIds) {
+		if conv.Known(plan.UserIds) {
+			body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+		}
 	}
 	return body
 }
@@ -319,8 +335,8 @@ func permissionToPatch(ctx context.Context, plan *PermissionModel, diags *diag.D
 func permissionFromAPI(ctx context.Context, obj *netbox.ObjectPermission, prior *PermissionModel, out *PermissionModel, diags *diag.Diagnostics) {
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *PermissionModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *PermissionModel) types.String { return m.Description }), false)
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
 	out.ObjectTypes = conv.StringSet(obj.GetObjectTypes())
 	out.Actions = conv.StringSet(obj.GetActions())

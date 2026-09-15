@@ -200,8 +200,10 @@ func deviceTypeResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"weight": schema.Float64Attribute{
-			MarkdownDescription: "Weight.",
+			MarkdownDescription: "Weight. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"weight_unit": schema.StringAttribute{
 			MarkdownDescription: "Weight Unit. Valid values: `kg`, `g`, `lb`, `oz`. Defaults to the NetBox server default when omitted.",
@@ -332,7 +334,7 @@ func (r *DeviceTypeResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := deviceTypeToPatch(ctx, &plan, &resp.Diagnostics)
+	body := deviceTypeToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -376,9 +378,7 @@ func (r *DeviceTypeResource) ImportState(ctx context.Context, req resource.Impor
 // deviceTypeToCreate builds the WritableDeviceTypeRequest request body from the plan.
 func deviceTypeToCreate(ctx context.Context, plan *DeviceTypeModel, diags *diag.Diagnostics) *netbox.WritableDeviceTypeRequest {
 	body := netbox.NewWritableDeviceTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString(), plan.Slug.ValueString())
-	if plan.DefaultPlatformId.IsNull() {
-		body.SetDefaultPlatformNil()
-	} else if !plan.DefaultPlatformId.IsUnknown() {
+	if conv.Known(plan.DefaultPlatformId) {
 		body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
 	}
 	if !plan.PartNumber.IsUnknown() {
@@ -393,42 +393,28 @@ func deviceTypeToCreate(ctx context.Context, plan *DeviceTypeModel, diags *diag.
 	if conv.Known(plan.IsFullDepth) {
 		body.SetIsFullDepth(plan.IsFullDepth.ValueBool())
 	}
-	if plan.SubdeviceRole.IsNull() {
-		body.SetSubdeviceRoleNil()
-	} else if !plan.SubdeviceRole.IsUnknown() {
+	if conv.Known(plan.SubdeviceRole) {
 		body.SetSubdeviceRole(plan.SubdeviceRole.ValueString())
 	}
-	if plan.Airflow.IsNull() {
-		body.SetAirflowNil()
-	} else if !plan.Airflow.IsUnknown() {
+	if conv.Known(plan.Airflow) {
 		body.SetAirflow(plan.Airflow.ValueString())
 	}
-	if plan.CoolingMethod.IsNull() {
-		body.SetCoolingMethodNil()
-	} else if !plan.CoolingMethod.IsUnknown() {
+	if conv.Known(plan.CoolingMethod) {
 		body.SetCoolingMethod(plan.CoolingMethod.ValueString())
 	}
-	if plan.Weight.IsNull() {
-		body.SetWeightNil()
-	} else if !plan.Weight.IsUnknown() {
+	if conv.Known(plan.Weight) {
 		body.SetWeight(plan.Weight.ValueFloat64())
 	}
-	if plan.WeightUnit.IsNull() {
-		body.SetWeightUnitNil()
-	} else if !plan.WeightUnit.IsUnknown() {
+	if conv.Known(plan.WeightUnit) {
 		body.SetWeightUnit(plan.WeightUnit.ValueString())
 	}
-	if plan.EndOfLife.IsNull() {
-		body.SetEndOfLifeNil()
-	} else if !plan.EndOfLife.IsUnknown() {
+	if conv.Known(plan.EndOfLife) {
 		body.SetEndOfLife(plan.EndOfLife.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -443,81 +429,109 @@ func deviceTypeToCreate(ctx context.Context, plan *DeviceTypeModel, diags *diag.
 	return body
 }
 
-// deviceTypeToPatch builds the PatchedWritableDeviceTypeRequest request body from the plan.
-func deviceTypeToPatch(ctx context.Context, plan *DeviceTypeModel, diags *diag.Diagnostics) *netbox.PatchedWritableDeviceTypeRequest {
+// deviceTypeToPatch builds the PatchedWritableDeviceTypeRequest request body with every attribute whose planned value differs from state.
+func deviceTypeToPatch(ctx context.Context, plan, state *DeviceTypeModel, diags *diag.Diagnostics) *netbox.PatchedWritableDeviceTypeRequest {
 	body := netbox.NewPatchedWritableDeviceTypeRequest()
-	if conv.Known(plan.ManufacturerId) {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
+		if conv.Known(plan.ManufacturerId) {
+			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		}
 	}
-	if plan.DefaultPlatformId.IsNull() {
-		body.SetDefaultPlatformNil()
-	} else if !plan.DefaultPlatformId.IsUnknown() {
-		body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
+	if !plan.DefaultPlatformId.Equal(state.DefaultPlatformId) {
+		if plan.DefaultPlatformId.IsNull() {
+			body.SetDefaultPlatformNil()
+		} else if !plan.DefaultPlatformId.IsUnknown() {
+			body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
+		}
 	}
-	if conv.Known(plan.Model) {
-		body.SetModel(plan.Model.ValueString())
+	if !plan.Model.Equal(state.Model) {
+		if conv.Known(plan.Model) {
+			body.SetModel(plan.Model.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if !plan.PartNumber.IsUnknown() {
-		body.SetPartNumber(plan.PartNumber.ValueString())
+	if !plan.PartNumber.Equal(state.PartNumber) {
+		if !plan.PartNumber.IsUnknown() {
+			body.SetPartNumber(plan.PartNumber.ValueString())
+		}
 	}
-	if conv.Known(plan.UHeight) {
-		body.SetUHeight(plan.UHeight.ValueFloat64())
+	if !plan.UHeight.Equal(state.UHeight) {
+		if conv.Known(plan.UHeight) {
+			body.SetUHeight(plan.UHeight.ValueFloat64())
+		}
 	}
-	if conv.Known(plan.ExcludeFromUtilization) {
-		body.SetExcludeFromUtilization(plan.ExcludeFromUtilization.ValueBool())
+	if !plan.ExcludeFromUtilization.Equal(state.ExcludeFromUtilization) {
+		if conv.Known(plan.ExcludeFromUtilization) {
+			body.SetExcludeFromUtilization(plan.ExcludeFromUtilization.ValueBool())
+		}
 	}
-	if conv.Known(plan.IsFullDepth) {
-		body.SetIsFullDepth(plan.IsFullDepth.ValueBool())
+	if !plan.IsFullDepth.Equal(state.IsFullDepth) {
+		if conv.Known(plan.IsFullDepth) {
+			body.SetIsFullDepth(plan.IsFullDepth.ValueBool())
+		}
 	}
-	if plan.SubdeviceRole.IsNull() {
-		body.SetSubdeviceRoleNil()
-	} else if !plan.SubdeviceRole.IsUnknown() {
-		body.SetSubdeviceRole(plan.SubdeviceRole.ValueString())
+	if !plan.SubdeviceRole.Equal(state.SubdeviceRole) {
+		if conv.Known(plan.SubdeviceRole) {
+			body.SetSubdeviceRole(plan.SubdeviceRole.ValueString())
+		}
 	}
-	if plan.Airflow.IsNull() {
-		body.SetAirflowNil()
-	} else if !plan.Airflow.IsUnknown() {
-		body.SetAirflow(plan.Airflow.ValueString())
+	if !plan.Airflow.Equal(state.Airflow) {
+		if conv.Known(plan.Airflow) {
+			body.SetAirflow(plan.Airflow.ValueString())
+		}
 	}
-	if plan.CoolingMethod.IsNull() {
-		body.SetCoolingMethodNil()
-	} else if !plan.CoolingMethod.IsUnknown() {
-		body.SetCoolingMethod(plan.CoolingMethod.ValueString())
+	if !plan.CoolingMethod.Equal(state.CoolingMethod) {
+		if conv.Known(plan.CoolingMethod) {
+			body.SetCoolingMethod(plan.CoolingMethod.ValueString())
+		}
 	}
-	if plan.Weight.IsNull() {
-		body.SetWeightNil()
-	} else if !plan.Weight.IsUnknown() {
-		body.SetWeight(plan.Weight.ValueFloat64())
+	if !plan.Weight.Equal(state.Weight) {
+		if conv.Known(plan.Weight) {
+			body.SetWeight(plan.Weight.ValueFloat64())
+		}
 	}
-	if plan.WeightUnit.IsNull() {
-		body.SetWeightUnitNil()
-	} else if !plan.WeightUnit.IsUnknown() {
-		body.SetWeightUnit(plan.WeightUnit.ValueString())
+	if !plan.WeightUnit.Equal(state.WeightUnit) {
+		if conv.Known(plan.WeightUnit) {
+			body.SetWeightUnit(plan.WeightUnit.ValueString())
+		}
 	}
-	if plan.EndOfLife.IsNull() {
-		body.SetEndOfLifeNil()
-	} else if !plan.EndOfLife.IsUnknown() {
-		body.SetEndOfLife(plan.EndOfLife.ValueString())
+	if !plan.EndOfLife.Equal(state.EndOfLife) {
+		if plan.EndOfLife.IsNull() {
+			body.SetEndOfLifeNil()
+		} else if !plan.EndOfLife.IsUnknown() {
+			body.SetEndOfLife(plan.EndOfLife.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -532,21 +546,21 @@ func deviceTypeFromAPI(ctx context.Context, obj *netbox.DeviceType, prior *Devic
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ManufacturerId = conv.BriefID(obj.GetManufacturerOk())
 	out.DefaultPlatformId = conv.BriefID(obj.GetDefaultPlatformOk())
-	out.Model = conv.String(obj.GetModelOk())
-	out.Slug = conv.String(obj.GetSlugOk())
-	out.PartNumber = conv.StringOrEmpty(obj.GetPartNumberOk())
-	out.UHeight = conv.Float64From(obj.GetUHeightOk())
+	out.Model = conv.StringKeep(conv.String(obj.GetModelOk()), conv.PriorString(prior, func(m *DeviceTypeModel) types.String { return m.Model }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *DeviceTypeModel) types.String { return m.Slug }), false)
+	out.PartNumber = conv.StringKeep(conv.StringOrEmpty(obj.GetPartNumberOk()), conv.PriorString(prior, func(m *DeviceTypeModel) types.String { return m.PartNumber }), false)
+	out.UHeight = conv.Float64Keep(conv.Float64From(obj.GetUHeightOk()), conv.PriorFloat(prior, func(m *DeviceTypeModel) types.Float64 { return m.UHeight }), 0)
 	out.ExcludeFromUtilization = conv.Bool(obj.GetExcludeFromUtilizationOk())
 	out.IsFullDepth = conv.Bool(obj.GetIsFullDepthOk())
 	out.SubdeviceRole = conv.Choice(obj.GetSubdeviceRoleOk())
 	out.Airflow = conv.Choice(obj.GetAirflowOk())
 	out.CoolingMethod = conv.Choice(obj.GetCoolingMethodOk())
-	out.Weight = conv.Float64From(obj.GetWeightOk())
+	out.Weight = conv.Float64Keep(conv.Float64From(obj.GetWeightOk()), conv.PriorFloat(prior, func(m *DeviceTypeModel) types.Float64 { return m.Weight }), 0)
 	out.WeightUnit = conv.Choice(obj.GetWeightUnitOk())
-	out.EndOfLife = conv.String(obj.GetEndOfLifeOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.EndOfLife = conv.StringKeep(conv.String(obj.GetEndOfLifeOk()), conv.PriorString(prior, func(m *DeviceTypeModel) types.String { return m.EndOfLife }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *DeviceTypeModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *DeviceTypeModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

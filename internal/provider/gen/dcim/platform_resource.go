@@ -243,7 +243,7 @@ func (r *PlatformResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := platformToPatch(ctx, &plan, &resp.Diagnostics)
+	body := platformToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -287,27 +287,19 @@ func (r *PlatformResource) ImportState(ctx context.Context, req resource.ImportS
 // platformToCreate builds the WritablePlatformRequest request body from the plan.
 func platformToCreate(ctx context.Context, plan *PlatformModel, diags *diag.Diagnostics) *netbox.WritablePlatformRequest {
 	body := netbox.NewWritablePlatformRequest(plan.Name.ValueString(), plan.Slug.ValueString())
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
+	if conv.Known(plan.ParentId) {
 		body.SetParent(conv.Int32(plan.ParentId))
 	}
-	if plan.ManufacturerId.IsNull() {
-		body.SetManufacturerNil()
-	} else if !plan.ManufacturerId.IsUnknown() {
+	if conv.Known(plan.ManufacturerId) {
 		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
 	}
-	if plan.ConfigTemplateId.IsNull() {
-		body.SetConfigTemplateNil()
-	} else if !plan.ConfigTemplateId.IsUnknown() {
+	if conv.Known(plan.ConfigTemplateId) {
 		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -322,46 +314,66 @@ func platformToCreate(ctx context.Context, plan *PlatformModel, diags *diag.Diag
 	return body
 }
 
-// platformToPatch builds the PatchedWritablePlatformRequest request body from the plan.
-func platformToPatch(ctx context.Context, plan *PlatformModel, diags *diag.Diagnostics) *netbox.PatchedWritablePlatformRequest {
+// platformToPatch builds the PatchedWritablePlatformRequest request body with every attribute whose planned value differs from state.
+func platformToPatch(ctx context.Context, plan, state *PlatformModel, diags *diag.Diagnostics) *netbox.PatchedWritablePlatformRequest {
 	body := netbox.NewPatchedWritablePlatformRequest()
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
-		body.SetParent(conv.Int32(plan.ParentId))
+	if !plan.ParentId.Equal(state.ParentId) {
+		if plan.ParentId.IsNull() {
+			body.SetParentNil()
+		} else if !plan.ParentId.IsUnknown() {
+			body.SetParent(conv.Int32(plan.ParentId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if plan.ManufacturerId.IsNull() {
-		body.SetManufacturerNil()
-	} else if !plan.ManufacturerId.IsUnknown() {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
+		if plan.ManufacturerId.IsNull() {
+			body.SetManufacturerNil()
+		} else if !plan.ManufacturerId.IsUnknown() {
+			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		}
 	}
-	if plan.ConfigTemplateId.IsNull() {
-		body.SetConfigTemplateNil()
-	} else if !plan.ConfigTemplateId.IsUnknown() {
-		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+	if !plan.ConfigTemplateId.Equal(state.ConfigTemplateId) {
+		if plan.ConfigTemplateId.IsNull() {
+			body.SetConfigTemplateNil()
+		} else if !plan.ConfigTemplateId.IsUnknown() {
+			body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -375,13 +387,13 @@ func platformFromAPI(ctx context.Context, obj *netbox.Platform, prior *PlatformM
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ParentId = conv.BriefID(obj.GetParentOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *PlatformModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *PlatformModel) types.String { return m.Slug }), false)
 	out.ManufacturerId = conv.BriefID(obj.GetManufacturerOk())
 	out.ConfigTemplateId = conv.BriefID(obj.GetConfigTemplateOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *PlatformModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *PlatformModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

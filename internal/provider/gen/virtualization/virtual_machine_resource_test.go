@@ -122,7 +122,7 @@ func TestAccVirtualMachine_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_virtual_machine", &resource.Sweeper{
 		Name:         "netbox_virtual_machine",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_virtual_disk", "netbox_vm_interface"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/virtualization/virtual-machines/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -85,7 +85,7 @@ func TestAccCustomFieldChoiceSet_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_custom_field_choice_set", &resource.Sweeper{
 		Name:         "netbox_custom_field_choice_set",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_custom_field"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/extras/custom-field-choice-sets/", []string{"name__isw", "description__isw", "q"})
 		},

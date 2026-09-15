@@ -247,7 +247,7 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := serviceToPatch(ctx, &plan, &resp.Diagnostics)
+	body := serviceToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -300,9 +300,7 @@ func serviceToCreate(ctx context.Context, plan *ServiceModel, diags *diag.Diagno
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -317,40 +315,60 @@ func serviceToCreate(ctx context.Context, plan *ServiceModel, diags *diag.Diagno
 	return body
 }
 
-// serviceToPatch builds the PatchedWritableServiceRequest request body from the plan.
-func serviceToPatch(ctx context.Context, plan *ServiceModel, diags *diag.Diagnostics) *netbox.PatchedWritableServiceRequest {
+// serviceToPatch builds the PatchedWritableServiceRequest request body with every attribute whose planned value differs from state.
+func serviceToPatch(ctx context.Context, plan, state *ServiceModel, diags *diag.Diagnostics) *netbox.PatchedWritableServiceRequest {
 	body := netbox.NewPatchedWritableServiceRequest()
-	if conv.Known(plan.ParentObjectType) {
-		body.SetParentObjectType(plan.ParentObjectType.ValueString())
+	if !plan.ParentObjectType.Equal(state.ParentObjectType) {
+		if conv.Known(plan.ParentObjectType) {
+			body.SetParentObjectType(plan.ParentObjectType.ValueString())
+		}
 	}
-	if conv.Known(plan.ParentObjectId) {
-		body.SetParentObjectId(plan.ParentObjectId.ValueInt64())
+	if !plan.ParentObjectId.Equal(state.ParentObjectId) {
+		if conv.Known(plan.ParentObjectId) {
+			body.SetParentObjectId(plan.ParentObjectId.ValueInt64())
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.PortMappings) {
-		body.SetPortMappings(conv.Strings(ctx, plan.PortMappings, diags))
+	if !plan.PortMappings.Equal(state.PortMappings) {
+		if conv.Known(plan.PortMappings) {
+			body.SetPortMappings(conv.Strings(ctx, plan.PortMappings, diags))
+		}
 	}
-	if conv.Known(plan.IpaddressIds) {
-		body.SetIpaddresses(conv.Int32s(ctx, plan.IpaddressIds, diags))
+	if !plan.IpaddressIds.Equal(state.IpaddressIds) {
+		if conv.Known(plan.IpaddressIds) {
+			body.SetIpaddresses(conv.Int32s(ctx, plan.IpaddressIds, diags))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

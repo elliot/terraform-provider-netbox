@@ -186,11 +186,11 @@ func customFieldDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"validation_minimum": dsschema.Float64Attribute{
-			MarkdownDescription: "Minimum allowed value (for numeric fields).",
+			MarkdownDescription: "Minimum allowed value (for numeric fields). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"validation_maximum": dsschema.Float64Attribute{
-			MarkdownDescription: "Maximum allowed value (for numeric fields).",
+			MarkdownDescription: "Maximum allowed value (for numeric fields). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"validation_regex": dsschema.StringAttribute{

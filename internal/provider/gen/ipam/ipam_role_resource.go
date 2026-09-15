@@ -235,7 +235,7 @@ func (r *IpamRoleResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ipamRoleToPatch(ctx, &plan, &resp.Diagnostics)
+	body := ipamRoleToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -285,9 +285,7 @@ func ipamRoleToCreate(ctx context.Context, plan *IpamRoleModel, diags *diag.Diag
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -302,34 +300,50 @@ func ipamRoleToCreate(ctx context.Context, plan *IpamRoleModel, diags *diag.Diag
 	return body
 }
 
-// ipamRoleToPatch builds the PatchedRoleRequest request body from the plan.
-func ipamRoleToPatch(ctx context.Context, plan *IpamRoleModel, diags *diag.Diagnostics) *netbox.PatchedRoleRequest {
+// ipamRoleToPatch builds the PatchedRoleRequest request body with every attribute whose planned value differs from state.
+func ipamRoleToPatch(ctx context.Context, plan, state *IpamRoleModel, diags *diag.Diagnostics) *netbox.PatchedRoleRequest {
 	body := netbox.NewPatchedRoleRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if conv.Known(plan.Weight) {
-		body.SetWeight(conv.Int32(plan.Weight))
+	if !plan.Weight.Equal(state.Weight) {
+		if conv.Known(plan.Weight) {
+			body.SetWeight(conv.Int32(plan.Weight))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

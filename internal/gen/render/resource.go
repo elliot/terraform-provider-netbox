@@ -188,7 +188,7 @@ func (r *%[1]sResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := %[2]sToPatch(ctx, &plan, &resp.Diagnostics)
+	body := %[2]sToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}

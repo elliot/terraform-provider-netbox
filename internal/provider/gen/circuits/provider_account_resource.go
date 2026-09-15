@@ -234,7 +234,7 @@ func (r *ProviderAccountResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := providerAccountToPatch(ctx, &plan, &resp.Diagnostics)
+	body := providerAccountToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -284,9 +284,7 @@ func providerAccountToCreate(ctx context.Context, plan *ProviderAccountModel, di
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -301,34 +299,50 @@ func providerAccountToCreate(ctx context.Context, plan *ProviderAccountModel, di
 	return body
 }
 
-// providerAccountToPatch builds the PatchedProviderAccountRequest request body from the plan.
-func providerAccountToPatch(ctx context.Context, plan *ProviderAccountModel, diags *diag.Diagnostics) *netbox.PatchedProviderAccountRequest {
+// providerAccountToPatch builds the PatchedProviderAccountRequest request body with every attribute whose planned value differs from state.
+func providerAccountToPatch(ctx context.Context, plan, state *ProviderAccountModel, diags *diag.Diagnostics) *netbox.PatchedProviderAccountRequest {
 	body := netbox.NewPatchedProviderAccountRequest()
-	if conv.Known(plan.ProviderId) {
-		body.SetProvider(conv.Int32(plan.ProviderId))
+	if !plan.ProviderId.Equal(state.ProviderId) {
+		if conv.Known(plan.ProviderId) {
+			body.SetProvider(conv.Int32(plan.ProviderId))
+		}
 	}
-	if !plan.Name.IsUnknown() {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if !plan.Name.IsUnknown() {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Account) {
-		body.SetAccount(plan.Account.ValueString())
+	if !plan.Account.Equal(state.Account) {
+		if conv.Known(plan.Account) {
+			body.SetAccount(plan.Account.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -342,11 +356,11 @@ func providerAccountFromAPI(ctx context.Context, obj *netbox.ProviderAccount, pr
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ProviderId = conv.BriefID(obj.GetProviderOk())
-	out.Name = conv.StringOrEmpty(obj.GetNameOk())
-	out.Account = conv.String(obj.GetAccountOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.StringOrEmpty(obj.GetNameOk()), conv.PriorString(prior, func(m *ProviderAccountModel) types.String { return m.Name }), false)
+	out.Account = conv.StringKeep(conv.String(obj.GetAccountOk()), conv.PriorString(prior, func(m *ProviderAccountModel) types.String { return m.Account }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ProviderAccountModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ProviderAccountModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

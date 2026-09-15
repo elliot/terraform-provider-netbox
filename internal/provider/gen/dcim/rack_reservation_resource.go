@@ -247,7 +247,7 @@ func (r *RackReservationResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rackReservationToPatch(ctx, &plan, &resp.Diagnostics)
+	body := rackReservationToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -294,14 +294,10 @@ func rackReservationToCreate(ctx context.Context, plan *RackReservationModel, di
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -316,42 +312,62 @@ func rackReservationToCreate(ctx context.Context, plan *RackReservationModel, di
 	return body
 }
 
-// rackReservationToPatch builds the PatchedWritableRackReservationRequest request body from the plan.
-func rackReservationToPatch(ctx context.Context, plan *RackReservationModel, diags *diag.Diagnostics) *netbox.PatchedWritableRackReservationRequest {
+// rackReservationToPatch builds the PatchedWritableRackReservationRequest request body with every attribute whose planned value differs from state.
+func rackReservationToPatch(ctx context.Context, plan, state *RackReservationModel, diags *diag.Diagnostics) *netbox.PatchedWritableRackReservationRequest {
 	body := netbox.NewPatchedWritableRackReservationRequest()
-	if conv.Known(plan.RackId) {
-		body.SetRack(conv.Int32(plan.RackId))
+	if !plan.RackId.Equal(state.RackId) {
+		if conv.Known(plan.RackId) {
+			body.SetRack(conv.Int32(plan.RackId))
+		}
 	}
-	if conv.Known(plan.Units) {
-		body.SetUnits(conv.Int32s(ctx, plan.Units, diags))
+	if !plan.Units.Equal(state.Units) {
+		if conv.Known(plan.Units) {
+			body.SetUnits(conv.Int32s(ctx, plan.Units, diags))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if conv.Known(plan.UserId) {
-		body.SetUser(conv.Int32(plan.UserId))
+	if !plan.UserId.Equal(state.UserId) {
+		if conv.Known(plan.UserId) {
+			body.SetUser(conv.Int32(plan.UserId))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if conv.Known(plan.Description) {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if conv.Known(plan.Description) {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -369,9 +385,9 @@ func rackReservationFromAPI(ctx context.Context, obj *netbox.RackReservation, pr
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.UserId = conv.BriefID(obj.GetUserOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
-	out.Description = conv.String(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.String(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *RackReservationModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *RackReservationModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

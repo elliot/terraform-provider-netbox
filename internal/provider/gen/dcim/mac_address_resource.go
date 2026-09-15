@@ -109,8 +109,10 @@ func macAddressResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"assigned_object_id": schema.Int64Attribute{
-			MarkdownDescription: "Assigned Object Id.",
+			MarkdownDescription: "Assigned Object Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -230,7 +232,7 @@ func (r *MacAddressResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := macAddressToPatch(ctx, &plan, &resp.Diagnostics)
+	body := macAddressToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -274,22 +276,16 @@ func (r *MacAddressResource) ImportState(ctx context.Context, req resource.Impor
 // macAddressToCreate builds the MACAddressRequest request body from the plan.
 func macAddressToCreate(ctx context.Context, plan *MacAddressModel, diags *diag.Diagnostics) *netbox.MACAddressRequest {
 	body := netbox.NewMACAddressRequest(plan.MacAddress.ValueString())
-	if plan.AssignedObjectType.IsNull() {
-		body.SetAssignedObjectTypeNil()
-	} else if !plan.AssignedObjectType.IsUnknown() {
+	if conv.Known(plan.AssignedObjectType) {
 		body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
 	}
-	if plan.AssignedObjectId.IsNull() {
-		body.SetAssignedObjectIdNil()
-	} else if !plan.AssignedObjectId.IsUnknown() {
+	if conv.Known(plan.AssignedObjectId) {
 		body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -304,38 +300,52 @@ func macAddressToCreate(ctx context.Context, plan *MacAddressModel, diags *diag.
 	return body
 }
 
-// macAddressToPatch builds the PatchedMACAddressRequest request body from the plan.
-func macAddressToPatch(ctx context.Context, plan *MacAddressModel, diags *diag.Diagnostics) *netbox.PatchedMACAddressRequest {
+// macAddressToPatch builds the PatchedMACAddressRequest request body with every attribute whose planned value differs from state.
+func macAddressToPatch(ctx context.Context, plan, state *MacAddressModel, diags *diag.Diagnostics) *netbox.PatchedMACAddressRequest {
 	body := netbox.NewPatchedMACAddressRequest()
-	if conv.Known(plan.MacAddress) {
-		body.SetMacAddress(plan.MacAddress.ValueString())
+	if !plan.MacAddress.Equal(state.MacAddress) {
+		if conv.Known(plan.MacAddress) {
+			body.SetMacAddress(plan.MacAddress.ValueString())
+		}
 	}
-	if plan.AssignedObjectType.IsNull() {
-		body.SetAssignedObjectTypeNil()
-	} else if !plan.AssignedObjectType.IsUnknown() {
-		body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
+	if !plan.AssignedObjectType.Equal(state.AssignedObjectType) {
+		if plan.AssignedObjectType.IsNull() {
+			body.SetAssignedObjectTypeNil()
+		} else if !plan.AssignedObjectType.IsUnknown() {
+			body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
+		}
 	}
-	if plan.AssignedObjectId.IsNull() {
-		body.SetAssignedObjectIdNil()
-	} else if !plan.AssignedObjectId.IsUnknown() {
-		body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
+	if !plan.AssignedObjectId.Equal(state.AssignedObjectId) {
+		if conv.Known(plan.AssignedObjectId) {
+			body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -348,12 +358,12 @@ func macAddressFromAPI(ctx context.Context, obj *netbox.MACAddress, prior *MacAd
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.MacAddress = conv.String(obj.GetMacAddressOk())
-	out.AssignedObjectType = conv.String(obj.GetAssignedObjectTypeOk())
+	out.MacAddress = conv.StringKeep(conv.String(obj.GetMacAddressOk()), conv.PriorString(prior, func(m *MacAddressModel) types.String { return m.MacAddress }), true)
+	out.AssignedObjectType = conv.StringKeep(conv.String(obj.GetAssignedObjectTypeOk()), conv.PriorString(prior, func(m *MacAddressModel) types.String { return m.AssignedObjectType }), false)
 	out.AssignedObjectId = conv.Int64From64(obj.GetAssignedObjectIdOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *MacAddressModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *MacAddressModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

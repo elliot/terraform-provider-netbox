@@ -109,7 +109,7 @@ func inventoryItemTemplateDataAttributes(lookup bool) map[string]dsschema.Attrib
 			Computed:            true,
 		},
 		"component_id": dsschema.Int64Attribute{
-			MarkdownDescription: "Component Id.",
+			MarkdownDescription: "Component Id. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"url": dsschema.StringAttribute{

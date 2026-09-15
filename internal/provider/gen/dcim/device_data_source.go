@@ -194,7 +194,7 @@ func deviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"position": dsschema.Float64Attribute{
-			MarkdownDescription: "Position.",
+			MarkdownDescription: "Position. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"face": dsschema.StringAttribute{
@@ -202,11 +202,11 @@ func deviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"latitude": dsschema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy).",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"longitude": dsschema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy).",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"status": dsschema.StringAttribute{
@@ -242,11 +242,11 @@ func deviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"vc_position": dsschema.Int64Attribute{
-			MarkdownDescription: "Vc Position.",
+			MarkdownDescription: "Vc Position. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"vc_priority": dsschema.Int64Attribute{
-			MarkdownDescription: "Virtual chassis master election priority.",
+			MarkdownDescription: "Virtual chassis master election priority. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

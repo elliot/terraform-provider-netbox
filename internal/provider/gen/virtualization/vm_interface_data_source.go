@@ -111,7 +111,7 @@ func vmInterfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"mtu": dsschema.Int64Attribute{
-			MarkdownDescription: "Mtu.",
+			MarkdownDescription: "Mtu. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"mac_address": dsschema.StringAttribute{

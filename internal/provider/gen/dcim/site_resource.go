@@ -308,7 +308,7 @@ func (r *SiteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := siteToPatch(ctx, &plan, &resp.Diagnostics)
+	body := siteToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -355,27 +355,19 @@ func siteToCreate(ctx context.Context, plan *SiteModel, diags *diag.Diagnostics)
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.RegionId.IsNull() {
-		body.SetRegionNil()
-	} else if !plan.RegionId.IsUnknown() {
+	if conv.Known(plan.RegionId) {
 		body.SetRegion(conv.Int32(plan.RegionId))
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
+	if conv.Known(plan.GroupId) {
 		body.SetGroup(conv.Int32(plan.GroupId))
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
 	if !plan.Facility.IsUnknown() {
 		body.SetFacility(plan.Facility.ValueString())
 	}
-	if plan.TimeZone.IsNull() {
-		body.SetTimeZoneNil()
-	} else if !plan.TimeZone.IsUnknown() {
+	if conv.Known(plan.TimeZone) {
 		body.SetTimeZone(plan.TimeZone.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
@@ -393,9 +385,7 @@ func siteToCreate(ctx context.Context, plan *SiteModel, diags *diag.Diagnostics)
 	if conv.Known(plan.Longitude) {
 		body.SetLongitude(plan.Longitude.ValueFloat64())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -413,72 +403,108 @@ func siteToCreate(ctx context.Context, plan *SiteModel, diags *diag.Diagnostics)
 	return body
 }
 
-// siteToPatch builds the PatchedWritableSiteRequest request body from the plan.
-func siteToPatch(ctx context.Context, plan *SiteModel, diags *diag.Diagnostics) *netbox.PatchedWritableSiteRequest {
+// siteToPatch builds the PatchedWritableSiteRequest request body with every attribute whose planned value differs from state.
+func siteToPatch(ctx context.Context, plan, state *SiteModel, diags *diag.Diagnostics) *netbox.PatchedWritableSiteRequest {
 	body := netbox.NewPatchedWritableSiteRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.RegionId.IsNull() {
-		body.SetRegionNil()
-	} else if !plan.RegionId.IsUnknown() {
-		body.SetRegion(conv.Int32(plan.RegionId))
+	if !plan.RegionId.Equal(state.RegionId) {
+		if plan.RegionId.IsNull() {
+			body.SetRegionNil()
+		} else if !plan.RegionId.IsUnknown() {
+			body.SetRegion(conv.Int32(plan.RegionId))
+		}
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
-		body.SetGroup(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if plan.GroupId.IsNull() {
+			body.SetGroupNil()
+		} else if !plan.GroupId.IsUnknown() {
+			body.SetGroup(conv.Int32(plan.GroupId))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if !plan.Facility.IsUnknown() {
-		body.SetFacility(plan.Facility.ValueString())
+	if !plan.Facility.Equal(state.Facility) {
+		if !plan.Facility.IsUnknown() {
+			body.SetFacility(plan.Facility.ValueString())
+		}
 	}
-	if plan.TimeZone.IsNull() {
-		body.SetTimeZoneNil()
-	} else if !plan.TimeZone.IsUnknown() {
-		body.SetTimeZone(plan.TimeZone.ValueString())
+	if !plan.TimeZone.Equal(state.TimeZone) {
+		if plan.TimeZone.IsNull() {
+			body.SetTimeZoneNil()
+		} else if !plan.TimeZone.IsUnknown() {
+			body.SetTimeZone(plan.TimeZone.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if !plan.PhysicalAddress.IsUnknown() {
-		body.SetPhysicalAddress(plan.PhysicalAddress.ValueString())
+	if !plan.PhysicalAddress.Equal(state.PhysicalAddress) {
+		if !plan.PhysicalAddress.IsUnknown() {
+			body.SetPhysicalAddress(plan.PhysicalAddress.ValueString())
+		}
 	}
-	if !plan.ShippingAddress.IsUnknown() {
-		body.SetShippingAddress(plan.ShippingAddress.ValueString())
+	if !plan.ShippingAddress.Equal(state.ShippingAddress) {
+		if !plan.ShippingAddress.IsUnknown() {
+			body.SetShippingAddress(plan.ShippingAddress.ValueString())
+		}
 	}
-	if conv.Known(plan.Latitude) {
-		body.SetLatitude(plan.Latitude.ValueFloat64())
+	if !plan.Latitude.Equal(state.Latitude) {
+		if conv.Known(plan.Latitude) {
+			body.SetLatitude(plan.Latitude.ValueFloat64())
+		}
 	}
-	if conv.Known(plan.Longitude) {
-		body.SetLongitude(plan.Longitude.ValueFloat64())
+	if !plan.Longitude.Equal(state.Longitude) {
+		if conv.Known(plan.Longitude) {
+			body.SetLongitude(plan.Longitude.ValueFloat64())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.AsnIds) {
-		body.SetAsns(conv.Int32s(ctx, plan.AsnIds, diags))
+	if !plan.AsnIds.Equal(state.AsnIds) {
+		if conv.Known(plan.AsnIds) {
+			body.SetAsns(conv.Int32s(ctx, plan.AsnIds, diags))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

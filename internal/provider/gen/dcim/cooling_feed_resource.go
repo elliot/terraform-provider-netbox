@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -136,12 +137,16 @@ func coolingFeedResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"cooling_capacity": schema.Float64Attribute{
-			MarkdownDescription: "Rated cooling capacity (kW).",
+			MarkdownDescription: "Rated cooling capacity (kW). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"max_flow": schema.Float64Attribute{
-			MarkdownDescription: "Max Flow.",
+			MarkdownDescription: "Max Flow. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"max_flow_unit": schema.StringAttribute{
 			MarkdownDescription: "Max Flow Unit. Valid values: `lpm`, `m3ph`, `gpm`. Defaults to the NetBox server default when omitted.",
@@ -272,7 +277,7 @@ func (r *CoolingFeedResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := coolingFeedToPatch(ctx, &plan, &resp.Diagnostics)
+	body := coolingFeedToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -316,40 +321,28 @@ func (r *CoolingFeedResource) ImportState(ctx context.Context, req resource.Impo
 // coolingFeedToCreate builds the WritableCoolingFeedRequest request body from the plan.
 func coolingFeedToCreate(ctx context.Context, plan *CoolingFeedModel, diags *diag.Diagnostics) *netbox.WritableCoolingFeedRequest {
 	body := netbox.NewWritableCoolingFeedRequest(conv.Int32(plan.CoolingSourceId), plan.Name.ValueString())
-	if plan.RackId.IsNull() {
-		body.SetRackNil()
-	} else if !plan.RackId.IsUnknown() {
+	if conv.Known(plan.RackId) {
 		body.SetRack(conv.Int32(plan.RackId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.CoolingCapacity.IsNull() {
-		body.SetCoolingCapacityNil()
-	} else if !plan.CoolingCapacity.IsUnknown() {
+	if conv.Known(plan.CoolingCapacity) {
 		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
 	}
-	if plan.MaxFlow.IsNull() {
-		body.SetMaxFlowNil()
-	} else if !plan.MaxFlow.IsUnknown() {
+	if conv.Known(plan.MaxFlow) {
 		body.SetMaxFlow(plan.MaxFlow.ValueFloat64())
 	}
-	if plan.MaxFlowUnit.IsNull() {
-		body.SetMaxFlowUnitNil()
-	} else if !plan.MaxFlowUnit.IsUnknown() {
+	if conv.Known(plan.MaxFlowUnit) {
 		body.SetMaxFlowUnit(plan.MaxFlowUnit.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -364,59 +357,79 @@ func coolingFeedToCreate(ctx context.Context, plan *CoolingFeedModel, diags *dia
 	return body
 }
 
-// coolingFeedToPatch builds the PatchedWritableCoolingFeedRequest request body from the plan.
-func coolingFeedToPatch(ctx context.Context, plan *CoolingFeedModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingFeedRequest {
+// coolingFeedToPatch builds the PatchedWritableCoolingFeedRequest request body with every attribute whose planned value differs from state.
+func coolingFeedToPatch(ctx context.Context, plan, state *CoolingFeedModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingFeedRequest {
 	body := netbox.NewPatchedWritableCoolingFeedRequest()
-	if conv.Known(plan.CoolingSourceId) {
-		body.SetCoolingSource(conv.Int32(plan.CoolingSourceId))
+	if !plan.CoolingSourceId.Equal(state.CoolingSourceId) {
+		if conv.Known(plan.CoolingSourceId) {
+			body.SetCoolingSource(conv.Int32(plan.CoolingSourceId))
+		}
 	}
-	if plan.RackId.IsNull() {
-		body.SetRackNil()
-	} else if !plan.RackId.IsUnknown() {
-		body.SetRack(conv.Int32(plan.RackId))
+	if !plan.RackId.Equal(state.RackId) {
+		if plan.RackId.IsNull() {
+			body.SetRackNil()
+		} else if !plan.RackId.IsUnknown() {
+			body.SetRack(conv.Int32(plan.RackId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.CoolingCapacity.IsNull() {
-		body.SetCoolingCapacityNil()
-	} else if !plan.CoolingCapacity.IsUnknown() {
-		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
+	if !plan.CoolingCapacity.Equal(state.CoolingCapacity) {
+		if conv.Known(plan.CoolingCapacity) {
+			body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
+		}
 	}
-	if plan.MaxFlow.IsNull() {
-		body.SetMaxFlowNil()
-	} else if !plan.MaxFlow.IsUnknown() {
-		body.SetMaxFlow(plan.MaxFlow.ValueFloat64())
+	if !plan.MaxFlow.Equal(state.MaxFlow) {
+		if conv.Known(plan.MaxFlow) {
+			body.SetMaxFlow(plan.MaxFlow.ValueFloat64())
+		}
 	}
-	if plan.MaxFlowUnit.IsNull() {
-		body.SetMaxFlowUnitNil()
-	} else if !plan.MaxFlowUnit.IsUnknown() {
-		body.SetMaxFlowUnit(plan.MaxFlowUnit.ValueString())
+	if !plan.MaxFlowUnit.Equal(state.MaxFlowUnit) {
+		if conv.Known(plan.MaxFlowUnit) {
+			body.SetMaxFlowUnit(plan.MaxFlowUnit.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -431,15 +444,15 @@ func coolingFeedFromAPI(ctx context.Context, obj *netbox.CoolingFeed, prior *Coo
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.CoolingSourceId = conv.BriefID(obj.GetCoolingSourceOk())
 	out.RackId = conv.BriefID(obj.GetRackOk())
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *CoolingFeedModel) types.String { return m.Name }), false)
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.CoolingCapacity = conv.Float64Keep(conv.Float64From(obj.GetCoolingCapacityOk()), conv.PriorFloat(prior, func(m *CoolingFeedModel) types.Float64 { return m.CoolingCapacity }), 0)
 	out.MaxFlow = conv.Float64Keep(conv.Float64From(obj.GetMaxFlowOk()), conv.PriorFloat(prior, func(m *CoolingFeedModel) types.Float64 { return m.MaxFlow }), 0)
 	out.MaxFlowUnit = conv.Choice(obj.GetMaxFlowUnitOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CoolingFeedModel) types.String { return m.Description }), false)
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *CoolingFeedModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

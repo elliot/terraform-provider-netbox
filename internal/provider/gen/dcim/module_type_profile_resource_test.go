@@ -94,7 +94,7 @@ func TestAccModuleTypeProfile_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_module_type_profile", &resource.Sweeper{
 		Name:         "netbox_module_type_profile",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_module_type"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/module-type-profiles/", []string{"name__isw", "description__isw", "q"})
 		},

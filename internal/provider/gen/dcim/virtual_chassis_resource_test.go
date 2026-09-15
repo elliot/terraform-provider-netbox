@@ -82,7 +82,7 @@ func TestAccVirtualChassis_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_virtual_chassis", &resource.Sweeper{
 		Name:         "netbox_virtual_chassis",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_device"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/virtual-chassis/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -240,7 +240,7 @@ func (r *DeviceBayResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := deviceBayToPatch(ctx, &plan, &resp.Diagnostics)
+	body := deviceBayToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -293,14 +293,10 @@ func deviceBayToCreate(ctx context.Context, plan *DeviceBayModel, diags *diag.Di
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.InstalledDeviceId.IsNull() {
-		body.SetInstalledDeviceNil()
-	} else if !plan.InstalledDeviceId.IsUnknown() {
+	if conv.Known(plan.InstalledDeviceId) {
 		body.SetInstalledDevice(conv.Int32(plan.InstalledDeviceId))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if conv.Known(plan.Tags) {
@@ -312,39 +308,57 @@ func deviceBayToCreate(ctx context.Context, plan *DeviceBayModel, diags *diag.Di
 	return body
 }
 
-// deviceBayToPatch builds the PatchedDeviceBayRequest request body from the plan.
-func deviceBayToPatch(ctx context.Context, plan *DeviceBayModel, diags *diag.Diagnostics) *netbox.PatchedDeviceBayRequest {
+// deviceBayToPatch builds the PatchedDeviceBayRequest request body with every attribute whose planned value differs from state.
+func deviceBayToPatch(ctx context.Context, plan, state *DeviceBayModel, diags *diag.Diagnostics) *netbox.PatchedDeviceBayRequest {
 	body := netbox.NewPatchedDeviceBayRequest()
-	if conv.Known(plan.DeviceId) {
-		body.SetDevice(conv.Int32(plan.DeviceId))
+	if !plan.DeviceId.Equal(state.DeviceId) {
+		if conv.Known(plan.DeviceId) {
+			body.SetDevice(conv.Int32(plan.DeviceId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.InstalledDeviceId.IsNull() {
-		body.SetInstalledDeviceNil()
-	} else if !plan.InstalledDeviceId.IsUnknown() {
-		body.SetInstalledDevice(conv.Int32(plan.InstalledDeviceId))
+	if !plan.InstalledDeviceId.Equal(state.InstalledDeviceId) {
+		if plan.InstalledDeviceId.IsNull() {
+			body.SetInstalledDeviceNil()
+		} else if !plan.InstalledDeviceId.IsUnknown() {
+			body.SetInstalledDevice(conv.Int32(plan.InstalledDeviceId))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -358,10 +372,10 @@ func deviceBayFromAPI(ctx context.Context, obj *netbox.DeviceBay, prior *DeviceB
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceId = conv.BriefID(obj.GetDeviceOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *DeviceBayModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *DeviceBayModel) types.String { return m.Label }), false)
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *DeviceBayModel) types.String { return m.Description }), false)
 	out.InstalledDeviceId = conv.BriefID(obj.GetInstalledDeviceOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

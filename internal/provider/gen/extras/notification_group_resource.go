@@ -196,7 +196,7 @@ func (r *NotificationGroupResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := notificationGroupToPatch(ctx, &plan, &resp.Diagnostics)
+	body := notificationGroupToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -252,20 +252,28 @@ func notificationGroupToCreate(ctx context.Context, plan *NotificationGroupModel
 	return body
 }
 
-// notificationGroupToPatch builds the PatchedNotificationGroupRequest request body from the plan.
-func notificationGroupToPatch(ctx context.Context, plan *NotificationGroupModel, diags *diag.Diagnostics) *netbox.PatchedNotificationGroupRequest {
+// notificationGroupToPatch builds the PatchedNotificationGroupRequest request body with every attribute whose planned value differs from state.
+func notificationGroupToPatch(ctx context.Context, plan, state *NotificationGroupModel, diags *diag.Diagnostics) *netbox.PatchedNotificationGroupRequest {
 	body := netbox.NewPatchedNotificationGroupRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.GroupIds) {
-		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+	if !plan.GroupIds.Equal(state.GroupIds) {
+		if conv.Known(plan.GroupIds) {
+			body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+		}
 	}
-	if conv.Known(plan.UserIds) {
-		body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+	if !plan.UserIds.Equal(state.UserIds) {
+		if conv.Known(plan.UserIds) {
+			body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+		}
 	}
 	return body
 }
@@ -274,8 +282,8 @@ func notificationGroupToPatch(ctx context.Context, plan *NotificationGroupModel,
 func notificationGroupFromAPI(ctx context.Context, obj *netbox.NotificationGroup, prior *NotificationGroupModel, out *NotificationGroupModel, diags *diag.Diagnostics) {
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *NotificationGroupModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *NotificationGroupModel) types.String { return m.Description }), false)
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
 	out.UserIds = conv.BriefIDs(obj.GetUsers())
 	out.Url = conv.String(obj.GetUrlOk())

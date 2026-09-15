@@ -119,8 +119,10 @@ func virtualDeviceContextResourceAttributes() map[string]schema.Attribute {
 			Required:            true,
 		},
 		"identifier": schema.Int64Attribute{
-			MarkdownDescription: "Identifier.",
+			MarkdownDescription: "Identifier. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"tenant_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Tenant (`netbox_tenant`).",
@@ -257,7 +259,7 @@ func (r *VirtualDeviceContextResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualDeviceContextToPatch(ctx, &plan, &resp.Diagnostics)
+	body := virtualDeviceContextToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -301,32 +303,22 @@ func (r *VirtualDeviceContextResource) ImportState(ctx context.Context, req reso
 // virtualDeviceContextToCreate builds the WritableVirtualDeviceContextRequest request body from the plan.
 func virtualDeviceContextToCreate(ctx context.Context, plan *VirtualDeviceContextModel, diags *diag.Diagnostics) *netbox.WritableVirtualDeviceContextRequest {
 	body := netbox.NewWritableVirtualDeviceContextRequest(plan.Name.ValueString(), conv.Int32(plan.DeviceId), plan.Status.ValueString())
-	if plan.Identifier.IsNull() {
-		body.SetIdentifierNil()
-	} else if !plan.Identifier.IsUnknown() {
+	if conv.Known(plan.Identifier) {
 		body.SetIdentifier(conv.Int32(plan.Identifier))
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.PrimaryIp4Id.IsNull() {
-		body.SetPrimaryIp4Nil()
-	} else if !plan.PrimaryIp4Id.IsUnknown() {
+	if conv.Known(plan.PrimaryIp4Id) {
 		body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
 	}
-	if plan.PrimaryIp6Id.IsNull() {
-		body.SetPrimaryIp6Nil()
-	} else if !plan.PrimaryIp6Id.IsUnknown() {
+	if conv.Known(plan.PrimaryIp6Id) {
 		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -341,54 +333,76 @@ func virtualDeviceContextToCreate(ctx context.Context, plan *VirtualDeviceContex
 	return body
 }
 
-// virtualDeviceContextToPatch builds the PatchedWritableVirtualDeviceContextRequest request body from the plan.
-func virtualDeviceContextToPatch(ctx context.Context, plan *VirtualDeviceContextModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualDeviceContextRequest {
+// virtualDeviceContextToPatch builds the PatchedWritableVirtualDeviceContextRequest request body with every attribute whose planned value differs from state.
+func virtualDeviceContextToPatch(ctx context.Context, plan, state *VirtualDeviceContextModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualDeviceContextRequest {
 	body := netbox.NewPatchedWritableVirtualDeviceContextRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.DeviceId) {
-		body.SetDevice(conv.Int32(plan.DeviceId))
+	if !plan.DeviceId.Equal(state.DeviceId) {
+		if conv.Known(plan.DeviceId) {
+			body.SetDevice(conv.Int32(plan.DeviceId))
+		}
 	}
-	if plan.Identifier.IsNull() {
-		body.SetIdentifierNil()
-	} else if !plan.Identifier.IsUnknown() {
-		body.SetIdentifier(conv.Int32(plan.Identifier))
+	if !plan.Identifier.Equal(state.Identifier) {
+		if conv.Known(plan.Identifier) {
+			body.SetIdentifier(conv.Int32(plan.Identifier))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.PrimaryIp4Id.IsNull() {
-		body.SetPrimaryIp4Nil()
-	} else if !plan.PrimaryIp4Id.IsUnknown() {
-		body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+	if !plan.PrimaryIp4Id.Equal(state.PrimaryIp4Id) {
+		if plan.PrimaryIp4Id.IsNull() {
+			body.SetPrimaryIp4Nil()
+		} else if !plan.PrimaryIp4Id.IsUnknown() {
+			body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+		}
 	}
-	if plan.PrimaryIp6Id.IsNull() {
-		body.SetPrimaryIp6Nil()
-	} else if !plan.PrimaryIp6Id.IsUnknown() {
-		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+	if !plan.PrimaryIp6Id.Equal(state.PrimaryIp6Id) {
+		if plan.PrimaryIp6Id.IsNull() {
+			body.SetPrimaryIp6Nil()
+		} else if !plan.PrimaryIp6Id.IsUnknown() {
+			body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -401,16 +415,16 @@ func virtualDeviceContextFromAPI(ctx context.Context, obj *netbox.VirtualDeviceC
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *VirtualDeviceContextModel) types.String { return m.Name }), false)
 	out.DeviceId = conv.BriefID(obj.GetDeviceOk())
 	out.Identifier = conv.Int64From32(obj.GetIdentifierOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.PrimaryIp4Id = conv.BriefID(obj.GetPrimaryIp4Ok())
 	out.PrimaryIp6Id = conv.BriefID(obj.GetPrimaryIp6Ok())
 	out.Status = conv.Choice(obj.GetStatusOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VirtualDeviceContextModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VirtualDeviceContextModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

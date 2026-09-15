@@ -233,7 +233,7 @@ func (r *TenantResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := tenantToPatch(ctx, &plan, &resp.Diagnostics)
+	body := tenantToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -277,17 +277,13 @@ func (r *TenantResource) ImportState(ctx context.Context, req resource.ImportSta
 // tenantToCreate builds the TenantRequest request body from the plan.
 func tenantToCreate(ctx context.Context, plan *TenantModel, diags *diag.Diagnostics) *netbox.TenantRequest {
 	body := netbox.NewTenantRequest(plan.Name.ValueString(), plan.Slug.ValueString())
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
+	if conv.Known(plan.GroupId) {
 		body.SetGroup(conv.Int32(plan.GroupId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -302,36 +298,52 @@ func tenantToCreate(ctx context.Context, plan *TenantModel, diags *diag.Diagnost
 	return body
 }
 
-// tenantToPatch builds the PatchedTenantRequest request body from the plan.
-func tenantToPatch(ctx context.Context, plan *TenantModel, diags *diag.Diagnostics) *netbox.PatchedTenantRequest {
+// tenantToPatch builds the PatchedTenantRequest request body with every attribute whose planned value differs from state.
+func tenantToPatch(ctx context.Context, plan, state *TenantModel, diags *diag.Diagnostics) *netbox.PatchedTenantRequest {
 	body := netbox.NewPatchedTenantRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
-		body.SetGroup(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if plan.GroupId.IsNull() {
+			body.SetGroupNil()
+		} else if !plan.GroupId.IsUnknown() {
+			body.SetGroup(conv.Int32(plan.GroupId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

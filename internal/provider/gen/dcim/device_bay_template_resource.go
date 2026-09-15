@@ -213,7 +213,7 @@ func (r *DeviceBayTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := deviceBayTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := deviceBayTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -269,23 +269,33 @@ func deviceBayTemplateToCreate(ctx context.Context, plan *DeviceBayTemplateModel
 	return body
 }
 
-// deviceBayTemplateToPatch builds the PatchedDeviceBayTemplateRequest request body from the plan.
-func deviceBayTemplateToPatch(ctx context.Context, plan *DeviceBayTemplateModel, diags *diag.Diagnostics) *netbox.PatchedDeviceBayTemplateRequest {
+// deviceBayTemplateToPatch builds the PatchedDeviceBayTemplateRequest request body with every attribute whose planned value differs from state.
+func deviceBayTemplateToPatch(ctx context.Context, plan, state *DeviceBayTemplateModel, diags *diag.Diagnostics) *netbox.PatchedDeviceBayTemplateRequest {
 	body := netbox.NewPatchedDeviceBayTemplateRequest()
-	if conv.Known(plan.DeviceTypeId) {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if conv.Known(plan.DeviceTypeId) {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
 	return body
 }
@@ -295,10 +305,10 @@ func deviceBayTemplateFromAPI(ctx context.Context, obj *netbox.DeviceBayTemplate
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *DeviceBayTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *DeviceBayTemplateModel) types.String { return m.Label }), false)
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *DeviceBayTemplateModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

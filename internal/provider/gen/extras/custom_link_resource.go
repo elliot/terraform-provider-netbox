@@ -249,7 +249,7 @@ func (r *CustomLinkResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := customLinkToPatch(ctx, &plan, &resp.Diagnostics)
+	body := customLinkToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -308,48 +308,66 @@ func customLinkToCreate(ctx context.Context, plan *CustomLinkModel, diags *diag.
 	if conv.Known(plan.NewWindow) {
 		body.SetNewWindow(plan.NewWindow.ValueBool())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	return body
 }
 
-// customLinkToPatch builds the PatchedCustomLinkRequest request body from the plan.
-func customLinkToPatch(ctx context.Context, plan *CustomLinkModel, diags *diag.Diagnostics) *netbox.PatchedCustomLinkRequest {
+// customLinkToPatch builds the PatchedCustomLinkRequest request body with every attribute whose planned value differs from state.
+func customLinkToPatch(ctx context.Context, plan, state *CustomLinkModel, diags *diag.Diagnostics) *netbox.PatchedCustomLinkRequest {
 	body := netbox.NewPatchedCustomLinkRequest()
-	if conv.Known(plan.ObjectTypes) {
-		body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+	if !plan.ObjectTypes.Equal(state.ObjectTypes) {
+		if conv.Known(plan.ObjectTypes) {
+			body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if conv.Known(plan.LinkText) {
-		body.SetLinkText(plan.LinkText.ValueString())
+	if !plan.LinkText.Equal(state.LinkText) {
+		if conv.Known(plan.LinkText) {
+			body.SetLinkText(plan.LinkText.ValueString())
+		}
 	}
-	if conv.Known(plan.LinkUrl) {
-		body.SetLinkUrl(plan.LinkUrl.ValueString())
+	if !plan.LinkUrl.Equal(state.LinkUrl) {
+		if conv.Known(plan.LinkUrl) {
+			body.SetLinkUrl(plan.LinkUrl.ValueString())
+		}
 	}
-	if conv.Known(plan.Weight) {
-		body.SetWeight(conv.Int32(plan.Weight))
+	if !plan.Weight.Equal(state.Weight) {
+		if conv.Known(plan.Weight) {
+			body.SetWeight(conv.Int32(plan.Weight))
+		}
 	}
-	if !plan.GroupName.IsUnknown() {
-		body.SetGroupName(plan.GroupName.ValueString())
+	if !plan.GroupName.Equal(state.GroupName) {
+		if !plan.GroupName.IsUnknown() {
+			body.SetGroupName(plan.GroupName.ValueString())
+		}
 	}
-	if conv.Known(plan.ButtonClass) {
-		body.SetButtonClass(plan.ButtonClass.ValueString())
+	if !plan.ButtonClass.Equal(state.ButtonClass) {
+		if conv.Known(plan.ButtonClass) {
+			body.SetButtonClass(plan.ButtonClass.ValueString())
+		}
 	}
-	if conv.Known(plan.NewWindow) {
-		body.SetNewWindow(plan.NewWindow.ValueBool())
+	if !plan.NewWindow.Equal(state.NewWindow) {
+		if conv.Known(plan.NewWindow) {
+			body.SetNewWindow(plan.NewWindow.ValueBool())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
 	return body
 }
@@ -359,12 +377,12 @@ func customLinkFromAPI(ctx context.Context, obj *netbox.CustomLink, prior *Custo
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ObjectTypes = conv.StringSet(obj.GetObjectTypes())
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *CustomLinkModel) types.String { return m.Name }), false)
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
-	out.LinkText = conv.String(obj.GetLinkTextOk())
-	out.LinkUrl = conv.String(obj.GetLinkUrlOk())
+	out.LinkText = conv.StringKeep(conv.String(obj.GetLinkTextOk()), conv.PriorString(prior, func(m *CustomLinkModel) types.String { return m.LinkText }), false)
+	out.LinkUrl = conv.StringKeep(conv.String(obj.GetLinkUrlOk()), conv.PriorString(prior, func(m *CustomLinkModel) types.String { return m.LinkUrl }), false)
 	out.Weight = conv.Int64From32(obj.GetWeightOk())
-	out.GroupName = conv.StringOrEmpty(obj.GetGroupNameOk())
+	out.GroupName = conv.StringKeep(conv.StringOrEmpty(obj.GetGroupNameOk()), conv.PriorString(prior, func(m *CustomLinkModel) types.String { return m.GroupName }), false)
 	out.ButtonClass = conv.ChoiceScalar(obj.GetButtonClassOk())
 	out.NewWindow = conv.Bool(obj.GetNewWindowOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())

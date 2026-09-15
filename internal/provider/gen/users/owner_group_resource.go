@@ -178,7 +178,7 @@ func (r *OwnerGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ownerGroupToPatch(ctx, &plan, &resp.Diagnostics)
+	body := ownerGroupToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -228,14 +228,18 @@ func ownerGroupToCreate(ctx context.Context, plan *OwnerGroupModel, diags *diag.
 	return body
 }
 
-// ownerGroupToPatch builds the PatchedOwnerGroupRequest request body from the plan.
-func ownerGroupToPatch(ctx context.Context, plan *OwnerGroupModel, diags *diag.Diagnostics) *netbox.PatchedOwnerGroupRequest {
+// ownerGroupToPatch builds the PatchedOwnerGroupRequest request body with every attribute whose planned value differs from state.
+func ownerGroupToPatch(ctx context.Context, plan, state *OwnerGroupModel, diags *diag.Diagnostics) *netbox.PatchedOwnerGroupRequest {
 	body := netbox.NewPatchedOwnerGroupRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
 	return body
 }
@@ -244,8 +248,8 @@ func ownerGroupToPatch(ctx context.Context, plan *OwnerGroupModel, diags *diag.D
 func ownerGroupFromAPI(ctx context.Context, obj *netbox.OwnerGroup, prior *OwnerGroupModel, out *OwnerGroupModel, diags *diag.Diagnostics) {
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *OwnerGroupModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *OwnerGroupModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 }

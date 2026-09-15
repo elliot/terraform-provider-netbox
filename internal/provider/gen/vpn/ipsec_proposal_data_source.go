@@ -92,11 +92,11 @@ func ipsecProposalDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"sa_lifetime_seconds": dsschema.Int64Attribute{
-			MarkdownDescription: "Security association lifetime (seconds).",
+			MarkdownDescription: "Security association lifetime (seconds). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"sa_lifetime_data": dsschema.Int64Attribute{
-			MarkdownDescription: "Security association lifetime (in kilobytes).",
+			MarkdownDescription: "Security association lifetime (in kilobytes). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{

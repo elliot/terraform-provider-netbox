@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -136,8 +137,10 @@ func coolingOutflowTemplateResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"diameter": schema.Float64Attribute{
-			MarkdownDescription: "Diameter.",
+			MarkdownDescription: "Diameter. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"diameter_unit": schema.StringAttribute{
 			MarkdownDescription: "Diameter Unit. Valid values: `mm`, `cm`, `in`. Defaults to the NetBox server default when omitted.",
@@ -246,7 +249,7 @@ func (r *CoolingOutflowTemplateResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := coolingOutflowTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := coolingOutflowTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -290,37 +293,25 @@ func (r *CoolingOutflowTemplateResource) ImportState(ctx context.Context, req re
 // coolingOutflowTemplateToCreate builds the WritableCoolingOutflowTemplateRequest request body from the plan.
 func coolingOutflowTemplateToCreate(ctx context.Context, plan *CoolingOutflowTemplateModel, diags *diag.Diagnostics) *netbox.WritableCoolingOutflowTemplateRequest {
 	body := netbox.NewWritableCoolingOutflowTemplateRequest(plan.Name.ValueString())
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
+	if conv.Known(plan.DeviceTypeId) {
 		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
+	if conv.Known(plan.ModuleTypeId) {
 		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
+	if conv.Known(plan.Type) {
 		body.SetType(plan.Type.ValueString())
 	}
-	if plan.Diameter.IsNull() {
-		body.SetDiameterNil()
-	} else if !plan.Diameter.IsUnknown() {
+	if conv.Known(plan.Diameter) {
 		body.SetDiameter(plan.Diameter.ValueFloat64())
 	}
-	if plan.DiameterUnit.IsNull() {
-		body.SetDiameterUnitNil()
-	} else if !plan.DiameterUnit.IsUnknown() {
+	if conv.Known(plan.DiameterUnit) {
 		body.SetDiameterUnit(plan.DiameterUnit.ValueString())
 	}
-	if plan.CoolingIntakeId.IsNull() {
-		body.SetCoolingIntakeNil()
-	} else if !plan.CoolingIntakeId.IsUnknown() {
+	if conv.Known(plan.CoolingIntakeId) {
 		body.SetCoolingIntake(conv.Int32(plan.CoolingIntakeId))
 	}
 	if !plan.Description.IsUnknown() {
@@ -329,47 +320,59 @@ func coolingOutflowTemplateToCreate(ctx context.Context, plan *CoolingOutflowTem
 	return body
 }
 
-// coolingOutflowTemplateToPatch builds the PatchedWritableCoolingOutflowTemplateRequest request body from the plan.
-func coolingOutflowTemplateToPatch(ctx context.Context, plan *CoolingOutflowTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingOutflowTemplateRequest {
+// coolingOutflowTemplateToPatch builds the PatchedWritableCoolingOutflowTemplateRequest request body with every attribute whose planned value differs from state.
+func coolingOutflowTemplateToPatch(ctx context.Context, plan, state *CoolingOutflowTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingOutflowTemplateRequest {
 	body := netbox.NewPatchedWritableCoolingOutflowTemplateRequest()
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if plan.DeviceTypeId.IsNull() {
+			body.SetDeviceTypeNil()
+		} else if !plan.DeviceTypeId.IsUnknown() {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
+		if plan.ModuleTypeId.IsNull() {
+			body.SetModuleTypeNil()
+		} else if !plan.ModuleTypeId.IsUnknown() {
+			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if plan.Diameter.IsNull() {
-		body.SetDiameterNil()
-	} else if !plan.Diameter.IsUnknown() {
-		body.SetDiameter(plan.Diameter.ValueFloat64())
+	if !plan.Diameter.Equal(state.Diameter) {
+		if conv.Known(plan.Diameter) {
+			body.SetDiameter(plan.Diameter.ValueFloat64())
+		}
 	}
-	if plan.DiameterUnit.IsNull() {
-		body.SetDiameterUnitNil()
-	} else if !plan.DiameterUnit.IsUnknown() {
-		body.SetDiameterUnit(plan.DiameterUnit.ValueString())
+	if !plan.DiameterUnit.Equal(state.DiameterUnit) {
+		if conv.Known(plan.DiameterUnit) {
+			body.SetDiameterUnit(plan.DiameterUnit.ValueString())
+		}
 	}
-	if plan.CoolingIntakeId.IsNull() {
-		body.SetCoolingIntakeNil()
-	} else if !plan.CoolingIntakeId.IsUnknown() {
-		body.SetCoolingIntake(conv.Int32(plan.CoolingIntakeId))
+	if !plan.CoolingIntakeId.Equal(state.CoolingIntakeId) {
+		if plan.CoolingIntakeId.IsNull() {
+			body.SetCoolingIntakeNil()
+		} else if !plan.CoolingIntakeId.IsUnknown() {
+			body.SetCoolingIntake(conv.Int32(plan.CoolingIntakeId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
 	return body
 }
@@ -380,13 +383,13 @@ func coolingOutflowTemplateFromAPI(ctx context.Context, obj *netbox.CoolingOutfl
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.ModuleTypeId = conv.BriefID(obj.GetModuleTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *CoolingOutflowTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *CoolingOutflowTemplateModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Diameter = conv.Float64Keep(conv.Float64From(obj.GetDiameterOk()), conv.PriorFloat(prior, func(m *CoolingOutflowTemplateModel) types.Float64 { return m.Diameter }), 0)
 	out.DiameterUnit = conv.Choice(obj.GetDiameterUnitOk())
 	out.CoolingIntakeId = conv.BriefID(obj.GetCoolingIntakeOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CoolingOutflowTemplateModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

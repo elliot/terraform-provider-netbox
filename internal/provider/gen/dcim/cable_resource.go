@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -230,8 +231,10 @@ func cableResourceAttributes() map[string]schema.Attribute {
 			Default:             stringdefault.StaticString(""),
 		},
 		"length": schema.Float64Attribute{
-			MarkdownDescription: "Length.",
+			MarkdownDescription: "Length. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"length_unit": schema.StringAttribute{
 			MarkdownDescription: "Length Unit. Valid values: `km`, `m`, `cm`, `mi`, `ft`, `in`. Defaults to the NetBox server default when omitted.",
@@ -358,7 +361,7 @@ func (r *CableResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := cableToPatch(ctx, &plan, &resp.Diagnostics)
+	body := cableToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -402,9 +405,7 @@ func (r *CableResource) ImportState(ctx context.Context, req resource.ImportStat
 // cableToCreate builds the WritableCableRequest request body from the plan.
 func cableToCreate(ctx context.Context, plan *CableModel, diags *diag.Diagnostics) *netbox.WritableCableRequest {
 	body := netbox.NewWritableCableRequest()
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
+	if conv.Known(plan.Type) {
 		body.SetType(plan.Type.ValueString())
 	}
 	if conv.Known(plan.ATerminations) {
@@ -437,14 +438,10 @@ func cableToCreate(ctx context.Context, plan *CableModel, diags *diag.Diagnostic
 	if conv.Known(plan.Profile) {
 		body.SetProfile(plan.Profile.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.BundleId.IsNull() {
-		body.SetBundleNil()
-	} else if !plan.BundleId.IsUnknown() {
+	if conv.Known(plan.BundleId) {
 		body.SetBundle(conv.Int32(plan.BundleId))
 	}
 	if !plan.Label.IsUnknown() {
@@ -453,22 +450,16 @@ func cableToCreate(ctx context.Context, plan *CableModel, diags *diag.Diagnostic
 	if !plan.Color.IsUnknown() {
 		body.SetColor(plan.Color.ValueString())
 	}
-	if plan.Length.IsNull() {
-		body.SetLengthNil()
-	} else if !plan.Length.IsUnknown() {
+	if conv.Known(plan.Length) {
 		body.SetLength(plan.Length.ValueFloat64())
 	}
-	if plan.LengthUnit.IsNull() {
-		body.SetLengthUnitNil()
-	} else if !plan.LengthUnit.IsUnknown() {
+	if conv.Known(plan.LengthUnit) {
 		body.SetLengthUnit(plan.LengthUnit.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -483,86 +474,112 @@ func cableToCreate(ctx context.Context, plan *CableModel, diags *diag.Diagnostic
 	return body
 }
 
-// cableToPatch builds the PatchedWritableCableRequest request body from the plan.
-func cableToPatch(ctx context.Context, plan *CableModel, diags *diag.Diagnostics) *netbox.PatchedWritableCableRequest {
+// cableToPatch builds the PatchedWritableCableRequest request body with every attribute whose planned value differs from state.
+func cableToPatch(ctx context.Context, plan, state *CableModel, diags *diag.Diagnostics) *netbox.PatchedWritableCableRequest {
 	body := netbox.NewPatchedWritableCableRequest()
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if conv.Known(plan.ATerminations) {
-		aTerminationsItems := []netbox.GenericObjectRequest{}
+	if !plan.ATerminations.Equal(state.ATerminations) {
 		if conv.Known(plan.ATerminations) {
-			var items []CableATerminationsItem
-			diags.Append(plan.ATerminations.ElementsAs(ctx, &items, false)...)
-			for _, it := range items {
-				e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), conv.Int32(it.ObjectId))
-				aTerminationsItems = append(aTerminationsItems, *e)
+			aTerminationsItems := []netbox.GenericObjectRequest{}
+			if conv.Known(plan.ATerminations) {
+				var items []CableATerminationsItem
+				diags.Append(plan.ATerminations.ElementsAs(ctx, &items, false)...)
+				for _, it := range items {
+					e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), conv.Int32(it.ObjectId))
+					aTerminationsItems = append(aTerminationsItems, *e)
+				}
 			}
+			body.SetATerminations(aTerminationsItems)
 		}
-		body.SetATerminations(aTerminationsItems)
 	}
-	if conv.Known(plan.BTerminations) {
-		bTerminationsItems := []netbox.GenericObjectRequest{}
+	if !plan.BTerminations.Equal(state.BTerminations) {
 		if conv.Known(plan.BTerminations) {
-			var items []CableBTerminationsItem
-			diags.Append(plan.BTerminations.ElementsAs(ctx, &items, false)...)
-			for _, it := range items {
-				e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), conv.Int32(it.ObjectId))
-				bTerminationsItems = append(bTerminationsItems, *e)
+			bTerminationsItems := []netbox.GenericObjectRequest{}
+			if conv.Known(plan.BTerminations) {
+				var items []CableBTerminationsItem
+				diags.Append(plan.BTerminations.ElementsAs(ctx, &items, false)...)
+				for _, it := range items {
+					e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), conv.Int32(it.ObjectId))
+					bTerminationsItems = append(bTerminationsItems, *e)
+				}
 			}
+			body.SetBTerminations(bTerminationsItems)
 		}
-		body.SetBTerminations(bTerminationsItems)
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if conv.Known(plan.Profile) {
-		body.SetProfile(plan.Profile.ValueString())
+	if !plan.Profile.Equal(state.Profile) {
+		if conv.Known(plan.Profile) {
+			body.SetProfile(plan.Profile.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.BundleId.IsNull() {
-		body.SetBundleNil()
-	} else if !plan.BundleId.IsUnknown() {
-		body.SetBundle(conv.Int32(plan.BundleId))
+	if !plan.BundleId.Equal(state.BundleId) {
+		if plan.BundleId.IsNull() {
+			body.SetBundleNil()
+		} else if !plan.BundleId.IsUnknown() {
+			body.SetBundle(conv.Int32(plan.BundleId))
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if !plan.Color.IsUnknown() {
-		body.SetColor(plan.Color.ValueString())
+	if !plan.Color.Equal(state.Color) {
+		if !plan.Color.IsUnknown() {
+			body.SetColor(plan.Color.ValueString())
+		}
 	}
-	if plan.Length.IsNull() {
-		body.SetLengthNil()
-	} else if !plan.Length.IsUnknown() {
-		body.SetLength(plan.Length.ValueFloat64())
+	if !plan.Length.Equal(state.Length) {
+		if conv.Known(plan.Length) {
+			body.SetLength(plan.Length.ValueFloat64())
+		}
 	}
-	if plan.LengthUnit.IsNull() {
-		body.SetLengthUnitNil()
-	} else if !plan.LengthUnit.IsUnknown() {
-		body.SetLengthUnit(plan.LengthUnit.ValueString())
+	if !plan.LengthUnit.Equal(state.LengthUnit) {
+		if conv.Known(plan.LengthUnit) {
+			body.SetLengthUnit(plan.LengthUnit.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -612,13 +629,13 @@ func cableFromAPI(ctx context.Context, obj *netbox.Cable, prior *CableModel, out
 	out.Profile = conv.Choice(obj.GetProfileOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.BundleId = conv.BriefID(obj.GetBundleOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
-	out.Color = conv.StringOrEmpty(obj.GetColorOk())
-	out.Length = conv.Float64From(obj.GetLengthOk())
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *CableModel) types.String { return m.Label }), false)
+	out.Color = conv.StringKeep(conv.StringOrEmpty(obj.GetColorOk()), conv.PriorString(prior, func(m *CableModel) types.String { return m.Color }), false)
+	out.Length = conv.Float64Keep(conv.Float64From(obj.GetLengthOk()), conv.PriorFloat(prior, func(m *CableModel) types.Float64 { return m.Length }), 0)
 	out.LengthUnit = conv.Choice(obj.GetLengthUnitOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CableModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *CableModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

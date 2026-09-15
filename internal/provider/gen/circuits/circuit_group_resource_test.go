@@ -89,7 +89,7 @@ func TestAccCircuitGroup_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_circuit_group", &resource.Sweeper{
 		Name:         "netbox_circuit_group",
-		Dependencies: []string{"netbox_circuit", "netbox_circuit_group_assignment"},
+		Dependencies: []string{"netbox_circuit_group_assignment"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/circuits/circuit-groups/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

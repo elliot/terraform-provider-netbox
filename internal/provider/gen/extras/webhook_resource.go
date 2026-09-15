@@ -174,8 +174,10 @@ func webhookResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(4096)},
 		},
 		"timeout": schema.Int64Attribute{
-			MarkdownDescription: "The maximum time (in seconds) to wait for a response before failing the request. Leave blank to use the system default (60 seconds).",
+			MarkdownDescription: "The maximum time (in seconds) to wait for a response before failing the request. Leave blank to use the system default (60 seconds). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"custom_fields": schema.StringAttribute{
 			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
@@ -282,7 +284,7 @@ func (r *WebhookResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := webhookToPatch(ctx, &plan, &resp.Diagnostics)
+	body := webhookToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -347,22 +349,16 @@ func webhookToCreate(ctx context.Context, plan *WebhookModel, diags *diag.Diagno
 	if conv.Known(plan.SslVerification) {
 		body.SetSslVerification(plan.SslVerification.ValueBool())
 	}
-	if plan.CaFilePath.IsNull() {
-		body.SetCaFilePathNil()
-	} else if !plan.CaFilePath.IsUnknown() {
+	if conv.Known(plan.CaFilePath) {
 		body.SetCaFilePath(plan.CaFilePath.ValueString())
 	}
-	if plan.Timeout.IsNull() {
-		body.SetTimeoutNil()
-	} else if !plan.Timeout.IsUnknown() {
+	if conv.Known(plan.Timeout) {
 		body.SetTimeout(conv.Int32(plan.Timeout))
 	}
 	if conv.Known(plan.CustomFields) {
 		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if conv.Known(plan.Tags) {
@@ -371,56 +367,82 @@ func webhookToCreate(ctx context.Context, plan *WebhookModel, diags *diag.Diagno
 	return body
 }
 
-// webhookToPatch builds the PatchedWebhookRequest request body from the plan.
-func webhookToPatch(ctx context.Context, plan *WebhookModel, diags *diag.Diagnostics) *netbox.PatchedWebhookRequest {
+// webhookToPatch builds the PatchedWebhookRequest request body with every attribute whose planned value differs from state.
+func webhookToPatch(ctx context.Context, plan, state *WebhookModel, diags *diag.Diagnostics) *netbox.PatchedWebhookRequest {
 	body := netbox.NewPatchedWebhookRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.PayloadUrl) {
-		body.SetPayloadUrl(plan.PayloadUrl.ValueString())
+	if !plan.PayloadUrl.Equal(state.PayloadUrl) {
+		if conv.Known(plan.PayloadUrl) {
+			body.SetPayloadUrl(plan.PayloadUrl.ValueString())
+		}
 	}
-	if conv.Known(plan.HttpMethod) {
-		body.SetHttpMethod(plan.HttpMethod.ValueString())
+	if !plan.HttpMethod.Equal(state.HttpMethod) {
+		if conv.Known(plan.HttpMethod) {
+			body.SetHttpMethod(plan.HttpMethod.ValueString())
+		}
 	}
-	if conv.Known(plan.HttpContentType) {
-		body.SetHttpContentType(plan.HttpContentType.ValueString())
+	if !plan.HttpContentType.Equal(state.HttpContentType) {
+		if conv.Known(plan.HttpContentType) {
+			body.SetHttpContentType(plan.HttpContentType.ValueString())
+		}
 	}
-	if !plan.AdditionalHeaders.IsUnknown() {
-		body.SetAdditionalHeaders(plan.AdditionalHeaders.ValueString())
+	if !plan.AdditionalHeaders.Equal(state.AdditionalHeaders) {
+		if !plan.AdditionalHeaders.IsUnknown() {
+			body.SetAdditionalHeaders(plan.AdditionalHeaders.ValueString())
+		}
 	}
-	if !plan.BodyTemplate.IsUnknown() {
-		body.SetBodyTemplate(plan.BodyTemplate.ValueString())
+	if !plan.BodyTemplate.Equal(state.BodyTemplate) {
+		if !plan.BodyTemplate.IsUnknown() {
+			body.SetBodyTemplate(plan.BodyTemplate.ValueString())
+		}
 	}
-	if !plan.Secret.IsUnknown() {
-		body.SetSecret(plan.Secret.ValueString())
+	if !plan.Secret.Equal(state.Secret) {
+		if !plan.Secret.IsUnknown() {
+			body.SetSecret(plan.Secret.ValueString())
+		}
 	}
-	if conv.Known(plan.SslVerification) {
-		body.SetSslVerification(plan.SslVerification.ValueBool())
+	if !plan.SslVerification.Equal(state.SslVerification) {
+		if conv.Known(plan.SslVerification) {
+			body.SetSslVerification(plan.SslVerification.ValueBool())
+		}
 	}
-	if plan.CaFilePath.IsNull() {
-		body.SetCaFilePathNil()
-	} else if !plan.CaFilePath.IsUnknown() {
-		body.SetCaFilePath(plan.CaFilePath.ValueString())
+	if !plan.CaFilePath.Equal(state.CaFilePath) {
+		if plan.CaFilePath.IsNull() {
+			body.SetCaFilePathNil()
+		} else if !plan.CaFilePath.IsUnknown() {
+			body.SetCaFilePath(plan.CaFilePath.ValueString())
+		}
 	}
-	if plan.Timeout.IsNull() {
-		body.SetTimeoutNil()
-	} else if !plan.Timeout.IsUnknown() {
-		body.SetTimeout(conv.Int32(plan.Timeout))
+	if !plan.Timeout.Equal(state.Timeout) {
+		if conv.Known(plan.Timeout) {
+			body.SetTimeout(conv.Int32(plan.Timeout))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
 	return body
 }
@@ -433,16 +455,16 @@ func webhookFromAPI(ctx context.Context, obj *netbox.Webhook, prior *WebhookMode
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
-	out.PayloadUrl = conv.String(obj.GetPayloadUrlOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.Description }), false)
+	out.PayloadUrl = conv.StringKeep(conv.String(obj.GetPayloadUrlOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.PayloadUrl }), false)
 	out.HttpMethod = conv.ChoiceScalar(obj.GetHttpMethodOk())
-	out.HttpContentType = conv.String(obj.GetHttpContentTypeOk())
-	out.AdditionalHeaders = conv.StringOrEmpty(obj.GetAdditionalHeadersOk())
-	out.BodyTemplate = conv.StringOrEmpty(obj.GetBodyTemplateOk())
-	out.Secret = conv.StringOrEmpty(obj.GetSecretOk())
+	out.HttpContentType = conv.StringKeep(conv.String(obj.GetHttpContentTypeOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.HttpContentType }), false)
+	out.AdditionalHeaders = conv.StringKeep(conv.StringOrEmpty(obj.GetAdditionalHeadersOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.AdditionalHeaders }), false)
+	out.BodyTemplate = conv.StringKeep(conv.StringOrEmpty(obj.GetBodyTemplateOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.BodyTemplate }), false)
+	out.Secret = conv.StringKeep(conv.StringOrEmpty(obj.GetSecretOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.Secret }), false)
 	out.SslVerification = conv.Bool(obj.GetSslVerificationOk())
-	out.CaFilePath = conv.String(obj.GetCaFilePathOk())
+	out.CaFilePath = conv.StringKeep(conv.String(obj.GetCaFilePathOk()), conv.PriorString(prior, func(m *WebhookModel) types.String { return m.CaFilePath }), false)
 	out.Timeout = conv.Int64From32(obj.GetTimeoutOk())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())

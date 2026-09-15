@@ -227,7 +227,7 @@ func (r *TunnelTerminationResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := tunnelTerminationToPatch(ctx, &plan, &resp.Diagnostics)
+	body := tunnelTerminationToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -274,9 +274,7 @@ func tunnelTerminationToCreate(ctx context.Context, plan *TunnelTerminationModel
 	if conv.Known(plan.TerminationId) {
 		body.SetTerminationId(plan.TerminationId.ValueInt64())
 	}
-	if plan.OutsideIpId.IsNull() {
-		body.SetOutsideIpNil()
-	} else if !plan.OutsideIpId.IsUnknown() {
+	if conv.Known(plan.OutsideIpId) {
 		body.SetOutsideIp(conv.Int32(plan.OutsideIpId))
 	}
 	if conv.Known(plan.Tags) {
@@ -288,31 +286,45 @@ func tunnelTerminationToCreate(ctx context.Context, plan *TunnelTerminationModel
 	return body
 }
 
-// tunnelTerminationToPatch builds the PatchedWritableTunnelTerminationRequest request body from the plan.
-func tunnelTerminationToPatch(ctx context.Context, plan *TunnelTerminationModel, diags *diag.Diagnostics) *netbox.PatchedWritableTunnelTerminationRequest {
+// tunnelTerminationToPatch builds the PatchedWritableTunnelTerminationRequest request body with every attribute whose planned value differs from state.
+func tunnelTerminationToPatch(ctx context.Context, plan, state *TunnelTerminationModel, diags *diag.Diagnostics) *netbox.PatchedWritableTunnelTerminationRequest {
 	body := netbox.NewPatchedWritableTunnelTerminationRequest()
-	if conv.Known(plan.TunnelId) {
-		body.SetTunnel(conv.Int32(plan.TunnelId))
+	if !plan.TunnelId.Equal(state.TunnelId) {
+		if conv.Known(plan.TunnelId) {
+			body.SetTunnel(conv.Int32(plan.TunnelId))
+		}
 	}
-	if conv.Known(plan.Role) {
-		body.SetRole(plan.Role.ValueString())
+	if !plan.Role.Equal(state.Role) {
+		if conv.Known(plan.Role) {
+			body.SetRole(plan.Role.ValueString())
+		}
 	}
-	if conv.Known(plan.TerminationType) {
-		body.SetTerminationType(plan.TerminationType.ValueString())
+	if !plan.TerminationType.Equal(state.TerminationType) {
+		if conv.Known(plan.TerminationType) {
+			body.SetTerminationType(plan.TerminationType.ValueString())
+		}
 	}
-	if conv.Known(plan.TerminationId) {
-		body.SetTerminationId(plan.TerminationId.ValueInt64())
+	if !plan.TerminationId.Equal(state.TerminationId) {
+		if conv.Known(plan.TerminationId) {
+			body.SetTerminationId(plan.TerminationId.ValueInt64())
+		}
 	}
-	if plan.OutsideIpId.IsNull() {
-		body.SetOutsideIpNil()
-	} else if !plan.OutsideIpId.IsUnknown() {
-		body.SetOutsideIp(conv.Int32(plan.OutsideIpId))
+	if !plan.OutsideIpId.Equal(state.OutsideIpId) {
+		if plan.OutsideIpId.IsNull() {
+			body.SetOutsideIpNil()
+		} else if !plan.OutsideIpId.IsUnknown() {
+			body.SetOutsideIp(conv.Int32(plan.OutsideIpId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

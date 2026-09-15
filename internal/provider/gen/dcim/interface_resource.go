@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -251,12 +252,16 @@ func interfaceResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.OneOf(interfaceTypeValues...)},
 		},
 		"channels": schema.Int64Attribute{
-			MarkdownDescription: "The number of channels into which this interface is channelized.",
+			MarkdownDescription: "The number of channels into which this interface is channelized. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"channel_id": schema.Int64Attribute{
-			MarkdownDescription: "The channel on the parent interface to which this subinterface is bound.",
+			MarkdownDescription: "The channel on the parent interface to which this subinterface is bound. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"enabled": schema.BoolAttribute{
 			MarkdownDescription: "Enabled. Defaults to the NetBox server default when omitted.",
@@ -277,8 +282,10 @@ func interfaceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"mtu": schema.Int64Attribute{
-			MarkdownDescription: "Mtu.",
+			MarkdownDescription: "Mtu. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"mac_address": schema.StringAttribute{
 			MarkdownDescription: "Mac Address.",
@@ -289,8 +296,10 @@ func interfaceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"speed": schema.Int64Attribute{
-			MarkdownDescription: "Speed.",
+			MarkdownDescription: "Speed. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"duplex": schema.StringAttribute{
 			MarkdownDescription: "Duplex. Valid values: `half`, `full`, `auto`. Defaults to the NetBox server default when omitted.",
@@ -352,16 +361,22 @@ func interfaceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"rf_channel_frequency": schema.Float64Attribute{
-			MarkdownDescription: "Populated by selected channel (if set).",
+			MarkdownDescription: "Populated by selected channel (if set). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"rf_channel_width": schema.Float64Attribute{
-			MarkdownDescription: "Populated by selected channel (if set).",
+			MarkdownDescription: "Populated by selected channel (if set). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"tx_power": schema.Int64Attribute{
-			MarkdownDescription: "Tx Power.",
+			MarkdownDescription: "Tx Power. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"untagged_vlan_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Vlan (`netbox_vlan`).",
@@ -504,7 +519,7 @@ func (r *InterfaceResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := interfaceToPatch(ctx, &plan, &resp.Diagnostics)
+	body := interfaceToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -551,70 +566,46 @@ func interfaceToCreate(ctx context.Context, plan *InterfaceModel, diags *diag.Di
 	if conv.Known(plan.VdcIds) {
 		body.SetVdcs(conv.Int32s(ctx, plan.VdcIds, diags))
 	}
-	if plan.ModuleId.IsNull() {
-		body.SetModuleNil()
-	} else if !plan.ModuleId.IsUnknown() {
+	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
-	if plan.Channels.IsNull() {
-		body.SetChannelsNil()
-	} else if !plan.Channels.IsUnknown() {
+	if conv.Known(plan.Channels) {
 		body.SetChannels(conv.Int32(plan.Channels))
 	}
-	if plan.ChannelId.IsNull() {
-		body.SetChannelIdNil()
-	} else if !plan.ChannelId.IsUnknown() {
+	if conv.Known(plan.ChannelId) {
 		body.SetChannelId(conv.Int32(plan.ChannelId))
 	}
 	if conv.Known(plan.Enabled) {
 		body.SetEnabled(plan.Enabled.ValueBool())
 	}
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
+	if conv.Known(plan.ParentId) {
 		body.SetParent(conv.Int32(plan.ParentId))
 	}
-	if plan.BridgeId.IsNull() {
-		body.SetBridgeNil()
-	} else if !plan.BridgeId.IsUnknown() {
+	if conv.Known(plan.BridgeId) {
 		body.SetBridge(conv.Int32(plan.BridgeId))
 	}
-	if plan.LagId.IsNull() {
-		body.SetLagNil()
-	} else if !plan.LagId.IsUnknown() {
+	if conv.Known(plan.LagId) {
 		body.SetLag(conv.Int32(plan.LagId))
 	}
-	if plan.Mtu.IsNull() {
-		body.SetMtuNil()
-	} else if !plan.Mtu.IsUnknown() {
+	if conv.Known(plan.Mtu) {
 		body.SetMtu(conv.Int32(plan.Mtu))
 	}
-	if plan.MacAddress.IsNull() {
-		body.SetMacAddressNil()
-	} else if !plan.MacAddress.IsUnknown() {
+	if conv.Known(plan.MacAddress) {
 		body.SetMacAddress(plan.MacAddress.ValueString())
 	}
-	if plan.PrimaryMacAddressId.IsNull() {
-		body.SetPrimaryMacAddressNil()
-	} else if !plan.PrimaryMacAddressId.IsUnknown() {
+	if conv.Known(plan.PrimaryMacAddressId) {
 		body.SetPrimaryMacAddress(conv.Int32(plan.PrimaryMacAddressId))
 	}
-	if plan.Speed.IsNull() {
-		body.SetSpeedNil()
-	} else if !plan.Speed.IsUnknown() {
+	if conv.Known(plan.Speed) {
 		body.SetSpeed(plan.Speed.ValueInt64())
 	}
-	if plan.Duplex.IsNull() {
-		body.SetDuplexNil()
-	} else if !plan.Duplex.IsUnknown() {
+	if conv.Known(plan.Duplex) {
 		body.SetDuplex(plan.Duplex.ValueString())
 	}
-	if plan.Wwn.IsNull() {
-		body.SetWwnNil()
-	} else if !plan.Wwn.IsUnknown() {
+	if conv.Known(plan.Wwn) {
 		body.SetWwn(plan.Wwn.ValueString())
 	}
 	if conv.Known(plan.MgmtOnly) {
@@ -623,62 +614,40 @@ func interfaceToCreate(ctx context.Context, plan *InterfaceModel, diags *diag.Di
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.Mode.IsNull() {
-		body.SetModeNil()
-	} else if !plan.Mode.IsUnknown() {
+	if conv.Known(plan.Mode) {
 		body.SetMode(plan.Mode.ValueString())
 	}
-	if plan.RfRole.IsNull() {
-		body.SetRfRoleNil()
-	} else if !plan.RfRole.IsUnknown() {
+	if conv.Known(plan.RfRole) {
 		body.SetRfRole(plan.RfRole.ValueString())
 	}
-	if plan.RfChannel.IsNull() {
-		body.SetRfChannelNil()
-	} else if !plan.RfChannel.IsUnknown() {
+	if conv.Known(plan.RfChannel) {
 		body.SetRfChannel(plan.RfChannel.ValueString())
 	}
-	if plan.PoeMode.IsNull() {
-		body.SetPoeModeNil()
-	} else if !plan.PoeMode.IsUnknown() {
+	if conv.Known(plan.PoeMode) {
 		body.SetPoeMode(plan.PoeMode.ValueString())
 	}
-	if plan.PoeType.IsNull() {
-		body.SetPoeTypeNil()
-	} else if !plan.PoeType.IsUnknown() {
+	if conv.Known(plan.PoeType) {
 		body.SetPoeType(plan.PoeType.ValueString())
 	}
-	if plan.RfChannelFrequency.IsNull() {
-		body.SetRfChannelFrequencyNil()
-	} else if !plan.RfChannelFrequency.IsUnknown() {
+	if conv.Known(plan.RfChannelFrequency) {
 		body.SetRfChannelFrequency(plan.RfChannelFrequency.ValueFloat64())
 	}
-	if plan.RfChannelWidth.IsNull() {
-		body.SetRfChannelWidthNil()
-	} else if !plan.RfChannelWidth.IsUnknown() {
+	if conv.Known(plan.RfChannelWidth) {
 		body.SetRfChannelWidth(plan.RfChannelWidth.ValueFloat64())
 	}
-	if plan.TxPower.IsNull() {
-		body.SetTxPowerNil()
-	} else if !plan.TxPower.IsUnknown() {
+	if conv.Known(plan.TxPower) {
 		body.SetTxPower(conv.Int32(plan.TxPower))
 	}
-	if plan.UntaggedVlanId.IsNull() {
-		body.SetUntaggedVlanNil()
-	} else if !plan.UntaggedVlanId.IsUnknown() {
+	if conv.Known(plan.UntaggedVlanId) {
 		body.SetUntaggedVlan(conv.Int32(plan.UntaggedVlanId))
 	}
 	if conv.Known(plan.TaggedVlanIds) {
 		body.SetTaggedVlans(conv.Int32s(ctx, plan.TaggedVlanIds, diags))
 	}
-	if plan.QinqSvlanId.IsNull() {
-		body.SetQinqSvlanNil()
-	} else if !plan.QinqSvlanId.IsUnknown() {
+	if conv.Known(plan.QinqSvlanId) {
 		body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
 	}
-	if plan.VlanTranslationPolicyId.IsNull() {
-		body.SetVlanTranslationPolicyNil()
-	} else if !plan.VlanTranslationPolicyId.IsUnknown() {
+	if conv.Known(plan.VlanTranslationPolicyId) {
 		body.SetVlanTranslationPolicy(conv.Int32(plan.VlanTranslationPolicyId))
 	}
 	if conv.Known(plan.MarkConnected) {
@@ -687,14 +656,10 @@ func interfaceToCreate(ctx context.Context, plan *InterfaceModel, diags *diag.Di
 	if conv.Known(plan.WirelessLanIds) {
 		body.SetWirelessLans(conv.Int32s(ctx, plan.WirelessLanIds, diags))
 	}
-	if plan.VrfId.IsNull() {
-		body.SetVrfNil()
-	} else if !plan.VrfId.IsUnknown() {
+	if conv.Known(plan.VrfId) {
 		body.SetVrf(conv.Int32(plan.VrfId))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if conv.Known(plan.Tags) {
@@ -706,172 +671,222 @@ func interfaceToCreate(ctx context.Context, plan *InterfaceModel, diags *diag.Di
 	return body
 }
 
-// interfaceToPatch builds the PatchedWritableInterfaceRequest request body from the plan.
-func interfaceToPatch(ctx context.Context, plan *InterfaceModel, diags *diag.Diagnostics) *netbox.PatchedWritableInterfaceRequest {
+// interfaceToPatch builds the PatchedWritableInterfaceRequest request body with every attribute whose planned value differs from state.
+func interfaceToPatch(ctx context.Context, plan, state *InterfaceModel, diags *diag.Diagnostics) *netbox.PatchedWritableInterfaceRequest {
 	body := netbox.NewPatchedWritableInterfaceRequest()
-	if conv.Known(plan.DeviceId) {
-		body.SetDevice(conv.Int32(plan.DeviceId))
+	if !plan.DeviceId.Equal(state.DeviceId) {
+		if conv.Known(plan.DeviceId) {
+			body.SetDevice(conv.Int32(plan.DeviceId))
+		}
 	}
-	if conv.Known(plan.VdcIds) {
-		body.SetVdcs(conv.Int32s(ctx, plan.VdcIds, diags))
+	if !plan.VdcIds.Equal(state.VdcIds) {
+		if conv.Known(plan.VdcIds) {
+			body.SetVdcs(conv.Int32s(ctx, plan.VdcIds, diags))
+		}
 	}
-	if plan.ModuleId.IsNull() {
-		body.SetModuleNil()
-	} else if !plan.ModuleId.IsUnknown() {
-		body.SetModule(conv.Int32(plan.ModuleId))
+	if !plan.ModuleId.Equal(state.ModuleId) {
+		if plan.ModuleId.IsNull() {
+			body.SetModuleNil()
+		} else if !plan.ModuleId.IsUnknown() {
+			body.SetModule(conv.Int32(plan.ModuleId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if plan.Channels.IsNull() {
-		body.SetChannelsNil()
-	} else if !plan.Channels.IsUnknown() {
-		body.SetChannels(conv.Int32(plan.Channels))
+	if !plan.Channels.Equal(state.Channels) {
+		if conv.Known(plan.Channels) {
+			body.SetChannels(conv.Int32(plan.Channels))
+		}
 	}
-	if plan.ChannelId.IsNull() {
-		body.SetChannelIdNil()
-	} else if !plan.ChannelId.IsUnknown() {
-		body.SetChannelId(conv.Int32(plan.ChannelId))
+	if !plan.ChannelId.Equal(state.ChannelId) {
+		if conv.Known(plan.ChannelId) {
+			body.SetChannelId(conv.Int32(plan.ChannelId))
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
-		body.SetParent(conv.Int32(plan.ParentId))
+	if !plan.ParentId.Equal(state.ParentId) {
+		if plan.ParentId.IsNull() {
+			body.SetParentNil()
+		} else if !plan.ParentId.IsUnknown() {
+			body.SetParent(conv.Int32(plan.ParentId))
+		}
 	}
-	if plan.BridgeId.IsNull() {
-		body.SetBridgeNil()
-	} else if !plan.BridgeId.IsUnknown() {
-		body.SetBridge(conv.Int32(plan.BridgeId))
+	if !plan.BridgeId.Equal(state.BridgeId) {
+		if plan.BridgeId.IsNull() {
+			body.SetBridgeNil()
+		} else if !plan.BridgeId.IsUnknown() {
+			body.SetBridge(conv.Int32(plan.BridgeId))
+		}
 	}
-	if plan.LagId.IsNull() {
-		body.SetLagNil()
-	} else if !plan.LagId.IsUnknown() {
-		body.SetLag(conv.Int32(plan.LagId))
+	if !plan.LagId.Equal(state.LagId) {
+		if plan.LagId.IsNull() {
+			body.SetLagNil()
+		} else if !plan.LagId.IsUnknown() {
+			body.SetLag(conv.Int32(plan.LagId))
+		}
 	}
-	if plan.Mtu.IsNull() {
-		body.SetMtuNil()
-	} else if !plan.Mtu.IsUnknown() {
-		body.SetMtu(conv.Int32(plan.Mtu))
+	if !plan.Mtu.Equal(state.Mtu) {
+		if conv.Known(plan.Mtu) {
+			body.SetMtu(conv.Int32(plan.Mtu))
+		}
 	}
-	if plan.MacAddress.IsNull() {
-		body.SetMacAddressNil()
-	} else if !plan.MacAddress.IsUnknown() {
-		body.SetMacAddress(plan.MacAddress.ValueString())
+	if !plan.MacAddress.Equal(state.MacAddress) {
+		if plan.MacAddress.IsNull() {
+			body.SetMacAddressNil()
+		} else if !plan.MacAddress.IsUnknown() {
+			body.SetMacAddress(plan.MacAddress.ValueString())
+		}
 	}
-	if plan.PrimaryMacAddressId.IsNull() {
-		body.SetPrimaryMacAddressNil()
-	} else if !plan.PrimaryMacAddressId.IsUnknown() {
-		body.SetPrimaryMacAddress(conv.Int32(plan.PrimaryMacAddressId))
+	if !plan.PrimaryMacAddressId.Equal(state.PrimaryMacAddressId) {
+		if plan.PrimaryMacAddressId.IsNull() {
+			body.SetPrimaryMacAddressNil()
+		} else if !plan.PrimaryMacAddressId.IsUnknown() {
+			body.SetPrimaryMacAddress(conv.Int32(plan.PrimaryMacAddressId))
+		}
 	}
-	if plan.Speed.IsNull() {
-		body.SetSpeedNil()
-	} else if !plan.Speed.IsUnknown() {
-		body.SetSpeed(plan.Speed.ValueInt64())
+	if !plan.Speed.Equal(state.Speed) {
+		if conv.Known(plan.Speed) {
+			body.SetSpeed(plan.Speed.ValueInt64())
+		}
 	}
-	if plan.Duplex.IsNull() {
-		body.SetDuplexNil()
-	} else if !plan.Duplex.IsUnknown() {
-		body.SetDuplex(plan.Duplex.ValueString())
+	if !plan.Duplex.Equal(state.Duplex) {
+		if conv.Known(plan.Duplex) {
+			body.SetDuplex(plan.Duplex.ValueString())
+		}
 	}
-	if plan.Wwn.IsNull() {
-		body.SetWwnNil()
-	} else if !plan.Wwn.IsUnknown() {
-		body.SetWwn(plan.Wwn.ValueString())
+	if !plan.Wwn.Equal(state.Wwn) {
+		if plan.Wwn.IsNull() {
+			body.SetWwnNil()
+		} else if !plan.Wwn.IsUnknown() {
+			body.SetWwn(plan.Wwn.ValueString())
+		}
 	}
-	if conv.Known(plan.MgmtOnly) {
-		body.SetMgmtOnly(plan.MgmtOnly.ValueBool())
+	if !plan.MgmtOnly.Equal(state.MgmtOnly) {
+		if conv.Known(plan.MgmtOnly) {
+			body.SetMgmtOnly(plan.MgmtOnly.ValueBool())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.Mode.IsNull() {
-		body.SetModeNil()
-	} else if !plan.Mode.IsUnknown() {
-		body.SetMode(plan.Mode.ValueString())
+	if !plan.Mode.Equal(state.Mode) {
+		if conv.Known(plan.Mode) {
+			body.SetMode(plan.Mode.ValueString())
+		}
 	}
-	if plan.RfRole.IsNull() {
-		body.SetRfRoleNil()
-	} else if !plan.RfRole.IsUnknown() {
-		body.SetRfRole(plan.RfRole.ValueString())
+	if !plan.RfRole.Equal(state.RfRole) {
+		if conv.Known(plan.RfRole) {
+			body.SetRfRole(plan.RfRole.ValueString())
+		}
 	}
-	if plan.RfChannel.IsNull() {
-		body.SetRfChannelNil()
-	} else if !plan.RfChannel.IsUnknown() {
-		body.SetRfChannel(plan.RfChannel.ValueString())
+	if !plan.RfChannel.Equal(state.RfChannel) {
+		if conv.Known(plan.RfChannel) {
+			body.SetRfChannel(plan.RfChannel.ValueString())
+		}
 	}
-	if plan.PoeMode.IsNull() {
-		body.SetPoeModeNil()
-	} else if !plan.PoeMode.IsUnknown() {
-		body.SetPoeMode(plan.PoeMode.ValueString())
+	if !plan.PoeMode.Equal(state.PoeMode) {
+		if conv.Known(plan.PoeMode) {
+			body.SetPoeMode(plan.PoeMode.ValueString())
+		}
 	}
-	if plan.PoeType.IsNull() {
-		body.SetPoeTypeNil()
-	} else if !plan.PoeType.IsUnknown() {
-		body.SetPoeType(plan.PoeType.ValueString())
+	if !plan.PoeType.Equal(state.PoeType) {
+		if conv.Known(plan.PoeType) {
+			body.SetPoeType(plan.PoeType.ValueString())
+		}
 	}
-	if plan.RfChannelFrequency.IsNull() {
-		body.SetRfChannelFrequencyNil()
-	} else if !plan.RfChannelFrequency.IsUnknown() {
-		body.SetRfChannelFrequency(plan.RfChannelFrequency.ValueFloat64())
+	if !plan.RfChannelFrequency.Equal(state.RfChannelFrequency) {
+		if conv.Known(plan.RfChannelFrequency) {
+			body.SetRfChannelFrequency(plan.RfChannelFrequency.ValueFloat64())
+		}
 	}
-	if plan.RfChannelWidth.IsNull() {
-		body.SetRfChannelWidthNil()
-	} else if !plan.RfChannelWidth.IsUnknown() {
-		body.SetRfChannelWidth(plan.RfChannelWidth.ValueFloat64())
+	if !plan.RfChannelWidth.Equal(state.RfChannelWidth) {
+		if conv.Known(plan.RfChannelWidth) {
+			body.SetRfChannelWidth(plan.RfChannelWidth.ValueFloat64())
+		}
 	}
-	if plan.TxPower.IsNull() {
-		body.SetTxPowerNil()
-	} else if !plan.TxPower.IsUnknown() {
-		body.SetTxPower(conv.Int32(plan.TxPower))
+	if !plan.TxPower.Equal(state.TxPower) {
+		if conv.Known(plan.TxPower) {
+			body.SetTxPower(conv.Int32(plan.TxPower))
+		}
 	}
-	if plan.UntaggedVlanId.IsNull() {
-		body.SetUntaggedVlanNil()
-	} else if !plan.UntaggedVlanId.IsUnknown() {
-		body.SetUntaggedVlan(conv.Int32(plan.UntaggedVlanId))
+	if !plan.UntaggedVlanId.Equal(state.UntaggedVlanId) {
+		if plan.UntaggedVlanId.IsNull() {
+			body.SetUntaggedVlanNil()
+		} else if !plan.UntaggedVlanId.IsUnknown() {
+			body.SetUntaggedVlan(conv.Int32(plan.UntaggedVlanId))
+		}
 	}
-	if conv.Known(plan.TaggedVlanIds) {
-		body.SetTaggedVlans(conv.Int32s(ctx, plan.TaggedVlanIds, diags))
+	if !plan.TaggedVlanIds.Equal(state.TaggedVlanIds) {
+		if conv.Known(plan.TaggedVlanIds) {
+			body.SetTaggedVlans(conv.Int32s(ctx, plan.TaggedVlanIds, diags))
+		}
 	}
-	if plan.QinqSvlanId.IsNull() {
-		body.SetQinqSvlanNil()
-	} else if !plan.QinqSvlanId.IsUnknown() {
-		body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
+	if !plan.QinqSvlanId.Equal(state.QinqSvlanId) {
+		if plan.QinqSvlanId.IsNull() {
+			body.SetQinqSvlanNil()
+		} else if !plan.QinqSvlanId.IsUnknown() {
+			body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
+		}
 	}
-	if plan.VlanTranslationPolicyId.IsNull() {
-		body.SetVlanTranslationPolicyNil()
-	} else if !plan.VlanTranslationPolicyId.IsUnknown() {
-		body.SetVlanTranslationPolicy(conv.Int32(plan.VlanTranslationPolicyId))
+	if !plan.VlanTranslationPolicyId.Equal(state.VlanTranslationPolicyId) {
+		if plan.VlanTranslationPolicyId.IsNull() {
+			body.SetVlanTranslationPolicyNil()
+		} else if !plan.VlanTranslationPolicyId.IsUnknown() {
+			body.SetVlanTranslationPolicy(conv.Int32(plan.VlanTranslationPolicyId))
+		}
 	}
-	if conv.Known(plan.MarkConnected) {
-		body.SetMarkConnected(plan.MarkConnected.ValueBool())
+	if !plan.MarkConnected.Equal(state.MarkConnected) {
+		if conv.Known(plan.MarkConnected) {
+			body.SetMarkConnected(plan.MarkConnected.ValueBool())
+		}
 	}
-	if conv.Known(plan.WirelessLanIds) {
-		body.SetWirelessLans(conv.Int32s(ctx, plan.WirelessLanIds, diags))
+	if !plan.WirelessLanIds.Equal(state.WirelessLanIds) {
+		if conv.Known(plan.WirelessLanIds) {
+			body.SetWirelessLans(conv.Int32s(ctx, plan.WirelessLanIds, diags))
+		}
 	}
-	if plan.VrfId.IsNull() {
-		body.SetVrfNil()
-	} else if !plan.VrfId.IsUnknown() {
-		body.SetVrf(conv.Int32(plan.VrfId))
+	if !plan.VrfId.Equal(state.VrfId) {
+		if plan.VrfId.IsNull() {
+			body.SetVrfNil()
+		} else if !plan.VrfId.IsUnknown() {
+			body.SetVrf(conv.Int32(plan.VrfId))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -887,8 +902,8 @@ func interfaceFromAPI(ctx context.Context, obj *netbox.Interface, prior *Interfa
 	out.DeviceId = conv.BriefID(obj.GetDeviceOk())
 	out.VdcIds = conv.BriefIDs(obj.GetVdcs())
 	out.ModuleId = conv.BriefID(obj.GetModuleOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *InterfaceModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *InterfaceModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Channels = conv.Int64From32(obj.GetChannelsOk())
 	out.ChannelId = conv.Int64From32(obj.GetChannelIdOk())
@@ -897,20 +912,20 @@ func interfaceFromAPI(ctx context.Context, obj *netbox.Interface, prior *Interfa
 	out.BridgeId = conv.BriefID(obj.GetBridgeOk())
 	out.LagId = conv.BriefID(obj.GetLagOk())
 	out.Mtu = conv.Int64From32(obj.GetMtuOk())
-	out.MacAddress = conv.String(obj.GetMacAddressOk())
+	out.MacAddress = conv.StringKeep(conv.String(obj.GetMacAddressOk()), conv.PriorString(prior, func(m *InterfaceModel) types.String { return m.MacAddress }), true)
 	out.PrimaryMacAddressId = conv.BriefID(obj.GetPrimaryMacAddressOk())
 	out.Speed = conv.Int64From64(obj.GetSpeedOk())
 	out.Duplex = conv.Choice(obj.GetDuplexOk())
-	out.Wwn = conv.String(obj.GetWwnOk())
+	out.Wwn = conv.StringKeep(conv.String(obj.GetWwnOk()), conv.PriorString(prior, func(m *InterfaceModel) types.String { return m.Wwn }), true)
 	out.MgmtOnly = conv.Bool(obj.GetMgmtOnlyOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *InterfaceModel) types.String { return m.Description }), false)
 	out.Mode = conv.Choice(obj.GetModeOk())
 	out.RfRole = conv.Choice(obj.GetRfRoleOk())
 	out.RfChannel = conv.Choice(obj.GetRfChannelOk())
 	out.PoeMode = conv.Choice(obj.GetPoeModeOk())
 	out.PoeType = conv.Choice(obj.GetPoeTypeOk())
-	out.RfChannelFrequency = conv.Float64From(obj.GetRfChannelFrequencyOk())
-	out.RfChannelWidth = conv.Float64From(obj.GetRfChannelWidthOk())
+	out.RfChannelFrequency = conv.Float64Keep(conv.Float64From(obj.GetRfChannelFrequencyOk()), conv.PriorFloat(prior, func(m *InterfaceModel) types.Float64 { return m.RfChannelFrequency }), 0)
+	out.RfChannelWidth = conv.Float64Keep(conv.Float64From(obj.GetRfChannelWidthOk()), conv.PriorFloat(prior, func(m *InterfaceModel) types.Float64 { return m.RfChannelWidth }), 0)
 	out.TxPower = conv.Int64From32(obj.GetTxPowerOk())
 	out.UntaggedVlanId = conv.BriefID(obj.GetUntaggedVlanOk())
 	out.TaggedVlanIds = conv.BriefIDs(obj.GetTaggedVlans())

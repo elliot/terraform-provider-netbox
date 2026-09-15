@@ -254,7 +254,7 @@ func (r *VirtualCircuitResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualCircuitToPatch(ctx, &plan, &resp.Diagnostics)
+	body := virtualCircuitToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -298,25 +298,19 @@ func (r *VirtualCircuitResource) ImportState(ctx context.Context, req resource.I
 // virtualCircuitToCreate builds the WritableVirtualCircuitRequest request body from the plan.
 func virtualCircuitToCreate(ctx context.Context, plan *VirtualCircuitModel, diags *diag.Diagnostics) *netbox.WritableVirtualCircuitRequest {
 	body := netbox.NewWritableVirtualCircuitRequest(plan.Cid.ValueString(), conv.Int32(plan.ProviderNetworkId), conv.Int32(plan.TypeId))
-	if plan.ProviderAccountId.IsNull() {
-		body.SetProviderAccountNil()
-	} else if !plan.ProviderAccountId.IsUnknown() {
+	if conv.Known(plan.ProviderAccountId) {
 		body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -331,47 +325,69 @@ func virtualCircuitToCreate(ctx context.Context, plan *VirtualCircuitModel, diag
 	return body
 }
 
-// virtualCircuitToPatch builds the PatchedWritableVirtualCircuitRequest request body from the plan.
-func virtualCircuitToPatch(ctx context.Context, plan *VirtualCircuitModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualCircuitRequest {
+// virtualCircuitToPatch builds the PatchedWritableVirtualCircuitRequest request body with every attribute whose planned value differs from state.
+func virtualCircuitToPatch(ctx context.Context, plan, state *VirtualCircuitModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualCircuitRequest {
 	body := netbox.NewPatchedWritableVirtualCircuitRequest()
-	if conv.Known(plan.Cid) {
-		body.SetCid(plan.Cid.ValueString())
+	if !plan.Cid.Equal(state.Cid) {
+		if conv.Known(plan.Cid) {
+			body.SetCid(plan.Cid.ValueString())
+		}
 	}
-	if conv.Known(plan.ProviderNetworkId) {
-		body.SetProviderNetwork(conv.Int32(plan.ProviderNetworkId))
+	if !plan.ProviderNetworkId.Equal(state.ProviderNetworkId) {
+		if conv.Known(plan.ProviderNetworkId) {
+			body.SetProviderNetwork(conv.Int32(plan.ProviderNetworkId))
+		}
 	}
-	if plan.ProviderAccountId.IsNull() {
-		body.SetProviderAccountNil()
-	} else if !plan.ProviderAccountId.IsUnknown() {
-		body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
+	if !plan.ProviderAccountId.Equal(state.ProviderAccountId) {
+		if plan.ProviderAccountId.IsNull() {
+			body.SetProviderAccountNil()
+		} else if !plan.ProviderAccountId.IsUnknown() {
+			body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
+		}
 	}
-	if conv.Known(plan.TypeId) {
-		body.SetType(conv.Int32(plan.TypeId))
+	if !plan.TypeId.Equal(state.TypeId) {
+		if conv.Known(plan.TypeId) {
+			body.SetType(conv.Int32(plan.TypeId))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -384,15 +400,15 @@ func virtualCircuitFromAPI(ctx context.Context, obj *netbox.VirtualCircuit, prio
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Cid = conv.String(obj.GetCidOk())
+	out.Cid = conv.StringKeep(conv.String(obj.GetCidOk()), conv.PriorString(prior, func(m *VirtualCircuitModel) types.String { return m.Cid }), false)
 	out.ProviderNetworkId = conv.BriefID(obj.GetProviderNetworkOk())
 	out.ProviderAccountId = conv.BriefID(obj.GetProviderAccountOk())
 	out.TypeId = conv.BriefID(obj.GetTypeOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VirtualCircuitModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VirtualCircuitModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

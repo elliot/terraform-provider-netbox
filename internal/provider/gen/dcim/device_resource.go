@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -190,8 +191,10 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"position": schema.Float64Attribute{
-			MarkdownDescription: "Position.",
+			MarkdownDescription: "Position. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"face": schema.StringAttribute{
 			MarkdownDescription: "Face. Valid values: `front`, `rear`. Defaults to the NetBox server default when omitted.",
@@ -201,12 +204,16 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"latitude": schema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy).",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"longitude": schema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy).",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"status": schema.StringAttribute{
 			MarkdownDescription: "Status. Valid values: `offline`, `active`, `planned`, `staged`, `failed`, `inventory`, `decommissioning`. Defaults to the NetBox server default when omitted.",
@@ -254,12 +261,16 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"vc_position": schema.Int64Attribute{
-			MarkdownDescription: "Vc Position.",
+			MarkdownDescription: "Vc Position. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"vc_priority": schema.Int64Attribute{
-			MarkdownDescription: "Virtual chassis master election priority.",
+			MarkdownDescription: "Virtual chassis master election priority. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -388,7 +399,7 @@ func (r *DeviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := deviceToPatch(ctx, &plan, &resp.Diagnostics)
+	body := deviceToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -432,70 +443,46 @@ func (r *DeviceResource) ImportState(ctx context.Context, req resource.ImportSta
 // deviceToCreate builds the WritableDeviceRequest request body from the plan.
 func deviceToCreate(ctx context.Context, plan *DeviceModel, diags *diag.Diagnostics) *netbox.WritableDeviceRequest {
 	body := netbox.NewWritableDeviceRequest(conv.Int32(plan.DeviceTypeId), conv.Int32(plan.RoleId), conv.Int32(plan.SiteId))
-	if plan.Name.IsNull() {
-		body.SetNameNil()
-	} else if !plan.Name.IsUnknown() {
+	if conv.Known(plan.Name) {
 		body.SetName(plan.Name.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.PlatformId.IsNull() {
-		body.SetPlatformNil()
-	} else if !plan.PlatformId.IsUnknown() {
+	if conv.Known(plan.PlatformId) {
 		body.SetPlatform(conv.Int32(plan.PlatformId))
 	}
 	if !plan.Serial.IsUnknown() {
 		body.SetSerial(plan.Serial.ValueString())
 	}
-	if plan.AssetTag.IsNull() {
-		body.SetAssetTagNil()
-	} else if !plan.AssetTag.IsUnknown() {
+	if conv.Known(plan.AssetTag) {
 		body.SetAssetTag(plan.AssetTag.ValueString())
 	}
-	if plan.LocationId.IsNull() {
-		body.SetLocationNil()
-	} else if !plan.LocationId.IsUnknown() {
+	if conv.Known(plan.LocationId) {
 		body.SetLocation(conv.Int32(plan.LocationId))
 	}
-	if plan.RackId.IsNull() {
-		body.SetRackNil()
-	} else if !plan.RackId.IsUnknown() {
+	if conv.Known(plan.RackId) {
 		body.SetRack(conv.Int32(plan.RackId))
 	}
-	if plan.Position.IsNull() {
-		body.SetPositionNil()
-	} else if !plan.Position.IsUnknown() {
+	if conv.Known(plan.Position) {
 		body.SetPosition(plan.Position.ValueFloat64())
 	}
-	if plan.Face.IsNull() {
-		body.SetFaceNil()
-	} else if !plan.Face.IsUnknown() {
+	if conv.Known(plan.Face) {
 		body.SetFace(plan.Face.ValueString())
 	}
-	if plan.Latitude.IsNull() {
-		body.SetLatitudeNil()
-	} else if !plan.Latitude.IsUnknown() {
+	if conv.Known(plan.Latitude) {
 		body.SetLatitude(plan.Latitude.ValueFloat64())
 	}
-	if plan.Longitude.IsNull() {
-		body.SetLongitudeNil()
-	} else if !plan.Longitude.IsUnknown() {
+	if conv.Known(plan.Longitude) {
 		body.SetLongitude(plan.Longitude.ValueFloat64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.Airflow.IsNull() {
-		body.SetAirflowNil()
-	} else if !plan.Airflow.IsUnknown() {
+	if conv.Known(plan.Airflow) {
 		body.SetAirflow(plan.Airflow.ValueString())
 	}
-	if plan.CoolingMethod.IsNull() {
-		body.SetCoolingMethodNil()
-	} else if !plan.CoolingMethod.IsUnknown() {
+	if conv.Known(plan.CoolingMethod) {
 		body.SetCoolingMethod(plan.CoolingMethod.ValueString())
 	}
 	if conv.Known(plan.PrimaryIp4Id) {
@@ -504,45 +491,31 @@ func deviceToCreate(ctx context.Context, plan *DeviceModel, diags *diag.Diagnost
 	if conv.Known(plan.PrimaryIp6Id) {
 		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
 	}
-	if plan.OobIpId.IsNull() {
-		body.SetOobIpNil()
-	} else if !plan.OobIpId.IsUnknown() {
+	if conv.Known(plan.OobIpId) {
 		body.SetOobIp(conv.Int32(plan.OobIpId))
 	}
-	if plan.ClusterId.IsNull() {
-		body.SetClusterNil()
-	} else if !plan.ClusterId.IsUnknown() {
+	if conv.Known(plan.ClusterId) {
 		body.SetCluster(conv.Int32(plan.ClusterId))
 	}
-	if plan.VirtualChassisId.IsNull() {
-		body.SetVirtualChassisNil()
-	} else if !plan.VirtualChassisId.IsUnknown() {
+	if conv.Known(plan.VirtualChassisId) {
 		body.SetVirtualChassis(conv.Int32(plan.VirtualChassisId))
 	}
-	if plan.VcPosition.IsNull() {
-		body.SetVcPositionNil()
-	} else if !plan.VcPosition.IsUnknown() {
+	if conv.Known(plan.VcPosition) {
 		body.SetVcPosition(conv.Int32(plan.VcPosition))
 	}
-	if plan.VcPriority.IsNull() {
-		body.SetVcPriorityNil()
-	} else if !plan.VcPriority.IsUnknown() {
+	if conv.Known(plan.VcPriority) {
 		body.SetVcPriority(conv.Int32(plan.VcPriority))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
 	}
-	if plan.ConfigTemplateId.IsNull() {
-		body.SetConfigTemplateNil()
-	} else if !plan.ConfigTemplateId.IsUnknown() {
+	if conv.Known(plan.ConfigTemplateId) {
 		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
 	}
 	if conv.Known(plan.LocalContextData) {
@@ -557,143 +530,185 @@ func deviceToCreate(ctx context.Context, plan *DeviceModel, diags *diag.Diagnost
 	return body
 }
 
-// deviceToPatch builds the PatchedWritableDeviceRequest request body from the plan.
-func deviceToPatch(ctx context.Context, plan *DeviceModel, diags *diag.Diagnostics) *netbox.PatchedWritableDeviceRequest {
+// deviceToPatch builds the PatchedWritableDeviceRequest request body with every attribute whose planned value differs from state.
+func deviceToPatch(ctx context.Context, plan, state *DeviceModel, diags *diag.Diagnostics) *netbox.PatchedWritableDeviceRequest {
 	body := netbox.NewPatchedWritableDeviceRequest()
-	if plan.Name.IsNull() {
-		body.SetNameNil()
-	} else if !plan.Name.IsUnknown() {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if plan.Name.IsNull() {
+			body.SetNameNil()
+		} else if !plan.Name.IsUnknown() {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.DeviceTypeId) {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if conv.Known(plan.DeviceTypeId) {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if conv.Known(plan.RoleId) {
-		body.SetRole(conv.Int32(plan.RoleId))
+	if !plan.RoleId.Equal(state.RoleId) {
+		if conv.Known(plan.RoleId) {
+			body.SetRole(conv.Int32(plan.RoleId))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.PlatformId.IsNull() {
-		body.SetPlatformNil()
-	} else if !plan.PlatformId.IsUnknown() {
-		body.SetPlatform(conv.Int32(plan.PlatformId))
+	if !plan.PlatformId.Equal(state.PlatformId) {
+		if plan.PlatformId.IsNull() {
+			body.SetPlatformNil()
+		} else if !plan.PlatformId.IsUnknown() {
+			body.SetPlatform(conv.Int32(plan.PlatformId))
+		}
 	}
-	if !plan.Serial.IsUnknown() {
-		body.SetSerial(plan.Serial.ValueString())
+	if !plan.Serial.Equal(state.Serial) {
+		if !plan.Serial.IsUnknown() {
+			body.SetSerial(plan.Serial.ValueString())
+		}
 	}
-	if plan.AssetTag.IsNull() {
-		body.SetAssetTagNil()
-	} else if !plan.AssetTag.IsUnknown() {
-		body.SetAssetTag(plan.AssetTag.ValueString())
+	if !plan.AssetTag.Equal(state.AssetTag) {
+		if plan.AssetTag.IsNull() {
+			body.SetAssetTagNil()
+		} else if !plan.AssetTag.IsUnknown() {
+			body.SetAssetTag(plan.AssetTag.ValueString())
+		}
 	}
-	if conv.Known(plan.SiteId) {
-		body.SetSite(conv.Int32(plan.SiteId))
+	if !plan.SiteId.Equal(state.SiteId) {
+		if conv.Known(plan.SiteId) {
+			body.SetSite(conv.Int32(plan.SiteId))
+		}
 	}
-	if plan.LocationId.IsNull() {
-		body.SetLocationNil()
-	} else if !plan.LocationId.IsUnknown() {
-		body.SetLocation(conv.Int32(plan.LocationId))
+	if !plan.LocationId.Equal(state.LocationId) {
+		if plan.LocationId.IsNull() {
+			body.SetLocationNil()
+		} else if !plan.LocationId.IsUnknown() {
+			body.SetLocation(conv.Int32(plan.LocationId))
+		}
 	}
-	if plan.RackId.IsNull() {
-		body.SetRackNil()
-	} else if !plan.RackId.IsUnknown() {
-		body.SetRack(conv.Int32(plan.RackId))
+	if !plan.RackId.Equal(state.RackId) {
+		if plan.RackId.IsNull() {
+			body.SetRackNil()
+		} else if !plan.RackId.IsUnknown() {
+			body.SetRack(conv.Int32(plan.RackId))
+		}
 	}
-	if plan.Position.IsNull() {
-		body.SetPositionNil()
-	} else if !plan.Position.IsUnknown() {
-		body.SetPosition(plan.Position.ValueFloat64())
+	if !plan.Position.Equal(state.Position) {
+		if conv.Known(plan.Position) {
+			body.SetPosition(plan.Position.ValueFloat64())
+		}
 	}
-	if plan.Face.IsNull() {
-		body.SetFaceNil()
-	} else if !plan.Face.IsUnknown() {
-		body.SetFace(plan.Face.ValueString())
+	if !plan.Face.Equal(state.Face) {
+		if conv.Known(plan.Face) {
+			body.SetFace(plan.Face.ValueString())
+		}
 	}
-	if plan.Latitude.IsNull() {
-		body.SetLatitudeNil()
-	} else if !plan.Latitude.IsUnknown() {
-		body.SetLatitude(plan.Latitude.ValueFloat64())
+	if !plan.Latitude.Equal(state.Latitude) {
+		if conv.Known(plan.Latitude) {
+			body.SetLatitude(plan.Latitude.ValueFloat64())
+		}
 	}
-	if plan.Longitude.IsNull() {
-		body.SetLongitudeNil()
-	} else if !plan.Longitude.IsUnknown() {
-		body.SetLongitude(plan.Longitude.ValueFloat64())
+	if !plan.Longitude.Equal(state.Longitude) {
+		if conv.Known(plan.Longitude) {
+			body.SetLongitude(plan.Longitude.ValueFloat64())
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.Airflow.IsNull() {
-		body.SetAirflowNil()
-	} else if !plan.Airflow.IsUnknown() {
-		body.SetAirflow(plan.Airflow.ValueString())
+	if !plan.Airflow.Equal(state.Airflow) {
+		if conv.Known(plan.Airflow) {
+			body.SetAirflow(plan.Airflow.ValueString())
+		}
 	}
-	if plan.CoolingMethod.IsNull() {
-		body.SetCoolingMethodNil()
-	} else if !plan.CoolingMethod.IsUnknown() {
-		body.SetCoolingMethod(plan.CoolingMethod.ValueString())
+	if !plan.CoolingMethod.Equal(state.CoolingMethod) {
+		if conv.Known(plan.CoolingMethod) {
+			body.SetCoolingMethod(plan.CoolingMethod.ValueString())
+		}
 	}
-	if plan.PrimaryIp4Id.IsNull() {
-		body.SetPrimaryIp4Nil()
-	} else if !plan.PrimaryIp4Id.IsUnknown() {
-		body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+	if !plan.PrimaryIp4Id.Equal(state.PrimaryIp4Id) {
+		if conv.Known(plan.PrimaryIp4Id) {
+			body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+		}
 	}
-	if plan.PrimaryIp6Id.IsNull() {
-		body.SetPrimaryIp6Nil()
-	} else if !plan.PrimaryIp6Id.IsUnknown() {
-		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+	if !plan.PrimaryIp6Id.Equal(state.PrimaryIp6Id) {
+		if conv.Known(plan.PrimaryIp6Id) {
+			body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+		}
 	}
-	if plan.OobIpId.IsNull() {
-		body.SetOobIpNil()
-	} else if !plan.OobIpId.IsUnknown() {
-		body.SetOobIp(conv.Int32(plan.OobIpId))
+	if !plan.OobIpId.Equal(state.OobIpId) {
+		if plan.OobIpId.IsNull() {
+			body.SetOobIpNil()
+		} else if !plan.OobIpId.IsUnknown() {
+			body.SetOobIp(conv.Int32(plan.OobIpId))
+		}
 	}
-	if plan.ClusterId.IsNull() {
-		body.SetClusterNil()
-	} else if !plan.ClusterId.IsUnknown() {
-		body.SetCluster(conv.Int32(plan.ClusterId))
+	if !plan.ClusterId.Equal(state.ClusterId) {
+		if plan.ClusterId.IsNull() {
+			body.SetClusterNil()
+		} else if !plan.ClusterId.IsUnknown() {
+			body.SetCluster(conv.Int32(plan.ClusterId))
+		}
 	}
-	if plan.VirtualChassisId.IsNull() {
-		body.SetVirtualChassisNil()
-	} else if !plan.VirtualChassisId.IsUnknown() {
-		body.SetVirtualChassis(conv.Int32(plan.VirtualChassisId))
+	if !plan.VirtualChassisId.Equal(state.VirtualChassisId) {
+		if plan.VirtualChassisId.IsNull() {
+			body.SetVirtualChassisNil()
+		} else if !plan.VirtualChassisId.IsUnknown() {
+			body.SetVirtualChassis(conv.Int32(plan.VirtualChassisId))
+		}
 	}
-	if plan.VcPosition.IsNull() {
-		body.SetVcPositionNil()
-	} else if !plan.VcPosition.IsUnknown() {
-		body.SetVcPosition(conv.Int32(plan.VcPosition))
+	if !plan.VcPosition.Equal(state.VcPosition) {
+		if conv.Known(plan.VcPosition) {
+			body.SetVcPosition(conv.Int32(plan.VcPosition))
+		}
 	}
-	if plan.VcPriority.IsNull() {
-		body.SetVcPriorityNil()
-	} else if !plan.VcPriority.IsUnknown() {
-		body.SetVcPriority(conv.Int32(plan.VcPriority))
+	if !plan.VcPriority.Equal(state.VcPriority) {
+		if conv.Known(plan.VcPriority) {
+			body.SetVcPriority(conv.Int32(plan.VcPriority))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if plan.ConfigTemplateId.IsNull() {
-		body.SetConfigTemplateNil()
-	} else if !plan.ConfigTemplateId.IsUnknown() {
-		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+	if !plan.ConfigTemplateId.Equal(state.ConfigTemplateId) {
+		if plan.ConfigTemplateId.IsNull() {
+			body.SetConfigTemplateNil()
+		} else if !plan.ConfigTemplateId.IsUnknown() {
+			body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+		}
 	}
-	if conv.Known(plan.LocalContextData) {
-		body.SetLocalContextData(conv.JSONToAPI(plan.LocalContextData, diags))
+	if !plan.LocalContextData.Equal(state.LocalContextData) {
+		if conv.Known(plan.LocalContextData) {
+			body.SetLocalContextData(conv.JSONToAPI(plan.LocalContextData, diags))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -706,13 +721,13 @@ func deviceFromAPI(ctx context.Context, obj *netbox.Device, prior *DeviceModel, 
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *DeviceModel) types.String { return m.Name }), false)
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.RoleId = conv.BriefID(obj.GetRoleOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.PlatformId = conv.BriefID(obj.GetPlatformOk())
-	out.Serial = conv.StringOrEmpty(obj.GetSerialOk())
-	out.AssetTag = conv.String(obj.GetAssetTagOk())
+	out.Serial = conv.StringKeep(conv.StringOrEmpty(obj.GetSerialOk()), conv.PriorString(prior, func(m *DeviceModel) types.String { return m.Serial }), false)
+	out.AssetTag = conv.StringKeep(conv.String(obj.GetAssetTagOk()), conv.PriorString(prior, func(m *DeviceModel) types.String { return m.AssetTag }), false)
 	out.SiteId = conv.BriefID(obj.GetSiteOk())
 	out.LocationId = conv.BriefID(obj.GetLocationOk())
 	out.RackId = conv.BriefID(obj.GetRackOk())
@@ -730,9 +745,9 @@ func deviceFromAPI(ctx context.Context, obj *netbox.Device, prior *DeviceModel, 
 	out.VirtualChassisId = conv.BriefID(obj.GetVirtualChassisOk())
 	out.VcPosition = conv.Int64From32(obj.GetVcPositionOk())
 	out.VcPriority = conv.Int64From32(obj.GetVcPriorityOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *DeviceModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *DeviceModel) types.String { return m.Comments }), false)
 	out.ConfigTemplateId = conv.BriefID(obj.GetConfigTemplateOk())
 	out.LocalContextData = conv.JSONFromAPIWithPrior(obj.GetLocalContextData(), conv.PriorJSON(prior, func(m *DeviceModel) jsontypes.Normalized { return m.LocalContextData }))
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

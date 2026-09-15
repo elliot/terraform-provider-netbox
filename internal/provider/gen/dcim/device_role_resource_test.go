@@ -78,7 +78,7 @@ func TestAccDeviceRole_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_device_role", &resource.Sweeper{
 		Name:         "netbox_device_role",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_config_context", "netbox_device", "netbox_virtual_machine"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/device-roles/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

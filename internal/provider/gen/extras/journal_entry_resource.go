@@ -229,7 +229,7 @@ func (r *JournalEntryResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := journalEntryToPatch(ctx, &plan, &resp.Diagnostics)
+	body := journalEntryToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -288,31 +288,43 @@ func journalEntryToCreate(ctx context.Context, plan *JournalEntryModel, diags *d
 	return body
 }
 
-// journalEntryToPatch builds the PatchedWritableJournalEntryRequest request body from the plan.
-func journalEntryToPatch(ctx context.Context, plan *JournalEntryModel, diags *diag.Diagnostics) *netbox.PatchedWritableJournalEntryRequest {
+// journalEntryToPatch builds the PatchedWritableJournalEntryRequest request body with every attribute whose planned value differs from state.
+func journalEntryToPatch(ctx context.Context, plan, state *JournalEntryModel, diags *diag.Diagnostics) *netbox.PatchedWritableJournalEntryRequest {
 	body := netbox.NewPatchedWritableJournalEntryRequest()
-	if conv.Known(plan.AssignedObjectType) {
-		body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
+	if !plan.AssignedObjectType.Equal(state.AssignedObjectType) {
+		if conv.Known(plan.AssignedObjectType) {
+			body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
+		}
 	}
-	if conv.Known(plan.AssignedObjectId) {
-		body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
+	if !plan.AssignedObjectId.Equal(state.AssignedObjectId) {
+		if conv.Known(plan.AssignedObjectId) {
+			body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
+		}
 	}
-	if plan.CreatedById.IsNull() {
-		body.SetCreatedByNil()
-	} else if !plan.CreatedById.IsUnknown() {
-		body.SetCreatedBy(conv.Int32(plan.CreatedById))
+	if !plan.CreatedById.Equal(state.CreatedById) {
+		if conv.Known(plan.CreatedById) {
+			body.SetCreatedBy(conv.Int32(plan.CreatedById))
+		}
 	}
-	if conv.Known(plan.Kind) {
-		body.SetKind(plan.Kind.ValueString())
+	if !plan.Kind.Equal(state.Kind) {
+		if conv.Known(plan.Kind) {
+			body.SetKind(plan.Kind.ValueString())
+		}
 	}
-	if conv.Known(plan.Comments) {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if conv.Known(plan.Comments) {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -325,11 +337,11 @@ func journalEntryFromAPI(ctx context.Context, obj *netbox.JournalEntry, prior *J
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.AssignedObjectType = conv.String(obj.GetAssignedObjectTypeOk())
+	out.AssignedObjectType = conv.StringKeep(conv.String(obj.GetAssignedObjectTypeOk()), conv.PriorString(prior, func(m *JournalEntryModel) types.String { return m.AssignedObjectType }), false)
 	out.AssignedObjectId = conv.Int64From64(obj.GetAssignedObjectIdOk())
 	out.CreatedById = conv.Int64From32(obj.GetCreatedByOk())
 	out.Kind = conv.Choice(obj.GetKindOk())
-	out.Comments = conv.String(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.String(obj.GetCommentsOk()), conv.PriorString(prior, func(m *JournalEntryModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

@@ -215,7 +215,7 @@ func (r *CircuitGroupAssignmentResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := circuitGroupAssignmentToPatch(ctx, &plan, &resp.Diagnostics)
+	body := circuitGroupAssignmentToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -259,9 +259,7 @@ func (r *CircuitGroupAssignmentResource) ImportState(ctx context.Context, req re
 // circuitGroupAssignmentToCreate builds the WritableCircuitGroupAssignmentRequest request body from the plan.
 func circuitGroupAssignmentToCreate(ctx context.Context, plan *CircuitGroupAssignmentModel, diags *diag.Diagnostics) *netbox.WritableCircuitGroupAssignmentRequest {
 	body := netbox.NewWritableCircuitGroupAssignmentRequest(conv.Int32(plan.GroupId), plan.MemberType.ValueString(), plan.MemberId.ValueInt64())
-	if plan.Priority.IsNull() {
-		body.SetPriorityNil()
-	} else if !plan.Priority.IsUnknown() {
+	if conv.Known(plan.Priority) {
 		body.SetPriority(plan.Priority.ValueString())
 	}
 	if conv.Known(plan.Tags) {
@@ -270,25 +268,33 @@ func circuitGroupAssignmentToCreate(ctx context.Context, plan *CircuitGroupAssig
 	return body
 }
 
-// circuitGroupAssignmentToPatch builds the PatchedWritableCircuitGroupAssignmentRequest request body from the plan.
-func circuitGroupAssignmentToPatch(ctx context.Context, plan *CircuitGroupAssignmentModel, diags *diag.Diagnostics) *netbox.PatchedWritableCircuitGroupAssignmentRequest {
+// circuitGroupAssignmentToPatch builds the PatchedWritableCircuitGroupAssignmentRequest request body with every attribute whose planned value differs from state.
+func circuitGroupAssignmentToPatch(ctx context.Context, plan, state *CircuitGroupAssignmentModel, diags *diag.Diagnostics) *netbox.PatchedWritableCircuitGroupAssignmentRequest {
 	body := netbox.NewPatchedWritableCircuitGroupAssignmentRequest()
-	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if conv.Known(plan.GroupId) {
+			body.SetGroup(conv.Int32(plan.GroupId))
+		}
 	}
-	if conv.Known(plan.MemberType) {
-		body.SetMemberType(plan.MemberType.ValueString())
+	if !plan.MemberType.Equal(state.MemberType) {
+		if conv.Known(plan.MemberType) {
+			body.SetMemberType(plan.MemberType.ValueString())
+		}
 	}
-	if conv.Known(plan.MemberId) {
-		body.SetMemberId(plan.MemberId.ValueInt64())
+	if !plan.MemberId.Equal(state.MemberId) {
+		if conv.Known(plan.MemberId) {
+			body.SetMemberId(plan.MemberId.ValueInt64())
+		}
 	}
-	if plan.Priority.IsNull() {
-		body.SetPriorityNil()
-	} else if !plan.Priority.IsUnknown() {
-		body.SetPriority(plan.Priority.ValueString())
+	if !plan.Priority.Equal(state.Priority) {
+		if conv.Known(plan.Priority) {
+			body.SetPriority(plan.Priority.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
 	return body
 }
@@ -298,7 +304,7 @@ func circuitGroupAssignmentFromAPI(ctx context.Context, obj *netbox.CircuitGroup
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.GroupId = conv.BriefID(obj.GetGroupOk())
-	out.MemberType = conv.String(obj.GetMemberTypeOk())
+	out.MemberType = conv.StringKeep(conv.String(obj.GetMemberTypeOk()), conv.PriorString(prior, func(m *CircuitGroupAssignmentModel) types.String { return m.MemberType }), false)
 	out.MemberId = conv.Int64From64(obj.GetMemberIdOk())
 	out.Priority = conv.Choice(obj.GetPriorityOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

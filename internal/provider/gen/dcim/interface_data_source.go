@@ -184,11 +184,11 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"channels": dsschema.Int64Attribute{
-			MarkdownDescription: "The number of channels into which this interface is channelized.",
+			MarkdownDescription: "The number of channels into which this interface is channelized. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"channel_id": dsschema.Int64Attribute{
-			MarkdownDescription: "The channel on the parent interface to which this subinterface is bound.",
+			MarkdownDescription: "The channel on the parent interface to which this subinterface is bound. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"enabled": dsschema.BoolAttribute{
@@ -208,7 +208,7 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"mtu": dsschema.Int64Attribute{
-			MarkdownDescription: "Mtu.",
+			MarkdownDescription: "Mtu. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"mac_address": dsschema.StringAttribute{
@@ -220,7 +220,7 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"speed": dsschema.Int64Attribute{
-			MarkdownDescription: "Speed.",
+			MarkdownDescription: "Speed. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"duplex": dsschema.StringAttribute{
@@ -260,15 +260,15 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"rf_channel_frequency": dsschema.Float64Attribute{
-			MarkdownDescription: "Populated by selected channel (if set).",
+			MarkdownDescription: "Populated by selected channel (if set). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"rf_channel_width": dsschema.Float64Attribute{
-			MarkdownDescription: "Populated by selected channel (if set).",
+			MarkdownDescription: "Populated by selected channel (if set). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"tx_power": dsschema.Int64Attribute{
-			MarkdownDescription: "Tx Power.",
+			MarkdownDescription: "Tx Power. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"untagged_vlan_id": dsschema.Int64Attribute{

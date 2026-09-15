@@ -236,7 +236,7 @@ func (r *ModuleBayTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := moduleBayTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := moduleBayTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -280,14 +280,10 @@ func (r *ModuleBayTemplateResource) ImportState(ctx context.Context, req resourc
 // moduleBayTemplateToCreate builds the ModuleBayTemplateRequest request body from the plan.
 func moduleBayTemplateToCreate(ctx context.Context, plan *ModuleBayTemplateModel, diags *diag.Diagnostics) *netbox.ModuleBayTemplateRequest {
 	body := netbox.NewModuleBayTemplateRequest(plan.Name.ValueString())
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
+	if conv.Known(plan.DeviceTypeId) {
 		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
+	if conv.Known(plan.ModuleTypeId) {
 		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
 	}
 	if !plan.Label.IsUnknown() {
@@ -308,36 +304,52 @@ func moduleBayTemplateToCreate(ctx context.Context, plan *ModuleBayTemplateModel
 	return body
 }
 
-// moduleBayTemplateToPatch builds the PatchedModuleBayTemplateRequest request body from the plan.
-func moduleBayTemplateToPatch(ctx context.Context, plan *ModuleBayTemplateModel, diags *diag.Diagnostics) *netbox.PatchedModuleBayTemplateRequest {
+// moduleBayTemplateToPatch builds the PatchedModuleBayTemplateRequest request body with every attribute whose planned value differs from state.
+func moduleBayTemplateToPatch(ctx context.Context, plan, state *ModuleBayTemplateModel, diags *diag.Diagnostics) *netbox.PatchedModuleBayTemplateRequest {
 	body := netbox.NewPatchedModuleBayTemplateRequest()
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if plan.DeviceTypeId.IsNull() {
+			body.SetDeviceTypeNil()
+		} else if !plan.DeviceTypeId.IsUnknown() {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
+		if plan.ModuleTypeId.IsNull() {
+			body.SetModuleTypeNil()
+		} else if !plan.ModuleTypeId.IsUnknown() {
+			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if !plan.Position.IsUnknown() {
-		body.SetPosition(plan.Position.ValueString())
+	if !plan.Position.Equal(state.Position) {
+		if !plan.Position.IsUnknown() {
+			body.SetPosition(plan.Position.ValueString())
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.ModuleBayTypeIds) {
-		body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
+	if !plan.ModuleBayTypeIds.Equal(state.ModuleBayTypeIds) {
+		if conv.Known(plan.ModuleBayTypeIds) {
+			body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
+		}
 	}
 	return body
 }
@@ -348,11 +360,11 @@ func moduleBayTemplateFromAPI(ctx context.Context, obj *netbox.ModuleBayTemplate
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.ModuleTypeId = conv.BriefID(obj.GetModuleTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
-	out.Position = conv.StringOrEmpty(obj.GetPositionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ModuleBayTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *ModuleBayTemplateModel) types.String { return m.Label }), false)
+	out.Position = conv.StringKeep(conv.StringOrEmpty(obj.GetPositionOk()), conv.PriorString(prior, func(m *ModuleBayTemplateModel) types.String { return m.Position }), false)
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ModuleBayTemplateModel) types.String { return m.Description }), false)
 	out.ModuleBayTypeIds = conv.BriefIDs(obj.GetModuleBayTypes())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())

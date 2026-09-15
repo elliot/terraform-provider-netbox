@@ -233,7 +233,7 @@ func (r *TenantGroupResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := tenantGroupToPatch(ctx, &plan, &resp.Diagnostics)
+	body := tenantGroupToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -277,9 +277,7 @@ func (r *TenantGroupResource) ImportState(ctx context.Context, req resource.Impo
 // tenantGroupToCreate builds the WritableTenantGroupRequest request body from the plan.
 func tenantGroupToCreate(ctx context.Context, plan *TenantGroupModel, diags *diag.Diagnostics) *netbox.WritableTenantGroupRequest {
 	body := netbox.NewWritableTenantGroupRequest(plan.Name.ValueString(), plan.Slug.ValueString())
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
+	if conv.Known(plan.ParentId) {
 		body.SetParent(conv.Int32(plan.ParentId))
 	}
 	if !plan.Description.IsUnknown() {
@@ -291,9 +289,7 @@ func tenantGroupToCreate(ctx context.Context, plan *TenantGroupModel, diags *dia
 	if conv.Known(plan.CustomFields) {
 		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -302,36 +298,52 @@ func tenantGroupToCreate(ctx context.Context, plan *TenantGroupModel, diags *dia
 	return body
 }
 
-// tenantGroupToPatch builds the PatchedWritableTenantGroupRequest request body from the plan.
-func tenantGroupToPatch(ctx context.Context, plan *TenantGroupModel, diags *diag.Diagnostics) *netbox.PatchedWritableTenantGroupRequest {
+// tenantGroupToPatch builds the PatchedWritableTenantGroupRequest request body with every attribute whose planned value differs from state.
+func tenantGroupToPatch(ctx context.Context, plan, state *TenantGroupModel, diags *diag.Diagnostics) *netbox.PatchedWritableTenantGroupRequest {
 	body := netbox.NewPatchedWritableTenantGroupRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
-		body.SetParent(conv.Int32(plan.ParentId))
+	if !plan.ParentId.Equal(state.ParentId) {
+		if plan.ParentId.IsNull() {
+			body.SetParentNil()
+		} else if !plan.ParentId.IsUnknown() {
+			body.SetParent(conv.Int32(plan.ParentId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
 	return body
 }
@@ -344,14 +356,14 @@ func tenantGroupFromAPI(ctx context.Context, obj *netbox.TenantGroup, prior *Ten
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *TenantGroupModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *TenantGroupModel) types.String { return m.Slug }), false)
 	out.ParentId = conv.BriefID(obj.GetParentOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *TenantGroupModel) types.String { return m.Description }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *TenantGroupModel) types.String { return m.Comments }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

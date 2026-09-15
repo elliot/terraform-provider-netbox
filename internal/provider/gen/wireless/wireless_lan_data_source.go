@@ -113,7 +113,7 @@ func wirelessLanDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"scope_id": dsschema.Int64Attribute{
-			MarkdownDescription: "Scope Id.",
+			MarkdownDescription: "Scope Id. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"tenant_id": dsschema.Int64Attribute{

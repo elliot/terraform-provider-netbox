@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -158,8 +159,10 @@ func moduleTypeResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"weight": schema.Float64Attribute{
-			MarkdownDescription: "Weight.",
+			MarkdownDescription: "Weight. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"weight_unit": schema.StringAttribute{
 			MarkdownDescription: "Weight Unit. Valid values: `kg`, `g`, `lb`, `oz`. Defaults to the NetBox server default when omitted.",
@@ -302,7 +305,7 @@ func (r *ModuleTypeResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := moduleTypeToPatch(ctx, &plan, &resp.Diagnostics)
+	body := moduleTypeToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -346,37 +349,25 @@ func (r *ModuleTypeResource) ImportState(ctx context.Context, req resource.Impor
 // moduleTypeToCreate builds the WritableModuleTypeRequest request body from the plan.
 func moduleTypeToCreate(ctx context.Context, plan *ModuleTypeModel, diags *diag.Diagnostics) *netbox.WritableModuleTypeRequest {
 	body := netbox.NewWritableModuleTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString())
-	if plan.ProfileId.IsNull() {
-		body.SetProfileNil()
-	} else if !plan.ProfileId.IsUnknown() {
+	if conv.Known(plan.ProfileId) {
 		body.SetProfile(conv.Int32(plan.ProfileId))
 	}
 	if !plan.PartNumber.IsUnknown() {
 		body.SetPartNumber(plan.PartNumber.ValueString())
 	}
-	if plan.Airflow.IsNull() {
-		body.SetAirflowNil()
-	} else if !plan.Airflow.IsUnknown() {
+	if conv.Known(plan.Airflow) {
 		body.SetAirflow(plan.Airflow.ValueString())
 	}
-	if plan.CoolingMethod.IsNull() {
-		body.SetCoolingMethodNil()
-	} else if !plan.CoolingMethod.IsUnknown() {
+	if conv.Known(plan.CoolingMethod) {
 		body.SetCoolingMethod(plan.CoolingMethod.ValueString())
 	}
-	if plan.Weight.IsNull() {
-		body.SetWeightNil()
-	} else if !plan.Weight.IsUnknown() {
+	if conv.Known(plan.Weight) {
 		body.SetWeight(plan.Weight.ValueFloat64())
 	}
-	if plan.WeightUnit.IsNull() {
-		body.SetWeightUnitNil()
-	} else if !plan.WeightUnit.IsUnknown() {
+	if conv.Known(plan.WeightUnit) {
 		body.SetWeightUnit(plan.WeightUnit.ValueString())
 	}
-	if plan.EndOfLife.IsNull() {
-		body.SetEndOfLifeNil()
-	} else if !plan.EndOfLife.IsUnknown() {
+	if conv.Known(plan.EndOfLife) {
 		body.SetEndOfLife(plan.EndOfLife.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
@@ -388,9 +379,7 @@ func moduleTypeToCreate(ctx context.Context, plan *ModuleTypeModel, diags *diag.
 	if conv.Known(plan.ModuleBayTypeIds) {
 		body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -405,70 +394,94 @@ func moduleTypeToCreate(ctx context.Context, plan *ModuleTypeModel, diags *diag.
 	return body
 }
 
-// moduleTypeToPatch builds the PatchedWritableModuleTypeRequest request body from the plan.
-func moduleTypeToPatch(ctx context.Context, plan *ModuleTypeModel, diags *diag.Diagnostics) *netbox.PatchedWritableModuleTypeRequest {
+// moduleTypeToPatch builds the PatchedWritableModuleTypeRequest request body with every attribute whose planned value differs from state.
+func moduleTypeToPatch(ctx context.Context, plan, state *ModuleTypeModel, diags *diag.Diagnostics) *netbox.PatchedWritableModuleTypeRequest {
 	body := netbox.NewPatchedWritableModuleTypeRequest()
-	if plan.ProfileId.IsNull() {
-		body.SetProfileNil()
-	} else if !plan.ProfileId.IsUnknown() {
-		body.SetProfile(conv.Int32(plan.ProfileId))
+	if !plan.ProfileId.Equal(state.ProfileId) {
+		if plan.ProfileId.IsNull() {
+			body.SetProfileNil()
+		} else if !plan.ProfileId.IsUnknown() {
+			body.SetProfile(conv.Int32(plan.ProfileId))
+		}
 	}
-	if conv.Known(plan.ManufacturerId) {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
+		if conv.Known(plan.ManufacturerId) {
+			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		}
 	}
-	if conv.Known(plan.Model) {
-		body.SetModel(plan.Model.ValueString())
+	if !plan.Model.Equal(state.Model) {
+		if conv.Known(plan.Model) {
+			body.SetModel(plan.Model.ValueString())
+		}
 	}
-	if !plan.PartNumber.IsUnknown() {
-		body.SetPartNumber(plan.PartNumber.ValueString())
+	if !plan.PartNumber.Equal(state.PartNumber) {
+		if !plan.PartNumber.IsUnknown() {
+			body.SetPartNumber(plan.PartNumber.ValueString())
+		}
 	}
-	if plan.Airflow.IsNull() {
-		body.SetAirflowNil()
-	} else if !plan.Airflow.IsUnknown() {
-		body.SetAirflow(plan.Airflow.ValueString())
+	if !plan.Airflow.Equal(state.Airflow) {
+		if conv.Known(plan.Airflow) {
+			body.SetAirflow(plan.Airflow.ValueString())
+		}
 	}
-	if plan.CoolingMethod.IsNull() {
-		body.SetCoolingMethodNil()
-	} else if !plan.CoolingMethod.IsUnknown() {
-		body.SetCoolingMethod(plan.CoolingMethod.ValueString())
+	if !plan.CoolingMethod.Equal(state.CoolingMethod) {
+		if conv.Known(plan.CoolingMethod) {
+			body.SetCoolingMethod(plan.CoolingMethod.ValueString())
+		}
 	}
-	if plan.Weight.IsNull() {
-		body.SetWeightNil()
-	} else if !plan.Weight.IsUnknown() {
-		body.SetWeight(plan.Weight.ValueFloat64())
+	if !plan.Weight.Equal(state.Weight) {
+		if conv.Known(plan.Weight) {
+			body.SetWeight(plan.Weight.ValueFloat64())
+		}
 	}
-	if plan.WeightUnit.IsNull() {
-		body.SetWeightUnitNil()
-	} else if !plan.WeightUnit.IsUnknown() {
-		body.SetWeightUnit(plan.WeightUnit.ValueString())
+	if !plan.WeightUnit.Equal(state.WeightUnit) {
+		if conv.Known(plan.WeightUnit) {
+			body.SetWeightUnit(plan.WeightUnit.ValueString())
+		}
 	}
-	if plan.EndOfLife.IsNull() {
-		body.SetEndOfLifeNil()
-	} else if !plan.EndOfLife.IsUnknown() {
-		body.SetEndOfLife(plan.EndOfLife.ValueString())
+	if !plan.EndOfLife.Equal(state.EndOfLife) {
+		if plan.EndOfLife.IsNull() {
+			body.SetEndOfLifeNil()
+		} else if !plan.EndOfLife.IsUnknown() {
+			body.SetEndOfLife(plan.EndOfLife.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Attributes) {
-		body.SetAttributes(conv.JSONToAPI(plan.Attributes, diags))
+	if !plan.Attributes.Equal(state.Attributes) {
+		if conv.Known(plan.Attributes) {
+			body.SetAttributes(conv.JSONToAPI(plan.Attributes, diags))
+		}
 	}
-	if conv.Known(plan.ModuleBayTypeIds) {
-		body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
+	if !plan.ModuleBayTypeIds.Equal(state.ModuleBayTypeIds) {
+		if conv.Known(plan.ModuleBayTypeIds) {
+			body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -483,18 +496,18 @@ func moduleTypeFromAPI(ctx context.Context, obj *netbox.ModuleType, prior *Modul
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ProfileId = conv.BriefID(obj.GetProfileOk())
 	out.ManufacturerId = conv.BriefID(obj.GetManufacturerOk())
-	out.Model = conv.String(obj.GetModelOk())
-	out.PartNumber = conv.StringOrEmpty(obj.GetPartNumberOk())
+	out.Model = conv.StringKeep(conv.String(obj.GetModelOk()), conv.PriorString(prior, func(m *ModuleTypeModel) types.String { return m.Model }), false)
+	out.PartNumber = conv.StringKeep(conv.StringOrEmpty(obj.GetPartNumberOk()), conv.PriorString(prior, func(m *ModuleTypeModel) types.String { return m.PartNumber }), false)
 	out.Airflow = conv.Choice(obj.GetAirflowOk())
 	out.CoolingMethod = conv.Choice(obj.GetCoolingMethodOk())
 	out.Weight = conv.Float64Keep(conv.Float64From(obj.GetWeightOk()), conv.PriorFloat(prior, func(m *ModuleTypeModel) types.Float64 { return m.Weight }), 0)
 	out.WeightUnit = conv.Choice(obj.GetWeightUnitOk())
-	out.EndOfLife = conv.String(obj.GetEndOfLifeOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.EndOfLife = conv.StringKeep(conv.String(obj.GetEndOfLifeOk()), conv.PriorString(prior, func(m *ModuleTypeModel) types.String { return m.EndOfLife }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ModuleTypeModel) types.String { return m.Description }), false)
 	out.Attributes = conv.JSONFromAPIWithPrior(obj.GetAttributes(), conv.PriorJSON(prior, func(m *ModuleTypeModel) jsontypes.Normalized { return m.Attributes }))
 	out.ModuleBayTypeIds = conv.BriefIDs(obj.GetModuleBayTypes())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ModuleTypeModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

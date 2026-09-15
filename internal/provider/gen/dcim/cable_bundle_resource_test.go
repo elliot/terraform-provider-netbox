@@ -86,7 +86,7 @@ func TestAccCableBundle_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_cable_bundle", &resource.Sweeper{
 		Name:         "netbox_cable_bundle",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_cable"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/cable-bundles/", []string{"name__isw", "description__isw", "q"})
 		},

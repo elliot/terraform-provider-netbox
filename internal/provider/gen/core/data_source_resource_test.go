@@ -90,7 +90,7 @@ func TestAccDataSource_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_data_source", &resource.Sweeper{
 		Name:         "netbox_data_source",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_config_context", "netbox_config_context_profile", "netbox_config_template", "netbox_export_template"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/core/data-sources/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -224,7 +224,7 @@ func (r *VirtualDiskResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualDiskToPatch(ctx, &plan, &resp.Diagnostics)
+	body := virtualDiskToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -271,9 +271,7 @@ func virtualDiskToCreate(ctx context.Context, plan *VirtualDiskModel, diags *dia
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if conv.Known(plan.Tags) {
@@ -285,31 +283,45 @@ func virtualDiskToCreate(ctx context.Context, plan *VirtualDiskModel, diags *dia
 	return body
 }
 
-// virtualDiskToPatch builds the PatchedVirtualDiskRequest request body from the plan.
-func virtualDiskToPatch(ctx context.Context, plan *VirtualDiskModel, diags *diag.Diagnostics) *netbox.PatchedVirtualDiskRequest {
+// virtualDiskToPatch builds the PatchedVirtualDiskRequest request body with every attribute whose planned value differs from state.
+func virtualDiskToPatch(ctx context.Context, plan, state *VirtualDiskModel, diags *diag.Diagnostics) *netbox.PatchedVirtualDiskRequest {
 	body := netbox.NewPatchedVirtualDiskRequest()
-	if conv.Known(plan.VirtualMachineId) {
-		body.SetVirtualMachine(conv.Int32(plan.VirtualMachineId))
+	if !plan.VirtualMachineId.Equal(state.VirtualMachineId) {
+		if conv.Known(plan.VirtualMachineId) {
+			body.SetVirtualMachine(conv.Int32(plan.VirtualMachineId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Size) {
-		body.SetSize(conv.Int32(plan.Size))
+	if !plan.Size.Equal(state.Size) {
+		if conv.Known(plan.Size) {
+			body.SetSize(conv.Int32(plan.Size))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -323,8 +335,8 @@ func virtualDiskFromAPI(ctx context.Context, obj *netbox.VirtualDisk, prior *Vir
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.VirtualMachineId = conv.BriefID(obj.GetVirtualMachineOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *VirtualDiskModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VirtualDiskModel) types.String { return m.Description }), false)
 	out.Size = conv.Int64From32(obj.GetSizeOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

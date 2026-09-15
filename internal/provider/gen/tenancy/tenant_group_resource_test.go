@@ -88,7 +88,7 @@ func TestAccTenantGroup_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_tenant_group", &resource.Sweeper{
 		Name:         "netbox_tenant_group",
-		Dependencies: []string{"netbox_tenant"},
+		Dependencies: []string{"netbox_config_context", "netbox_tenant"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/tenancy/tenant-groups/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

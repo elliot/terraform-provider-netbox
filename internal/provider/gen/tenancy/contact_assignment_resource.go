@@ -227,7 +227,7 @@ func (r *ContactAssignmentResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := contactAssignmentToPatch(ctx, &plan, &resp.Diagnostics)
+	body := contactAssignmentToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -271,14 +271,10 @@ func (r *ContactAssignmentResource) ImportState(ctx context.Context, req resourc
 // contactAssignmentToCreate builds the WritableContactAssignmentRequest request body from the plan.
 func contactAssignmentToCreate(ctx context.Context, plan *ContactAssignmentModel, diags *diag.Diagnostics) *netbox.WritableContactAssignmentRequest {
 	body := netbox.NewWritableContactAssignmentRequest(plan.ObjectType.ValueString(), plan.ObjectId.ValueInt64(), conv.Int32(plan.ContactId))
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
+	if conv.Known(plan.RoleId) {
 		body.SetRole(conv.Int32(plan.RoleId))
 	}
-	if plan.Priority.IsNull() {
-		body.SetPriorityNil()
-	} else if !plan.Priority.IsUnknown() {
+	if conv.Known(plan.Priority) {
 		body.SetPriority(plan.Priority.ValueString())
 	}
 	if conv.Known(plan.Tags) {
@@ -290,33 +286,45 @@ func contactAssignmentToCreate(ctx context.Context, plan *ContactAssignmentModel
 	return body
 }
 
-// contactAssignmentToPatch builds the PatchedWritableContactAssignmentRequest request body from the plan.
-func contactAssignmentToPatch(ctx context.Context, plan *ContactAssignmentModel, diags *diag.Diagnostics) *netbox.PatchedWritableContactAssignmentRequest {
+// contactAssignmentToPatch builds the PatchedWritableContactAssignmentRequest request body with every attribute whose planned value differs from state.
+func contactAssignmentToPatch(ctx context.Context, plan, state *ContactAssignmentModel, diags *diag.Diagnostics) *netbox.PatchedWritableContactAssignmentRequest {
 	body := netbox.NewPatchedWritableContactAssignmentRequest()
-	if conv.Known(plan.ObjectType) {
-		body.SetObjectType(plan.ObjectType.ValueString())
+	if !plan.ObjectType.Equal(state.ObjectType) {
+		if conv.Known(plan.ObjectType) {
+			body.SetObjectType(plan.ObjectType.ValueString())
+		}
 	}
-	if conv.Known(plan.ObjectId) {
-		body.SetObjectId(plan.ObjectId.ValueInt64())
+	if !plan.ObjectId.Equal(state.ObjectId) {
+		if conv.Known(plan.ObjectId) {
+			body.SetObjectId(plan.ObjectId.ValueInt64())
+		}
 	}
-	if conv.Known(plan.ContactId) {
-		body.SetContact(conv.Int32(plan.ContactId))
+	if !plan.ContactId.Equal(state.ContactId) {
+		if conv.Known(plan.ContactId) {
+			body.SetContact(conv.Int32(plan.ContactId))
+		}
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
-		body.SetRole(conv.Int32(plan.RoleId))
+	if !plan.RoleId.Equal(state.RoleId) {
+		if plan.RoleId.IsNull() {
+			body.SetRoleNil()
+		} else if !plan.RoleId.IsUnknown() {
+			body.SetRole(conv.Int32(plan.RoleId))
+		}
 	}
-	if plan.Priority.IsNull() {
-		body.SetPriorityNil()
-	} else if !plan.Priority.IsUnknown() {
-		body.SetPriority(plan.Priority.ValueString())
+	if !plan.Priority.Equal(state.Priority) {
+		if conv.Known(plan.Priority) {
+			body.SetPriority(plan.Priority.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -329,7 +337,7 @@ func contactAssignmentFromAPI(ctx context.Context, obj *netbox.ContactAssignment
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.ObjectType = conv.String(obj.GetObjectTypeOk())
+	out.ObjectType = conv.StringKeep(conv.String(obj.GetObjectTypeOk()), conv.PriorString(prior, func(m *ContactAssignmentModel) types.String { return m.ObjectType }), false)
 	out.ObjectId = conv.Int64From64(obj.GetObjectIdOk())
 	out.ContactId = conv.BriefID(obj.GetContactOk())
 	out.RoleId = conv.BriefID(obj.GetRoleOk())

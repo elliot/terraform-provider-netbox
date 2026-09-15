@@ -139,12 +139,16 @@ func ipsecProposalResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"sa_lifetime_seconds": schema.Int64Attribute{
-			MarkdownDescription: "Security association lifetime (seconds).",
+			MarkdownDescription: "Security association lifetime (seconds). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"sa_lifetime_data": schema.Int64Attribute{
-			MarkdownDescription: "Security association lifetime (in kilobytes).",
+			MarkdownDescription: "Security association lifetime (in kilobytes). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"owner_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Owner (`netbox_owner`).",
@@ -257,7 +261,7 @@ func (r *IpsecProposalResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ipsecProposalToPatch(ctx, &plan, &resp.Diagnostics)
+	body := ipsecProposalToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -304,29 +308,19 @@ func ipsecProposalToCreate(ctx context.Context, plan *IpsecProposalModel, diags 
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.EncryptionAlgorithm.IsNull() {
-		body.SetEncryptionAlgorithmNil()
-	} else if !plan.EncryptionAlgorithm.IsUnknown() {
+	if conv.Known(plan.EncryptionAlgorithm) {
 		body.SetEncryptionAlgorithm(plan.EncryptionAlgorithm.ValueString())
 	}
-	if plan.AuthenticationAlgorithm.IsNull() {
-		body.SetAuthenticationAlgorithmNil()
-	} else if !plan.AuthenticationAlgorithm.IsUnknown() {
+	if conv.Known(plan.AuthenticationAlgorithm) {
 		body.SetAuthenticationAlgorithm(plan.AuthenticationAlgorithm.ValueString())
 	}
-	if plan.SaLifetimeSeconds.IsNull() {
-		body.SetSaLifetimeSecondsNil()
-	} else if !plan.SaLifetimeSeconds.IsUnknown() {
+	if conv.Known(plan.SaLifetimeSeconds) {
 		body.SetSaLifetimeSeconds(conv.Int32(plan.SaLifetimeSeconds))
 	}
-	if plan.SaLifetimeData.IsNull() {
-		body.SetSaLifetimeDataNil()
-	} else if !plan.SaLifetimeData.IsUnknown() {
+	if conv.Known(plan.SaLifetimeData) {
 		body.SetSaLifetimeData(conv.Int32(plan.SaLifetimeData))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -341,48 +335,60 @@ func ipsecProposalToCreate(ctx context.Context, plan *IpsecProposalModel, diags 
 	return body
 }
 
-// ipsecProposalToPatch builds the PatchedWritableIPSecProposalRequest request body from the plan.
-func ipsecProposalToPatch(ctx context.Context, plan *IpsecProposalModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPSecProposalRequest {
+// ipsecProposalToPatch builds the PatchedWritableIPSecProposalRequest request body with every attribute whose planned value differs from state.
+func ipsecProposalToPatch(ctx context.Context, plan, state *IpsecProposalModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPSecProposalRequest {
 	body := netbox.NewPatchedWritableIPSecProposalRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.EncryptionAlgorithm.IsNull() {
-		body.SetEncryptionAlgorithmNil()
-	} else if !plan.EncryptionAlgorithm.IsUnknown() {
-		body.SetEncryptionAlgorithm(plan.EncryptionAlgorithm.ValueString())
+	if !plan.EncryptionAlgorithm.Equal(state.EncryptionAlgorithm) {
+		if conv.Known(plan.EncryptionAlgorithm) {
+			body.SetEncryptionAlgorithm(plan.EncryptionAlgorithm.ValueString())
+		}
 	}
-	if plan.AuthenticationAlgorithm.IsNull() {
-		body.SetAuthenticationAlgorithmNil()
-	} else if !plan.AuthenticationAlgorithm.IsUnknown() {
-		body.SetAuthenticationAlgorithm(plan.AuthenticationAlgorithm.ValueString())
+	if !plan.AuthenticationAlgorithm.Equal(state.AuthenticationAlgorithm) {
+		if conv.Known(plan.AuthenticationAlgorithm) {
+			body.SetAuthenticationAlgorithm(plan.AuthenticationAlgorithm.ValueString())
+		}
 	}
-	if plan.SaLifetimeSeconds.IsNull() {
-		body.SetSaLifetimeSecondsNil()
-	} else if !plan.SaLifetimeSeconds.IsUnknown() {
-		body.SetSaLifetimeSeconds(conv.Int32(plan.SaLifetimeSeconds))
+	if !plan.SaLifetimeSeconds.Equal(state.SaLifetimeSeconds) {
+		if conv.Known(plan.SaLifetimeSeconds) {
+			body.SetSaLifetimeSeconds(conv.Int32(plan.SaLifetimeSeconds))
+		}
 	}
-	if plan.SaLifetimeData.IsNull() {
-		body.SetSaLifetimeDataNil()
-	} else if !plan.SaLifetimeData.IsUnknown() {
-		body.SetSaLifetimeData(conv.Int32(plan.SaLifetimeData))
+	if !plan.SaLifetimeData.Equal(state.SaLifetimeData) {
+		if conv.Known(plan.SaLifetimeData) {
+			body.SetSaLifetimeData(conv.Int32(plan.SaLifetimeData))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -395,14 +401,14 @@ func ipsecProposalFromAPI(ctx context.Context, obj *netbox.IPSecProposal, prior 
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *IpsecProposalModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *IpsecProposalModel) types.String { return m.Description }), false)
 	out.EncryptionAlgorithm = conv.Choice(obj.GetEncryptionAlgorithmOk())
 	out.AuthenticationAlgorithm = conv.Choice(obj.GetAuthenticationAlgorithmOk())
 	out.SaLifetimeSeconds = conv.Int64From32(obj.GetSaLifetimeSecondsOk())
 	out.SaLifetimeData = conv.Int64From32(obj.GetSaLifetimeDataOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IpsecProposalModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

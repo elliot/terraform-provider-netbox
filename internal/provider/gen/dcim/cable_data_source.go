@@ -148,7 +148,7 @@ func cableDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"length": dsschema.Float64Attribute{
-			MarkdownDescription: "Length.",
+			MarkdownDescription: "Length. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"length_unit": dsschema.StringAttribute{

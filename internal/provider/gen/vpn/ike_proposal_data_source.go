@@ -104,7 +104,7 @@ func ikeProposalDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"sa_lifetime": dsschema.Int64Attribute{
-			MarkdownDescription: "Security association lifetime (in seconds).",
+			MarkdownDescription: "Security association lifetime (in seconds). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{

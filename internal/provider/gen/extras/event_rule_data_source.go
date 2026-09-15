@@ -109,7 +109,7 @@ func eventRuleDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"action_object_id": dsschema.Int64Attribute{
-			MarkdownDescription: "Action Object Id.",
+			MarkdownDescription: "Action Object Id. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

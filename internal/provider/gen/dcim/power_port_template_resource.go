@@ -143,12 +143,16 @@ func powerPortTemplateResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"maximum_draw": schema.Int64Attribute{
-			MarkdownDescription: "Maximum power draw (watts).",
+			MarkdownDescription: "Maximum power draw (watts). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"allocated_draw": schema.Int64Attribute{
-			MarkdownDescription: "Allocated power draw (watts).",
+			MarkdownDescription: "Allocated power draw (watts). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -246,7 +250,7 @@ func (r *PowerPortTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := powerPortTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := powerPortTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -290,32 +294,22 @@ func (r *PowerPortTemplateResource) ImportState(ctx context.Context, req resourc
 // powerPortTemplateToCreate builds the WritablePowerPortTemplateRequest request body from the plan.
 func powerPortTemplateToCreate(ctx context.Context, plan *PowerPortTemplateModel, diags *diag.Diagnostics) *netbox.WritablePowerPortTemplateRequest {
 	body := netbox.NewWritablePowerPortTemplateRequest(plan.Name.ValueString())
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
+	if conv.Known(plan.DeviceTypeId) {
 		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
+	if conv.Known(plan.ModuleTypeId) {
 		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
+	if conv.Known(plan.Type) {
 		body.SetType(plan.Type.ValueString())
 	}
-	if plan.MaximumDraw.IsNull() {
-		body.SetMaximumDrawNil()
-	} else if !plan.MaximumDraw.IsUnknown() {
+	if conv.Known(plan.MaximumDraw) {
 		body.SetMaximumDraw(conv.Int32(plan.MaximumDraw))
 	}
-	if plan.AllocatedDraw.IsNull() {
-		body.SetAllocatedDrawNil()
-	} else if !plan.AllocatedDraw.IsUnknown() {
+	if conv.Known(plan.AllocatedDraw) {
 		body.SetAllocatedDraw(conv.Int32(plan.AllocatedDraw))
 	}
 	if !plan.Description.IsUnknown() {
@@ -324,42 +318,52 @@ func powerPortTemplateToCreate(ctx context.Context, plan *PowerPortTemplateModel
 	return body
 }
 
-// powerPortTemplateToPatch builds the PatchedWritablePowerPortTemplateRequest request body from the plan.
-func powerPortTemplateToPatch(ctx context.Context, plan *PowerPortTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritablePowerPortTemplateRequest {
+// powerPortTemplateToPatch builds the PatchedWritablePowerPortTemplateRequest request body with every attribute whose planned value differs from state.
+func powerPortTemplateToPatch(ctx context.Context, plan, state *PowerPortTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritablePowerPortTemplateRequest {
 	body := netbox.NewPatchedWritablePowerPortTemplateRequest()
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if plan.DeviceTypeId.IsNull() {
+			body.SetDeviceTypeNil()
+		} else if !plan.DeviceTypeId.IsUnknown() {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
+		if plan.ModuleTypeId.IsNull() {
+			body.SetModuleTypeNil()
+		} else if !plan.ModuleTypeId.IsUnknown() {
+			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if plan.MaximumDraw.IsNull() {
-		body.SetMaximumDrawNil()
-	} else if !plan.MaximumDraw.IsUnknown() {
-		body.SetMaximumDraw(conv.Int32(plan.MaximumDraw))
+	if !plan.MaximumDraw.Equal(state.MaximumDraw) {
+		if conv.Known(plan.MaximumDraw) {
+			body.SetMaximumDraw(conv.Int32(plan.MaximumDraw))
+		}
 	}
-	if plan.AllocatedDraw.IsNull() {
-		body.SetAllocatedDrawNil()
-	} else if !plan.AllocatedDraw.IsUnknown() {
-		body.SetAllocatedDraw(conv.Int32(plan.AllocatedDraw))
+	if !plan.AllocatedDraw.Equal(state.AllocatedDraw) {
+		if conv.Known(plan.AllocatedDraw) {
+			body.SetAllocatedDraw(conv.Int32(plan.AllocatedDraw))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
 	return body
 }
@@ -370,12 +374,12 @@ func powerPortTemplateFromAPI(ctx context.Context, obj *netbox.PowerPortTemplate
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.ModuleTypeId = conv.BriefID(obj.GetModuleTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *PowerPortTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *PowerPortTemplateModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.MaximumDraw = conv.Int64From32(obj.GetMaximumDrawOk())
 	out.AllocatedDraw = conv.Int64From32(obj.GetAllocatedDrawOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *PowerPortTemplateModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

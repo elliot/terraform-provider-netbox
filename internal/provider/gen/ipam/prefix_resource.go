@@ -280,7 +280,7 @@ func (r *PrefixResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := prefixToPatch(ctx, &plan, &resp.Diagnostics)
+	body := prefixToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -324,35 +324,25 @@ func (r *PrefixResource) ImportState(ctx context.Context, req resource.ImportSta
 // prefixToCreate builds the WritablePrefixRequest request body from the plan.
 func prefixToCreate(ctx context.Context, plan *PrefixModel, diags *diag.Diagnostics) *netbox.WritablePrefixRequest {
 	body := netbox.NewWritablePrefixRequest(plan.Prefix.ValueString())
-	if plan.VrfId.IsNull() {
-		body.SetVrfNil()
-	} else if !plan.VrfId.IsUnknown() {
+	if conv.Known(plan.VrfId) {
 		body.SetVrf(conv.Int32(plan.VrfId))
 	}
-	if plan.ScopeType.IsNull() {
-		body.SetScopeTypeNil()
-	} else if !plan.ScopeType.IsUnknown() {
+	if conv.Known(plan.ScopeType) {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
 	if conv.Known(plan.ScopeId) {
 		body.SetScopeId(conv.Int32(plan.ScopeId))
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.VlanId.IsNull() {
-		body.SetVlanNil()
-	} else if !plan.VlanId.IsUnknown() {
+	if conv.Known(plan.VlanId) {
 		body.SetVlan(conv.Int32(plan.VlanId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
+	if conv.Known(plan.RoleId) {
 		body.SetRole(conv.Int32(plan.RoleId))
 	}
 	if conv.Known(plan.IsPool) {
@@ -364,9 +354,7 @@ func prefixToCreate(ctx context.Context, plan *PrefixModel, diags *diag.Diagnost
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -381,65 +369,95 @@ func prefixToCreate(ctx context.Context, plan *PrefixModel, diags *diag.Diagnost
 	return body
 }
 
-// prefixToPatch builds the PatchedWritablePrefixRequest request body from the plan.
-func prefixToPatch(ctx context.Context, plan *PrefixModel, diags *diag.Diagnostics) *netbox.PatchedWritablePrefixRequest {
+// prefixToPatch builds the PatchedWritablePrefixRequest request body with every attribute whose planned value differs from state.
+func prefixToPatch(ctx context.Context, plan, state *PrefixModel, diags *diag.Diagnostics) *netbox.PatchedWritablePrefixRequest {
 	body := netbox.NewPatchedWritablePrefixRequest()
-	if conv.Known(plan.Prefix) {
-		body.SetPrefix(plan.Prefix.ValueString())
+	if !plan.Prefix.Equal(state.Prefix) {
+		if conv.Known(plan.Prefix) {
+			body.SetPrefix(plan.Prefix.ValueString())
+		}
 	}
-	if plan.VrfId.IsNull() {
-		body.SetVrfNil()
-	} else if !plan.VrfId.IsUnknown() {
-		body.SetVrf(conv.Int32(plan.VrfId))
+	if !plan.VrfId.Equal(state.VrfId) {
+		if plan.VrfId.IsNull() {
+			body.SetVrfNil()
+		} else if !plan.VrfId.IsUnknown() {
+			body.SetVrf(conv.Int32(plan.VrfId))
+		}
 	}
-	if plan.ScopeType.IsNull() {
-		body.SetScopeTypeNil()
-	} else if !plan.ScopeType.IsUnknown() {
-		body.SetScopeType(plan.ScopeType.ValueString())
+	if !plan.ScopeType.Equal(state.ScopeType) {
+		if plan.ScopeType.IsNull() {
+			body.SetScopeTypeNil()
+		} else if !plan.ScopeType.IsUnknown() {
+			body.SetScopeType(plan.ScopeType.ValueString())
+		}
 	}
-	if conv.Known(plan.ScopeId) {
-		body.SetScopeId(conv.Int32(plan.ScopeId))
+	if !plan.ScopeId.Equal(state.ScopeId) {
+		if conv.Known(plan.ScopeId) {
+			body.SetScopeId(conv.Int32(plan.ScopeId))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.VlanId.IsNull() {
-		body.SetVlanNil()
-	} else if !plan.VlanId.IsUnknown() {
-		body.SetVlan(conv.Int32(plan.VlanId))
+	if !plan.VlanId.Equal(state.VlanId) {
+		if plan.VlanId.IsNull() {
+			body.SetVlanNil()
+		} else if !plan.VlanId.IsUnknown() {
+			body.SetVlan(conv.Int32(plan.VlanId))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
-		body.SetRole(conv.Int32(plan.RoleId))
+	if !plan.RoleId.Equal(state.RoleId) {
+		if plan.RoleId.IsNull() {
+			body.SetRoleNil()
+		} else if !plan.RoleId.IsUnknown() {
+			body.SetRole(conv.Int32(plan.RoleId))
+		}
 	}
-	if conv.Known(plan.IsPool) {
-		body.SetIsPool(plan.IsPool.ValueBool())
+	if !plan.IsPool.Equal(state.IsPool) {
+		if conv.Known(plan.IsPool) {
+			body.SetIsPool(plan.IsPool.ValueBool())
+		}
 	}
-	if conv.Known(plan.MarkUtilized) {
-		body.SetMarkUtilized(plan.MarkUtilized.ValueBool())
+	if !plan.MarkUtilized.Equal(state.MarkUtilized) {
+		if conv.Known(plan.MarkUtilized) {
+			body.SetMarkUtilized(plan.MarkUtilized.ValueBool())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

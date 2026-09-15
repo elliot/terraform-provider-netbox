@@ -136,7 +136,7 @@ func moduleTypeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"weight": dsschema.Float64Attribute{
-			MarkdownDescription: "Weight.",
+			MarkdownDescription: "Weight. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"weight_unit": dsschema.StringAttribute{

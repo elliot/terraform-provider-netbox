@@ -226,7 +226,7 @@ func (r *ConfigContextProfileResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := configContextProfileToPatch(ctx, &plan, &resp.Diagnostics)
+	body := configContextProfileToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -279,9 +279,7 @@ func configContextProfileToCreate(ctx context.Context, plan *ConfigContextProfil
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -293,31 +291,45 @@ func configContextProfileToCreate(ctx context.Context, plan *ConfigContextProfil
 	return body
 }
 
-// configContextProfileToPatch builds the PatchedConfigContextProfileRequest request body from the plan.
-func configContextProfileToPatch(ctx context.Context, plan *ConfigContextProfileModel, diags *diag.Diagnostics) *netbox.PatchedConfigContextProfileRequest {
+// configContextProfileToPatch builds the PatchedConfigContextProfileRequest request body with every attribute whose planned value differs from state.
+func configContextProfileToPatch(ctx context.Context, plan, state *ConfigContextProfileModel, diags *diag.Diagnostics) *netbox.PatchedConfigContextProfileRequest {
 	body := netbox.NewPatchedConfigContextProfileRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Schema) {
-		body.SetSchema(conv.JSONToAPI(plan.Schema, diags))
+	if !plan.Schema.Equal(state.Schema) {
+		if conv.Known(plan.Schema) {
+			body.SetSchema(conv.JSONToAPI(plan.Schema, diags))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.DataSourceId) {
-		body.SetDataSource(conv.Int32(plan.DataSourceId))
+	if !plan.DataSourceId.Equal(state.DataSourceId) {
+		if conv.Known(plan.DataSourceId) {
+			body.SetDataSource(conv.Int32(plan.DataSourceId))
+		}
 	}
 	return body
 }
@@ -326,12 +338,12 @@ func configContextProfileToPatch(ctx context.Context, plan *ConfigContextProfile
 func configContextProfileFromAPI(ctx context.Context, obj *netbox.ConfigContextProfile, prior *ConfigContextProfileModel, out *ConfigContextProfileModel, diags *diag.Diagnostics) {
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ConfigContextProfileModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ConfigContextProfileModel) types.String { return m.Description }), false)
 	out.Schema = conv.JSONFromAPIWithPrior(obj.GetSchema(), conv.PriorJSON(prior, func(m *ConfigContextProfileModel) jsontypes.Normalized { return m.Schema }))
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ConfigContextProfileModel) types.String { return m.Comments }), false)
 	out.DataSourceId = conv.BriefID(obj.GetDataSourceOk())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())

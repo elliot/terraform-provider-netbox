@@ -123,7 +123,7 @@ func TestAccSite_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_site", &resource.Sweeper{
 		Name:         "netbox_site",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_config_context", "netbox_cooling_source", "netbox_device", "netbox_location", "netbox_power_panel", "netbox_rack", "netbox_virtual_machine", "netbox_vlan"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/sites/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

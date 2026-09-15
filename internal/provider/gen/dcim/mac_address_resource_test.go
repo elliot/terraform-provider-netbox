@@ -117,7 +117,7 @@ func TestAccMacAddress_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_mac_address", &resource.Sweeper{
 		Name:         "netbox_mac_address",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_interface", "netbox_vm_interface"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/mac-addresses/", []string{"description__isw", "q"})
 		},

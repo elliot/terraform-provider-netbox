@@ -268,7 +268,7 @@ func (r *IpRangeResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ipRangeToPatch(ctx, &plan, &resp.Diagnostics)
+	body := ipRangeToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -312,30 +312,22 @@ func (r *IpRangeResource) ImportState(ctx context.Context, req resource.ImportSt
 // ipRangeToCreate builds the WritableIPRangeRequest request body from the plan.
 func ipRangeToCreate(ctx context.Context, plan *IpRangeModel, diags *diag.Diagnostics) *netbox.WritableIPRangeRequest {
 	body := netbox.NewWritableIPRangeRequest(plan.StartAddress.ValueString(), plan.EndAddress.ValueString())
-	if plan.VrfId.IsNull() {
-		body.SetVrfNil()
-	} else if !plan.VrfId.IsUnknown() {
+	if conv.Known(plan.VrfId) {
 		body.SetVrf(conv.Int32(plan.VrfId))
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
+	if conv.Known(plan.RoleId) {
 		body.SetRole(conv.Int32(plan.RoleId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -356,55 +348,81 @@ func ipRangeToCreate(ctx context.Context, plan *IpRangeModel, diags *diag.Diagno
 	return body
 }
 
-// ipRangeToPatch builds the PatchedWritableIPRangeRequest request body from the plan.
-func ipRangeToPatch(ctx context.Context, plan *IpRangeModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPRangeRequest {
+// ipRangeToPatch builds the PatchedWritableIPRangeRequest request body with every attribute whose planned value differs from state.
+func ipRangeToPatch(ctx context.Context, plan, state *IpRangeModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPRangeRequest {
 	body := netbox.NewPatchedWritableIPRangeRequest()
-	if conv.Known(plan.StartAddress) {
-		body.SetStartAddress(plan.StartAddress.ValueString())
+	if !plan.StartAddress.Equal(state.StartAddress) {
+		if conv.Known(plan.StartAddress) {
+			body.SetStartAddress(plan.StartAddress.ValueString())
+		}
 	}
-	if conv.Known(plan.EndAddress) {
-		body.SetEndAddress(plan.EndAddress.ValueString())
+	if !plan.EndAddress.Equal(state.EndAddress) {
+		if conv.Known(plan.EndAddress) {
+			body.SetEndAddress(plan.EndAddress.ValueString())
+		}
 	}
-	if plan.VrfId.IsNull() {
-		body.SetVrfNil()
-	} else if !plan.VrfId.IsUnknown() {
-		body.SetVrf(conv.Int32(plan.VrfId))
+	if !plan.VrfId.Equal(state.VrfId) {
+		if plan.VrfId.IsNull() {
+			body.SetVrfNil()
+		} else if !plan.VrfId.IsUnknown() {
+			body.SetVrf(conv.Int32(plan.VrfId))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
-		body.SetRole(conv.Int32(plan.RoleId))
+	if !plan.RoleId.Equal(state.RoleId) {
+		if plan.RoleId.IsNull() {
+			body.SetRoleNil()
+		} else if !plan.RoleId.IsUnknown() {
+			body.SetRole(conv.Int32(plan.RoleId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
-	if conv.Known(plan.MarkPopulated) {
-		body.SetMarkPopulated(plan.MarkPopulated.ValueBool())
+	if !plan.MarkPopulated.Equal(state.MarkPopulated) {
+		if conv.Known(plan.MarkPopulated) {
+			body.SetMarkPopulated(plan.MarkPopulated.ValueBool())
+		}
 	}
-	if conv.Known(plan.MarkUtilized) {
-		body.SetMarkUtilized(plan.MarkUtilized.ValueBool())
+	if !plan.MarkUtilized.Equal(state.MarkUtilized) {
+		if conv.Known(plan.MarkUtilized) {
+			body.SetMarkUtilized(plan.MarkUtilized.ValueBool())
+		}
 	}
 	return body
 }

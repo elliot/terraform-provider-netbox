@@ -241,7 +241,7 @@ func (r *IpsecPolicyResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ipsecPolicyToPatch(ctx, &plan, &resp.Diagnostics)
+	body := ipsecPolicyToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -294,9 +294,7 @@ func ipsecPolicyToCreate(ctx context.Context, plan *IpsecPolicyModel, diags *dia
 	if conv.Known(plan.PfsGroup) {
 		body.SetPfsGroup(conv.Int32(plan.PfsGroup))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -311,36 +309,50 @@ func ipsecPolicyToCreate(ctx context.Context, plan *IpsecPolicyModel, diags *dia
 	return body
 }
 
-// ipsecPolicyToPatch builds the PatchedWritableIPSecPolicyRequest request body from the plan.
-func ipsecPolicyToPatch(ctx context.Context, plan *IpsecPolicyModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPSecPolicyRequest {
+// ipsecPolicyToPatch builds the PatchedWritableIPSecPolicyRequest request body with every attribute whose planned value differs from state.
+func ipsecPolicyToPatch(ctx context.Context, plan, state *IpsecPolicyModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPSecPolicyRequest {
 	body := netbox.NewPatchedWritableIPSecPolicyRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.ProposalIds) {
-		body.SetProposals(conv.Int32s(ctx, plan.ProposalIds, diags))
+	if !plan.ProposalIds.Equal(state.ProposalIds) {
+		if conv.Known(plan.ProposalIds) {
+			body.SetProposals(conv.Int32s(ctx, plan.ProposalIds, diags))
+		}
 	}
-	if plan.PfsGroup.IsNull() {
-		body.SetPfsGroupNil()
-	} else if !plan.PfsGroup.IsUnknown() {
-		body.SetPfsGroup(conv.Int32(plan.PfsGroup))
+	if !plan.PfsGroup.Equal(state.PfsGroup) {
+		if conv.Known(plan.PfsGroup) {
+			body.SetPfsGroup(conv.Int32(plan.PfsGroup))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -353,12 +365,12 @@ func ipsecPolicyFromAPI(ctx context.Context, obj *netbox.IPSecPolicy, prior *Ips
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *IpsecPolicyModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *IpsecPolicyModel) types.String { return m.Description }), false)
 	out.ProposalIds = conv.BriefIDs(obj.GetProposals())
 	out.PfsGroup = conv.ChoiceInt(obj.GetPfsGroupOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IpsecPolicyModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

@@ -241,7 +241,7 @@ func (r *AsnResource) Update(ctx context.Context, req resource.UpdateRequest, re
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := asnToPatch(ctx, &plan, &resp.Diagnostics)
+	body := asnToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -285,27 +285,19 @@ func (r *AsnResource) ImportState(ctx context.Context, req resource.ImportStateR
 // asnToCreate builds the ASNRequest request body from the plan.
 func asnToCreate(ctx context.Context, plan *AsnModel, diags *diag.Diagnostics) *netbox.ASNRequest {
 	body := netbox.NewASNRequest(plan.Asn.ValueInt64())
-	if plan.RirId.IsNull() {
-		body.SetRirNil()
-	} else if !plan.RirId.IsUnknown() {
+	if conv.Known(plan.RirId) {
 		body.SetRir(conv.Int32(plan.RirId))
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
+	if conv.Known(plan.RoleId) {
 		body.SetRole(conv.Int32(plan.RoleId))
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -320,43 +312,61 @@ func asnToCreate(ctx context.Context, plan *AsnModel, diags *diag.Diagnostics) *
 	return body
 }
 
-// asnToPatch builds the PatchedASNRequest request body from the plan.
-func asnToPatch(ctx context.Context, plan *AsnModel, diags *diag.Diagnostics) *netbox.PatchedASNRequest {
+// asnToPatch builds the PatchedASNRequest request body with every attribute whose planned value differs from state.
+func asnToPatch(ctx context.Context, plan, state *AsnModel, diags *diag.Diagnostics) *netbox.PatchedASNRequest {
 	body := netbox.NewPatchedASNRequest()
-	if conv.Known(plan.Asn) {
-		body.SetAsn(plan.Asn.ValueInt64())
+	if !plan.Asn.Equal(state.Asn) {
+		if conv.Known(plan.Asn) {
+			body.SetAsn(plan.Asn.ValueInt64())
+		}
 	}
-	if plan.RirId.IsNull() {
-		body.SetRirNil()
-	} else if !plan.RirId.IsUnknown() {
-		body.SetRir(conv.Int32(plan.RirId))
+	if !plan.RirId.Equal(state.RirId) {
+		if plan.RirId.IsNull() {
+			body.SetRirNil()
+		} else if !plan.RirId.IsUnknown() {
+			body.SetRir(conv.Int32(plan.RirId))
+		}
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
-		body.SetRole(conv.Int32(plan.RoleId))
+	if !plan.RoleId.Equal(state.RoleId) {
+		if plan.RoleId.IsNull() {
+			body.SetRoleNil()
+		} else if !plan.RoleId.IsUnknown() {
+			body.SetRole(conv.Int32(plan.RoleId))
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

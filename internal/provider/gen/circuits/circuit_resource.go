@@ -292,7 +292,7 @@ func (r *CircuitResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := circuitToPatch(ctx, &plan, &resp.Diagnostics)
+	body := circuitToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -336,27 +336,19 @@ func (r *CircuitResource) ImportState(ctx context.Context, req resource.ImportSt
 // circuitToCreate builds the WritableCircuitRequest request body from the plan.
 func circuitToCreate(ctx context.Context, plan *CircuitModel, diags *diag.Diagnostics) *netbox.WritableCircuitRequest {
 	body := netbox.NewWritableCircuitRequest(plan.Cid.ValueString(), conv.Int32(plan.ProviderId), conv.Int32(plan.TypeId))
-	if plan.ProviderAccountId.IsNull() {
-		body.SetProviderAccountNil()
-	} else if !plan.ProviderAccountId.IsUnknown() {
+	if conv.Known(plan.ProviderAccountId) {
 		body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.InstallDate.IsNull() {
-		body.SetInstallDateNil()
-	} else if !plan.InstallDate.IsUnknown() {
+	if conv.Known(plan.InstallDate) {
 		body.SetInstallDate(plan.InstallDate.ValueString())
 	}
-	if plan.TerminationDate.IsNull() {
-		body.SetTerminationDateNil()
-	} else if !plan.TerminationDate.IsUnknown() {
+	if conv.Known(plan.TerminationDate) {
 		body.SetTerminationDate(plan.TerminationDate.ValueString())
 	}
 	if conv.Known(plan.CommitRate) {
@@ -371,9 +363,7 @@ func circuitToCreate(ctx context.Context, plan *CircuitModel, diags *diag.Diagno
 	if conv.Known(plan.DistanceUnit) {
 		body.SetDistanceUnit(plan.DistanceUnit.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -388,66 +378,98 @@ func circuitToCreate(ctx context.Context, plan *CircuitModel, diags *diag.Diagno
 	return body
 }
 
-// circuitToPatch builds the PatchedWritableCircuitRequest request body from the plan.
-func circuitToPatch(ctx context.Context, plan *CircuitModel, diags *diag.Diagnostics) *netbox.PatchedWritableCircuitRequest {
+// circuitToPatch builds the PatchedWritableCircuitRequest request body with every attribute whose planned value differs from state.
+func circuitToPatch(ctx context.Context, plan, state *CircuitModel, diags *diag.Diagnostics) *netbox.PatchedWritableCircuitRequest {
 	body := netbox.NewPatchedWritableCircuitRequest()
-	if conv.Known(plan.Cid) {
-		body.SetCid(plan.Cid.ValueString())
+	if !plan.Cid.Equal(state.Cid) {
+		if conv.Known(plan.Cid) {
+			body.SetCid(plan.Cid.ValueString())
+		}
 	}
-	if conv.Known(plan.ProviderId) {
-		body.SetProvider(conv.Int32(plan.ProviderId))
+	if !plan.ProviderId.Equal(state.ProviderId) {
+		if conv.Known(plan.ProviderId) {
+			body.SetProvider(conv.Int32(plan.ProviderId))
+		}
 	}
-	if plan.ProviderAccountId.IsNull() {
-		body.SetProviderAccountNil()
-	} else if !plan.ProviderAccountId.IsUnknown() {
-		body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
+	if !plan.ProviderAccountId.Equal(state.ProviderAccountId) {
+		if plan.ProviderAccountId.IsNull() {
+			body.SetProviderAccountNil()
+		} else if !plan.ProviderAccountId.IsUnknown() {
+			body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
+		}
 	}
-	if conv.Known(plan.TypeId) {
-		body.SetType(conv.Int32(plan.TypeId))
+	if !plan.TypeId.Equal(state.TypeId) {
+		if conv.Known(plan.TypeId) {
+			body.SetType(conv.Int32(plan.TypeId))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.InstallDate.IsNull() {
-		body.SetInstallDateNil()
-	} else if !plan.InstallDate.IsUnknown() {
-		body.SetInstallDate(plan.InstallDate.ValueString())
+	if !plan.InstallDate.Equal(state.InstallDate) {
+		if plan.InstallDate.IsNull() {
+			body.SetInstallDateNil()
+		} else if !plan.InstallDate.IsUnknown() {
+			body.SetInstallDate(plan.InstallDate.ValueString())
+		}
 	}
-	if plan.TerminationDate.IsNull() {
-		body.SetTerminationDateNil()
-	} else if !plan.TerminationDate.IsUnknown() {
-		body.SetTerminationDate(plan.TerminationDate.ValueString())
+	if !plan.TerminationDate.Equal(state.TerminationDate) {
+		if plan.TerminationDate.IsNull() {
+			body.SetTerminationDateNil()
+		} else if !plan.TerminationDate.IsUnknown() {
+			body.SetTerminationDate(plan.TerminationDate.ValueString())
+		}
 	}
-	if conv.Known(plan.CommitRate) {
-		body.SetCommitRate(conv.Int32(plan.CommitRate))
+	if !plan.CommitRate.Equal(state.CommitRate) {
+		if conv.Known(plan.CommitRate) {
+			body.SetCommitRate(conv.Int32(plan.CommitRate))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Distance) {
-		body.SetDistance(plan.Distance.ValueFloat64())
+	if !plan.Distance.Equal(state.Distance) {
+		if conv.Known(plan.Distance) {
+			body.SetDistance(plan.Distance.ValueFloat64())
+		}
 	}
-	if conv.Known(plan.DistanceUnit) {
-		body.SetDistanceUnit(plan.DistanceUnit.ValueString())
+	if !plan.DistanceUnit.Equal(state.DistanceUnit) {
+		if conv.Known(plan.DistanceUnit) {
+			body.SetDistanceUnit(plan.DistanceUnit.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

@@ -515,8 +515,13 @@ func setterCode(a model.Attr, body, v string, patch bool) string {
 		case a.Required:
 			return fmt.Sprintf("if conv.Known(%s) {\n%s(%s)\n}\n", v, set, scalarExpr(a, v))
 		case a.Nullable && !a.Computed:
-			// Optional nullable: null clears explicitly.
-			return fmt.Sprintf("if %s.IsNull() {\n%sNil()\n} else if !%s.IsUnknown() {\n%s(%s)\n}\n", v, set, v, set, scalarExpr(a, v))
+			// Optional nullable: on PATCH (only emitted when the value changed) an
+			// explicit null clears the field; on create a null is the default and
+			// some NetBox serializers reject it, so it is omitted.
+			if patch {
+				return fmt.Sprintf("if %s.IsNull() {\n%sNil()\n} else if !%s.IsUnknown() {\n%s(%s)\n}\n", v, set, v, set, scalarExpr(a, v))
+			}
+			return fmt.Sprintf("if conv.Known(%s) {\n%s(%s)\n}\n", v, set, scalarExpr(a, v))
 		case a.Nullable && a.Computed:
 			// Optional+Computed nullable (choices, numbers, datetimes): a null plan
 			// value only ever mirrors a null server value, and NetBox rejects an
@@ -572,8 +577,13 @@ func toAPIFunc(r *model.Resource, patch bool) (string, error) {
 	if patch {
 		name, typ = lower(r.GoName)+"ToPatch", r.PatchType
 	}
-	fmt.Fprintf(&b, "// %s builds the %s request body from the plan.\n", name, typ)
-	fmt.Fprintf(&b, "func %s(ctx context.Context, plan *%sModel, diags *diag.Diagnostics) *netbox.%s {\n", name, r.GoName, typ)
+	if patch {
+		fmt.Fprintf(&b, "// %s builds the %s request body with every attribute whose planned value differs from state.\n", name, typ)
+		fmt.Fprintf(&b, "func %s(ctx context.Context, plan, state *%sModel, diags *diag.Diagnostics) *netbox.%s {\n", name, r.GoName, typ)
+	} else {
+		fmt.Fprintf(&b, "// %s builds the %s request body from the plan.\n", name, typ)
+		fmt.Fprintf(&b, "func %s(ctx context.Context, plan *%sModel, diags *diag.Diagnostics) *netbox.%s {\n", name, r.GoName, typ)
+	}
 	required := map[string]bool{}
 	if patch {
 		fmt.Fprintf(&b, "body := netbox.New%s()\n", typ)
@@ -593,14 +603,22 @@ func toAPIFunc(r *model.Resource, patch bool) (string, error) {
 			continue
 		}
 		v := "plan." + field(a)
+		var code string
 		if a.Kind == model.KindNestedList {
 			dst := lower(field(a)) + "Items"
-			fmt.Fprintf(&b, "if conv.Known(%s) {\n", v)
-			b.WriteString(nestedListBuild(r, a, v, dst))
-			fmt.Fprintf(&b, "body.Set%s(%s)\n}\n", a.GoField, dst)
+			code = fmt.Sprintf("if conv.Known(%s) {\n%sbody.Set%s(%s)\n}\n", v, nestedListBuild(r, a, v, dst), a.GoField, dst)
+		} else {
+			code = setterCode(a, "body", v, patch)
+		}
+		if code == "" {
 			continue
 		}
-		b.WriteString(setterCode(a, "body", v, patch))
+		if patch {
+			// Only changed attributes are sent: NetBox rejects re-sent values for
+			// some fields (port mappings) and this keeps PATCH bodies minimal.
+			code = fmt.Sprintf("if !%s.Equal(state.%s) {\n%s}\n", v, field(a), code)
+		}
+		b.WriteString(code)
 	}
 	b.WriteString("return body\n}\n\n")
 	return b.String(), nil

@@ -101,15 +101,15 @@ func circuitTerminationDataAttributes(lookup bool) map[string]dsschema.Attribute
 			Computed:            true,
 		},
 		"termination_id": dsschema.Int64Attribute{
-			MarkdownDescription: "Termination Id.",
+			MarkdownDescription: "Termination Id. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"port_speed": dsschema.Int64Attribute{
-			MarkdownDescription: "Physical circuit speed.",
+			MarkdownDescription: "Physical circuit speed. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"upstream_speed": dsschema.Int64Attribute{
-			MarkdownDescription: "Upstream speed, if different from port speed.",
+			MarkdownDescription: "Upstream speed, if different from port speed. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"xconnect_id": dsschema.StringAttribute{

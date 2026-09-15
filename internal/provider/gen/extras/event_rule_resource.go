@@ -153,8 +153,10 @@ func eventRuleResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"action_object_id": schema.Int64Attribute{
-			MarkdownDescription: "Action Object Id.",
+			MarkdownDescription: "Action Object Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -268,7 +270,7 @@ func (r *EventRuleResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := eventRuleToPatch(ctx, &plan, &resp.Diagnostics)
+	body := eventRuleToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -318,14 +320,10 @@ func eventRuleToCreate(ctx context.Context, plan *EventRuleModel, diags *diag.Di
 	if conv.Known(plan.Conditions) {
 		body.SetConditions(conv.JSONToAPI(plan.Conditions, diags))
 	}
-	if plan.ActionObjectType.IsNull() {
-		body.SetActionObjectTypeNil()
-	} else if !plan.ActionObjectType.IsUnknown() {
+	if conv.Known(plan.ActionObjectType) {
 		body.SetActionObjectType(plan.ActionObjectType.ValueString())
 	}
-	if plan.ActionObjectId.IsNull() {
-		body.SetActionObjectIdNil()
-	} else if !plan.ActionObjectId.IsUnknown() {
+	if conv.Known(plan.ActionObjectId) {
 		body.SetActionObjectId(plan.ActionObjectId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
@@ -334,9 +332,7 @@ func eventRuleToCreate(ctx context.Context, plan *EventRuleModel, diags *diag.Di
 	if conv.Known(plan.CustomFields) {
 		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if conv.Known(plan.Tags) {
@@ -345,50 +341,72 @@ func eventRuleToCreate(ctx context.Context, plan *EventRuleModel, diags *diag.Di
 	return body
 }
 
-// eventRuleToPatch builds the PatchedWritableEventRuleRequest request body from the plan.
-func eventRuleToPatch(ctx context.Context, plan *EventRuleModel, diags *diag.Diagnostics) *netbox.PatchedWritableEventRuleRequest {
+// eventRuleToPatch builds the PatchedWritableEventRuleRequest request body with every attribute whose planned value differs from state.
+func eventRuleToPatch(ctx context.Context, plan, state *EventRuleModel, diags *diag.Diagnostics) *netbox.PatchedWritableEventRuleRequest {
 	body := netbox.NewPatchedWritableEventRuleRequest()
-	if conv.Known(plan.ObjectTypes) {
-		body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+	if !plan.ObjectTypes.Equal(state.ObjectTypes) {
+		if conv.Known(plan.ObjectTypes) {
+			body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if conv.Known(plan.EventTypes) {
-		body.SetEventTypes(conv.Strings(ctx, plan.EventTypes, diags))
+	if !plan.EventTypes.Equal(state.EventTypes) {
+		if conv.Known(plan.EventTypes) {
+			body.SetEventTypes(conv.Strings(ctx, plan.EventTypes, diags))
+		}
 	}
-	if conv.Known(plan.Conditions) {
-		body.SetConditions(conv.JSONToAPI(plan.Conditions, diags))
+	if !plan.Conditions.Equal(state.Conditions) {
+		if conv.Known(plan.Conditions) {
+			body.SetConditions(conv.JSONToAPI(plan.Conditions, diags))
+		}
 	}
-	if conv.Known(plan.ActionType) {
-		body.SetActionType(plan.ActionType.ValueString())
+	if !plan.ActionType.Equal(state.ActionType) {
+		if conv.Known(plan.ActionType) {
+			body.SetActionType(plan.ActionType.ValueString())
+		}
 	}
-	if plan.ActionObjectType.IsNull() {
-		body.SetActionObjectTypeNil()
-	} else if !plan.ActionObjectType.IsUnknown() {
-		body.SetActionObjectType(plan.ActionObjectType.ValueString())
+	if !plan.ActionObjectType.Equal(state.ActionObjectType) {
+		if plan.ActionObjectType.IsNull() {
+			body.SetActionObjectTypeNil()
+		} else if !plan.ActionObjectType.IsUnknown() {
+			body.SetActionObjectType(plan.ActionObjectType.ValueString())
+		}
 	}
-	if plan.ActionObjectId.IsNull() {
-		body.SetActionObjectIdNil()
-	} else if !plan.ActionObjectId.IsUnknown() {
-		body.SetActionObjectId(plan.ActionObjectId.ValueInt64())
+	if !plan.ActionObjectId.Equal(state.ActionObjectId) {
+		if conv.Known(plan.ActionObjectId) {
+			body.SetActionObjectId(plan.ActionObjectId.ValueInt64())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
 	return body
 }
@@ -402,14 +420,14 @@ func eventRuleFromAPI(ctx context.Context, obj *netbox.EventRule, prior *EventRu
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ObjectTypes = conv.StringSet(obj.GetObjectTypes())
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *EventRuleModel) types.String { return m.Name }), false)
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
 	out.EventTypes = conv.StringSet(obj.GetEventTypes())
 	out.Conditions = conv.JSONFromAPIWithPrior(obj.GetConditions(), conv.PriorJSON(prior, func(m *EventRuleModel) jsontypes.Normalized { return m.Conditions }))
 	out.ActionType = conv.Choice(obj.GetActionTypeOk())
-	out.ActionObjectType = conv.String(obj.GetActionObjectTypeOk())
+	out.ActionObjectType = conv.StringKeep(conv.String(obj.GetActionObjectTypeOk()), conv.PriorString(prior, func(m *EventRuleModel) types.String { return m.ActionObjectType }), false)
 	out.ActionObjectId = conv.Int64From64(obj.GetActionObjectIdOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *EventRuleModel) types.String { return m.Description }), false)
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

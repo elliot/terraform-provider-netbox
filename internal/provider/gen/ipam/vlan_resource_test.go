@@ -105,7 +105,7 @@ func TestAccVlan_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_vlan", &resource.Sweeper{
 		Name:         "netbox_vlan",
-		Dependencies: []string{"netbox_prefix"},
+		Dependencies: []string{"netbox_interface", "netbox_prefix", "netbox_vm_interface", "netbox_wireless_lan"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/vlans/", []string{"name__isw", "description__isw", "q"})
 		},

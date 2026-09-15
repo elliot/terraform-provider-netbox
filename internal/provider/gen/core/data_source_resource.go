@@ -261,7 +261,7 @@ func (r *DataSourceResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := dataSourceToPatch(ctx, &plan, &resp.Diagnostics)
+	body := dataSourceToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -320,9 +320,7 @@ func dataSourceToCreate(ctx context.Context, plan *DataSourceModel, diags *diag.
 	if !plan.IgnoreRules.IsUnknown() {
 		body.SetIgnoreRules(plan.IgnoreRules.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -334,43 +332,65 @@ func dataSourceToCreate(ctx context.Context, plan *DataSourceModel, diags *diag.
 	return body
 }
 
-// dataSourceToPatch builds the PatchedWritableDataSourceRequest request body from the plan.
-func dataSourceToPatch(ctx context.Context, plan *DataSourceModel, diags *diag.Diagnostics) *netbox.PatchedWritableDataSourceRequest {
+// dataSourceToPatch builds the PatchedWritableDataSourceRequest request body with every attribute whose planned value differs from state.
+func dataSourceToPatch(ctx context.Context, plan, state *DataSourceModel, diags *diag.Diagnostics) *netbox.PatchedWritableDataSourceRequest {
 	body := netbox.NewPatchedWritableDataSourceRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if conv.Known(plan.SourceUrl) {
-		body.SetSourceUrl(plan.SourceUrl.ValueString())
+	if !plan.SourceUrl.Equal(state.SourceUrl) {
+		if conv.Known(plan.SourceUrl) {
+			body.SetSourceUrl(plan.SourceUrl.ValueString())
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.SyncInterval) {
-		body.SetSyncInterval(conv.Int32(plan.SyncInterval))
+	if !plan.SyncInterval.Equal(state.SyncInterval) {
+		if conv.Known(plan.SyncInterval) {
+			body.SetSyncInterval(conv.Int32(plan.SyncInterval))
+		}
 	}
-	if conv.Known(plan.Parameters) {
-		body.SetParameters(conv.JSONToAPI(plan.Parameters, diags))
+	if !plan.Parameters.Equal(state.Parameters) {
+		if conv.Known(plan.Parameters) {
+			body.SetParameters(conv.JSONToAPI(plan.Parameters, diags))
+		}
 	}
-	if !plan.IgnoreRules.IsUnknown() {
-		body.SetIgnoreRules(plan.IgnoreRules.ValueString())
+	if !plan.IgnoreRules.Equal(state.IgnoreRules) {
+		if !plan.IgnoreRules.IsUnknown() {
+			body.SetIgnoreRules(plan.IgnoreRules.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

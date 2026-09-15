@@ -98,11 +98,11 @@ func coolingFeedDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"cooling_capacity": dsschema.Float64Attribute{
-			MarkdownDescription: "Rated cooling capacity (kW).",
+			MarkdownDescription: "Rated cooling capacity (kW). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"max_flow": dsschema.Float64Attribute{
-			MarkdownDescription: "Max Flow.",
+			MarkdownDescription: "Max Flow. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"max_flow_unit": dsschema.StringAttribute{

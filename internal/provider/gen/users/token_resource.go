@@ -246,7 +246,7 @@ func (r *TokenResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := tokenToPatch(ctx, &plan, &resp.Diagnostics)
+	body := tokenToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -314,32 +314,48 @@ func tokenToCreate(ctx context.Context, plan *TokenModel, diags *diag.Diagnostic
 	return body
 }
 
-// tokenToPatch builds the PatchedTokenRequest request body from the plan.
-func tokenToPatch(ctx context.Context, plan *TokenModel, diags *diag.Diagnostics) *netbox.PatchedTokenRequest {
+// tokenToPatch builds the PatchedTokenRequest request body with every attribute whose planned value differs from state.
+func tokenToPatch(ctx context.Context, plan, state *TokenModel, diags *diag.Diagnostics) *netbox.PatchedTokenRequest {
 	body := netbox.NewPatchedTokenRequest()
-	if conv.Known(plan.Version) {
-		body.SetVersion(conv.Int32(plan.Version))
+	if !plan.Version.Equal(state.Version) {
+		if conv.Known(plan.Version) {
+			body.SetVersion(conv.Int32(plan.Version))
+		}
 	}
-	if conv.Known(plan.UserId) {
-		body.SetUser(conv.Int32(plan.UserId))
+	if !plan.UserId.Equal(state.UserId) {
+		if conv.Known(plan.UserId) {
+			body.SetUser(conv.Int32(plan.UserId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Expires) {
-		body.SetExpires(conv.Time(plan.Expires, diags))
+	if !plan.Expires.Equal(state.Expires) {
+		if conv.Known(plan.Expires) {
+			body.SetExpires(conv.Time(plan.Expires, diags))
+		}
 	}
-	if conv.Known(plan.LastUsed) {
-		body.SetLastUsed(conv.Time(plan.LastUsed, diags))
+	if !plan.LastUsed.Equal(state.LastUsed) {
+		if conv.Known(plan.LastUsed) {
+			body.SetLastUsed(conv.Time(plan.LastUsed, diags))
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if conv.Known(plan.WriteEnabled) {
-		body.SetWriteEnabled(plan.WriteEnabled.ValueBool())
+	if !plan.WriteEnabled.Equal(state.WriteEnabled) {
+		if conv.Known(plan.WriteEnabled) {
+			body.SetWriteEnabled(plan.WriteEnabled.ValueBool())
+		}
 	}
-	if conv.Known(plan.PepperId) {
-		body.SetPepperId(conv.Int32(plan.PepperId))
+	if !plan.PepperId.Equal(state.PepperId) {
+		if conv.Known(plan.PepperId) {
+			body.SetPepperId(conv.Int32(plan.PepperId))
+		}
 	}
 	return body
 }

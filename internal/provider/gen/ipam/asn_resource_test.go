@@ -104,7 +104,7 @@ func TestAccAsn_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_asn", &resource.Sweeper{
 		Name:         "netbox_asn",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_provider", "netbox_site"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/asns/", []string{"description__isw", "q"})
 		},

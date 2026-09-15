@@ -107,7 +107,7 @@ func coolingSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"cooling_capacity": dsschema.Float64Attribute{
-			MarkdownDescription: "Total rated cooling capacity (kW).",
+			MarkdownDescription: "Total rated cooling capacity (kW). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

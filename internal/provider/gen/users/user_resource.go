@@ -237,7 +237,7 @@ func (r *UserResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := userToPatch(ctx, &plan, &resp.Diagnostics)
+	body := userToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -305,35 +305,53 @@ func userToCreate(ctx context.Context, plan *UserModel, diags *diag.Diagnostics)
 	return body
 }
 
-// userToPatch builds the PatchedUserRequest request body from the plan.
-func userToPatch(ctx context.Context, plan *UserModel, diags *diag.Diagnostics) *netbox.PatchedUserRequest {
+// userToPatch builds the PatchedUserRequest request body with every attribute whose planned value differs from state.
+func userToPatch(ctx context.Context, plan, state *UserModel, diags *diag.Diagnostics) *netbox.PatchedUserRequest {
 	body := netbox.NewPatchedUserRequest()
-	if conv.Known(plan.Username) {
-		body.SetUsername(plan.Username.ValueString())
+	if !plan.Username.Equal(state.Username) {
+		if conv.Known(plan.Username) {
+			body.SetUsername(plan.Username.ValueString())
+		}
 	}
-	if conv.Known(plan.Password) {
-		body.SetPassword(plan.Password.ValueString())
+	if !plan.Password.Equal(state.Password) {
+		if conv.Known(plan.Password) {
+			body.SetPassword(plan.Password.ValueString())
+		}
 	}
-	if !plan.FirstName.IsUnknown() {
-		body.SetFirstName(plan.FirstName.ValueString())
+	if !plan.FirstName.Equal(state.FirstName) {
+		if !plan.FirstName.IsUnknown() {
+			body.SetFirstName(plan.FirstName.ValueString())
+		}
 	}
-	if !plan.LastName.IsUnknown() {
-		body.SetLastName(plan.LastName.ValueString())
+	if !plan.LastName.Equal(state.LastName) {
+		if !plan.LastName.IsUnknown() {
+			body.SetLastName(plan.LastName.ValueString())
+		}
 	}
-	if !plan.Email.IsUnknown() {
-		body.SetEmail(plan.Email.ValueString())
+	if !plan.Email.Equal(state.Email) {
+		if !plan.Email.IsUnknown() {
+			body.SetEmail(plan.Email.ValueString())
+		}
 	}
-	if conv.Known(plan.IsActive) {
-		body.SetIsActive(plan.IsActive.ValueBool())
+	if !plan.IsActive.Equal(state.IsActive) {
+		if conv.Known(plan.IsActive) {
+			body.SetIsActive(plan.IsActive.ValueBool())
+		}
 	}
-	if conv.Known(plan.DateJoined) {
-		body.SetDateJoined(conv.Time(plan.DateJoined, diags))
+	if !plan.DateJoined.Equal(state.DateJoined) {
+		if conv.Known(plan.DateJoined) {
+			body.SetDateJoined(conv.Time(plan.DateJoined, diags))
+		}
 	}
-	if conv.Known(plan.LastLogin) {
-		body.SetLastLogin(conv.Time(plan.LastLogin, diags))
+	if !plan.LastLogin.Equal(state.LastLogin) {
+		if conv.Known(plan.LastLogin) {
+			body.SetLastLogin(conv.Time(plan.LastLogin, diags))
+		}
 	}
-	if conv.Known(plan.GroupIds) {
-		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+	if !plan.GroupIds.Equal(state.GroupIds) {
+		if conv.Known(plan.GroupIds) {
+			body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+		}
 	}
 	return body
 }

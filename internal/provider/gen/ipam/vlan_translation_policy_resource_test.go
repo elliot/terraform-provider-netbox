@@ -79,7 +79,7 @@ func TestAccVlanTranslationPolicy_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_vlan_translation_policy", &resource.Sweeper{
 		Name:         "netbox_vlan_translation_policy",
-		Dependencies: []string{"netbox_vlan_translation_rule"},
+		Dependencies: []string{"netbox_interface", "netbox_vlan_translation_rule", "netbox_vm_interface"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/vlan-translation-policies/", []string{"name__isw", "description__isw", "q"})
 		},

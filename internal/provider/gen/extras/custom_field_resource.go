@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -248,12 +249,16 @@ func customFieldResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"validation_minimum": schema.Float64Attribute{
-			MarkdownDescription: "Minimum allowed value (for numeric fields).",
+			MarkdownDescription: "Minimum allowed value (for numeric fields). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"validation_maximum": schema.Float64Attribute{
-			MarkdownDescription: "Maximum allowed value (for numeric fields).",
+			MarkdownDescription: "Maximum allowed value (for numeric fields). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"validation_regex": schema.StringAttribute{
 			MarkdownDescription: "Regular expression to enforce on text field values. Use ^ and $ to force matching of entire string. For example, <code>^[A-Z]{3}$</code> will limit values to exactly three uppercase letters. Defaults to an empty string.",
@@ -370,7 +375,7 @@ func (r *CustomFieldResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := customFieldToPatch(ctx, &plan, &resp.Diagnostics)
+	body := customFieldToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -417,9 +422,7 @@ func customFieldToCreate(ctx context.Context, plan *CustomFieldModel, diags *dia
 	if conv.Known(plan.Type) {
 		body.SetType(plan.Type.ValueString())
 	}
-	if plan.RelatedObjectType.IsNull() {
-		body.SetRelatedObjectTypeNil()
-	} else if !plan.RelatedObjectType.IsUnknown() {
+	if conv.Known(plan.RelatedObjectType) {
 		body.SetRelatedObjectType(plan.RelatedObjectType.ValueString())
 	}
 	if !plan.Label.IsUnknown() {
@@ -464,14 +467,10 @@ func customFieldToCreate(ctx context.Context, plan *CustomFieldModel, diags *dia
 	if conv.Known(plan.Weight) {
 		body.SetWeight(conv.Int32(plan.Weight))
 	}
-	if plan.ValidationMinimum.IsNull() {
-		body.SetValidationMinimumNil()
-	} else if !plan.ValidationMinimum.IsUnknown() {
+	if conv.Known(plan.ValidationMinimum) {
 		body.SetValidationMinimum(plan.ValidationMinimum.ValueFloat64())
 	}
-	if plan.ValidationMaximum.IsNull() {
-		body.SetValidationMaximumNil()
-	} else if !plan.ValidationMaximum.IsUnknown() {
+	if conv.Known(plan.ValidationMaximum) {
 		body.SetValidationMaximum(plan.ValidationMaximum.ValueFloat64())
 	}
 	if !plan.ValidationRegex.IsUnknown() {
@@ -480,14 +479,10 @@ func customFieldToCreate(ctx context.Context, plan *CustomFieldModel, diags *dia
 	if conv.Known(plan.ValidationSchema) {
 		body.SetValidationSchema(conv.JSONToAPI(plan.ValidationSchema, diags))
 	}
-	if plan.ChoiceSetId.IsNull() {
-		body.SetChoiceSetNil()
-	} else if !plan.ChoiceSetId.IsUnknown() {
+	if conv.Known(plan.ChoiceSetId) {
 		body.SetChoiceSet(conv.Int32(plan.ChoiceSetId))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -496,93 +491,139 @@ func customFieldToCreate(ctx context.Context, plan *CustomFieldModel, diags *dia
 	return body
 }
 
-// customFieldToPatch builds the PatchedWritableCustomFieldRequest request body from the plan.
-func customFieldToPatch(ctx context.Context, plan *CustomFieldModel, diags *diag.Diagnostics) *netbox.PatchedWritableCustomFieldRequest {
+// customFieldToPatch builds the PatchedWritableCustomFieldRequest request body with every attribute whose planned value differs from state.
+func customFieldToPatch(ctx context.Context, plan, state *CustomFieldModel, diags *diag.Diagnostics) *netbox.PatchedWritableCustomFieldRequest {
 	body := netbox.NewPatchedWritableCustomFieldRequest()
-	if conv.Known(plan.ObjectTypes) {
-		body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+	if !plan.ObjectTypes.Equal(state.ObjectTypes) {
+		if conv.Known(plan.ObjectTypes) {
+			body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if plan.RelatedObjectType.IsNull() {
-		body.SetRelatedObjectTypeNil()
-	} else if !plan.RelatedObjectType.IsUnknown() {
-		body.SetRelatedObjectType(plan.RelatedObjectType.ValueString())
+	if !plan.RelatedObjectType.Equal(state.RelatedObjectType) {
+		if plan.RelatedObjectType.IsNull() {
+			body.SetRelatedObjectTypeNil()
+		} else if !plan.RelatedObjectType.IsUnknown() {
+			body.SetRelatedObjectType(plan.RelatedObjectType.ValueString())
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if !plan.GroupName.IsUnknown() {
-		body.SetGroupName(plan.GroupName.ValueString())
+	if !plan.GroupName.Equal(state.GroupName) {
+		if !plan.GroupName.IsUnknown() {
+			body.SetGroupName(plan.GroupName.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Required) {
-		body.SetRequired(plan.Required.ValueBool())
+	if !plan.Required.Equal(state.Required) {
+		if conv.Known(plan.Required) {
+			body.SetRequired(plan.Required.ValueBool())
+		}
 	}
-	if conv.Known(plan.Unique) {
-		body.SetUnique(plan.Unique.ValueBool())
+	if !plan.Unique.Equal(state.Unique) {
+		if conv.Known(plan.Unique) {
+			body.SetUnique(plan.Unique.ValueBool())
+		}
 	}
-	if conv.Known(plan.SearchWeight) {
-		body.SetSearchWeight(conv.Int32(plan.SearchWeight))
+	if !plan.SearchWeight.Equal(state.SearchWeight) {
+		if conv.Known(plan.SearchWeight) {
+			body.SetSearchWeight(conv.Int32(plan.SearchWeight))
+		}
 	}
-	if conv.Known(plan.FilterLogic) {
-		body.SetFilterLogic(plan.FilterLogic.ValueString())
+	if !plan.FilterLogic.Equal(state.FilterLogic) {
+		if conv.Known(plan.FilterLogic) {
+			body.SetFilterLogic(plan.FilterLogic.ValueString())
+		}
 	}
-	if conv.Known(plan.UiVisible) {
-		body.SetUiVisible(plan.UiVisible.ValueString())
+	if !plan.UiVisible.Equal(state.UiVisible) {
+		if conv.Known(plan.UiVisible) {
+			body.SetUiVisible(plan.UiVisible.ValueString())
+		}
 	}
-	if conv.Known(plan.UiEditable) {
-		body.SetUiEditable(plan.UiEditable.ValueString())
+	if !plan.UiEditable.Equal(state.UiEditable) {
+		if conv.Known(plan.UiEditable) {
+			body.SetUiEditable(plan.UiEditable.ValueString())
+		}
 	}
-	if conv.Known(plan.IsCloneable) {
-		body.SetIsCloneable(plan.IsCloneable.ValueBool())
+	if !plan.IsCloneable.Equal(state.IsCloneable) {
+		if conv.Known(plan.IsCloneable) {
+			body.SetIsCloneable(plan.IsCloneable.ValueBool())
+		}
 	}
-	if conv.Known(plan.NullsFirst) {
-		body.SetNullsFirst(plan.NullsFirst.ValueBool())
+	if !plan.NullsFirst.Equal(state.NullsFirst) {
+		if conv.Known(plan.NullsFirst) {
+			body.SetNullsFirst(plan.NullsFirst.ValueBool())
+		}
 	}
-	if conv.Known(plan.Default) {
-		body.SetDefault(conv.JSONToAPI(plan.Default, diags))
+	if !plan.Default.Equal(state.Default) {
+		if conv.Known(plan.Default) {
+			body.SetDefault(conv.JSONToAPI(plan.Default, diags))
+		}
 	}
-	if conv.Known(plan.RelatedObjectFilter) {
-		body.SetRelatedObjectFilter(conv.JSONToAPI(plan.RelatedObjectFilter, diags))
+	if !plan.RelatedObjectFilter.Equal(state.RelatedObjectFilter) {
+		if conv.Known(plan.RelatedObjectFilter) {
+			body.SetRelatedObjectFilter(conv.JSONToAPI(plan.RelatedObjectFilter, diags))
+		}
 	}
-	if conv.Known(plan.Weight) {
-		body.SetWeight(conv.Int32(plan.Weight))
+	if !plan.Weight.Equal(state.Weight) {
+		if conv.Known(plan.Weight) {
+			body.SetWeight(conv.Int32(plan.Weight))
+		}
 	}
-	if plan.ValidationMinimum.IsNull() {
-		body.SetValidationMinimumNil()
-	} else if !plan.ValidationMinimum.IsUnknown() {
-		body.SetValidationMinimum(plan.ValidationMinimum.ValueFloat64())
+	if !plan.ValidationMinimum.Equal(state.ValidationMinimum) {
+		if conv.Known(plan.ValidationMinimum) {
+			body.SetValidationMinimum(plan.ValidationMinimum.ValueFloat64())
+		}
 	}
-	if plan.ValidationMaximum.IsNull() {
-		body.SetValidationMaximumNil()
-	} else if !plan.ValidationMaximum.IsUnknown() {
-		body.SetValidationMaximum(plan.ValidationMaximum.ValueFloat64())
+	if !plan.ValidationMaximum.Equal(state.ValidationMaximum) {
+		if conv.Known(plan.ValidationMaximum) {
+			body.SetValidationMaximum(plan.ValidationMaximum.ValueFloat64())
+		}
 	}
-	if !plan.ValidationRegex.IsUnknown() {
-		body.SetValidationRegex(plan.ValidationRegex.ValueString())
+	if !plan.ValidationRegex.Equal(state.ValidationRegex) {
+		if !plan.ValidationRegex.IsUnknown() {
+			body.SetValidationRegex(plan.ValidationRegex.ValueString())
+		}
 	}
-	if conv.Known(plan.ValidationSchema) {
-		body.SetValidationSchema(conv.JSONToAPI(plan.ValidationSchema, diags))
+	if !plan.ValidationSchema.Equal(state.ValidationSchema) {
+		if conv.Known(plan.ValidationSchema) {
+			body.SetValidationSchema(conv.JSONToAPI(plan.ValidationSchema, diags))
+		}
 	}
-	if plan.ChoiceSetId.IsNull() {
-		body.SetChoiceSetNil()
-	} else if !plan.ChoiceSetId.IsUnknown() {
-		body.SetChoiceSet(conv.Int32(plan.ChoiceSetId))
+	if !plan.ChoiceSetId.Equal(state.ChoiceSetId) {
+		if plan.ChoiceSetId.IsNull() {
+			body.SetChoiceSetNil()
+		} else if !plan.ChoiceSetId.IsUnknown() {
+			body.SetChoiceSet(conv.Int32(plan.ChoiceSetId))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
 	return body
 }
@@ -593,11 +634,11 @@ func customFieldFromAPI(ctx context.Context, obj *netbox.CustomField, prior *Cus
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ObjectTypes = conv.StringSet(obj.GetObjectTypes())
 	out.Type = conv.Choice(obj.GetTypeOk())
-	out.RelatedObjectType = conv.String(obj.GetRelatedObjectTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
-	out.GroupName = conv.StringOrEmpty(obj.GetGroupNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.RelatedObjectType = conv.StringKeep(conv.String(obj.GetRelatedObjectTypeOk()), conv.PriorString(prior, func(m *CustomFieldModel) types.String { return m.RelatedObjectType }), false)
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *CustomFieldModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *CustomFieldModel) types.String { return m.Label }), false)
+	out.GroupName = conv.StringKeep(conv.StringOrEmpty(obj.GetGroupNameOk()), conv.PriorString(prior, func(m *CustomFieldModel) types.String { return m.GroupName }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CustomFieldModel) types.String { return m.Description }), false)
 	out.Required = conv.Bool(obj.GetRequiredOk())
 	out.Unique = conv.Bool(obj.GetUniqueOk())
 	out.SearchWeight = conv.Int64From32(obj.GetSearchWeightOk())
@@ -609,13 +650,13 @@ func customFieldFromAPI(ctx context.Context, obj *netbox.CustomField, prior *Cus
 	out.Default = conv.JSONFromAPIWithPrior(obj.GetDefault(), conv.PriorJSON(prior, func(m *CustomFieldModel) jsontypes.Normalized { return m.Default }))
 	out.RelatedObjectFilter = conv.JSONFromAPIWithPrior(obj.GetRelatedObjectFilter(), conv.PriorJSON(prior, func(m *CustomFieldModel) jsontypes.Normalized { return m.RelatedObjectFilter }))
 	out.Weight = conv.Int64From32(obj.GetWeightOk())
-	out.ValidationMinimum = conv.Float64From(obj.GetValidationMinimumOk())
-	out.ValidationMaximum = conv.Float64From(obj.GetValidationMaximumOk())
-	out.ValidationRegex = conv.StringOrEmpty(obj.GetValidationRegexOk())
+	out.ValidationMinimum = conv.Float64Keep(conv.Float64From(obj.GetValidationMinimumOk()), conv.PriorFloat(prior, func(m *CustomFieldModel) types.Float64 { return m.ValidationMinimum }), 0)
+	out.ValidationMaximum = conv.Float64Keep(conv.Float64From(obj.GetValidationMaximumOk()), conv.PriorFloat(prior, func(m *CustomFieldModel) types.Float64 { return m.ValidationMaximum }), 0)
+	out.ValidationRegex = conv.StringKeep(conv.StringOrEmpty(obj.GetValidationRegexOk()), conv.PriorString(prior, func(m *CustomFieldModel) types.String { return m.ValidationRegex }), false)
 	out.ValidationSchema = conv.JSONFromAPIWithPrior(obj.GetValidationSchema(), conv.PriorJSON(prior, func(m *CustomFieldModel) jsontypes.Normalized { return m.ValidationSchema }))
 	out.ChoiceSetId = conv.BriefID(obj.GetChoiceSetOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *CustomFieldModel) types.String { return m.Comments }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

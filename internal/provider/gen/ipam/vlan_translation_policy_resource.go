@@ -190,7 +190,7 @@ func (r *VlanTranslationPolicyResource) Update(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := vlanTranslationPolicyToPatch(ctx, &plan, &resp.Diagnostics)
+	body := vlanTranslationPolicyToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -237,9 +237,7 @@ func vlanTranslationPolicyToCreate(ctx context.Context, plan *VlanTranslationPol
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -248,22 +246,30 @@ func vlanTranslationPolicyToCreate(ctx context.Context, plan *VlanTranslationPol
 	return body
 }
 
-// vlanTranslationPolicyToPatch builds the PatchedVLANTranslationPolicyRequest request body from the plan.
-func vlanTranslationPolicyToPatch(ctx context.Context, plan *VlanTranslationPolicyModel, diags *diag.Diagnostics) *netbox.PatchedVLANTranslationPolicyRequest {
+// vlanTranslationPolicyToPatch builds the PatchedVLANTranslationPolicyRequest request body with every attribute whose planned value differs from state.
+func vlanTranslationPolicyToPatch(ctx context.Context, plan, state *VlanTranslationPolicyModel, diags *diag.Diagnostics) *netbox.PatchedVLANTranslationPolicyRequest {
 	body := netbox.NewPatchedVLANTranslationPolicyRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
 	return body
 }

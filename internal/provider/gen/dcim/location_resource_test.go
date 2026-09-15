@@ -112,7 +112,7 @@ func TestAccLocation_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_location", &resource.Sweeper{
 		Name:         "netbox_location",
-		Dependencies: []string{"netbox_cooling_source", "netbox_power_panel", "netbox_rack"},
+		Dependencies: []string{"netbox_config_context", "netbox_cooling_source", "netbox_device", "netbox_power_panel", "netbox_rack"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/locations/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

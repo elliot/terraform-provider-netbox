@@ -367,7 +367,7 @@ func (r *RackTypeResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rackTypeToPatch(ctx, &plan, &resp.Diagnostics)
+	body := rackTypeToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -456,9 +456,7 @@ func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, diags *diag.Diag
 	if conv.Known(plan.CoolingCapacity) {
 		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -473,79 +471,125 @@ func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, diags *diag.Diag
 	return body
 }
 
-// rackTypeToPatch builds the PatchedWritableRackTypeRequest request body from the plan.
-func rackTypeToPatch(ctx context.Context, plan *RackTypeModel, diags *diag.Diagnostics) *netbox.PatchedWritableRackTypeRequest {
+// rackTypeToPatch builds the PatchedWritableRackTypeRequest request body with every attribute whose planned value differs from state.
+func rackTypeToPatch(ctx context.Context, plan, state *RackTypeModel, diags *diag.Diagnostics) *netbox.PatchedWritableRackTypeRequest {
 	body := netbox.NewPatchedWritableRackTypeRequest()
-	if conv.Known(plan.ManufacturerId) {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
+		if conv.Known(plan.ManufacturerId) {
+			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		}
 	}
-	if conv.Known(plan.Model) {
-		body.SetModel(plan.Model.ValueString())
+	if !plan.Model.Equal(state.Model) {
+		if conv.Known(plan.Model) {
+			body.SetModel(plan.Model.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.FormFactor) {
-		body.SetFormFactor(plan.FormFactor.ValueString())
+	if !plan.FormFactor.Equal(state.FormFactor) {
+		if conv.Known(plan.FormFactor) {
+			body.SetFormFactor(plan.FormFactor.ValueString())
+		}
 	}
-	if conv.Known(plan.Width) {
-		body.SetWidth(conv.Int32(plan.Width))
+	if !plan.Width.Equal(state.Width) {
+		if conv.Known(plan.Width) {
+			body.SetWidth(conv.Int32(plan.Width))
+		}
 	}
-	if conv.Known(plan.UHeight) {
-		body.SetUHeight(conv.Int32(plan.UHeight))
+	if !plan.UHeight.Equal(state.UHeight) {
+		if conv.Known(plan.UHeight) {
+			body.SetUHeight(conv.Int32(plan.UHeight))
+		}
 	}
-	if conv.Known(plan.StartingUnit) {
-		body.SetStartingUnit(conv.Int32(plan.StartingUnit))
+	if !plan.StartingUnit.Equal(state.StartingUnit) {
+		if conv.Known(plan.StartingUnit) {
+			body.SetStartingUnit(conv.Int32(plan.StartingUnit))
+		}
 	}
-	if conv.Known(plan.DescUnits) {
-		body.SetDescUnits(plan.DescUnits.ValueBool())
+	if !plan.DescUnits.Equal(state.DescUnits) {
+		if conv.Known(plan.DescUnits) {
+			body.SetDescUnits(plan.DescUnits.ValueBool())
+		}
 	}
-	if conv.Known(plan.OuterWidth) {
-		body.SetOuterWidth(conv.Int32(plan.OuterWidth))
+	if !plan.OuterWidth.Equal(state.OuterWidth) {
+		if conv.Known(plan.OuterWidth) {
+			body.SetOuterWidth(conv.Int32(plan.OuterWidth))
+		}
 	}
-	if conv.Known(plan.OuterHeight) {
-		body.SetOuterHeight(conv.Int32(plan.OuterHeight))
+	if !plan.OuterHeight.Equal(state.OuterHeight) {
+		if conv.Known(plan.OuterHeight) {
+			body.SetOuterHeight(conv.Int32(plan.OuterHeight))
+		}
 	}
-	if conv.Known(plan.OuterDepth) {
-		body.SetOuterDepth(conv.Int32(plan.OuterDepth))
+	if !plan.OuterDepth.Equal(state.OuterDepth) {
+		if conv.Known(plan.OuterDepth) {
+			body.SetOuterDepth(conv.Int32(plan.OuterDepth))
+		}
 	}
-	if conv.Known(plan.OuterUnit) {
-		body.SetOuterUnit(plan.OuterUnit.ValueString())
+	if !plan.OuterUnit.Equal(state.OuterUnit) {
+		if conv.Known(plan.OuterUnit) {
+			body.SetOuterUnit(plan.OuterUnit.ValueString())
+		}
 	}
-	if conv.Known(plan.Weight) {
-		body.SetWeight(plan.Weight.ValueFloat64())
+	if !plan.Weight.Equal(state.Weight) {
+		if conv.Known(plan.Weight) {
+			body.SetWeight(plan.Weight.ValueFloat64())
+		}
 	}
-	if conv.Known(plan.MaxWeight) {
-		body.SetMaxWeight(conv.Int32(plan.MaxWeight))
+	if !plan.MaxWeight.Equal(state.MaxWeight) {
+		if conv.Known(plan.MaxWeight) {
+			body.SetMaxWeight(conv.Int32(plan.MaxWeight))
+		}
 	}
-	if conv.Known(plan.WeightUnit) {
-		body.SetWeightUnit(plan.WeightUnit.ValueString())
+	if !plan.WeightUnit.Equal(state.WeightUnit) {
+		if conv.Known(plan.WeightUnit) {
+			body.SetWeightUnit(plan.WeightUnit.ValueString())
+		}
 	}
-	if conv.Known(plan.MountingDepth) {
-		body.SetMountingDepth(conv.Int32(plan.MountingDepth))
+	if !plan.MountingDepth.Equal(state.MountingDepth) {
+		if conv.Known(plan.MountingDepth) {
+			body.SetMountingDepth(conv.Int32(plan.MountingDepth))
+		}
 	}
-	if conv.Known(plan.CoolingCapability) {
-		body.SetCoolingCapability(plan.CoolingCapability.ValueString())
+	if !plan.CoolingCapability.Equal(state.CoolingCapability) {
+		if conv.Known(plan.CoolingCapability) {
+			body.SetCoolingCapability(plan.CoolingCapability.ValueString())
+		}
 	}
-	if conv.Known(plan.CoolingCapacity) {
-		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
+	if !plan.CoolingCapacity.Equal(state.CoolingCapacity) {
+		if conv.Known(plan.CoolingCapacity) {
+			body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

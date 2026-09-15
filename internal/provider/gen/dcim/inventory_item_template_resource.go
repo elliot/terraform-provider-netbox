@@ -146,8 +146,10 @@ func inventoryItemTemplateResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"component_id": schema.Int64Attribute{
-			MarkdownDescription: "Component Id.",
+			MarkdownDescription: "Component Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"url": schema.StringAttribute{
 			MarkdownDescription: "Url.",
@@ -238,7 +240,7 @@ func (r *InventoryItemTemplateResource) Update(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := inventoryItemTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := inventoryItemTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -282,22 +284,16 @@ func (r *InventoryItemTemplateResource) ImportState(ctx context.Context, req res
 // inventoryItemTemplateToCreate builds the InventoryItemTemplateRequest request body from the plan.
 func inventoryItemTemplateToCreate(ctx context.Context, plan *InventoryItemTemplateModel, diags *diag.Diagnostics) *netbox.InventoryItemTemplateRequest {
 	body := netbox.NewInventoryItemTemplateRequest(conv.Int32(plan.DeviceTypeId), plan.Name.ValueString())
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
+	if conv.Known(plan.ParentId) {
 		body.SetParent(conv.Int32(plan.ParentId))
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
+	if conv.Known(plan.RoleId) {
 		body.SetRole(conv.Int32(plan.RoleId))
 	}
-	if plan.ManufacturerId.IsNull() {
-		body.SetManufacturerNil()
-	} else if !plan.ManufacturerId.IsUnknown() {
+	if conv.Known(plan.ManufacturerId) {
 		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
 	}
 	if !plan.PartId.IsUnknown() {
@@ -306,61 +302,75 @@ func inventoryItemTemplateToCreate(ctx context.Context, plan *InventoryItemTempl
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.ComponentType.IsNull() {
-		body.SetComponentTypeNil()
-	} else if !plan.ComponentType.IsUnknown() {
+	if conv.Known(plan.ComponentType) {
 		body.SetComponentType(plan.ComponentType.ValueString())
 	}
-	if plan.ComponentId.IsNull() {
-		body.SetComponentIdNil()
-	} else if !plan.ComponentId.IsUnknown() {
+	if conv.Known(plan.ComponentId) {
 		body.SetComponentId(plan.ComponentId.ValueInt64())
 	}
 	return body
 }
 
-// inventoryItemTemplateToPatch builds the PatchedInventoryItemTemplateRequest request body from the plan.
-func inventoryItemTemplateToPatch(ctx context.Context, plan *InventoryItemTemplateModel, diags *diag.Diagnostics) *netbox.PatchedInventoryItemTemplateRequest {
+// inventoryItemTemplateToPatch builds the PatchedInventoryItemTemplateRequest request body with every attribute whose planned value differs from state.
+func inventoryItemTemplateToPatch(ctx context.Context, plan, state *InventoryItemTemplateModel, diags *diag.Diagnostics) *netbox.PatchedInventoryItemTemplateRequest {
 	body := netbox.NewPatchedInventoryItemTemplateRequest()
-	if conv.Known(plan.DeviceTypeId) {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if conv.Known(plan.DeviceTypeId) {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
-		body.SetParent(conv.Int32(plan.ParentId))
+	if !plan.ParentId.Equal(state.ParentId) {
+		if plan.ParentId.IsNull() {
+			body.SetParentNil()
+		} else if !plan.ParentId.IsUnknown() {
+			body.SetParent(conv.Int32(plan.ParentId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
-		body.SetRole(conv.Int32(plan.RoleId))
+	if !plan.RoleId.Equal(state.RoleId) {
+		if plan.RoleId.IsNull() {
+			body.SetRoleNil()
+		} else if !plan.RoleId.IsUnknown() {
+			body.SetRole(conv.Int32(plan.RoleId))
+		}
 	}
-	if plan.ManufacturerId.IsNull() {
-		body.SetManufacturerNil()
-	} else if !plan.ManufacturerId.IsUnknown() {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
+		if plan.ManufacturerId.IsNull() {
+			body.SetManufacturerNil()
+		} else if !plan.ManufacturerId.IsUnknown() {
+			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		}
 	}
-	if !plan.PartId.IsUnknown() {
-		body.SetPartId(plan.PartId.ValueString())
+	if !plan.PartId.Equal(state.PartId) {
+		if !plan.PartId.IsUnknown() {
+			body.SetPartId(plan.PartId.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.ComponentType.IsNull() {
-		body.SetComponentTypeNil()
-	} else if !plan.ComponentType.IsUnknown() {
-		body.SetComponentType(plan.ComponentType.ValueString())
+	if !plan.ComponentType.Equal(state.ComponentType) {
+		if plan.ComponentType.IsNull() {
+			body.SetComponentTypeNil()
+		} else if !plan.ComponentType.IsUnknown() {
+			body.SetComponentType(plan.ComponentType.ValueString())
+		}
 	}
-	if plan.ComponentId.IsNull() {
-		body.SetComponentIdNil()
-	} else if !plan.ComponentId.IsUnknown() {
-		body.SetComponentId(plan.ComponentId.ValueInt64())
+	if !plan.ComponentId.Equal(state.ComponentId) {
+		if conv.Known(plan.ComponentId) {
+			body.SetComponentId(plan.ComponentId.ValueInt64())
+		}
 	}
 	return body
 }
@@ -371,13 +381,13 @@ func inventoryItemTemplateFromAPI(ctx context.Context, obj *netbox.InventoryItem
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.ParentId = conv.Int64From32(obj.GetParentOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *InventoryItemTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *InventoryItemTemplateModel) types.String { return m.Label }), false)
 	out.RoleId = conv.BriefID(obj.GetRoleOk())
 	out.ManufacturerId = conv.BriefID(obj.GetManufacturerOk())
-	out.PartId = conv.StringOrEmpty(obj.GetPartIdOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
-	out.ComponentType = conv.String(obj.GetComponentTypeOk())
+	out.PartId = conv.StringKeep(conv.StringOrEmpty(obj.GetPartIdOk()), conv.PriorString(prior, func(m *InventoryItemTemplateModel) types.String { return m.PartId }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *InventoryItemTemplateModel) types.String { return m.Description }), false)
+	out.ComponentType = conv.StringKeep(conv.String(obj.GetComponentTypeOk()), conv.PriorString(prior, func(m *InventoryItemTemplateModel) types.String { return m.ComponentType }), false)
 	out.ComponentId = conv.Int64From64(obj.GetComponentIdOk())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())

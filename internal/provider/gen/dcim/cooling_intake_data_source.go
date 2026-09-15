@@ -113,7 +113,7 @@ func coolingIntakeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"diameter": dsschema.Float64Attribute{
-			MarkdownDescription: "Diameter.",
+			MarkdownDescription: "Diameter. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"diameter_unit": dsschema.StringAttribute{
@@ -121,7 +121,7 @@ func coolingIntakeDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"max_flow": dsschema.Float64Attribute{
-			MarkdownDescription: "Max Flow.",
+			MarkdownDescription: "Max Flow. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"max_flow_unit": dsschema.StringAttribute{

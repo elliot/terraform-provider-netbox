@@ -242,7 +242,7 @@ func (r *IpsecProfileResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ipsecProfileToPatch(ctx, &plan, &resp.Diagnostics)
+	body := ipsecProfileToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -289,9 +289,7 @@ func ipsecProfileToCreate(ctx context.Context, plan *IpsecProfileModel, diags *d
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -306,37 +304,55 @@ func ipsecProfileToCreate(ctx context.Context, plan *IpsecProfileModel, diags *d
 	return body
 }
 
-// ipsecProfileToPatch builds the PatchedWritableIPSecProfileRequest request body from the plan.
-func ipsecProfileToPatch(ctx context.Context, plan *IpsecProfileModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPSecProfileRequest {
+// ipsecProfileToPatch builds the PatchedWritableIPSecProfileRequest request body with every attribute whose planned value differs from state.
+func ipsecProfileToPatch(ctx context.Context, plan, state *IpsecProfileModel, diags *diag.Diagnostics) *netbox.PatchedWritableIPSecProfileRequest {
 	body := netbox.NewPatchedWritableIPSecProfileRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Mode) {
-		body.SetMode(plan.Mode.ValueString())
+	if !plan.Mode.Equal(state.Mode) {
+		if conv.Known(plan.Mode) {
+			body.SetMode(plan.Mode.ValueString())
+		}
 	}
-	if conv.Known(plan.IkePolicyId) {
-		body.SetIkePolicy(conv.Int32(plan.IkePolicyId))
+	if !plan.IkePolicyId.Equal(state.IkePolicyId) {
+		if conv.Known(plan.IkePolicyId) {
+			body.SetIkePolicy(conv.Int32(plan.IkePolicyId))
+		}
 	}
-	if conv.Known(plan.IpsecPolicyId) {
-		body.SetIpsecPolicy(conv.Int32(plan.IpsecPolicyId))
+	if !plan.IpsecPolicyId.Equal(state.IpsecPolicyId) {
+		if conv.Known(plan.IpsecPolicyId) {
+			body.SetIpsecPolicy(conv.Int32(plan.IpsecPolicyId))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -349,13 +365,13 @@ func ipsecProfileFromAPI(ctx context.Context, obj *netbox.IPSecProfile, prior *I
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *IpsecProfileModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *IpsecProfileModel) types.String { return m.Description }), false)
 	out.Mode = conv.Choice(obj.GetModeOk())
 	out.IkePolicyId = conv.BriefID(obj.GetIkePolicyOk())
 	out.IpsecPolicyId = conv.BriefID(obj.GetIpsecPolicyOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *IpsecProfileModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

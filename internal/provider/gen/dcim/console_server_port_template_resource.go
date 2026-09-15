@@ -226,7 +226,7 @@ func (r *ConsoleServerPortTemplateResource) Update(ctx context.Context, req reso
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := consoleServerPortTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := consoleServerPortTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -270,22 +270,16 @@ func (r *ConsoleServerPortTemplateResource) ImportState(ctx context.Context, req
 // consoleServerPortTemplateToCreate builds the WritableConsoleServerPortTemplateRequest request body from the plan.
 func consoleServerPortTemplateToCreate(ctx context.Context, plan *ConsoleServerPortTemplateModel, diags *diag.Diagnostics) *netbox.WritableConsoleServerPortTemplateRequest {
 	body := netbox.NewWritableConsoleServerPortTemplateRequest(plan.Name.ValueString())
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
+	if conv.Known(plan.DeviceTypeId) {
 		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
+	if conv.Known(plan.ModuleTypeId) {
 		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
+	if conv.Known(plan.Type) {
 		body.SetType(plan.Type.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
@@ -294,32 +288,42 @@ func consoleServerPortTemplateToCreate(ctx context.Context, plan *ConsoleServerP
 	return body
 }
 
-// consoleServerPortTemplateToPatch builds the PatchedWritableConsoleServerPortTemplateRequest request body from the plan.
-func consoleServerPortTemplateToPatch(ctx context.Context, plan *ConsoleServerPortTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableConsoleServerPortTemplateRequest {
+// consoleServerPortTemplateToPatch builds the PatchedWritableConsoleServerPortTemplateRequest request body with every attribute whose planned value differs from state.
+func consoleServerPortTemplateToPatch(ctx context.Context, plan, state *ConsoleServerPortTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableConsoleServerPortTemplateRequest {
 	body := netbox.NewPatchedWritableConsoleServerPortTemplateRequest()
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if plan.DeviceTypeId.IsNull() {
+			body.SetDeviceTypeNil()
+		} else if !plan.DeviceTypeId.IsUnknown() {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
+		if plan.ModuleTypeId.IsNull() {
+			body.SetModuleTypeNil()
+		} else if !plan.ModuleTypeId.IsUnknown() {
+			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
 	return body
 }
@@ -330,10 +334,10 @@ func consoleServerPortTemplateFromAPI(ctx context.Context, obj *netbox.ConsoleSe
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.ModuleTypeId = conv.BriefID(obj.GetModuleTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ConsoleServerPortTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *ConsoleServerPortTemplateModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ConsoleServerPortTemplateModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

@@ -227,7 +227,7 @@ func (r *ModuleTypeProfileResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := moduleTypeProfileToPatch(ctx, &plan, &resp.Diagnostics)
+	body := moduleTypeProfileToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -277,9 +277,7 @@ func moduleTypeProfileToCreate(ctx context.Context, plan *ModuleTypeProfileModel
 	if conv.Known(plan.Schema) {
 		body.SetSchema(conv.JSONToAPI(plan.Schema, diags))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -294,31 +292,45 @@ func moduleTypeProfileToCreate(ctx context.Context, plan *ModuleTypeProfileModel
 	return body
 }
 
-// moduleTypeProfileToPatch builds the PatchedModuleTypeProfileRequest request body from the plan.
-func moduleTypeProfileToPatch(ctx context.Context, plan *ModuleTypeProfileModel, diags *diag.Diagnostics) *netbox.PatchedModuleTypeProfileRequest {
+// moduleTypeProfileToPatch builds the PatchedModuleTypeProfileRequest request body with every attribute whose planned value differs from state.
+func moduleTypeProfileToPatch(ctx context.Context, plan, state *ModuleTypeProfileModel, diags *diag.Diagnostics) *netbox.PatchedModuleTypeProfileRequest {
 	body := netbox.NewPatchedModuleTypeProfileRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Schema) {
-		body.SetSchema(conv.JSONToAPI(plan.Schema, diags))
+	if !plan.Schema.Equal(state.Schema) {
+		if conv.Known(plan.Schema) {
+			body.SetSchema(conv.JSONToAPI(plan.Schema, diags))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -331,11 +343,11 @@ func moduleTypeProfileFromAPI(ctx context.Context, obj *netbox.ModuleTypeProfile
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ModuleTypeProfileModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ModuleTypeProfileModel) types.String { return m.Description }), false)
 	out.Schema = conv.JSONFromAPIWithPrior(obj.GetSchema(), conv.PriorJSON(prior, func(m *ModuleTypeProfileModel) jsontypes.Normalized { return m.Schema }))
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ModuleTypeProfileModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

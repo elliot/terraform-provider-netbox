@@ -317,7 +317,7 @@ func (r *PowerFeedResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := powerFeedToPatch(ctx, &plan, &resp.Diagnostics)
+	body := powerFeedToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -361,9 +361,7 @@ func (r *PowerFeedResource) ImportState(ctx context.Context, req resource.Import
 // powerFeedToCreate builds the WritablePowerFeedRequest request body from the plan.
 func powerFeedToCreate(ctx context.Context, plan *PowerFeedModel, diags *diag.Diagnostics) *netbox.WritablePowerFeedRequest {
 	body := netbox.NewWritablePowerFeedRequest(conv.Int32(plan.PowerPanelId), plan.Name.ValueString())
-	if plan.RackId.IsNull() {
-		body.SetRackNil()
-	} else if !plan.RackId.IsUnknown() {
+	if conv.Known(plan.RackId) {
 		body.SetRack(conv.Int32(plan.RackId))
 	}
 	if conv.Known(plan.Status) {
@@ -393,14 +391,10 @@ func powerFeedToCreate(ctx context.Context, plan *PowerFeedModel, diags *diag.Di
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -415,65 +409,99 @@ func powerFeedToCreate(ctx context.Context, plan *PowerFeedModel, diags *diag.Di
 	return body
 }
 
-// powerFeedToPatch builds the PatchedWritablePowerFeedRequest request body from the plan.
-func powerFeedToPatch(ctx context.Context, plan *PowerFeedModel, diags *diag.Diagnostics) *netbox.PatchedWritablePowerFeedRequest {
+// powerFeedToPatch builds the PatchedWritablePowerFeedRequest request body with every attribute whose planned value differs from state.
+func powerFeedToPatch(ctx context.Context, plan, state *PowerFeedModel, diags *diag.Diagnostics) *netbox.PatchedWritablePowerFeedRequest {
 	body := netbox.NewPatchedWritablePowerFeedRequest()
-	if conv.Known(plan.PowerPanelId) {
-		body.SetPowerPanel(conv.Int32(plan.PowerPanelId))
+	if !plan.PowerPanelId.Equal(state.PowerPanelId) {
+		if conv.Known(plan.PowerPanelId) {
+			body.SetPowerPanel(conv.Int32(plan.PowerPanelId))
+		}
 	}
-	if plan.RackId.IsNull() {
-		body.SetRackNil()
-	} else if !plan.RackId.IsUnknown() {
-		body.SetRack(conv.Int32(plan.RackId))
+	if !plan.RackId.Equal(state.RackId) {
+		if plan.RackId.IsNull() {
+			body.SetRackNil()
+		} else if !plan.RackId.IsUnknown() {
+			body.SetRack(conv.Int32(plan.RackId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if conv.Known(plan.Supply) {
-		body.SetSupply(plan.Supply.ValueString())
+	if !plan.Supply.Equal(state.Supply) {
+		if conv.Known(plan.Supply) {
+			body.SetSupply(plan.Supply.ValueString())
+		}
 	}
-	if conv.Known(plan.Phase) {
-		body.SetPhase(plan.Phase.ValueString())
+	if !plan.Phase.Equal(state.Phase) {
+		if conv.Known(plan.Phase) {
+			body.SetPhase(plan.Phase.ValueString())
+		}
 	}
-	if conv.Known(plan.Voltage) {
-		body.SetVoltage(conv.Int32(plan.Voltage))
+	if !plan.Voltage.Equal(state.Voltage) {
+		if conv.Known(plan.Voltage) {
+			body.SetVoltage(conv.Int32(plan.Voltage))
+		}
 	}
-	if conv.Known(plan.Amperage) {
-		body.SetAmperage(conv.Int32(plan.Amperage))
+	if !plan.Amperage.Equal(state.Amperage) {
+		if conv.Known(plan.Amperage) {
+			body.SetAmperage(conv.Int32(plan.Amperage))
+		}
 	}
-	if conv.Known(plan.MaxUtilization) {
-		body.SetMaxUtilization(conv.Int32(plan.MaxUtilization))
+	if !plan.MaxUtilization.Equal(state.MaxUtilization) {
+		if conv.Known(plan.MaxUtilization) {
+			body.SetMaxUtilization(conv.Int32(plan.MaxUtilization))
+		}
 	}
-	if conv.Known(plan.MarkConnected) {
-		body.SetMarkConnected(plan.MarkConnected.ValueBool())
+	if !plan.MarkConnected.Equal(state.MarkConnected) {
+		if conv.Known(plan.MarkConnected) {
+			body.SetMarkConnected(plan.MarkConnected.ValueBool())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -488,7 +516,7 @@ func powerFeedFromAPI(ctx context.Context, obj *netbox.PowerFeed, prior *PowerFe
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.PowerPanelId = conv.BriefID(obj.GetPowerPanelOk())
 	out.RackId = conv.BriefID(obj.GetRackOk())
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *PowerFeedModel) types.String { return m.Name }), false)
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Supply = conv.Choice(obj.GetSupplyOk())
@@ -497,10 +525,10 @@ func powerFeedFromAPI(ctx context.Context, obj *netbox.PowerFeed, prior *PowerFe
 	out.Amperage = conv.Int64From32(obj.GetAmperageOk())
 	out.MaxUtilization = conv.Int64From32(obj.GetMaxUtilizationOk())
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *PowerFeedModel) types.String { return m.Description }), false)
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *PowerFeedModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

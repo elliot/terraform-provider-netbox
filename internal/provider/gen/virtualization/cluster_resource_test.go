@@ -109,7 +109,7 @@ func TestAccCluster_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_cluster", &resource.Sweeper{
 		Name:         "netbox_cluster",
-		Dependencies: []string{"netbox_virtual_machine"},
+		Dependencies: []string{"netbox_config_context", "netbox_device", "netbox_virtual_machine"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/virtualization/clusters/", []string{"name__isw", "description__isw", "q"})
 		},

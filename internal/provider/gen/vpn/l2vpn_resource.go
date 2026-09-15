@@ -118,8 +118,10 @@ func l2vpnResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"identifier": schema.Int64Attribute{
-			MarkdownDescription: "Identifier.",
+			MarkdownDescription: "Identifier. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"name": schema.StringAttribute{
 			MarkdownDescription: "Name.",
@@ -279,7 +281,7 @@ func (r *L2vpnResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := l2vpnToPatch(ctx, &plan, &resp.Diagnostics)
+	body := l2vpnToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -323,9 +325,7 @@ func (r *L2vpnResource) ImportState(ctx context.Context, req resource.ImportStat
 // l2vpnToCreate builds the WritableL2VPNRequest request body from the plan.
 func l2vpnToCreate(ctx context.Context, plan *L2vpnModel, diags *diag.Diagnostics) *netbox.WritableL2VPNRequest {
 	body := netbox.NewWritableL2VPNRequest(plan.Name.ValueString(), plan.Slug.ValueString(), plan.Type.ValueString())
-	if plan.Identifier.IsNull() {
-		body.SetIdentifierNil()
-	} else if !plan.Identifier.IsUnknown() {
+	if conv.Known(plan.Identifier) {
 		body.SetIdentifier(plan.Identifier.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
@@ -340,17 +340,13 @@ func l2vpnToCreate(ctx context.Context, plan *L2vpnModel, diags *diag.Diagnostic
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
 	if conv.Known(plan.Tags) {
@@ -362,53 +358,77 @@ func l2vpnToCreate(ctx context.Context, plan *L2vpnModel, diags *diag.Diagnostic
 	return body
 }
 
-// l2vpnToPatch builds the PatchedWritableL2VPNRequest request body from the plan.
-func l2vpnToPatch(ctx context.Context, plan *L2vpnModel, diags *diag.Diagnostics) *netbox.PatchedWritableL2VPNRequest {
+// l2vpnToPatch builds the PatchedWritableL2VPNRequest request body with every attribute whose planned value differs from state.
+func l2vpnToPatch(ctx context.Context, plan, state *L2vpnModel, diags *diag.Diagnostics) *netbox.PatchedWritableL2VPNRequest {
 	body := netbox.NewPatchedWritableL2VPNRequest()
-	if plan.Identifier.IsNull() {
-		body.SetIdentifierNil()
-	} else if !plan.Identifier.IsUnknown() {
-		body.SetIdentifier(plan.Identifier.ValueInt64())
+	if !plan.Identifier.Equal(state.Identifier) {
+		if conv.Known(plan.Identifier) {
+			body.SetIdentifier(plan.Identifier.ValueInt64())
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if conv.Known(plan.ImportTargetIds) {
-		body.SetImportTargets(conv.Int32s(ctx, plan.ImportTargetIds, diags))
+	if !plan.ImportTargetIds.Equal(state.ImportTargetIds) {
+		if conv.Known(plan.ImportTargetIds) {
+			body.SetImportTargets(conv.Int32s(ctx, plan.ImportTargetIds, diags))
+		}
 	}
-	if conv.Known(plan.ExportTargetIds) {
-		body.SetExportTargets(conv.Int32s(ctx, plan.ExportTargetIds, diags))
+	if !plan.ExportTargetIds.Equal(state.ExportTargetIds) {
+		if conv.Known(plan.ExportTargetIds) {
+			body.SetExportTargets(conv.Int32s(ctx, plan.ExportTargetIds, diags))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -422,15 +442,15 @@ func l2vpnFromAPI(ctx context.Context, obj *netbox.L2VPN, prior *L2vpnModel, out
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Identifier = conv.Int64From64(obj.GetIdentifierOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *L2vpnModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *L2vpnModel) types.String { return m.Slug }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.ImportTargetIds = conv.BriefIDs(obj.GetImportTargets())
 	out.ExportTargetIds = conv.BriefIDs(obj.GetExportTargets())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *L2vpnModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *L2vpnModel) types.String { return m.Comments }), false)
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)

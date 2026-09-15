@@ -277,7 +277,7 @@ func (r *VlanResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := vlanToPatch(ctx, &plan, &resp.Diagnostics)
+	body := vlanToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -321,27 +321,19 @@ func (r *VlanResource) ImportState(ctx context.Context, req resource.ImportState
 // vlanToCreate builds the WritableVLANRequest request body from the plan.
 func vlanToCreate(ctx context.Context, plan *VlanModel, diags *diag.Diagnostics) *netbox.WritableVLANRequest {
 	body := netbox.NewWritableVLANRequest(conv.Int32(plan.Vid), plan.Name.ValueString())
-	if plan.SiteId.IsNull() {
-		body.SetSiteNil()
-	} else if !plan.SiteId.IsUnknown() {
+	if conv.Known(plan.SiteId) {
 		body.SetSite(conv.Int32(plan.SiteId))
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
+	if conv.Known(plan.GroupId) {
 		body.SetGroup(conv.Int32(plan.GroupId))
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
+	if conv.Known(plan.RoleId) {
 		body.SetRole(conv.Int32(plan.RoleId))
 	}
 	if !plan.Description.IsUnknown() {
@@ -350,14 +342,10 @@ func vlanToCreate(ctx context.Context, plan *VlanModel, diags *diag.Diagnostics)
 	if conv.Known(plan.QinqRole) {
 		body.SetQinqRole(plan.QinqRole.ValueString())
 	}
-	if plan.QinqSvlanId.IsNull() {
-		body.SetQinqSvlanNil()
-	} else if !plan.QinqSvlanId.IsUnknown() {
+	if conv.Known(plan.QinqSvlanId) {
 		body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -372,62 +360,90 @@ func vlanToCreate(ctx context.Context, plan *VlanModel, diags *diag.Diagnostics)
 	return body
 }
 
-// vlanToPatch builds the PatchedWritableVLANRequest request body from the plan.
-func vlanToPatch(ctx context.Context, plan *VlanModel, diags *diag.Diagnostics) *netbox.PatchedWritableVLANRequest {
+// vlanToPatch builds the PatchedWritableVLANRequest request body with every attribute whose planned value differs from state.
+func vlanToPatch(ctx context.Context, plan, state *VlanModel, diags *diag.Diagnostics) *netbox.PatchedWritableVLANRequest {
 	body := netbox.NewPatchedWritableVLANRequest()
-	if plan.SiteId.IsNull() {
-		body.SetSiteNil()
-	} else if !plan.SiteId.IsUnknown() {
-		body.SetSite(conv.Int32(plan.SiteId))
+	if !plan.SiteId.Equal(state.SiteId) {
+		if plan.SiteId.IsNull() {
+			body.SetSiteNil()
+		} else if !plan.SiteId.IsUnknown() {
+			body.SetSite(conv.Int32(plan.SiteId))
+		}
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
-		body.SetGroup(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if plan.GroupId.IsNull() {
+			body.SetGroupNil()
+		} else if !plan.GroupId.IsUnknown() {
+			body.SetGroup(conv.Int32(plan.GroupId))
+		}
 	}
-	if conv.Known(plan.Vid) {
-		body.SetVid(conv.Int32(plan.Vid))
+	if !plan.Vid.Equal(state.Vid) {
+		if conv.Known(plan.Vid) {
+			body.SetVid(conv.Int32(plan.Vid))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.RoleId.IsNull() {
-		body.SetRoleNil()
-	} else if !plan.RoleId.IsUnknown() {
-		body.SetRole(conv.Int32(plan.RoleId))
+	if !plan.RoleId.Equal(state.RoleId) {
+		if plan.RoleId.IsNull() {
+			body.SetRoleNil()
+		} else if !plan.RoleId.IsUnknown() {
+			body.SetRole(conv.Int32(plan.RoleId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.QinqRole) {
-		body.SetQinqRole(plan.QinqRole.ValueString())
+	if !plan.QinqRole.Equal(state.QinqRole) {
+		if conv.Known(plan.QinqRole) {
+			body.SetQinqRole(plan.QinqRole.ValueString())
+		}
 	}
-	if plan.QinqSvlanId.IsNull() {
-		body.SetQinqSvlanNil()
-	} else if !plan.QinqSvlanId.IsUnknown() {
-		body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
+	if !plan.QinqSvlanId.Equal(state.QinqSvlanId) {
+		if plan.QinqSvlanId.IsNull() {
+			body.SetQinqSvlanNil()
+		} else if !plan.QinqSvlanId.IsUnknown() {
+			body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

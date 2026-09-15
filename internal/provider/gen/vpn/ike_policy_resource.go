@@ -259,7 +259,7 @@ func (r *IkePolicyResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := ikePolicyToPatch(ctx, &plan, &resp.Diagnostics)
+	body := ikePolicyToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -315,9 +315,7 @@ func ikePolicyToCreate(ctx context.Context, plan *IkePolicyModel, diags *diag.Di
 	if !plan.PresharedKey.IsUnknown() {
 		body.SetPresharedKey(plan.PresharedKey.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -332,40 +330,60 @@ func ikePolicyToCreate(ctx context.Context, plan *IkePolicyModel, diags *diag.Di
 	return body
 }
 
-// ikePolicyToPatch builds the PatchedWritableIKEPolicyRequest request body from the plan.
-func ikePolicyToPatch(ctx context.Context, plan *IkePolicyModel, diags *diag.Diagnostics) *netbox.PatchedWritableIKEPolicyRequest {
+// ikePolicyToPatch builds the PatchedWritableIKEPolicyRequest request body with every attribute whose planned value differs from state.
+func ikePolicyToPatch(ctx context.Context, plan, state *IkePolicyModel, diags *diag.Diagnostics) *netbox.PatchedWritableIKEPolicyRequest {
 	body := netbox.NewPatchedWritableIKEPolicyRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Version) {
-		body.SetVersion(conv.Int32(plan.Version))
+	if !plan.Version.Equal(state.Version) {
+		if conv.Known(plan.Version) {
+			body.SetVersion(conv.Int32(plan.Version))
+		}
 	}
-	if conv.Known(plan.Mode) {
-		body.SetMode(plan.Mode.ValueString())
+	if !plan.Mode.Equal(state.Mode) {
+		if conv.Known(plan.Mode) {
+			body.SetMode(plan.Mode.ValueString())
+		}
 	}
-	if conv.Known(plan.ProposalIds) {
-		body.SetProposals(conv.Int32s(ctx, plan.ProposalIds, diags))
+	if !plan.ProposalIds.Equal(state.ProposalIds) {
+		if conv.Known(plan.ProposalIds) {
+			body.SetProposals(conv.Int32s(ctx, plan.ProposalIds, diags))
+		}
 	}
-	if !plan.PresharedKey.IsUnknown() {
-		body.SetPresharedKey(plan.PresharedKey.ValueString())
+	if !plan.PresharedKey.Equal(state.PresharedKey) {
+		if !plan.PresharedKey.IsUnknown() {
+			body.SetPresharedKey(plan.PresharedKey.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

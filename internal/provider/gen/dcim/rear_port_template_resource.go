@@ -244,7 +244,7 @@ func (r *RearPortTemplateResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rearPortTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := rearPortTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -288,14 +288,10 @@ func (r *RearPortTemplateResource) ImportState(ctx context.Context, req resource
 // rearPortTemplateToCreate builds the WritableRearPortTemplateRequest request body from the plan.
 func rearPortTemplateToCreate(ctx context.Context, plan *RearPortTemplateModel, diags *diag.Diagnostics) *netbox.WritableRearPortTemplateRequest {
 	body := netbox.NewWritableRearPortTemplateRequest(plan.Name.ValueString(), plan.Type.ValueString())
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
+	if conv.Known(plan.DeviceTypeId) {
 		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
+	if conv.Known(plan.ModuleTypeId) {
 		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
 	}
 	if !plan.Label.IsUnknown() {
@@ -313,36 +309,52 @@ func rearPortTemplateToCreate(ctx context.Context, plan *RearPortTemplateModel, 
 	return body
 }
 
-// rearPortTemplateToPatch builds the PatchedWritableRearPortTemplateRequest request body from the plan.
-func rearPortTemplateToPatch(ctx context.Context, plan *RearPortTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableRearPortTemplateRequest {
+// rearPortTemplateToPatch builds the PatchedWritableRearPortTemplateRequest request body with every attribute whose planned value differs from state.
+func rearPortTemplateToPatch(ctx context.Context, plan, state *RearPortTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableRearPortTemplateRequest {
 	body := netbox.NewPatchedWritableRearPortTemplateRequest()
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if plan.DeviceTypeId.IsNull() {
+			body.SetDeviceTypeNil()
+		} else if !plan.DeviceTypeId.IsUnknown() {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
+		if plan.ModuleTypeId.IsNull() {
+			body.SetModuleTypeNil()
+		} else if !plan.ModuleTypeId.IsUnknown() {
+			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if !plan.Color.IsUnknown() {
-		body.SetColor(plan.Color.ValueString())
+	if !plan.Color.Equal(state.Color) {
+		if !plan.Color.IsUnknown() {
+			body.SetColor(plan.Color.ValueString())
+		}
 	}
-	if conv.Known(plan.Positions) {
-		body.SetPositions(conv.Int32(plan.Positions))
+	if !plan.Positions.Equal(state.Positions) {
+		if conv.Known(plan.Positions) {
+			body.SetPositions(conv.Int32(plan.Positions))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
 	return body
 }
@@ -353,12 +365,12 @@ func rearPortTemplateFromAPI(ctx context.Context, obj *netbox.RearPortTemplate, 
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.ModuleTypeId = conv.BriefID(obj.GetModuleTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *RearPortTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *RearPortTemplateModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
-	out.Color = conv.StringOrEmpty(obj.GetColorOk())
+	out.Color = conv.StringKeep(conv.StringOrEmpty(obj.GetColorOk()), conv.PriorString(prior, func(m *RearPortTemplateModel) types.String { return m.Color }), false)
 	out.Positions = conv.Int64From32(obj.GetPositionsOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *RearPortTemplateModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

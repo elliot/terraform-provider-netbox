@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -142,8 +143,10 @@ func coolingOutflowResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"diameter": schema.Float64Attribute{
-			MarkdownDescription: "Diameter.",
+			MarkdownDescription: "Diameter. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"diameter_unit": schema.StringAttribute{
 			MarkdownDescription: "Diameter Unit. Valid values: `mm`, `cm`, `in`. Defaults to the NetBox server default when omitted.",
@@ -268,7 +271,7 @@ func (r *CoolingOutflowResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := coolingOutflowToPatch(ctx, &plan, &resp.Diagnostics)
+	body := coolingOutflowToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -312,40 +315,28 @@ func (r *CoolingOutflowResource) ImportState(ctx context.Context, req resource.I
 // coolingOutflowToCreate builds the WritableCoolingOutflowRequest request body from the plan.
 func coolingOutflowToCreate(ctx context.Context, plan *CoolingOutflowModel, diags *diag.Diagnostics) *netbox.WritableCoolingOutflowRequest {
 	body := netbox.NewWritableCoolingOutflowRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
-	if plan.ModuleId.IsNull() {
-		body.SetModuleNil()
-	} else if !plan.ModuleId.IsUnknown() {
+	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
+	if conv.Known(plan.Type) {
 		body.SetType(plan.Type.ValueString())
 	}
-	if plan.Diameter.IsNull() {
-		body.SetDiameterNil()
-	} else if !plan.Diameter.IsUnknown() {
+	if conv.Known(plan.Diameter) {
 		body.SetDiameter(plan.Diameter.ValueFloat64())
 	}
-	if plan.DiameterUnit.IsNull() {
-		body.SetDiameterUnitNil()
-	} else if !plan.DiameterUnit.IsUnknown() {
+	if conv.Known(plan.DiameterUnit) {
 		body.SetDiameterUnit(plan.DiameterUnit.ValueString())
 	}
-	if plan.CoolingIntakeId.IsNull() {
-		body.SetCoolingIntakeNil()
-	} else if !plan.CoolingIntakeId.IsUnknown() {
+	if conv.Known(plan.CoolingIntakeId) {
 		body.SetCoolingIntake(conv.Int32(plan.CoolingIntakeId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if conv.Known(plan.Tags) {
@@ -357,56 +348,74 @@ func coolingOutflowToCreate(ctx context.Context, plan *CoolingOutflowModel, diag
 	return body
 }
 
-// coolingOutflowToPatch builds the PatchedWritableCoolingOutflowRequest request body from the plan.
-func coolingOutflowToPatch(ctx context.Context, plan *CoolingOutflowModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingOutflowRequest {
+// coolingOutflowToPatch builds the PatchedWritableCoolingOutflowRequest request body with every attribute whose planned value differs from state.
+func coolingOutflowToPatch(ctx context.Context, plan, state *CoolingOutflowModel, diags *diag.Diagnostics) *netbox.PatchedWritableCoolingOutflowRequest {
 	body := netbox.NewPatchedWritableCoolingOutflowRequest()
-	if conv.Known(plan.DeviceId) {
-		body.SetDevice(conv.Int32(plan.DeviceId))
+	if !plan.DeviceId.Equal(state.DeviceId) {
+		if conv.Known(plan.DeviceId) {
+			body.SetDevice(conv.Int32(plan.DeviceId))
+		}
 	}
-	if plan.ModuleId.IsNull() {
-		body.SetModuleNil()
-	} else if !plan.ModuleId.IsUnknown() {
-		body.SetModule(conv.Int32(plan.ModuleId))
+	if !plan.ModuleId.Equal(state.ModuleId) {
+		if plan.ModuleId.IsNull() {
+			body.SetModuleNil()
+		} else if !plan.ModuleId.IsUnknown() {
+			body.SetModule(conv.Int32(plan.ModuleId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if plan.Type.IsNull() {
-		body.SetTypeNil()
-	} else if !plan.Type.IsUnknown() {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if plan.Diameter.IsNull() {
-		body.SetDiameterNil()
-	} else if !plan.Diameter.IsUnknown() {
-		body.SetDiameter(plan.Diameter.ValueFloat64())
+	if !plan.Diameter.Equal(state.Diameter) {
+		if conv.Known(plan.Diameter) {
+			body.SetDiameter(plan.Diameter.ValueFloat64())
+		}
 	}
-	if plan.DiameterUnit.IsNull() {
-		body.SetDiameterUnitNil()
-	} else if !plan.DiameterUnit.IsUnknown() {
-		body.SetDiameterUnit(plan.DiameterUnit.ValueString())
+	if !plan.DiameterUnit.Equal(state.DiameterUnit) {
+		if conv.Known(plan.DiameterUnit) {
+			body.SetDiameterUnit(plan.DiameterUnit.ValueString())
+		}
 	}
-	if plan.CoolingIntakeId.IsNull() {
-		body.SetCoolingIntakeNil()
-	} else if !plan.CoolingIntakeId.IsUnknown() {
-		body.SetCoolingIntake(conv.Int32(plan.CoolingIntakeId))
+	if !plan.CoolingIntakeId.Equal(state.CoolingIntakeId) {
+		if plan.CoolingIntakeId.IsNull() {
+			body.SetCoolingIntakeNil()
+		} else if !plan.CoolingIntakeId.IsUnknown() {
+			body.SetCoolingIntake(conv.Int32(plan.CoolingIntakeId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -421,13 +430,13 @@ func coolingOutflowFromAPI(ctx context.Context, obj *netbox.CoolingOutflow, prio
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceId = conv.BriefID(obj.GetDeviceOk())
 	out.ModuleId = conv.BriefID(obj.GetModuleOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *CoolingOutflowModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *CoolingOutflowModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Diameter = conv.Float64Keep(conv.Float64From(obj.GetDiameterOk()), conv.PriorFloat(prior, func(m *CoolingOutflowModel) types.Float64 { return m.Diameter }), 0)
 	out.DiameterUnit = conv.Choice(obj.GetDiameterUnitOk())
 	out.CoolingIntakeId = conv.BriefID(obj.GetCoolingIntakeOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CoolingOutflowModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)

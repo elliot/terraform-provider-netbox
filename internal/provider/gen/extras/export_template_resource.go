@@ -252,7 +252,7 @@ func (r *ExportTemplateResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := exportTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := exportTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -317,51 +317,71 @@ func exportTemplateToCreate(ctx context.Context, plan *ExportTemplateModel, diag
 	if conv.Known(plan.DataSourceId) {
 		body.SetDataSource(conv.Int32(plan.DataSourceId))
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	return body
 }
 
-// exportTemplateToPatch builds the PatchedExportTemplateRequest request body from the plan.
-func exportTemplateToPatch(ctx context.Context, plan *ExportTemplateModel, diags *diag.Diagnostics) *netbox.PatchedExportTemplateRequest {
+// exportTemplateToPatch builds the PatchedExportTemplateRequest request body with every attribute whose planned value differs from state.
+func exportTemplateToPatch(ctx context.Context, plan, state *ExportTemplateModel, diags *diag.Diagnostics) *netbox.PatchedExportTemplateRequest {
 	body := netbox.NewPatchedExportTemplateRequest()
-	if conv.Known(plan.ObjectTypes) {
-		body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+	if !plan.ObjectTypes.Equal(state.ObjectTypes) {
+		if conv.Known(plan.ObjectTypes) {
+			body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.EnvironmentParams) {
-		body.SetEnvironmentParams(conv.JSONToAPI(plan.EnvironmentParams, diags))
+	if !plan.EnvironmentParams.Equal(state.EnvironmentParams) {
+		if conv.Known(plan.EnvironmentParams) {
+			body.SetEnvironmentParams(conv.JSONToAPI(plan.EnvironmentParams, diags))
+		}
 	}
-	if conv.Known(plan.TemplateCode) {
-		body.SetTemplateCode(plan.TemplateCode.ValueString())
+	if !plan.TemplateCode.Equal(state.TemplateCode) {
+		if conv.Known(plan.TemplateCode) {
+			body.SetTemplateCode(plan.TemplateCode.ValueString())
+		}
 	}
-	if !plan.MimeType.IsUnknown() {
-		body.SetMimeType(plan.MimeType.ValueString())
+	if !plan.MimeType.Equal(state.MimeType) {
+		if !plan.MimeType.IsUnknown() {
+			body.SetMimeType(plan.MimeType.ValueString())
+		}
 	}
-	if !plan.FileName.IsUnknown() {
-		body.SetFileName(plan.FileName.ValueString())
+	if !plan.FileName.Equal(state.FileName) {
+		if !plan.FileName.IsUnknown() {
+			body.SetFileName(plan.FileName.ValueString())
+		}
 	}
-	if !plan.FileExtension.IsUnknown() {
-		body.SetFileExtension(plan.FileExtension.ValueString())
+	if !plan.FileExtension.Equal(state.FileExtension) {
+		if !plan.FileExtension.IsUnknown() {
+			body.SetFileExtension(plan.FileExtension.ValueString())
+		}
 	}
-	if conv.Known(plan.AsAttachment) {
-		body.SetAsAttachment(plan.AsAttachment.ValueBool())
+	if !plan.AsAttachment.Equal(state.AsAttachment) {
+		if conv.Known(plan.AsAttachment) {
+			body.SetAsAttachment(plan.AsAttachment.ValueBool())
+		}
 	}
-	if conv.Known(plan.DataSourceId) {
-		body.SetDataSource(conv.Int32(plan.DataSourceId))
+	if !plan.DataSourceId.Equal(state.DataSourceId) {
+		if conv.Known(plan.DataSourceId) {
+			body.SetDataSource(conv.Int32(plan.DataSourceId))
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
 	return body
 }
@@ -371,13 +391,13 @@ func exportTemplateFromAPI(ctx context.Context, obj *netbox.ExportTemplate, prio
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.ObjectTypes = conv.StringSet(obj.GetObjectTypes())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ExportTemplateModel) types.String { return m.Name }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ExportTemplateModel) types.String { return m.Description }), false)
 	out.EnvironmentParams = conv.JSONFromAPIWithPrior(obj.GetEnvironmentParams(), conv.PriorJSON(prior, func(m *ExportTemplateModel) jsontypes.Normalized { return m.EnvironmentParams }))
-	out.TemplateCode = conv.String(obj.GetTemplateCodeOk())
-	out.MimeType = conv.StringOrEmpty(obj.GetMimeTypeOk())
-	out.FileName = conv.StringOrEmpty(obj.GetFileNameOk())
-	out.FileExtension = conv.StringOrEmpty(obj.GetFileExtensionOk())
+	out.TemplateCode = conv.StringKeep(conv.String(obj.GetTemplateCodeOk()), conv.PriorString(prior, func(m *ExportTemplateModel) types.String { return m.TemplateCode }), false)
+	out.MimeType = conv.StringKeep(conv.StringOrEmpty(obj.GetMimeTypeOk()), conv.PriorString(prior, func(m *ExportTemplateModel) types.String { return m.MimeType }), false)
+	out.FileName = conv.StringKeep(conv.StringOrEmpty(obj.GetFileNameOk()), conv.PriorString(prior, func(m *ExportTemplateModel) types.String { return m.FileName }), false)
+	out.FileExtension = conv.StringKeep(conv.StringOrEmpty(obj.GetFileExtensionOk()), conv.PriorString(prior, func(m *ExportTemplateModel) types.String { return m.FileExtension }), false)
 	out.AsAttachment = conv.Bool(obj.GetAsAttachmentOk())
 	out.DataSourceId = conv.BriefID(obj.GetDataSourceOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())

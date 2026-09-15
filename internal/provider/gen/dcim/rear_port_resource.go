@@ -274,7 +274,7 @@ func (r *RearPortResource) Update(ctx context.Context, req resource.UpdateReques
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := rearPortToPatch(ctx, &plan, &resp.Diagnostics)
+	body := rearPortToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -318,9 +318,7 @@ func (r *RearPortResource) ImportState(ctx context.Context, req resource.ImportS
 // rearPortToCreate builds the WritableRearPortRequest request body from the plan.
 func rearPortToCreate(ctx context.Context, plan *RearPortModel, diags *diag.Diagnostics) *netbox.WritableRearPortRequest {
 	body := netbox.NewWritableRearPortRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString(), plan.Type.ValueString())
-	if plan.ModuleId.IsNull() {
-		body.SetModuleNil()
-	} else if !plan.ModuleId.IsUnknown() {
+	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
 	}
 	if !plan.Label.IsUnknown() {
@@ -338,9 +336,7 @@ func rearPortToCreate(ctx context.Context, plan *RearPortModel, diags *diag.Diag
 	if conv.Known(plan.MarkConnected) {
 		body.SetMarkConnected(plan.MarkConnected.ValueBool())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if conv.Known(plan.Tags) {
@@ -352,48 +348,72 @@ func rearPortToCreate(ctx context.Context, plan *RearPortModel, diags *diag.Diag
 	return body
 }
 
-// rearPortToPatch builds the PatchedWritableRearPortRequest request body from the plan.
-func rearPortToPatch(ctx context.Context, plan *RearPortModel, diags *diag.Diagnostics) *netbox.PatchedWritableRearPortRequest {
+// rearPortToPatch builds the PatchedWritableRearPortRequest request body with every attribute whose planned value differs from state.
+func rearPortToPatch(ctx context.Context, plan, state *RearPortModel, diags *diag.Diagnostics) *netbox.PatchedWritableRearPortRequest {
 	body := netbox.NewPatchedWritableRearPortRequest()
-	if conv.Known(plan.DeviceId) {
-		body.SetDevice(conv.Int32(plan.DeviceId))
+	if !plan.DeviceId.Equal(state.DeviceId) {
+		if conv.Known(plan.DeviceId) {
+			body.SetDevice(conv.Int32(plan.DeviceId))
+		}
 	}
-	if plan.ModuleId.IsNull() {
-		body.SetModuleNil()
-	} else if !plan.ModuleId.IsUnknown() {
-		body.SetModule(conv.Int32(plan.ModuleId))
+	if !plan.ModuleId.Equal(state.ModuleId) {
+		if plan.ModuleId.IsNull() {
+			body.SetModuleNil()
+		} else if !plan.ModuleId.IsUnknown() {
+			body.SetModule(conv.Int32(plan.ModuleId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if !plan.Color.IsUnknown() {
-		body.SetColor(plan.Color.ValueString())
+	if !plan.Color.Equal(state.Color) {
+		if !plan.Color.IsUnknown() {
+			body.SetColor(plan.Color.ValueString())
+		}
 	}
-	if conv.Known(plan.Positions) {
-		body.SetPositions(conv.Int32(plan.Positions))
+	if !plan.Positions.Equal(state.Positions) {
+		if conv.Known(plan.Positions) {
+			body.SetPositions(conv.Int32(plan.Positions))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.MarkConnected) {
-		body.SetMarkConnected(plan.MarkConnected.ValueBool())
+	if !plan.MarkConnected.Equal(state.MarkConnected) {
+		if conv.Known(plan.MarkConnected) {
+			body.SetMarkConnected(plan.MarkConnected.ValueBool())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -408,12 +428,12 @@ func rearPortFromAPI(ctx context.Context, obj *netbox.RearPort, prior *RearPortM
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceId = conv.BriefID(obj.GetDeviceOk())
 	out.ModuleId = conv.BriefID(obj.GetModuleOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *RearPortModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *RearPortModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
-	out.Color = conv.StringOrEmpty(obj.GetColorOk())
+	out.Color = conv.StringKeep(conv.StringOrEmpty(obj.GetColorOk()), conv.PriorString(prior, func(m *RearPortModel) types.String { return m.Color }), false)
 	out.Positions = conv.Int64From32(obj.GetPositionsOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *RearPortModel) types.String { return m.Description }), false)
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

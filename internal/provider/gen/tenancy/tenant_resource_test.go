@@ -94,7 +94,7 @@ func TestAccTenant_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_tenant", &resource.Sweeper{
 		Name:         "netbox_tenant",
-		Dependencies: []string{"netbox_asn", "netbox_circuit", "netbox_site", "netbox_tunnel"},
+		Dependencies: []string{"netbox_aggregate", "netbox_asn", "netbox_asn_range", "netbox_cable", "netbox_circuit", "netbox_circuit_group", "netbox_cluster", "netbox_config_context", "netbox_cooling_feed", "netbox_device", "netbox_ip_address", "netbox_ip_range", "netbox_l2vpn", "netbox_location", "netbox_power_feed", "netbox_prefix", "netbox_rack", "netbox_rack_reservation", "netbox_route_target", "netbox_site", "netbox_tunnel", "netbox_virtual_circuit", "netbox_virtual_device_context", "netbox_virtual_machine", "netbox_vlan", "netbox_vlan_group", "netbox_vrf", "netbox_wireless_lan", "netbox_wireless_link"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/tenancy/tenants/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

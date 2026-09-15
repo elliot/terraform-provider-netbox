@@ -87,7 +87,7 @@ func virtualDeviceContextDataAttributes(lookup bool) map[string]dsschema.Attribu
 			Computed:            true,
 		},
 		"identifier": dsschema.Int64Attribute{
-			MarkdownDescription: "Identifier.",
+			MarkdownDescription: "Identifier. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"tenant_id": dsschema.Int64Attribute{

@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -175,8 +176,10 @@ func wirelessLinkResourceAttributes() map[string]schema.Attribute {
 			Default:             stringdefault.StaticString(""),
 		},
 		"distance": schema.Float64Attribute{
-			MarkdownDescription: "Distance.",
+			MarkdownDescription: "Distance. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"distance_unit": schema.StringAttribute{
 			MarkdownDescription: "Distance Unit. Valid values: `km`, `m`, `mi`, `ft`. Defaults to the NetBox server default when omitted.",
@@ -303,7 +306,7 @@ func (r *WirelessLinkResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := wirelessLinkToPatch(ctx, &plan, &resp.Diagnostics)
+	body := wirelessLinkToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -353,40 +356,28 @@ func wirelessLinkToCreate(ctx context.Context, plan *WirelessLinkModel, diags *d
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.AuthType.IsNull() {
-		body.SetAuthTypeNil()
-	} else if !plan.AuthType.IsUnknown() {
+	if conv.Known(plan.AuthType) {
 		body.SetAuthType(plan.AuthType.ValueString())
 	}
-	if plan.AuthCipher.IsNull() {
-		body.SetAuthCipherNil()
-	} else if !plan.AuthCipher.IsUnknown() {
+	if conv.Known(plan.AuthCipher) {
 		body.SetAuthCipher(plan.AuthCipher.ValueString())
 	}
 	if !plan.AuthPsk.IsUnknown() {
 		body.SetAuthPsk(plan.AuthPsk.ValueString())
 	}
-	if plan.Distance.IsNull() {
-		body.SetDistanceNil()
-	} else if !plan.Distance.IsUnknown() {
+	if conv.Known(plan.Distance) {
 		body.SetDistance(plan.Distance.ValueFloat64())
 	}
-	if plan.DistanceUnit.IsNull() {
-		body.SetDistanceUnitNil()
-	} else if !plan.DistanceUnit.IsUnknown() {
+	if conv.Known(plan.DistanceUnit) {
 		body.SetDistanceUnit(plan.DistanceUnit.ValueString())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -401,65 +392,87 @@ func wirelessLinkToCreate(ctx context.Context, plan *WirelessLinkModel, diags *d
 	return body
 }
 
-// wirelessLinkToPatch builds the PatchedWritableWirelessLinkRequest request body from the plan.
-func wirelessLinkToPatch(ctx context.Context, plan *WirelessLinkModel, diags *diag.Diagnostics) *netbox.PatchedWritableWirelessLinkRequest {
+// wirelessLinkToPatch builds the PatchedWritableWirelessLinkRequest request body with every attribute whose planned value differs from state.
+func wirelessLinkToPatch(ctx context.Context, plan, state *WirelessLinkModel, diags *diag.Diagnostics) *netbox.PatchedWritableWirelessLinkRequest {
 	body := netbox.NewPatchedWritableWirelessLinkRequest()
-	if conv.Known(plan.InterfaceAId) {
-		body.SetInterfaceA(conv.Int32(plan.InterfaceAId))
+	if !plan.InterfaceAId.Equal(state.InterfaceAId) {
+		if conv.Known(plan.InterfaceAId) {
+			body.SetInterfaceA(conv.Int32(plan.InterfaceAId))
+		}
 	}
-	if conv.Known(plan.InterfaceBId) {
-		body.SetInterfaceB(conv.Int32(plan.InterfaceBId))
+	if !plan.InterfaceBId.Equal(state.InterfaceBId) {
+		if conv.Known(plan.InterfaceBId) {
+			body.SetInterfaceB(conv.Int32(plan.InterfaceBId))
+		}
 	}
-	if !plan.Ssid.IsUnknown() {
-		body.SetSsid(plan.Ssid.ValueString())
+	if !plan.Ssid.Equal(state.Ssid) {
+		if !plan.Ssid.IsUnknown() {
+			body.SetSsid(plan.Ssid.ValueString())
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.AuthType.IsNull() {
-		body.SetAuthTypeNil()
-	} else if !plan.AuthType.IsUnknown() {
-		body.SetAuthType(plan.AuthType.ValueString())
+	if !plan.AuthType.Equal(state.AuthType) {
+		if conv.Known(plan.AuthType) {
+			body.SetAuthType(plan.AuthType.ValueString())
+		}
 	}
-	if plan.AuthCipher.IsNull() {
-		body.SetAuthCipherNil()
-	} else if !plan.AuthCipher.IsUnknown() {
-		body.SetAuthCipher(plan.AuthCipher.ValueString())
+	if !plan.AuthCipher.Equal(state.AuthCipher) {
+		if conv.Known(plan.AuthCipher) {
+			body.SetAuthCipher(plan.AuthCipher.ValueString())
+		}
 	}
-	if !plan.AuthPsk.IsUnknown() {
-		body.SetAuthPsk(plan.AuthPsk.ValueString())
+	if !plan.AuthPsk.Equal(state.AuthPsk) {
+		if !plan.AuthPsk.IsUnknown() {
+			body.SetAuthPsk(plan.AuthPsk.ValueString())
+		}
 	}
-	if plan.Distance.IsNull() {
-		body.SetDistanceNil()
-	} else if !plan.Distance.IsUnknown() {
-		body.SetDistance(plan.Distance.ValueFloat64())
+	if !plan.Distance.Equal(state.Distance) {
+		if conv.Known(plan.Distance) {
+			body.SetDistance(plan.Distance.ValueFloat64())
+		}
 	}
-	if plan.DistanceUnit.IsNull() {
-		body.SetDistanceUnitNil()
-	} else if !plan.DistanceUnit.IsUnknown() {
-		body.SetDistanceUnit(plan.DistanceUnit.ValueString())
+	if !plan.DistanceUnit.Equal(state.DistanceUnit) {
+		if conv.Known(plan.DistanceUnit) {
+			body.SetDistanceUnit(plan.DistanceUnit.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -474,17 +487,17 @@ func wirelessLinkFromAPI(ctx context.Context, obj *netbox.WirelessLink, prior *W
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.InterfaceAId = conv.BriefID(obj.GetInterfaceAOk())
 	out.InterfaceBId = conv.BriefID(obj.GetInterfaceBOk())
-	out.Ssid = conv.StringOrEmpty(obj.GetSsidOk())
+	out.Ssid = conv.StringKeep(conv.StringOrEmpty(obj.GetSsidOk()), conv.PriorString(prior, func(m *WirelessLinkModel) types.String { return m.Ssid }), false)
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.AuthType = conv.Choice(obj.GetAuthTypeOk())
 	out.AuthCipher = conv.Choice(obj.GetAuthCipherOk())
-	out.AuthPsk = conv.StringOrEmpty(obj.GetAuthPskOk())
+	out.AuthPsk = conv.StringKeep(conv.StringOrEmpty(obj.GetAuthPskOk()), conv.PriorString(prior, func(m *WirelessLinkModel) types.String { return m.AuthPsk }), false)
 	out.Distance = conv.Float64Keep(conv.Float64From(obj.GetDistanceOk()), conv.PriorFloat(prior, func(m *WirelessLinkModel) types.Float64 { return m.Distance }), 0)
 	out.DistanceUnit = conv.Choice(obj.GetDistanceUnitOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *WirelessLinkModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *WirelessLinkModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

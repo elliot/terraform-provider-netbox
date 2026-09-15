@@ -88,11 +88,11 @@ func virtualMachineTypeDataAttributes(lookup bool) map[string]dsschema.Attribute
 			Computed:            true,
 		},
 		"default_vcpus": dsschema.Float64Attribute{
-			MarkdownDescription: "Default Vcpus.",
+			MarkdownDescription: "Default Vcpus. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"default_memory": dsschema.Int64Attribute{
-			MarkdownDescription: "Default Memory.",
+			MarkdownDescription: "Default Memory. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

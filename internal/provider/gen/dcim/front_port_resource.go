@@ -306,7 +306,7 @@ func (r *FrontPortResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := frontPortToPatch(ctx, &plan, &resp.Diagnostics)
+	body := frontPortToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -350,9 +350,7 @@ func (r *FrontPortResource) ImportState(ctx context.Context, req resource.Import
 // frontPortToCreate builds the WritableFrontPortRequest request body from the plan.
 func frontPortToCreate(ctx context.Context, plan *FrontPortModel, diags *diag.Diagnostics) *netbox.WritableFrontPortRequest {
 	body := netbox.NewWritableFrontPortRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString(), plan.Type.ValueString())
-	if plan.ModuleId.IsNull() {
-		body.SetModuleNil()
-	} else if !plan.ModuleId.IsUnknown() {
+	if conv.Known(plan.ModuleId) {
 		body.SetModule(conv.Int32(plan.ModuleId))
 	}
 	if !plan.Label.IsUnknown() {
@@ -385,9 +383,7 @@ func frontPortToCreate(ctx context.Context, plan *FrontPortModel, diags *diag.Di
 	if conv.Known(plan.MarkConnected) {
 		body.SetMarkConnected(plan.MarkConnected.ValueBool())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if conv.Known(plan.Tags) {
@@ -399,63 +395,89 @@ func frontPortToCreate(ctx context.Context, plan *FrontPortModel, diags *diag.Di
 	return body
 }
 
-// frontPortToPatch builds the PatchedWritableFrontPortRequest request body from the plan.
-func frontPortToPatch(ctx context.Context, plan *FrontPortModel, diags *diag.Diagnostics) *netbox.PatchedWritableFrontPortRequest {
+// frontPortToPatch builds the PatchedWritableFrontPortRequest request body with every attribute whose planned value differs from state.
+func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, diags *diag.Diagnostics) *netbox.PatchedWritableFrontPortRequest {
 	body := netbox.NewPatchedWritableFrontPortRequest()
-	if conv.Known(plan.DeviceId) {
-		body.SetDevice(conv.Int32(plan.DeviceId))
-	}
-	if plan.ModuleId.IsNull() {
-		body.SetModuleNil()
-	} else if !plan.ModuleId.IsUnknown() {
-		body.SetModule(conv.Int32(plan.ModuleId))
-	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
-	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
-	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
-	}
-	if !plan.Color.IsUnknown() {
-		body.SetColor(plan.Color.ValueString())
-	}
-	if conv.Known(plan.Positions) {
-		body.SetPositions(conv.Int32(plan.Positions))
-	}
-	if conv.Known(plan.RearPorts) {
-		rearPortsItems := []netbox.FrontPortMappingRequest{}
-		if conv.Known(plan.RearPorts) {
-			var items []FrontPortRearPortsItem
-			diags.Append(plan.RearPorts.ElementsAs(ctx, &items, false)...)
-			for _, it := range items {
-				e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), conv.Int32(it.RearPort))
-				if conv.Known(it.RearPortPosition) {
-					e.SetRearPortPosition(conv.Int32(it.RearPortPosition))
-				}
-				rearPortsItems = append(rearPortsItems, *e)
-			}
+	if !plan.DeviceId.Equal(state.DeviceId) {
+		if conv.Known(plan.DeviceId) {
+			body.SetDevice(conv.Int32(plan.DeviceId))
 		}
-		body.SetRearPorts(rearPortsItems)
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.ModuleId.Equal(state.ModuleId) {
+		if plan.ModuleId.IsNull() {
+			body.SetModuleNil()
+		} else if !plan.ModuleId.IsUnknown() {
+			body.SetModule(conv.Int32(plan.ModuleId))
+		}
 	}
-	if conv.Known(plan.MarkConnected) {
-		body.SetMarkConnected(plan.MarkConnected.ValueBool())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.Color.Equal(state.Color) {
+		if !plan.Color.IsUnknown() {
+			body.SetColor(plan.Color.ValueString())
+		}
+	}
+	if !plan.Positions.Equal(state.Positions) {
+		if conv.Known(plan.Positions) {
+			body.SetPositions(conv.Int32(plan.Positions))
+		}
+	}
+	if !plan.RearPorts.Equal(state.RearPorts) {
+		if conv.Known(plan.RearPorts) {
+			rearPortsItems := []netbox.FrontPortMappingRequest{}
+			if conv.Known(plan.RearPorts) {
+				var items []FrontPortRearPortsItem
+				diags.Append(plan.RearPorts.ElementsAs(ctx, &items, false)...)
+				for _, it := range items {
+					e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), conv.Int32(it.RearPort))
+					if conv.Known(it.RearPortPosition) {
+						e.SetRearPortPosition(conv.Int32(it.RearPortPosition))
+					}
+					rearPortsItems = append(rearPortsItems, *e)
+				}
+			}
+			body.SetRearPorts(rearPortsItems)
+		}
+	}
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
+	}
+	if !plan.MarkConnected.Equal(state.MarkConnected) {
+		if conv.Known(plan.MarkConnected) {
+			body.SetMarkConnected(plan.MarkConnected.ValueBool())
+		}
+	}
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
+	}
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
+	}
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }

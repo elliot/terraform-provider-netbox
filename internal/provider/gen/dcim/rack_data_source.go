@@ -236,7 +236,7 @@ func rackDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"cooling_capacity": dsschema.Float64Attribute{
-			MarkdownDescription: "Cooling capacity (kW).",
+			MarkdownDescription: "Cooling capacity (kW). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

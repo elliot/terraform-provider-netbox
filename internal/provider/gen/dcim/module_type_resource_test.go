@@ -95,7 +95,7 @@ func TestAccModuleType_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_module_type", &resource.Sweeper{
 		Name:         "netbox_module_type",
-		Dependencies: []string{"netbox_console_port_template", "netbox_console_server_port_template", "netbox_front_port_template", "netbox_interface_template", "netbox_module", "netbox_module_bay_template", "netbox_rear_port_template"},
+		Dependencies: []string{"netbox_console_port_template", "netbox_console_server_port_template", "netbox_cooling_intake_template", "netbox_cooling_outflow_template", "netbox_front_port_template", "netbox_interface_template", "netbox_module", "netbox_module_bay_template", "netbox_power_outlet_template", "netbox_power_port_template", "netbox_rear_port_template"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/module-types/", []string{"description__isw", "q"})
 		},

@@ -116,11 +116,11 @@ func powerPortDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"maximum_draw": dsschema.Int64Attribute{
-			MarkdownDescription: "Maximum power draw (watts).",
+			MarkdownDescription: "Maximum power draw (watts). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"allocated_draw": dsschema.Int64Attribute{
-			MarkdownDescription: "Allocated power draw (watts).",
+			MarkdownDescription: "Allocated power draw (watts). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

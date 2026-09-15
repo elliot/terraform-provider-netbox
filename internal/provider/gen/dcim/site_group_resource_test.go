@@ -93,7 +93,7 @@ func TestAccSiteGroup_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_site_group", &resource.Sweeper{
 		Name:         "netbox_site_group",
-		Dependencies: []string{"netbox_site"},
+		Dependencies: []string{"netbox_config_context", "netbox_site"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/site-groups/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

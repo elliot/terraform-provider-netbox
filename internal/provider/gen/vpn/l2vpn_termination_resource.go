@@ -207,7 +207,7 @@ func (r *L2vpnTerminationResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := l2vpnTerminationToPatch(ctx, &plan, &resp.Diagnostics)
+	body := l2vpnTerminationToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -260,23 +260,33 @@ func l2vpnTerminationToCreate(ctx context.Context, plan *L2vpnTerminationModel, 
 	return body
 }
 
-// l2vpnTerminationToPatch builds the PatchedL2VPNTerminationRequest request body from the plan.
-func l2vpnTerminationToPatch(ctx context.Context, plan *L2vpnTerminationModel, diags *diag.Diagnostics) *netbox.PatchedL2VPNTerminationRequest {
+// l2vpnTerminationToPatch builds the PatchedL2VPNTerminationRequest request body with every attribute whose planned value differs from state.
+func l2vpnTerminationToPatch(ctx context.Context, plan, state *L2vpnTerminationModel, diags *diag.Diagnostics) *netbox.PatchedL2VPNTerminationRequest {
 	body := netbox.NewPatchedL2VPNTerminationRequest()
-	if conv.Known(plan.L2vpnId) {
-		body.SetL2vpn(conv.Int32(plan.L2vpnId))
+	if !plan.L2vpnId.Equal(state.L2vpnId) {
+		if conv.Known(plan.L2vpnId) {
+			body.SetL2vpn(conv.Int32(plan.L2vpnId))
+		}
 	}
-	if conv.Known(plan.AssignedObjectType) {
-		body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
+	if !plan.AssignedObjectType.Equal(state.AssignedObjectType) {
+		if conv.Known(plan.AssignedObjectType) {
+			body.SetAssignedObjectType(plan.AssignedObjectType.ValueString())
+		}
 	}
-	if conv.Known(plan.AssignedObjectId) {
-		body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
+	if !plan.AssignedObjectId.Equal(state.AssignedObjectId) {
+		if conv.Known(plan.AssignedObjectId) {
+			body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -290,7 +300,7 @@ func l2vpnTerminationFromAPI(ctx context.Context, obj *netbox.L2VPNTermination, 
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.L2vpnId = conv.BriefID(obj.GetL2vpnOk())
-	out.AssignedObjectType = conv.String(obj.GetAssignedObjectTypeOk())
+	out.AssignedObjectType = conv.StringKeep(conv.String(obj.GetAssignedObjectTypeOk()), conv.PriorString(prior, func(m *L2vpnTerminationModel) types.String { return m.AssignedObjectType }), false)
 	out.AssignedObjectId = conv.Int64From64(obj.GetAssignedObjectIdOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)

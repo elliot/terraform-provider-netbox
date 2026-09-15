@@ -124,16 +124,22 @@ func circuitTerminationResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"termination_id": schema.Int64Attribute{
-			MarkdownDescription: "Termination Id.",
+			MarkdownDescription: "Termination Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"port_speed": schema.Int64Attribute{
-			MarkdownDescription: "Physical circuit speed.",
+			MarkdownDescription: "Physical circuit speed. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"upstream_speed": schema.Int64Attribute{
-			MarkdownDescription: "Upstream speed, if different from port speed.",
+			MarkdownDescription: "Upstream speed, if different from port speed. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"xconnect_id": schema.StringAttribute{
 			MarkdownDescription: "ID of the local cross-connect. Defaults to an empty string.",
@@ -263,7 +269,7 @@ func (r *CircuitTerminationResource) Update(ctx context.Context, req resource.Up
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := circuitTerminationToPatch(ctx, &plan, &resp.Diagnostics)
+	body := circuitTerminationToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -307,24 +313,16 @@ func (r *CircuitTerminationResource) ImportState(ctx context.Context, req resour
 // circuitTerminationToCreate builds the CircuitTerminationRequest request body from the plan.
 func circuitTerminationToCreate(ctx context.Context, plan *CircuitTerminationModel, diags *diag.Diagnostics) *netbox.CircuitTerminationRequest {
 	body := netbox.NewCircuitTerminationRequest(conv.Int32(plan.CircuitId), plan.TermSide.ValueString())
-	if plan.TerminationType.IsNull() {
-		body.SetTerminationTypeNil()
-	} else if !plan.TerminationType.IsUnknown() {
+	if conv.Known(plan.TerminationType) {
 		body.SetTerminationType(plan.TerminationType.ValueString())
 	}
-	if plan.TerminationId.IsNull() {
-		body.SetTerminationIdNil()
-	} else if !plan.TerminationId.IsUnknown() {
+	if conv.Known(plan.TerminationId) {
 		body.SetTerminationId(conv.Int32(plan.TerminationId))
 	}
-	if plan.PortSpeed.IsNull() {
-		body.SetPortSpeedNil()
-	} else if !plan.PortSpeed.IsUnknown() {
+	if conv.Known(plan.PortSpeed) {
 		body.SetPortSpeed(conv.Int32(plan.PortSpeed))
 	}
-	if plan.UpstreamSpeed.IsNull() {
-		body.SetUpstreamSpeedNil()
-	} else if !plan.UpstreamSpeed.IsUnknown() {
+	if conv.Known(plan.UpstreamSpeed) {
 		body.SetUpstreamSpeed(conv.Int32(plan.UpstreamSpeed))
 	}
 	if !plan.XconnectId.IsUnknown() {
@@ -348,52 +346,70 @@ func circuitTerminationToCreate(ctx context.Context, plan *CircuitTerminationMod
 	return body
 }
 
-// circuitTerminationToPatch builds the PatchedCircuitTerminationRequest request body from the plan.
-func circuitTerminationToPatch(ctx context.Context, plan *CircuitTerminationModel, diags *diag.Diagnostics) *netbox.PatchedCircuitTerminationRequest {
+// circuitTerminationToPatch builds the PatchedCircuitTerminationRequest request body with every attribute whose planned value differs from state.
+func circuitTerminationToPatch(ctx context.Context, plan, state *CircuitTerminationModel, diags *diag.Diagnostics) *netbox.PatchedCircuitTerminationRequest {
 	body := netbox.NewPatchedCircuitTerminationRequest()
-	if conv.Known(plan.CircuitId) {
-		body.SetCircuit(conv.Int32(plan.CircuitId))
+	if !plan.CircuitId.Equal(state.CircuitId) {
+		if conv.Known(plan.CircuitId) {
+			body.SetCircuit(conv.Int32(plan.CircuitId))
+		}
 	}
-	if conv.Known(plan.TermSide) {
-		body.SetTermSide(plan.TermSide.ValueString())
+	if !plan.TermSide.Equal(state.TermSide) {
+		if conv.Known(plan.TermSide) {
+			body.SetTermSide(plan.TermSide.ValueString())
+		}
 	}
-	if plan.TerminationType.IsNull() {
-		body.SetTerminationTypeNil()
-	} else if !plan.TerminationType.IsUnknown() {
-		body.SetTerminationType(plan.TerminationType.ValueString())
+	if !plan.TerminationType.Equal(state.TerminationType) {
+		if plan.TerminationType.IsNull() {
+			body.SetTerminationTypeNil()
+		} else if !plan.TerminationType.IsUnknown() {
+			body.SetTerminationType(plan.TerminationType.ValueString())
+		}
 	}
-	if plan.TerminationId.IsNull() {
-		body.SetTerminationIdNil()
-	} else if !plan.TerminationId.IsUnknown() {
-		body.SetTerminationId(conv.Int32(plan.TerminationId))
+	if !plan.TerminationId.Equal(state.TerminationId) {
+		if conv.Known(plan.TerminationId) {
+			body.SetTerminationId(conv.Int32(plan.TerminationId))
+		}
 	}
-	if plan.PortSpeed.IsNull() {
-		body.SetPortSpeedNil()
-	} else if !plan.PortSpeed.IsUnknown() {
-		body.SetPortSpeed(conv.Int32(plan.PortSpeed))
+	if !plan.PortSpeed.Equal(state.PortSpeed) {
+		if conv.Known(plan.PortSpeed) {
+			body.SetPortSpeed(conv.Int32(plan.PortSpeed))
+		}
 	}
-	if plan.UpstreamSpeed.IsNull() {
-		body.SetUpstreamSpeedNil()
-	} else if !plan.UpstreamSpeed.IsUnknown() {
-		body.SetUpstreamSpeed(conv.Int32(plan.UpstreamSpeed))
+	if !plan.UpstreamSpeed.Equal(state.UpstreamSpeed) {
+		if conv.Known(plan.UpstreamSpeed) {
+			body.SetUpstreamSpeed(conv.Int32(plan.UpstreamSpeed))
+		}
 	}
-	if !plan.XconnectId.IsUnknown() {
-		body.SetXconnectId(plan.XconnectId.ValueString())
+	if !plan.XconnectId.Equal(state.XconnectId) {
+		if !plan.XconnectId.IsUnknown() {
+			body.SetXconnectId(plan.XconnectId.ValueString())
+		}
 	}
-	if !plan.PpInfo.IsUnknown() {
-		body.SetPpInfo(plan.PpInfo.ValueString())
+	if !plan.PpInfo.Equal(state.PpInfo) {
+		if !plan.PpInfo.IsUnknown() {
+			body.SetPpInfo(plan.PpInfo.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.MarkConnected) {
-		body.SetMarkConnected(plan.MarkConnected.ValueBool())
+	if !plan.MarkConnected.Equal(state.MarkConnected) {
+		if conv.Known(plan.MarkConnected) {
+			body.SetMarkConnected(plan.MarkConnected.ValueBool())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -408,13 +424,13 @@ func circuitTerminationFromAPI(ctx context.Context, obj *netbox.CircuitTerminati
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.CircuitId = conv.BriefID(obj.GetCircuitOk())
 	out.TermSide = conv.ChoiceScalar(obj.GetTermSideOk())
-	out.TerminationType = conv.String(obj.GetTerminationTypeOk())
+	out.TerminationType = conv.StringKeep(conv.String(obj.GetTerminationTypeOk()), conv.PriorString(prior, func(m *CircuitTerminationModel) types.String { return m.TerminationType }), false)
 	out.TerminationId = conv.Int64From32(obj.GetTerminationIdOk())
 	out.PortSpeed = conv.Int64From32(obj.GetPortSpeedOk())
 	out.UpstreamSpeed = conv.Int64From32(obj.GetUpstreamSpeedOk())
-	out.XconnectId = conv.StringOrEmpty(obj.GetXconnectIdOk())
-	out.PpInfo = conv.StringOrEmpty(obj.GetPpInfoOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.XconnectId = conv.StringKeep(conv.StringOrEmpty(obj.GetXconnectIdOk()), conv.PriorString(prior, func(m *CircuitTerminationModel) types.String { return m.XconnectId }), false)
+	out.PpInfo = conv.StringKeep(conv.StringOrEmpty(obj.GetPpInfoOk()), conv.PriorString(prior, func(m *CircuitTerminationModel) types.String { return m.PpInfo }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *CircuitTerminationModel) types.String { return m.Description }), false)
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)

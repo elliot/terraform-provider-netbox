@@ -179,12 +179,16 @@ func interfaceTemplateResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.OneOf(interfaceTemplateTypeValues...)},
 		},
 		"channels": schema.Int64Attribute{
-			MarkdownDescription: "The number of channels into which this interface is channelized.",
+			MarkdownDescription: "The number of channels into which this interface is channelized. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"channel_id": schema.Int64Attribute{
-			MarkdownDescription: "The channel on the parent interface to which this subinterface is bound.",
+			MarkdownDescription: "The channel on the parent interface to which this subinterface is bound. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"enabled": schema.BoolAttribute{
 			MarkdownDescription: "Enabled. Defaults to the NetBox server default when omitted.",
@@ -323,7 +327,7 @@ func (r *InterfaceTemplateResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := interfaceTemplateToPatch(ctx, &plan, &resp.Diagnostics)
+	body := interfaceTemplateToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -367,27 +371,19 @@ func (r *InterfaceTemplateResource) ImportState(ctx context.Context, req resourc
 // interfaceTemplateToCreate builds the WritableInterfaceTemplateRequest request body from the plan.
 func interfaceTemplateToCreate(ctx context.Context, plan *InterfaceTemplateModel, diags *diag.Diagnostics) *netbox.WritableInterfaceTemplateRequest {
 	body := netbox.NewWritableInterfaceTemplateRequest(plan.Name.ValueString(), plan.Type.ValueString())
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
+	if conv.Known(plan.DeviceTypeId) {
 		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
+	if conv.Known(plan.ModuleTypeId) {
 		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
-	if plan.Channels.IsNull() {
-		body.SetChannelsNil()
-	} else if !plan.Channels.IsUnknown() {
+	if conv.Known(plan.Channels) {
 		body.SetChannels(conv.Int32(plan.Channels))
 	}
-	if plan.ChannelId.IsNull() {
-		body.SetChannelIdNil()
-	} else if !plan.ChannelId.IsUnknown() {
+	if conv.Known(plan.ChannelId) {
 		body.SetChannelId(conv.Int32(plan.ChannelId))
 	}
 	if conv.Known(plan.Enabled) {
@@ -399,99 +395,109 @@ func interfaceTemplateToCreate(ctx context.Context, plan *InterfaceTemplateModel
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
+	if conv.Known(plan.ParentId) {
 		body.SetParent(conv.Int32(plan.ParentId))
 	}
-	if plan.BridgeId.IsNull() {
-		body.SetBridgeNil()
-	} else if !plan.BridgeId.IsUnknown() {
+	if conv.Known(plan.BridgeId) {
 		body.SetBridge(conv.Int32(plan.BridgeId))
 	}
-	if plan.PoeMode.IsNull() {
-		body.SetPoeModeNil()
-	} else if !plan.PoeMode.IsUnknown() {
+	if conv.Known(plan.PoeMode) {
 		body.SetPoeMode(plan.PoeMode.ValueString())
 	}
-	if plan.PoeType.IsNull() {
-		body.SetPoeTypeNil()
-	} else if !plan.PoeType.IsUnknown() {
+	if conv.Known(plan.PoeType) {
 		body.SetPoeType(plan.PoeType.ValueString())
 	}
-	if plan.RfRole.IsNull() {
-		body.SetRfRoleNil()
-	} else if !plan.RfRole.IsUnknown() {
+	if conv.Known(plan.RfRole) {
 		body.SetRfRole(plan.RfRole.ValueString())
 	}
 	return body
 }
 
-// interfaceTemplateToPatch builds the PatchedWritableInterfaceTemplateRequest request body from the plan.
-func interfaceTemplateToPatch(ctx context.Context, plan *InterfaceTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableInterfaceTemplateRequest {
+// interfaceTemplateToPatch builds the PatchedWritableInterfaceTemplateRequest request body with every attribute whose planned value differs from state.
+func interfaceTemplateToPatch(ctx context.Context, plan, state *InterfaceTemplateModel, diags *diag.Diagnostics) *netbox.PatchedWritableInterfaceTemplateRequest {
 	body := netbox.NewPatchedWritableInterfaceTemplateRequest()
-	if plan.DeviceTypeId.IsNull() {
-		body.SetDeviceTypeNil()
-	} else if !plan.DeviceTypeId.IsUnknown() {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
+		if plan.DeviceTypeId.IsNull() {
+			body.SetDeviceTypeNil()
+		} else if !plan.DeviceTypeId.IsUnknown() {
+			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		}
 	}
-	if plan.ModuleTypeId.IsNull() {
-		body.SetModuleTypeNil()
-	} else if !plan.ModuleTypeId.IsUnknown() {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
+		if plan.ModuleTypeId.IsNull() {
+			body.SetModuleTypeNil()
+		} else if !plan.ModuleTypeId.IsUnknown() {
+			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Label.IsUnknown() {
-		body.SetLabel(plan.Label.ValueString())
+	if !plan.Label.Equal(state.Label) {
+		if !plan.Label.IsUnknown() {
+			body.SetLabel(plan.Label.ValueString())
+		}
 	}
-	if conv.Known(plan.Type) {
-		body.SetType(plan.Type.ValueString())
+	if !plan.Type.Equal(state.Type) {
+		if conv.Known(plan.Type) {
+			body.SetType(plan.Type.ValueString())
+		}
 	}
-	if plan.Channels.IsNull() {
-		body.SetChannelsNil()
-	} else if !plan.Channels.IsUnknown() {
-		body.SetChannels(conv.Int32(plan.Channels))
+	if !plan.Channels.Equal(state.Channels) {
+		if conv.Known(plan.Channels) {
+			body.SetChannels(conv.Int32(plan.Channels))
+		}
 	}
-	if plan.ChannelId.IsNull() {
-		body.SetChannelIdNil()
-	} else if !plan.ChannelId.IsUnknown() {
-		body.SetChannelId(conv.Int32(plan.ChannelId))
+	if !plan.ChannelId.Equal(state.ChannelId) {
+		if conv.Known(plan.ChannelId) {
+			body.SetChannelId(conv.Int32(plan.ChannelId))
+		}
 	}
-	if conv.Known(plan.Enabled) {
-		body.SetEnabled(plan.Enabled.ValueBool())
+	if !plan.Enabled.Equal(state.Enabled) {
+		if conv.Known(plan.Enabled) {
+			body.SetEnabled(plan.Enabled.ValueBool())
+		}
 	}
-	if conv.Known(plan.MgmtOnly) {
-		body.SetMgmtOnly(plan.MgmtOnly.ValueBool())
+	if !plan.MgmtOnly.Equal(state.MgmtOnly) {
+		if conv.Known(plan.MgmtOnly) {
+			body.SetMgmtOnly(plan.MgmtOnly.ValueBool())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.ParentId.IsNull() {
-		body.SetParentNil()
-	} else if !plan.ParentId.IsUnknown() {
-		body.SetParent(conv.Int32(plan.ParentId))
+	if !plan.ParentId.Equal(state.ParentId) {
+		if plan.ParentId.IsNull() {
+			body.SetParentNil()
+		} else if !plan.ParentId.IsUnknown() {
+			body.SetParent(conv.Int32(plan.ParentId))
+		}
 	}
-	if plan.BridgeId.IsNull() {
-		body.SetBridgeNil()
-	} else if !plan.BridgeId.IsUnknown() {
-		body.SetBridge(conv.Int32(plan.BridgeId))
+	if !plan.BridgeId.Equal(state.BridgeId) {
+		if plan.BridgeId.IsNull() {
+			body.SetBridgeNil()
+		} else if !plan.BridgeId.IsUnknown() {
+			body.SetBridge(conv.Int32(plan.BridgeId))
+		}
 	}
-	if plan.PoeMode.IsNull() {
-		body.SetPoeModeNil()
-	} else if !plan.PoeMode.IsUnknown() {
-		body.SetPoeMode(plan.PoeMode.ValueString())
+	if !plan.PoeMode.Equal(state.PoeMode) {
+		if conv.Known(plan.PoeMode) {
+			body.SetPoeMode(plan.PoeMode.ValueString())
+		}
 	}
-	if plan.PoeType.IsNull() {
-		body.SetPoeTypeNil()
-	} else if !plan.PoeType.IsUnknown() {
-		body.SetPoeType(plan.PoeType.ValueString())
+	if !plan.PoeType.Equal(state.PoeType) {
+		if conv.Known(plan.PoeType) {
+			body.SetPoeType(plan.PoeType.ValueString())
+		}
 	}
-	if plan.RfRole.IsNull() {
-		body.SetRfRoleNil()
-	} else if !plan.RfRole.IsUnknown() {
-		body.SetRfRole(plan.RfRole.ValueString())
+	if !plan.RfRole.Equal(state.RfRole) {
+		if conv.Known(plan.RfRole) {
+			body.SetRfRole(plan.RfRole.ValueString())
+		}
 	}
 	return body
 }
@@ -502,14 +508,14 @@ func interfaceTemplateFromAPI(ctx context.Context, obj *netbox.InterfaceTemplate
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
 	out.ModuleTypeId = conv.BriefID(obj.GetModuleTypeOk())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *InterfaceTemplateModel) types.String { return m.Name }), false)
+	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *InterfaceTemplateModel) types.String { return m.Label }), false)
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Channels = conv.Int64From32(obj.GetChannelsOk())
 	out.ChannelId = conv.Int64From32(obj.GetChannelIdOk())
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
 	out.MgmtOnly = conv.Bool(obj.GetMgmtOnlyOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *InterfaceTemplateModel) types.String { return m.Description }), false)
 	out.ParentId = conv.BriefID(obj.GetParentOk())
 	out.BridgeId = conv.BriefID(obj.GetBridgeOk())
 	out.PoeMode = conv.Choice(obj.GetPoeModeOk())

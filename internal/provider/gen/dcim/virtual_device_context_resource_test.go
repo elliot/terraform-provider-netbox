@@ -138,7 +138,7 @@ func TestAccVirtualDeviceContext_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_virtual_device_context", &resource.Sweeper{
 		Name:         "netbox_virtual_device_context",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_interface"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/virtual-device-contexts/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -269,7 +269,7 @@ func (r *ContactResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := contactToPatch(ctx, &plan, &resp.Diagnostics)
+	body := contactToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -334,9 +334,7 @@ func contactToCreate(ctx context.Context, plan *ContactModel, diags *diag.Diagno
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -351,46 +349,70 @@ func contactToCreate(ctx context.Context, plan *ContactModel, diags *diag.Diagno
 	return body
 }
 
-// contactToPatch builds the PatchedContactRequest request body from the plan.
-func contactToPatch(ctx context.Context, plan *ContactModel, diags *diag.Diagnostics) *netbox.PatchedContactRequest {
+// contactToPatch builds the PatchedContactRequest request body with every attribute whose planned value differs from state.
+func contactToPatch(ctx context.Context, plan, state *ContactModel, diags *diag.Diagnostics) *netbox.PatchedContactRequest {
 	body := netbox.NewPatchedContactRequest()
-	if conv.Known(plan.GroupIds) {
-		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+	if !plan.GroupIds.Equal(state.GroupIds) {
+		if conv.Known(plan.GroupIds) {
+			body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+		}
 	}
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if !plan.Title.IsUnknown() {
-		body.SetTitle(plan.Title.ValueString())
+	if !plan.Title.Equal(state.Title) {
+		if !plan.Title.IsUnknown() {
+			body.SetTitle(plan.Title.ValueString())
+		}
 	}
-	if !plan.Phone.IsUnknown() {
-		body.SetPhone(plan.Phone.ValueString())
+	if !plan.Phone.Equal(state.Phone) {
+		if !plan.Phone.IsUnknown() {
+			body.SetPhone(plan.Phone.ValueString())
+		}
 	}
-	if !plan.Email.IsUnknown() {
-		body.SetEmail(plan.Email.ValueString())
+	if !plan.Email.Equal(state.Email) {
+		if !plan.Email.IsUnknown() {
+			body.SetEmail(plan.Email.ValueString())
+		}
 	}
-	if !plan.Address.IsUnknown() {
-		body.SetAddress(plan.Address.ValueString())
+	if !plan.Address.Equal(state.Address) {
+		if !plan.Address.IsUnknown() {
+			body.SetAddress(plan.Address.ValueString())
+		}
 	}
-	if !plan.Link.IsUnknown() {
-		body.SetLink(plan.Link.ValueString())
+	if !plan.Link.Equal(state.Link) {
+		if !plan.Link.IsUnknown() {
+			body.SetLink(plan.Link.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -404,15 +426,15 @@ func contactFromAPI(ctx context.Context, obj *netbox.Contact, prior *ContactMode
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
-	out.Name = conv.String(obj.GetNameOk())
-	out.Title = conv.StringOrEmpty(obj.GetTitleOk())
-	out.Phone = conv.StringOrEmpty(obj.GetPhoneOk())
-	out.Email = conv.StringOrEmpty(obj.GetEmailOk())
-	out.Address = conv.StringOrEmpty(obj.GetAddressOk())
-	out.Link = conv.StringOrEmpty(obj.GetLinkOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ContactModel) types.String { return m.Name }), false)
+	out.Title = conv.StringKeep(conv.StringOrEmpty(obj.GetTitleOk()), conv.PriorString(prior, func(m *ContactModel) types.String { return m.Title }), false)
+	out.Phone = conv.StringKeep(conv.StringOrEmpty(obj.GetPhoneOk()), conv.PriorString(prior, func(m *ContactModel) types.String { return m.Phone }), false)
+	out.Email = conv.StringKeep(conv.StringOrEmpty(obj.GetEmailOk()), conv.PriorString(prior, func(m *ContactModel) types.String { return m.Email }), false)
+	out.Address = conv.StringKeep(conv.StringOrEmpty(obj.GetAddressOk()), conv.PriorString(prior, func(m *ContactModel) types.String { return m.Address }), false)
+	out.Link = conv.StringKeep(conv.StringOrEmpty(obj.GetLinkOk()), conv.PriorString(prior, func(m *ContactModel) types.String { return m.Link }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ContactModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ContactModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

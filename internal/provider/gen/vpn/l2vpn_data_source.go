@@ -83,7 +83,7 @@ func l2vpnDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"identifier": dsschema.Int64Attribute{
-			MarkdownDescription: "Identifier.",
+			MarkdownDescription: "Identifier. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"name": dsschema.StringAttribute{

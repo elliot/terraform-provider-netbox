@@ -138,8 +138,10 @@ func clusterResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"scope_id": schema.Int64Attribute{
-			MarkdownDescription: "Scope Id.",
+			MarkdownDescription: "Scope Id. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -259,7 +261,7 @@ func (r *ClusterResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := clusterToPatch(ctx, &plan, &resp.Diagnostics)
+	body := clusterToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -303,35 +305,25 @@ func (r *ClusterResource) ImportState(ctx context.Context, req resource.ImportSt
 // clusterToCreate builds the WritableClusterRequest request body from the plan.
 func clusterToCreate(ctx context.Context, plan *ClusterModel, diags *diag.Diagnostics) *netbox.WritableClusterRequest {
 	body := netbox.NewWritableClusterRequest(plan.Name.ValueString(), conv.Int32(plan.TypeId))
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
+	if conv.Known(plan.GroupId) {
 		body.SetGroup(conv.Int32(plan.GroupId))
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
+	if conv.Known(plan.TenantId) {
 		body.SetTenant(conv.Int32(plan.TenantId))
 	}
-	if plan.ScopeType.IsNull() {
-		body.SetScopeTypeNil()
-	} else if !plan.ScopeType.IsUnknown() {
+	if conv.Known(plan.ScopeType) {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
-	if plan.ScopeId.IsNull() {
-		body.SetScopeIdNil()
-	} else if !plan.ScopeId.IsUnknown() {
+	if conv.Known(plan.ScopeId) {
 		body.SetScopeId(conv.Int32(plan.ScopeId))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
+	if conv.Known(plan.OwnerId) {
 		body.SetOwner(conv.Int32(plan.OwnerId))
 	}
 	if !plan.Comments.IsUnknown() {
@@ -346,54 +338,76 @@ func clusterToCreate(ctx context.Context, plan *ClusterModel, diags *diag.Diagno
 	return body
 }
 
-// clusterToPatch builds the PatchedWritableClusterRequest request body from the plan.
-func clusterToPatch(ctx context.Context, plan *ClusterModel, diags *diag.Diagnostics) *netbox.PatchedWritableClusterRequest {
+// clusterToPatch builds the PatchedWritableClusterRequest request body with every attribute whose planned value differs from state.
+func clusterToPatch(ctx context.Context, plan, state *ClusterModel, diags *diag.Diagnostics) *netbox.PatchedWritableClusterRequest {
 	body := netbox.NewPatchedWritableClusterRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.TypeId) {
-		body.SetType(conv.Int32(plan.TypeId))
+	if !plan.TypeId.Equal(state.TypeId) {
+		if conv.Known(plan.TypeId) {
+			body.SetType(conv.Int32(plan.TypeId))
+		}
 	}
-	if plan.GroupId.IsNull() {
-		body.SetGroupNil()
-	} else if !plan.GroupId.IsUnknown() {
-		body.SetGroup(conv.Int32(plan.GroupId))
+	if !plan.GroupId.Equal(state.GroupId) {
+		if plan.GroupId.IsNull() {
+			body.SetGroupNil()
+		} else if !plan.GroupId.IsUnknown() {
+			body.SetGroup(conv.Int32(plan.GroupId))
+		}
 	}
-	if conv.Known(plan.Status) {
-		body.SetStatus(plan.Status.ValueString())
+	if !plan.Status.Equal(state.Status) {
+		if conv.Known(plan.Status) {
+			body.SetStatus(plan.Status.ValueString())
+		}
 	}
-	if plan.TenantId.IsNull() {
-		body.SetTenantNil()
-	} else if !plan.TenantId.IsUnknown() {
-		body.SetTenant(conv.Int32(plan.TenantId))
+	if !plan.TenantId.Equal(state.TenantId) {
+		if plan.TenantId.IsNull() {
+			body.SetTenantNil()
+		} else if !plan.TenantId.IsUnknown() {
+			body.SetTenant(conv.Int32(plan.TenantId))
+		}
 	}
-	if plan.ScopeType.IsNull() {
-		body.SetScopeTypeNil()
-	} else if !plan.ScopeType.IsUnknown() {
-		body.SetScopeType(plan.ScopeType.ValueString())
+	if !plan.ScopeType.Equal(state.ScopeType) {
+		if plan.ScopeType.IsNull() {
+			body.SetScopeTypeNil()
+		} else if !plan.ScopeType.IsUnknown() {
+			body.SetScopeType(plan.ScopeType.ValueString())
+		}
 	}
-	if plan.ScopeId.IsNull() {
-		body.SetScopeIdNil()
-	} else if !plan.ScopeId.IsUnknown() {
-		body.SetScopeId(conv.Int32(plan.ScopeId))
+	if !plan.ScopeId.Equal(state.ScopeId) {
+		if conv.Known(plan.ScopeId) {
+			body.SetScopeId(conv.Int32(plan.ScopeId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if plan.OwnerId.IsNull() {
-		body.SetOwnerNil()
-	} else if !plan.OwnerId.IsUnknown() {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+	if !plan.OwnerId.Equal(state.OwnerId) {
+		if plan.OwnerId.IsNull() {
+			body.SetOwnerNil()
+		} else if !plan.OwnerId.IsUnknown() {
+			body.SetOwner(conv.Int32(plan.OwnerId))
+		}
 	}
-	if !plan.Comments.IsUnknown() {
-		body.SetComments(plan.Comments.ValueString())
+	if !plan.Comments.Equal(state.Comments) {
+		if !plan.Comments.IsUnknown() {
+			body.SetComments(plan.Comments.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -406,16 +420,16 @@ func clusterFromAPI(ctx context.Context, obj *netbox.Cluster, prior *ClusterMode
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ClusterModel) types.String { return m.Name }), false)
 	out.TypeId = conv.BriefID(obj.GetTypeOk())
 	out.GroupId = conv.BriefID(obj.GetGroupOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
-	out.ScopeType = conv.String(obj.GetScopeTypeOk())
+	out.ScopeType = conv.StringKeep(conv.String(obj.GetScopeTypeOk()), conv.PriorString(prior, func(m *ClusterModel) types.String { return m.ScopeType }), false)
 	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ClusterModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
-	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
+	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ClusterModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

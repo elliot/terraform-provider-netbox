@@ -228,7 +228,7 @@ func (r *VirtualCircuitTerminationResource) Update(ctx context.Context, req reso
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := virtualCircuitTerminationToPatch(ctx, &plan, &resp.Diagnostics)
+	body := virtualCircuitTerminationToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -287,26 +287,38 @@ func virtualCircuitTerminationToCreate(ctx context.Context, plan *VirtualCircuit
 	return body
 }
 
-// virtualCircuitTerminationToPatch builds the PatchedWritableVirtualCircuitTerminationRequest request body from the plan.
-func virtualCircuitTerminationToPatch(ctx context.Context, plan *VirtualCircuitTerminationModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualCircuitTerminationRequest {
+// virtualCircuitTerminationToPatch builds the PatchedWritableVirtualCircuitTerminationRequest request body with every attribute whose planned value differs from state.
+func virtualCircuitTerminationToPatch(ctx context.Context, plan, state *VirtualCircuitTerminationModel, diags *diag.Diagnostics) *netbox.PatchedWritableVirtualCircuitTerminationRequest {
 	body := netbox.NewPatchedWritableVirtualCircuitTerminationRequest()
-	if conv.Known(plan.VirtualCircuitId) {
-		body.SetVirtualCircuit(conv.Int32(plan.VirtualCircuitId))
+	if !plan.VirtualCircuitId.Equal(state.VirtualCircuitId) {
+		if conv.Known(plan.VirtualCircuitId) {
+			body.SetVirtualCircuit(conv.Int32(plan.VirtualCircuitId))
+		}
 	}
-	if conv.Known(plan.Role) {
-		body.SetRole(plan.Role.ValueString())
+	if !plan.Role.Equal(state.Role) {
+		if conv.Known(plan.Role) {
+			body.SetRole(plan.Role.ValueString())
+		}
 	}
-	if conv.Known(plan.InterfaceId) {
-		body.SetInterface(conv.Int32(plan.InterfaceId))
+	if !plan.InterfaceId.Equal(state.InterfaceId) {
+		if conv.Known(plan.InterfaceId) {
+			body.SetInterface(conv.Int32(plan.InterfaceId))
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Tags) {
-		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+	if !plan.Tags.Equal(state.Tags) {
+		if conv.Known(plan.Tags) {
+			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
+		}
 	}
-	if conv.Known(plan.CustomFields) {
-		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
+		}
 	}
 	return body
 }
@@ -322,7 +334,7 @@ func virtualCircuitTerminationFromAPI(ctx context.Context, obj *netbox.VirtualCi
 	out.VirtualCircuitId = conv.BriefID(obj.GetVirtualCircuitOk())
 	out.Role = conv.Choice(obj.GetRoleOk())
 	out.InterfaceId = conv.BriefID(obj.GetInterfaceOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VirtualCircuitTerminationModel) types.String { return m.Description }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
 	out.Url = conv.String(obj.GetUrlOk())

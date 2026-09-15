@@ -122,7 +122,7 @@ func webhookDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"timeout": dsschema.Int64Attribute{
-			MarkdownDescription: "The maximum time (in seconds) to wait for a response before failing the request. Leave blank to use the system default (60 seconds).",
+			MarkdownDescription: "The maximum time (in seconds) to wait for a response before failing the request. Leave blank to use the system default (60 seconds). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"custom_fields": dsschema.StringAttribute{

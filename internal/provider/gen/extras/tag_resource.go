@@ -224,7 +224,7 @@ func (r *TagResource) Update(ctx context.Context, req resource.UpdateRequest, re
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := tagToPatch(ctx, &plan, &resp.Diagnostics)
+	body := tagToPatch(ctx, &plan, &state, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -283,26 +283,38 @@ func tagToCreate(ctx context.Context, plan *TagModel, diags *diag.Diagnostics) *
 	return body
 }
 
-// tagToPatch builds the PatchedTagRequest request body from the plan.
-func tagToPatch(ctx context.Context, plan *TagModel, diags *diag.Diagnostics) *netbox.PatchedTagRequest {
+// tagToPatch builds the PatchedTagRequest request body with every attribute whose planned value differs from state.
+func tagToPatch(ctx context.Context, plan, state *TagModel, diags *diag.Diagnostics) *netbox.PatchedTagRequest {
 	body := netbox.NewPatchedTagRequest()
-	if conv.Known(plan.Name) {
-		body.SetName(plan.Name.ValueString())
+	if !plan.Name.Equal(state.Name) {
+		if conv.Known(plan.Name) {
+			body.SetName(plan.Name.ValueString())
+		}
 	}
-	if conv.Known(plan.Slug) {
-		body.SetSlug(plan.Slug.ValueString())
+	if !plan.Slug.Equal(state.Slug) {
+		if conv.Known(plan.Slug) {
+			body.SetSlug(plan.Slug.ValueString())
+		}
 	}
-	if conv.Known(plan.Color) {
-		body.SetColor(plan.Color.ValueString())
+	if !plan.Color.Equal(state.Color) {
+		if conv.Known(plan.Color) {
+			body.SetColor(plan.Color.ValueString())
+		}
 	}
-	if !plan.Description.IsUnknown() {
-		body.SetDescription(plan.Description.ValueString())
+	if !plan.Description.Equal(state.Description) {
+		if !plan.Description.IsUnknown() {
+			body.SetDescription(plan.Description.ValueString())
+		}
 	}
-	if conv.Known(plan.Weight) {
-		body.SetWeight(conv.Int32(plan.Weight))
+	if !plan.Weight.Equal(state.Weight) {
+		if conv.Known(plan.Weight) {
+			body.SetWeight(conv.Int32(plan.Weight))
+		}
 	}
-	if conv.Known(plan.ObjectTypes) {
-		body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+	if !plan.ObjectTypes.Equal(state.ObjectTypes) {
+		if conv.Known(plan.ObjectTypes) {
+			body.SetObjectTypes(conv.Strings(ctx, plan.ObjectTypes, diags))
+		}
 	}
 	return body
 }
@@ -311,10 +323,10 @@ func tagToPatch(ctx context.Context, plan *TagModel, diags *diag.Diagnostics) *n
 func tagFromAPI(ctx context.Context, obj *netbox.Tag, prior *TagModel, out *TagModel, diags *diag.Diagnostics) {
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.Name = conv.String(obj.GetNameOk())
-	out.Slug = conv.String(obj.GetSlugOk())
-	out.Color = conv.String(obj.GetColorOk())
-	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *TagModel) types.String { return m.Name }), false)
+	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *TagModel) types.String { return m.Slug }), false)
+	out.Color = conv.StringKeep(conv.String(obj.GetColorOk()), conv.PriorString(prior, func(m *TagModel) types.String { return m.Color }), false)
+	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *TagModel) types.String { return m.Description }), false)
 	out.Weight = conv.Int64From32(obj.GetWeightOk())
 	out.ObjectTypes = conv.StringSet(obj.GetObjectTypes())
 	out.Url = conv.String(obj.GetUrlOk())

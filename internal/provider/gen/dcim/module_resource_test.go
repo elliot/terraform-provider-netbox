@@ -153,7 +153,7 @@ func TestAccModule_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_module", &resource.Sweeper{
 		Name:         "netbox_module",
-		Dependencies: []string{"netbox_console_port", "netbox_console_server_port", "netbox_front_port", "netbox_module_bay", "netbox_rear_port"},
+		Dependencies: []string{"netbox_console_port", "netbox_console_server_port", "netbox_cooling_intake", "netbox_cooling_outflow", "netbox_front_port", "netbox_interface", "netbox_module_bay", "netbox_power_outlet", "netbox_power_port", "netbox_rear_port"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/modules/", []string{"description__isw", "q"})
 		},
