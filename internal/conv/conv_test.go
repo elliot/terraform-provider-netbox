@@ -9,15 +9,15 @@ import (
 
 func TestFloat64Keep(t *testing.T) {
 	api := 12.345679
-	got := Float64Keep(&api, true, types.Float64Value(12.3456789), 6)
+	got := Float64Keep(Float64From(&api, true), types.Float64Value(12.3456789), 6)
 	if got.ValueFloat64() != 12.3456789 {
 		t.Fatalf("expected prior value kept, got %v", got)
 	}
-	got = Float64Keep(&api, true, types.Float64Value(12.0), 6)
+	got = Float64Keep(Float64From(&api, true), types.Float64Value(12.0), 6)
 	if got.ValueFloat64() != 12.345679 {
 		t.Fatalf("expected API value, got %v", got)
 	}
-	if !Float64Keep(nil, false, types.Float64Value(1), 2).IsNull() {
+	if !Float64Keep(Float64From(nil, false), types.Float64Value(1), 2).IsNull() {
 		t.Fatal("expected null")
 	}
 }

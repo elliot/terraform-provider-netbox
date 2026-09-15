@@ -288,8 +288,7 @@ func Float64From(v *float64, ok bool) types.Float64 {
 // (planned) value when it equals the API value at the given number of
 // decimals, so NetBox's decimal rounding does not produce perpetual diffs.
 // decimals <= 0 means 6.
-func Float64Keep(v *float64, ok bool, prior types.Float64, decimals int) types.Float64 {
-	got := Float64From(v, ok)
+func Float64Keep(got types.Float64, prior types.Float64, decimals int) types.Float64 {
 	if got.IsNull() || !Known(prior) {
 		return got
 	}

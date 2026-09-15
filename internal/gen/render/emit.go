@@ -691,7 +691,7 @@ func readExpr(a model.Attr, obj string, dataSource bool) string {
 			return "conv.Float64From32(" + get + "Ok())"
 		}
 		if !dataSource && !a.ReadOnly && modelForPrior != "" {
-			return fmt.Sprintf("conv.Float64Keep(%sOk(), conv.PriorFloat(prior, func(m *%s) types.Float64 { return m.%s }), %d)", get, modelForPrior, field(a), a.Precision)
+			return fmt.Sprintf("conv.Float64Keep(conv.Float64From(%sOk()), conv.PriorFloat(prior, func(m *%s) types.Float64 { return m.%s }), %d)", get, modelForPrior, field(a), a.Precision)
 		}
 		return "conv.Float64From(" + get + "Ok())"
 	case model.KindBool:
