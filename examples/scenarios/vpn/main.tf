@@ -231,7 +231,7 @@ resource "netbox_l2vpn_termination" "servers" {
 # --------------------------------------------------------------------------
 
 data "netbox_tunnel_terminations" "branch01" {
-  filters = [{ name = "tunnel_id", value = tostring(netbox_tunnel.branch01.id) }]
+  filters    = [{ name = "tunnel_id", value = tostring(netbox_tunnel.branch01.id) }]
   depends_on = [netbox_tunnel_termination.hub, netbox_tunnel_termination.spoke]
 }
 
