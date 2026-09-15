@@ -284,6 +284,25 @@ func Float64From(v *float64, ok bool) types.Float64 {
 	return types.Float64Value(*v)
 }
 
+// Float64Keep converts a float getter result while preserving the prior
+// (planned) value when it equals the API value at the given number of
+// decimals, so NetBox's decimal rounding does not produce perpetual diffs.
+// decimals <= 0 means 6.
+func Float64Keep(v *float64, ok bool, prior types.Float64, decimals int) types.Float64 {
+	got := Float64From(v, ok)
+	if got.IsNull() || !Known(prior) {
+		return got
+	}
+	if decimals <= 0 {
+		decimals = 6
+	}
+	scale := math.Pow(10, float64(decimals))
+	if math.Round(prior.ValueFloat64()*scale) == math.Round(got.ValueFloat64()*scale) {
+		return prior
+	}
+	return got
+}
+
 // Float64From32 converts a (*float32, ok) getter result.
 func Float64From32(v *float32, ok bool) types.Float64 {
 	if !ok || v == nil {
@@ -553,6 +572,15 @@ func ApplyFilters(ctx context.Context, filters types.List, allowed []string, q u
 		}
 		q.Add(name, f.Value.ValueString())
 	}
+}
+
+// PriorFloat returns the float attribute selected by get from prior, or null
+// when prior is nil (used by generated FromAPI functions).
+func PriorFloat[M any](prior *M, get func(*M) types.Float64) types.Float64 {
+	if prior == nil {
+		return types.Float64Null()
+	}
+	return get(prior)
 }
 
 // PriorJSON returns the JSON attribute selected by get from prior, or null

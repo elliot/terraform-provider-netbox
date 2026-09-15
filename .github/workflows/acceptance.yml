@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       shard:
-        description: "Regex passed to go test -run (overrides the matrix, e.g. TestAccDcim)"
+        description: "Go package pattern to test (overrides the matrix, e.g. ./internal/provider/gen/dcim/)"
         required: false
         default: ""
       terraform:
@@ -30,21 +30,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # One shard per NetBox app; the regex is matched against test names
-        # (generated tests are named TestAcc<App><Resource>_...).
+        # One shard per Go package (NetBox app); each job runs its own NetBox.
         shard:
-          - TestAccProvider
-          - TestAccDcim
-          - TestAccIpam
-          - TestAccExtras
-          - TestAccCircuits
-          - TestAccVpn
-          - TestAccVirtualization
-          - TestAccTenancy
-          - TestAccUsers
-          - TestAccWireless
-          - TestAccCore
-          - TestAccManual
+          - ./internal/provider/
+          - ./internal/provider/gen/dcim/
+          - ./internal/provider/gen/ipam/
+          - ./internal/provider/gen/extras/
+          - ./internal/provider/gen/circuits/
+          - ./internal/provider/gen/vpn/
+          - ./internal/provider/gen/virtualization/
+          - ./internal/provider/gen/tenancy/
+          - ./internal/provider/gen/users/
+          - ./internal/provider/gen/wireless/
+          - ./internal/provider/gen/core/
+          - ./internal/provider/manual/
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-go@v6
@@ -82,7 +81,7 @@ jobs:
           NETBOX_API_TOKEN: ${{ steps.token.outputs.token }}
           NETBOX_REQUESTS_PER_SECOND: "10"
           ACC_SHARD: ${{ github.event.inputs.shard || matrix.shard }}
-        run: go test ./internal/... -v -count=1 -run "$ACC_SHARD" -timeout 120m -parallel 4
+        run: go test "$ACC_SHARD" -v -count=1 -run TestAcc -timeout 120m -parallel 4
 
       - name: NetBox logs (on failure)
         if: failure()
