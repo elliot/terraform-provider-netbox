@@ -12,9 +12,26 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const customLinkTestConfigBasic = ``
+const customLinkTestConfigBasic = `resource "netbox_custom_link" "test" {
+  name         = "{{.Name}}"
+  object_types = ["dcim.site"]
+  link_text    = "Weather for {{ "{{" }} object.name {{ "}}" }}"
+  link_url     = "https://weather.example.com/?q={{ "{{" }} object.physical_address | urlencode {{ "}}" }}"
+}
+`
 
-const customLinkTestConfigUpdate = ``
+const customLinkTestConfigUpdate = `resource "netbox_custom_link" "test" {
+  name         = "{{.Name}}"
+  object_types = ["dcim.site", "dcim.location"]
+  link_text    = "Weather for {{ "{{" }} object.name {{ "}}" }}"
+  link_url     = "https://weather.example.com/?q={{ "{{" }} object.physical_address | urlencode {{ "}}" }}"
+  enabled      = false
+  weight       = 200
+  group_name   = "External"
+  button_class = "blue"
+  new_window   = true
+}
+`
 
 const customLinkTestConfigDataSources = `
 data "netbox_custom_link" "by_id" {
@@ -27,7 +44,6 @@ data "netbox_custom_links" "list" {
 `
 
 func TestAccCustomLink_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"custom-links\" in generator/overrides/extras.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +53,13 @@ func TestAccCustomLink_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, customLinkTestConfigBasic+customLinkTestConfigDataSources, name),
+			Config: acctest.Render(t, customLinkTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_custom_link.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, customLinkTestConfigUpdate+customLinkTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_custom_link.by_id", "id", "netbox_custom_link.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_custom_links.list", "items.#", "1"),
@@ -50,13 +72,13 @@ func TestAccCustomLink_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, customLinkTestConfigBasic, name),
+			Config: acctest.Render(t, customLinkTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
 		},
 	}
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProviderFactories,
 		CheckDestroy:             acctest.CheckDestroyed("netbox_custom_link", "/api/extras/custom-links/"),

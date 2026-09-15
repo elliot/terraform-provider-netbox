@@ -12,9 +12,56 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const coolingFeedTestConfigBasic = ``
+const coolingFeedTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cooling_source" "test" {
+  site_id = netbox_site.test.id
+  name    = "{{.Name}}"
+  type    = "chiller"
+}
+resource "netbox_cooling_feed" "test" {
+  cooling_source_id = netbox_cooling_source.test.id
+  name              = "{{.Name}}"
+}
+`
 
-const coolingFeedTestConfigUpdate = ``
+const coolingFeedTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cooling_source" "test" {
+  site_id = netbox_site.test.id
+  name    = "{{.Name}}"
+  type    = "chiller"
+}
+resource "netbox_rack" "test" {
+  name    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cooling_feed" "test" {
+  cooling_source_id = netbox_cooling_source.test.id
+  rack_id           = netbox_rack.test.id
+  name              = "{{.Name}}"
+  status            = "planned"
+  cooling_capacity  = 30.5
+  max_flow          = 12.5
+  max_flow_unit     = "lpm"
+  tenant_id         = netbox_tenant.test.id
+  description       = "{{.Name}} updated"
+  comments          = "updated by acceptance test"
+  tags              = [netbox_tag.test.slug]
+}
+`
 
 const coolingFeedTestConfigDataSources = `
 data "netbox_cooling_feed" "by_id" {
@@ -27,17 +74,23 @@ data "netbox_cooling_feeds" "list" {
 `
 
 func TestAccCoolingFeed_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"cooling-feeds\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, coolingFeedTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_cooling_feed.test", "id"),
+				resource.TestCheckResourceAttr("netbox_cooling_feed.test", "status", "active"),
 			),
 		},
 		{
-			Config: acctest.Render(t, coolingFeedTestConfigBasic+coolingFeedTestConfigDataSources, name),
+			Config: acctest.Render(t, coolingFeedTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_cooling_feed.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, coolingFeedTestConfigUpdate+coolingFeedTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_cooling_feed.by_id", "id", "netbox_cooling_feed.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_cooling_feeds.list", "items.#", "1"),
@@ -51,7 +104,7 @@ func TestAccCoolingFeed_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, coolingFeedTestConfigBasic, name),
+			Config: acctest.Render(t, coolingFeedTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

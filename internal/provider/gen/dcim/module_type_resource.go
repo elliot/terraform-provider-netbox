@@ -487,7 +487,7 @@ func moduleTypeFromAPI(ctx context.Context, obj *netbox.ModuleType, prior *Modul
 	out.PartNumber = conv.StringOrEmpty(obj.GetPartNumberOk())
 	out.Airflow = conv.Choice(obj.GetAirflowOk())
 	out.CoolingMethod = conv.Choice(obj.GetCoolingMethodOk())
-	out.Weight = conv.Float64From(obj.GetWeightOk())
+	out.Weight = conv.Float64Keep(conv.Float64From(obj.GetWeightOk()), conv.PriorFloat(prior, func(m *ModuleTypeModel) types.Float64 { return m.Weight }), 0)
 	out.WeightUnit = conv.Choice(obj.GetWeightUnitOk())
 	out.EndOfLife = conv.String(obj.GetEndOfLifeOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())

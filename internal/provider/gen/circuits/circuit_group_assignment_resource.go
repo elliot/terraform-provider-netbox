@@ -67,7 +67,7 @@ func (r *CircuitGroupAssignmentResource) Metadata(_ context.Context, req resourc
 
 func (r *CircuitGroupAssignmentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox Circuit group assignment (`/api/circuits/circuit-group-assignments/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox circuit group assignment (`/api/circuits/circuit-group-assignments/`): membership of a circuit or virtual circuit in a circuit group, with an optional priority (`/api/circuits/circuit-group-assignments/`).",
 		Attributes:          circuitGroupAssignmentResourceAttributes(),
 	}
 }

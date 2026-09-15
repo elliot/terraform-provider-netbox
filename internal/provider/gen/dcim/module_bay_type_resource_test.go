@@ -12,23 +12,28 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const moduleBayTypeTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_module_bay_type" "test" {
+const moduleBayTypeTestConfigBasic = `resource "netbox_module_bay_type" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const moduleBayTypeTestConfigUpdate = `resource "netbox_module_bay_type" "test" {
+const moduleBayTypeTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "updated by acceptance test"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_module_bay_type" "test" {
+  name            = "{{.Name}}"
+  slug            = "{{.Name}}"
+  manufacturer_id = netbox_manufacturer.test.id
+  color           = "9c27b0"
+  description     = "{{.Name}} updated"
+  comments        = "updated by acceptance test"
+  tags            = [netbox_tag.test.slug]
 }
 `
 
@@ -89,7 +94,7 @@ func TestAccModuleBayType_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_module_bay_type", &resource.Sweeper{
 		Name:         "netbox_module_bay_type",
-		Dependencies: []string{"netbox_module_bay", "netbox_module_bay_template", "netbox_module_type"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/module-bay-types/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

@@ -12,23 +12,23 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const circuitTypeTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_circuit_type" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const circuitTypeTestConfigBasic = `resource "netbox_circuit_type" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  description = "{{.Name}}"
 }
 `
 
-const circuitTypeTestConfigUpdate = `resource "netbox_circuit_type" "test" {
+const circuitTypeTestConfigUpdate = `resource "netbox_tag" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "updated by acceptance test"
+}
+resource "netbox_circuit_type" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  color       = "2196f3"
+  description = "{{.Name}} updated"
+  tags        = [netbox_tag.test.slug]
 }
 `
 

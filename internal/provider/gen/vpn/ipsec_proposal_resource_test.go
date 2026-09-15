@@ -16,17 +16,24 @@ const ipsecProposalTestConfigBasic = `resource "netbox_tag" "test" {
   name = "{{.Name}}-tag"
   slug = "{{.Name}}-tag"
 }
-
 resource "netbox_ipsec_proposal" "test" {
-  name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  name                     = "{{.Name}}"
+  description              = "created by acceptance test"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+  sa_lifetime_seconds      = 3600
+  tags                     = [netbox_tag.test.slug]
 }
 `
 
 const ipsecProposalTestConfigUpdate = `resource "netbox_ipsec_proposal" "test" {
-  name = "{{.Name}}"
-  description = "updated by acceptance test"
+  name                     = "{{.Name}}"
+  description              = "updated by acceptance test"
+  encryption_algorithm     = "aes-128-cbc"
+  authentication_algorithm = "hmac-sha512"
+  sa_lifetime_seconds      = 7200
+  sa_lifetime_data         = 4608000
+  comments                 = "phase 2 proposal"
 }
 `
 
@@ -47,6 +54,7 @@ func TestAccIpsecProposal_basic(t *testing.T) {
 			Config: acctest.Render(t, ipsecProposalTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_ipsec_proposal.test", "id"),
+				resource.TestCheckResourceAttr("netbox_ipsec_proposal.test", "sa_lifetime_seconds", "3600"),
 			),
 		},
 		{

@@ -12,21 +12,17 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const serviceTemplateTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_service_template" "test" {
-  name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const serviceTemplateTestConfigBasic = `resource "netbox_service_template" "test" {
+  name          = "{{.Name}}"
+  port_mappings = ["tcp/443"]
 }
 `
 
 const serviceTemplateTestConfigUpdate = `resource "netbox_service_template" "test" {
-  name = "{{.Name}}"
-  description = "updated by acceptance test"
+  name          = "{{.Name}}"
+  port_mappings = ["tcp/443", "udp/53"]
+  description   = "{{.Name}} updated"
+  comments      = "HTTPS and DNS"
 }
 `
 

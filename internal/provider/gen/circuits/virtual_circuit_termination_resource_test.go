@@ -12,9 +12,111 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const virtualCircuitTerminationTestConfigBasic = ``
+const virtualCircuitTerminationTestConfigBasic = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_network" "test" {
+  provider_id = netbox_provider.test.id
+  name        = "{{.Name}}"
+}
+resource "netbox_virtual_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_virtual_circuit" "test" {
+  cid                 = "{{.Name}}"
+  provider_network_id = netbox_provider_network.test.id
+  type_id             = netbox_virtual_circuit_type.test.id
+}
+resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "test" {
+  device_id = netbox_device.test.id
+  name      = "{{.Name}}"
+  type      = "virtual"
+}
+resource "netbox_virtual_circuit_termination" "test" {
+  virtual_circuit_id = netbox_virtual_circuit.test.id
+  interface_id       = netbox_interface.test.id
+  role               = "peer"
+  description        = "{{.Name}}"
+}
+`
 
-const virtualCircuitTerminationTestConfigUpdate = ``
+const virtualCircuitTerminationTestConfigUpdate = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_network" "test" {
+  provider_id = netbox_provider.test.id
+  name        = "{{.Name}}"
+}
+resource "netbox_virtual_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_virtual_circuit" "test" {
+  cid                 = "{{.Name}}"
+  provider_network_id = netbox_provider_network.test.id
+  type_id             = netbox_virtual_circuit_type.test.id
+}
+resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "test" {
+  device_id = netbox_device.test.id
+  name      = "{{.Name}}"
+  type      = "virtual"
+}
+resource "netbox_virtual_circuit_termination" "test" {
+  virtual_circuit_id = netbox_virtual_circuit.test.id
+  interface_id       = netbox_interface.test.id
+  role               = "hub"
+  description        = "{{.Name}} updated"
+}
+`
 
 const virtualCircuitTerminationTestConfigDataSources = `
 data "netbox_virtual_circuit_termination" "by_id" {
@@ -27,7 +129,6 @@ data "netbox_virtual_circuit_terminations" "list" {
 `
 
 func TestAccVirtualCircuitTermination_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"virtual-circuit-terminations\" in generator/overrides/circuits.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +138,13 @@ func TestAccVirtualCircuitTermination_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, virtualCircuitTerminationTestConfigBasic+virtualCircuitTerminationTestConfigDataSources, name),
+			Config: acctest.Render(t, virtualCircuitTerminationTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_virtual_circuit_termination.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, virtualCircuitTerminationTestConfigUpdate+virtualCircuitTerminationTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_virtual_circuit_termination.by_id", "id", "netbox_virtual_circuit_termination.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_virtual_circuit_terminations.list", "items.#", "1"),
@@ -51,7 +158,7 @@ func TestAccVirtualCircuitTermination_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, virtualCircuitTerminationTestConfigBasic, name),
+			Config: acctest.Render(t, virtualCircuitTerminationTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

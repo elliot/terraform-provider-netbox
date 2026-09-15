@@ -12,23 +12,19 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const inventoryItemRoleTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_inventory_item_role" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const inventoryItemRoleTestConfigBasic = `resource "netbox_inventory_item_role" "test" {
+  name  = "{{.Name}}"
+  slug  = "{{.Name}}"
+  color = "2196f3"
 }
 `
 
 const inventoryItemRoleTestConfigUpdate = `resource "netbox_inventory_item_role" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "updated by acceptance test"
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  color       = "ff9800"
+  description = "{{.Name}} updated"
+  comments    = "power supplies and fans"
 }
 `
 

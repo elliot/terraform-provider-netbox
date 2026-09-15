@@ -12,9 +12,43 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const coolingSourceTestConfigBasic = ``
+const coolingSourceTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cooling_source" "test" {
+  site_id = netbox_site.test.id
+  name    = "{{.Name}}"
+  type    = "chiller"
+}
+`
 
-const coolingSourceTestConfigUpdate = ``
+const coolingSourceTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_location" "test" {
+  name    = "{{.Name}}"
+  slug    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cooling_source" "test" {
+  site_id          = netbox_site.test.id
+  location_id      = netbox_location.test.id
+  name             = "{{.Name}}"
+  type             = "crah"
+  status           = "planned"
+  fluid_type       = "water-glycol"
+  cooling_capacity = 250.5
+  description      = "{{.Name}} updated"
+  comments         = "updated by acceptance test"
+  tags             = [netbox_tag.test.slug]
+}
+`
 
 const coolingSourceTestConfigDataSources = `
 data "netbox_cooling_source" "by_id" {
@@ -27,17 +61,23 @@ data "netbox_cooling_sources" "list" {
 `
 
 func TestAccCoolingSource_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"cooling-sources\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, coolingSourceTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_cooling_source.test", "id"),
+				resource.TestCheckResourceAttr("netbox_cooling_source.test", "status", "active"),
 			),
 		},
 		{
-			Config: acctest.Render(t, coolingSourceTestConfigBasic+coolingSourceTestConfigDataSources, name),
+			Config: acctest.Render(t, coolingSourceTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_cooling_source.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, coolingSourceTestConfigUpdate+coolingSourceTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_cooling_source.by_id", "id", "netbox_cooling_source.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_cooling_sources.list", "items.#", "1"),
@@ -51,7 +91,7 @@ func TestAccCoolingSource_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, coolingSourceTestConfigBasic, name),
+			Config: acctest.Render(t, coolingSourceTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

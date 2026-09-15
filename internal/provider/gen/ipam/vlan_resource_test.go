@@ -12,23 +12,39 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const vlanTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
+const vlanTestConfigBasic = `resource "netbox_vlan_group" "test" {
+  name       = "{{.Name}}"
+  slug       = "{{.Name}}"
+  vid_ranges = [[200, 299]]
 }
-
 resource "netbox_vlan" "test" {
-  vid = 1
-  name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  group_id = netbox_vlan_group.test.id
+  vid      = 213
+  name     = "{{.Name}}"
 }
 `
 
-const vlanTestConfigUpdate = `resource "netbox_vlan" "test" {
-  vid = 1
+const vlanTestConfigUpdate = `resource "netbox_vlan_group" "test" {
+  name       = "{{.Name}}"
+  slug       = "{{.Name}}"
+  vid_ranges = [[200, 299]]
+}
+resource "netbox_tenant" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_ipam_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_vlan" "test" {
+  group_id    = netbox_vlan_group.test.id
+  vid         = 213
+  name        = "{{.Name}}-updated"
+  tenant_id   = netbox_tenant.test.id
+  role_id     = netbox_ipam_role.test.id
+  status      = "reserved"
+  description = "{{.Name}} updated"
 }
 `
 
@@ -89,7 +105,7 @@ func TestAccVlan_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_vlan", &resource.Sweeper{
 		Name:         "netbox_vlan",
-		Dependencies: []string{"netbox_interface", "netbox_prefix", "netbox_vm_interface", "netbox_wireless_lan"},
+		Dependencies: []string{"netbox_prefix"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/vlans/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -383,7 +383,7 @@ func coolingOutflowTemplateFromAPI(ctx context.Context, obj *netbox.CoolingOutfl
 	out.Name = conv.String(obj.GetNameOk())
 	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
 	out.Type = conv.Choice(obj.GetTypeOk())
-	out.Diameter = conv.Float64From(obj.GetDiameterOk())
+	out.Diameter = conv.Float64Keep(conv.Float64From(obj.GetDiameterOk()), conv.PriorFloat(prior, func(m *CoolingOutflowTemplateModel) types.Float64 { return m.Diameter }), 0)
 	out.DiameterUnit = conv.Choice(obj.GetDiameterUnitOk())
 	out.CoolingIntakeId = conv.BriefID(obj.GetCoolingIntakeOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())

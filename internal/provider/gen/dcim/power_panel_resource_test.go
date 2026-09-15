@@ -12,9 +12,38 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const powerPanelTestConfigBasic = ``
+const powerPanelTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_power_panel" "test" {
+  site_id = netbox_site.test.id
+  name    = "{{.Name}}"
+}
+`
 
-const powerPanelTestConfigUpdate = ``
+const powerPanelTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_location" "test" {
+  name    = "{{.Name}}"
+  slug    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_power_panel" "test" {
+  site_id     = netbox_site.test.id
+  location_id = netbox_location.test.id
+  name        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  tags        = [netbox_tag.test.slug]
+}
+`
 
 const powerPanelTestConfigDataSources = `
 data "netbox_power_panel" "by_id" {
@@ -27,7 +56,6 @@ data "netbox_power_panels" "list" {
 `
 
 func TestAccPowerPanel_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"power-panels\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +65,13 @@ func TestAccPowerPanel_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, powerPanelTestConfigBasic+powerPanelTestConfigDataSources, name),
+			Config: acctest.Render(t, powerPanelTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_power_panel.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, powerPanelTestConfigUpdate+powerPanelTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_power_panel.by_id", "id", "netbox_power_panel.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_power_panels.list", "items.#", "1"),
@@ -51,7 +85,7 @@ func TestAccPowerPanel_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, powerPanelTestConfigBasic, name),
+			Config: acctest.Render(t, powerPanelTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

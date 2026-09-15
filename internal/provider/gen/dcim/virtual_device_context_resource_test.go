@@ -12,9 +12,74 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const virtualDeviceContextTestConfigBasic = ``
+const virtualDeviceContextTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_virtual_device_context" "test" {
+  device_id  = netbox_device.test.id
+  name       = "{{.Name}}"
+  status     = "active"
+  identifier = 10
+}
+`
 
-const virtualDeviceContextTestConfigUpdate = ``
+const virtualDeviceContextTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_virtual_device_context" "test" {
+  device_id   = netbox_device.test.id
+  name        = "{{.Name}}"
+  status      = "planned"
+  identifier  = 20
+  tenant_id   = netbox_tenant.test.id
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+}
+`
 
 const virtualDeviceContextTestConfigDataSources = `
 data "netbox_virtual_device_context" "by_id" {
@@ -27,7 +92,6 @@ data "netbox_virtual_device_contexts" "list" {
 `
 
 func TestAccVirtualDeviceContext_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"virtual-device-contexts\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +101,13 @@ func TestAccVirtualDeviceContext_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, virtualDeviceContextTestConfigBasic+virtualDeviceContextTestConfigDataSources, name),
+			Config: acctest.Render(t, virtualDeviceContextTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_virtual_device_context.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, virtualDeviceContextTestConfigUpdate+virtualDeviceContextTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_virtual_device_context.by_id", "id", "netbox_virtual_device_context.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_virtual_device_contexts.list", "items.#", "1"),
@@ -51,7 +121,7 @@ func TestAccVirtualDeviceContext_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, virtualDeviceContextTestConfigBasic, name),
+			Config: acctest.Render(t, virtualDeviceContextTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
@@ -68,7 +138,7 @@ func TestAccVirtualDeviceContext_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_virtual_device_context", &resource.Sweeper{
 		Name:         "netbox_virtual_device_context",
-		Dependencies: []string{"netbox_interface"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/virtual-device-contexts/", []string{"name__isw", "description__isw", "q"})
 		},

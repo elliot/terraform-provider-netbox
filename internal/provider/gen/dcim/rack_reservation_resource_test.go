@@ -12,9 +12,57 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const rackReservationTestConfigBasic = ``
+const rackReservationTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rack" "test" {
+  name    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+resource "netbox_user" "test" {
+  username = "{{.Name}}"
+  password = "{{.Name}}-Passw0rd!"
+}
+resource "netbox_rack_reservation" "test" {
+  rack_id     = netbox_rack.test.id
+  user_id     = netbox_user.test.id
+  units       = [1, 2]
+  description = "{{.Name}}"
+}
+`
 
-const rackReservationTestConfigUpdate = ``
+const rackReservationTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rack" "test" {
+  name    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+resource "netbox_user" "test" {
+  username = "{{.Name}}"
+  password = "{{.Name}}-Passw0rd!"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rack_reservation" "test" {
+  rack_id     = netbox_rack.test.id
+  user_id     = netbox_user.test.id
+  units       = [1, 2, 3, 4]
+  status      = "active"
+  tenant_id   = netbox_tenant.test.id
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  tags        = [netbox_tag.test.slug]
+}
+`
 
 const rackReservationTestConfigDataSources = `
 data "netbox_rack_reservation" "by_id" {
@@ -27,7 +75,6 @@ data "netbox_rack_reservations" "list" {
 `
 
 func TestAccRackReservation_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"rack-reservations\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +84,13 @@ func TestAccRackReservation_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, rackReservationTestConfigBasic+rackReservationTestConfigDataSources, name),
+			Config: acctest.Render(t, rackReservationTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_rack_reservation.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, rackReservationTestConfigUpdate+rackReservationTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_rack_reservation.by_id", "id", "netbox_rack_reservation.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_rack_reservations.list", "items.#", "1"),
@@ -51,7 +104,7 @@ func TestAccRackReservation_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, rackReservationTestConfigBasic, name),
+			Config: acctest.Render(t, rackReservationTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

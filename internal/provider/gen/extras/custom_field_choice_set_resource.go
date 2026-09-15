@@ -128,7 +128,7 @@ func customFieldChoiceSetResourceAttributes() map[string]schema.Attribute {
 			Required:            true,
 		},
 		"choice_colors": schema.StringAttribute{
-			MarkdownDescription: "Choice Colors as a JSON document (`jsonencode({...})`).",
+			MarkdownDescription: "Colors per choice value as a JSON object (`jsonencode({ gold = \"yellow\" })`). Values are NetBox colour names: `blue`, `indigo`, `purple`, `pink`, `red`, `orange`, `yellow`, `green`, `teal`, `cyan`, `gray`, `black`, `white` (not hex codes).",
 			CustomType:          jsontypes.NormalizedType{},
 			Optional:            true,
 		},

@@ -12,9 +12,44 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const clusterTestConfigBasic = ``
+const clusterTestConfigBasic = `resource "netbox_cluster_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster" "test" {
+  name    = "{{.Name}}"
+  type_id = netbox_cluster_type.test.id
+}
+`
 
-const clusterTestConfigUpdate = ``
+const clusterTestConfigUpdate = `resource "netbox_cluster_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster_group" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster" "test" {
+  name        = "{{.Name}}"
+  type_id     = netbox_cluster_type.test.id
+  group_id    = netbox_cluster_group.test.id
+  tenant_id   = netbox_tenant.test.id
+  scope_type  = "dcim.site"
+  scope_id    = netbox_site.test.id
+  status      = "planned"
+  description = "updated"
+  comments    = "{{.Name}} comments"
+}
+`
 
 const clusterTestConfigDataSources = `
 data "netbox_cluster" "by_id" {
@@ -27,17 +62,23 @@ data "netbox_clusters" "list" {
 `
 
 func TestAccCluster_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"clusters\" in generator/overrides/virtualization.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, clusterTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_cluster.test", "id"),
+				resource.TestCheckResourceAttr("netbox_cluster.test", "status", "active"),
 			),
 		},
 		{
-			Config: acctest.Render(t, clusterTestConfigBasic+clusterTestConfigDataSources, name),
+			Config: acctest.Render(t, clusterTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_cluster.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, clusterTestConfigUpdate+clusterTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_cluster.by_id", "id", "netbox_cluster.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_clusters.list", "items.#", "1"),
@@ -51,7 +92,7 @@ func TestAccCluster_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, clusterTestConfigBasic, name),
+			Config: acctest.Render(t, clusterTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
@@ -68,7 +109,7 @@ func TestAccCluster_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_cluster", &resource.Sweeper{
 		Name:         "netbox_cluster",
-		Dependencies: []string{"netbox_config_context", "netbox_device", "netbox_virtual_machine"},
+		Dependencies: []string{"netbox_virtual_machine"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/virtualization/clusters/", []string{"name__isw", "description__isw", "q"})
 		},

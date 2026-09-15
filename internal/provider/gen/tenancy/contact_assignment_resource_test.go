@@ -12,9 +12,44 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const contactAssignmentTestConfigBasic = ``
+const contactAssignmentTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_contact" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_contact_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_contact_assignment" "test" {
+  object_type = "dcim.site"
+  object_id   = netbox_site.test.id
+  contact_id  = netbox_contact.test.id
+  role_id     = netbox_contact_role.test.id
+}
+`
 
-const contactAssignmentTestConfigUpdate = ``
+const contactAssignmentTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_contact" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_contact_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_contact_assignment" "test" {
+  object_type = "dcim.site"
+  object_id   = netbox_site.test.id
+  contact_id  = netbox_contact.test.id
+  role_id     = netbox_contact_role.test.id
+  priority    = "primary"
+}
+`
 
 const contactAssignmentTestConfigDataSources = `
 data "netbox_contact_assignment" "by_id" {
@@ -27,7 +62,6 @@ data "netbox_contact_assignments" "list" {
 `
 
 func TestAccContactAssignment_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"contact-assignments\" in generator/overrides/tenancy.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +71,13 @@ func TestAccContactAssignment_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, contactAssignmentTestConfigBasic+contactAssignmentTestConfigDataSources, name),
+			Config: acctest.Render(t, contactAssignmentTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_contact_assignment.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, contactAssignmentTestConfigUpdate+contactAssignmentTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_contact_assignment.by_id", "id", "netbox_contact_assignment.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_contact_assignments.list", "items.#", "1"),
@@ -51,7 +91,7 @@ func TestAccContactAssignment_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, contactAssignmentTestConfigBasic, name),
+			Config: acctest.Render(t, contactAssignmentTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

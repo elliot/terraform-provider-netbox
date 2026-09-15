@@ -16,19 +16,33 @@ const tunnelTestConfigBasic = `resource "netbox_tag" "test" {
   name = "{{.Name}}-tag"
   slug = "{{.Name}}-tag"
 }
-
-resource "netbox_tunnel" "test" {
+resource "netbox_tunnel_group" "test" {
   name = "{{.Name}}"
-  encapsulation = "ipsec-transport"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  slug = "{{.Name}}"
+}
+resource "netbox_tunnel" "test" {
+  name          = "{{.Name}}"
+  description   = "created by acceptance test"
+  status        = "planned"
+  encapsulation = "gre"
+  group_id      = netbox_tunnel_group.test.id
+  tunnel_id     = 100
+  tags          = [netbox_tag.test.slug]
 }
 `
 
-const tunnelTestConfigUpdate = `resource "netbox_tunnel" "test" {
+const tunnelTestConfigUpdate = `resource "netbox_tunnel_group" "test" {
   name = "{{.Name}}"
-  encapsulation = "ipsec-transport"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_tunnel" "test" {
+  name          = "{{.Name}}"
+  description   = "updated by acceptance test"
+  status        = "active"
+  encapsulation = "ipsec-tunnel"
+  group_id      = netbox_tunnel_group.test.id
+  tunnel_id     = 101
+  comments      = "branch uplink"
 }
 `
 
@@ -49,6 +63,8 @@ func TestAccTunnel_basic(t *testing.T) {
 			Config: acctest.Render(t, tunnelTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_tunnel.test", "id"),
+				resource.TestCheckResourceAttr("netbox_tunnel.test", "encapsulation", "gre"),
+				resource.TestCheckResourceAttr("netbox_tunnel.test", "status", "planned"),
 			),
 		},
 		{

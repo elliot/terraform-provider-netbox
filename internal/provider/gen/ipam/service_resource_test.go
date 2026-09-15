@@ -66,12 +66,24 @@ resource "netbox_device" "test" {
   role_id        = netbox_device_role.test.id
   site_id        = netbox_site.test.id
 }
+resource "netbox_interface" "test" {
+  device_id = netbox_device.test.id
+  name      = "lo0"
+  type      = "virtual"
+}
+resource "netbox_ip_address" "test" {
+  address              = "10.213.9.1/32"
+  assigned_object_type = "dcim.interface"
+  assigned_object_id   = netbox_interface.test.id
+  description          = "{{.Name}}"
+}
 resource "netbox_service" "test" {
   parent_object_type = "dcim.device"
   parent_object_id   = netbox_device.test.id
   name               = "{{.Name}}"
   port_mappings      = ["tcp/443", "udp/53"]
-  description        = "updated"
+  ipaddress_ids      = [netbox_ip_address.test.id]
+  description        = "{{.Name}} updated"
 }
 `
 

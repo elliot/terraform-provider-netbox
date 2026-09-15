@@ -12,15 +12,43 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const powerOutletTemplateTestConfigBasic = `resource "netbox_power_outlet_template" "test" {
+const powerOutletTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_power_outlet_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Outlet 1"
 }
 `
 
-const powerOutletTemplateTestConfigUpdate = `resource "netbox_power_outlet_template" "test" {
+const powerOutletTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_power_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "PSU1"
+}
+resource "netbox_power_outlet_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Outlet 1"
+  label          = "Outlet A1"
+  type           = "iec-60320-c13"
+  color          = "ff9800"
+  power_port_id  = netbox_power_port_template.test.id
+  feed_leg       = "A"
+  description    = "{{.Name}} updated"
 }
 `
 

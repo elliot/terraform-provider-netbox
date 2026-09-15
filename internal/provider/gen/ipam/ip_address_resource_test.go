@@ -13,17 +13,31 @@ import (
 )
 
 const ipAddressTestConfigBasic = `resource "netbox_ip_address" "test" {
-  address     = "10.123.1.10/24"
+  address     = "10.213.1.10/24"
   description = "{{.Name}}"
 }
 `
 
-const ipAddressTestConfigUpdate = `resource "netbox_ip_address" "test" {
-  address     = "10.123.1.10/24"
-  description = "{{.Name}} updated"
-  status      = "reserved"
-  dns_name    = "{{.Name}}.example.com"
-  role        = "anycast"
+const ipAddressTestConfigUpdate = `resource "netbox_vrf" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_ip_address" "nat" {
+  address     = "10.213.1.11/24"
+  description = "{{.Name}} nat inside"
+}
+resource "netbox_ip_address" "test" {
+  address       = "10.213.1.10/24"
+  vrf_id        = netbox_vrf.test.id
+  tenant_id     = netbox_tenant.test.id
+  nat_inside_id = netbox_ip_address.nat.id
+  status        = "reserved"
+  role          = "anycast"
+  dns_name      = "{{.Name}}.example.com"
+  description   = "{{.Name}} updated"
 }
 `
 
@@ -84,7 +98,7 @@ func TestAccIpAddress_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_ip_address", &resource.Sweeper{
 		Name:         "netbox_ip_address",
-		Dependencies: []string{"netbox_device", "netbox_service", "netbox_tunnel_termination", "netbox_virtual_device_context", "netbox_virtual_machine"},
+		Dependencies: []string{"netbox_service"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/ip-addresses/", []string{"description__isw", "q"})
 		},

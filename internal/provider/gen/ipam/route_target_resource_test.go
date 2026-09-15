@@ -12,21 +12,19 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const routeTargetTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_route_target" "test" {
-  name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const routeTargetTestConfigBasic = `resource "netbox_route_target" "test" {
+  name = "{{.Name}}:1"
 }
 `
 
-const routeTargetTestConfigUpdate = `resource "netbox_route_target" "test" {
+const routeTargetTestConfigUpdate = `resource "netbox_tenant" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_route_target" "test" {
+  name        = "{{.Name}}:1"
+  tenant_id   = netbox_tenant.test.id
+  description = "{{.Name}} updated"
 }
 `
 
@@ -87,7 +85,7 @@ func TestAccRouteTarget_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_route_target", &resource.Sweeper{
 		Name:         "netbox_route_target",
-		Dependencies: []string{"netbox_l2vpn", "netbox_vrf"},
+		Dependencies: []string{"netbox_vrf"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/route-targets/", []string{"name__isw", "description__isw", "q"})
 		},

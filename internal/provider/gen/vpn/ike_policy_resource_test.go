@@ -12,21 +12,52 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const ikePolicyTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
+const ikePolicyTestConfigBasic = `resource "netbox_ike_proposal" "a" {
+  name                     = "{{.Name}}-a"
+  authentication_method    = "preshared-keys"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+  group                    = 14
 }
-
+resource "netbox_ike_proposal" "b" {
+  name                     = "{{.Name}}-b"
+  authentication_method    = "preshared-keys"
+  encryption_algorithm     = "aes-128-cbc"
+  authentication_algorithm = "hmac-sha1"
+  group                    = 2
+}
 resource "netbox_ike_policy" "test" {
-  name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  name          = "{{.Name}}"
+  description   = "created by acceptance test"
+  version       = 1
+  mode          = "main"
+  proposal_ids  = [netbox_ike_proposal.a.id]
+  preshared_key = "{{.Name}}-psk"
 }
 `
 
-const ikePolicyTestConfigUpdate = `resource "netbox_ike_policy" "test" {
-  name = "{{.Name}}"
-  description = "updated by acceptance test"
+const ikePolicyTestConfigUpdate = `resource "netbox_ike_proposal" "a" {
+  name                     = "{{.Name}}-a"
+  authentication_method    = "preshared-keys"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+  group                    = 14
+}
+resource "netbox_ike_proposal" "b" {
+  name                     = "{{.Name}}-b"
+  authentication_method    = "preshared-keys"
+  encryption_algorithm     = "aes-128-cbc"
+  authentication_algorithm = "hmac-sha1"
+  group                    = 2
+}
+resource "netbox_ike_policy" "test" {
+  name          = "{{.Name}}"
+  description   = "updated by acceptance test"
+  version       = 1
+  mode          = "aggressive"
+  proposal_ids  = [netbox_ike_proposal.a.id, netbox_ike_proposal.b.id]
+  preshared_key = "{{.Name}}-psk-rotated"
+  comments      = "IKEv1 policy"
 }
 `
 
@@ -47,6 +78,9 @@ func TestAccIkePolicy_basic(t *testing.T) {
 			Config: acctest.Render(t, ikePolicyTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_ike_policy.test", "id"),
+				resource.TestCheckResourceAttr("netbox_ike_policy.test", "mode", "main"),
+				resource.TestCheckResourceAttr("netbox_ike_policy.test", "proposal_ids.#", "1"),
+				resource.TestCheckResourceAttr("netbox_ike_policy.test", "version", "1"),
 			),
 		},
 		{

@@ -12,21 +12,20 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const cableBundleTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_cable_bundle" "test" {
+const cableBundleTestConfigBasic = `resource "netbox_cable_bundle" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const cableBundleTestConfigUpdate = `resource "netbox_cable_bundle" "test" {
+const cableBundleTestConfigUpdate = `resource "netbox_tag" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_cable_bundle" "test" {
+  name        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  tags        = [netbox_tag.test.slug]
 }
 `
 
@@ -87,7 +86,7 @@ func TestAccCableBundle_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_cable_bundle", &resource.Sweeper{
 		Name:         "netbox_cable_bundle",
-		Dependencies: []string{"netbox_cable"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/cable-bundles/", []string{"name__isw", "description__isw", "q"})
 		},

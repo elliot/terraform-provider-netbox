@@ -12,9 +12,54 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const circuitGroupAssignmentTestConfigBasic = ``
+const circuitGroupAssignmentTestConfigBasic = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit" "test" {
+  cid         = "{{.Name}}"
+  provider_id = netbox_provider.test.id
+  type_id     = netbox_circuit_type.test.id
+}
+resource "netbox_circuit_group" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_group_assignment" "test" {
+  group_id    = netbox_circuit_group.test.id
+  member_type = "circuits.circuit"
+  member_id   = netbox_circuit.test.id
+}
+`
 
-const circuitGroupAssignmentTestConfigUpdate = ``
+const circuitGroupAssignmentTestConfigUpdate = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit" "test" {
+  cid         = "{{.Name}}"
+  provider_id = netbox_provider.test.id
+  type_id     = netbox_circuit_type.test.id
+}
+resource "netbox_circuit_group" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_group_assignment" "test" {
+  group_id    = netbox_circuit_group.test.id
+  member_type = "circuits.circuit"
+  member_id   = netbox_circuit.test.id
+  priority    = "primary"
+}
+`
 
 const circuitGroupAssignmentTestConfigDataSources = `
 data "netbox_circuit_group_assignment" "by_id" {
@@ -27,7 +72,6 @@ data "netbox_circuit_group_assignments" "list" {
 `
 
 func TestAccCircuitGroupAssignment_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"circuit-group-assignments\" in generator/overrides/circuits.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +81,13 @@ func TestAccCircuitGroupAssignment_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, circuitGroupAssignmentTestConfigBasic+circuitGroupAssignmentTestConfigDataSources, name),
+			Config: acctest.Render(t, circuitGroupAssignmentTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_circuit_group_assignment.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, circuitGroupAssignmentTestConfigUpdate+circuitGroupAssignmentTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_circuit_group_assignment.by_id", "id", "netbox_circuit_group_assignment.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_circuit_group_assignments.list", "items.#", "1"),
@@ -50,7 +100,7 @@ func TestAccCircuitGroupAssignment_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, circuitGroupAssignmentTestConfigBasic, name),
+			Config: acctest.Render(t, circuitGroupAssignmentTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

@@ -12,9 +12,56 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const vmInterfaceTestConfigBasic = ``
+const vmInterfaceTestConfigBasic = `resource "netbox_cluster_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster" "test" {
+  name    = "{{.Name}}"
+  type_id = netbox_cluster_type.test.id
+}
+resource "netbox_virtual_machine" "test" {
+  name       = "{{.Name}}"
+  cluster_id = netbox_cluster.test.id
+}
+resource "netbox_vm_interface" "test" {
+  virtual_machine_id = netbox_virtual_machine.test.id
+  name               = "eth0"
+  description        = "{{.Name}}"
+}
+`
 
-const vmInterfaceTestConfigUpdate = ``
+const vmInterfaceTestConfigUpdate = `resource "netbox_cluster_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster" "test" {
+  name    = "{{.Name}}"
+  type_id = netbox_cluster_type.test.id
+}
+resource "netbox_virtual_machine" "test" {
+  name       = "{{.Name}}"
+  cluster_id = netbox_cluster.test.id
+}
+resource "netbox_vlan" "test" {
+  name = "{{.Name}}"
+  vid  = 100
+}
+resource "netbox_vrf" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_vm_interface" "test" {
+  virtual_machine_id = netbox_virtual_machine.test.id
+  name               = "eth0"
+  enabled            = false
+  mtu                = 9000
+  mode               = "tagged"
+  untagged_vlan_id   = netbox_vlan.test.id
+  tagged_vlan_ids    = [netbox_vlan.test.id]
+  vrf_id             = netbox_vrf.test.id
+  description        = "{{.Name}} updated"
+}
+`
 
 const vmInterfaceTestConfigDataSources = `
 data "netbox_vm_interface" "by_id" {
@@ -27,17 +74,23 @@ data "netbox_vm_interfaces" "list" {
 `
 
 func TestAccVmInterface_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"interfaces\" in generator/overrides/virtualization.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, vmInterfaceTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_vm_interface.test", "id"),
+				resource.TestCheckResourceAttr("netbox_vm_interface.test", "enabled", "true"),
 			),
 		},
 		{
-			Config: acctest.Render(t, vmInterfaceTestConfigBasic+vmInterfaceTestConfigDataSources, name),
+			Config: acctest.Render(t, vmInterfaceTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_vm_interface.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, vmInterfaceTestConfigUpdate+vmInterfaceTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_vm_interface.by_id", "id", "netbox_vm_interface.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_vm_interfaces.list", "items.#", "1"),
@@ -51,7 +104,7 @@ func TestAccVmInterface_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, vmInterfaceTestConfigBasic, name),
+			Config: acctest.Render(t, vmInterfaceTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

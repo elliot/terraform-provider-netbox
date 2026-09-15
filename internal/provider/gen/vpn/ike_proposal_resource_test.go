@@ -16,23 +16,27 @@ const ikeProposalTestConfigBasic = `resource "netbox_tag" "test" {
   name = "{{.Name}}-tag"
   slug = "{{.Name}}-tag"
 }
-
 resource "netbox_ike_proposal" "test" {
-  name = "{{.Name}}"
-  authentication_method = "preshared-keys"
-  encryption_algorithm = "aes-128-cbc"
-  group = 1
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  name                     = "{{.Name}}"
+  description              = "created by acceptance test"
+  authentication_method    = "preshared-keys"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+  group                    = 14
+  sa_lifetime              = 86400
+  tags                     = [netbox_tag.test.slug]
 }
 `
 
 const ikeProposalTestConfigUpdate = `resource "netbox_ike_proposal" "test" {
-  name = "{{.Name}}"
-  authentication_method = "preshared-keys"
-  encryption_algorithm = "aes-128-cbc"
-  group = 1
-  description = "updated by acceptance test"
+  name                     = "{{.Name}}"
+  description              = "updated by acceptance test"
+  authentication_method    = "certificates"
+  encryption_algorithm     = "aes-256-gcm"
+  authentication_algorithm = "hmac-sha384"
+  group                    = 19
+  sa_lifetime              = 28800
+  comments                 = "phase 1 proposal"
 }
 `
 
@@ -53,6 +57,8 @@ func TestAccIkeProposal_basic(t *testing.T) {
 			Config: acctest.Render(t, ikeProposalTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_ike_proposal.test", "id"),
+				resource.TestCheckResourceAttr("netbox_ike_proposal.test", "authentication_algorithm", "hmac-sha256"),
+				resource.TestCheckResourceAttr("netbox_ike_proposal.test", "group", "14"),
 			),
 		},
 		{

@@ -12,9 +12,22 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const customFieldChoiceSetTestConfigBasic = ``
+const customFieldChoiceSetTestConfigBasic = `resource "netbox_custom_field_choice_set" "test" {
+  name          = "{{.Name}}"
+  extra_choices = [["bronze", "Bronze"], ["silver", "Silver"]]
+}
+`
 
-const customFieldChoiceSetTestConfigUpdate = ``
+const customFieldChoiceSetTestConfigUpdate = `resource "netbox_custom_field_choice_set" "test" {
+  name                 = "{{.Name}}"
+  description          = "{{.Name}} updated"
+  # With order_alphabetically NetBox returns the choices sorted, so list
+  # them in that order to avoid a perpetual diff.
+  extra_choices        = [["bronze", "Bronze"], ["gold", "Gold"], ["silver", "Silver"]]
+  choice_colors        = jsonencode({ bronze = "orange", gold = "yellow" })
+  order_alphabetically = true
+}
+`
 
 const customFieldChoiceSetTestConfigDataSources = `
 data "netbox_custom_field_choice_set" "by_id" {
@@ -27,7 +40,6 @@ data "netbox_custom_field_choice_sets" "list" {
 `
 
 func TestAccCustomFieldChoiceSet_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"custom-field-choice-sets\" in generator/overrides/extras.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +49,13 @@ func TestAccCustomFieldChoiceSet_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, customFieldChoiceSetTestConfigBasic+customFieldChoiceSetTestConfigDataSources, name),
+			Config: acctest.Render(t, customFieldChoiceSetTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_custom_field_choice_set.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, customFieldChoiceSetTestConfigUpdate+customFieldChoiceSetTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_custom_field_choice_set.by_id", "id", "netbox_custom_field_choice_set.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_custom_field_choice_sets.list", "items.#", "1"),
@@ -50,13 +68,13 @@ func TestAccCustomFieldChoiceSet_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, customFieldChoiceSetTestConfigBasic, name),
+			Config: acctest.Render(t, customFieldChoiceSetTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
 		},
 	}
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProviderFactories,
 		CheckDestroy:             acctest.CheckDestroyed("netbox_custom_field_choice_set", "/api/extras/custom-field-choice-sets/"),
@@ -67,7 +85,7 @@ func TestAccCustomFieldChoiceSet_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_custom_field_choice_set", &resource.Sweeper{
 		Name:         "netbox_custom_field_choice_set",
-		Dependencies: []string{"netbox_custom_field"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/extras/custom-field-choice-sets/", []string{"name__isw", "description__isw", "q"})
 		},

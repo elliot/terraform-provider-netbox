@@ -12,9 +12,71 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const rearPortTestConfigBasic = ``
+const rearPortTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_rear_port" "test" {
+  device_id = netbox_device.test.id
+  name      = "Rear 1"
+  type      = "mpo"
+  positions = 12
+}
+`
 
-const rearPortTestConfigUpdate = ``
+const rearPortTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_rear_port" "test" {
+  device_id      = netbox_device.test.id
+  name           = "Rear 1"
+  type           = "mpo"
+  positions      = 12
+  label          = "R1"
+  color          = "00ffff"
+  mark_connected = true
+  description    = "{{.Name}} updated"
+}
+`
 
 const rearPortTestConfigDataSources = `
 data "netbox_rear_port" "by_id" {
@@ -27,7 +89,6 @@ data "netbox_rear_ports" "list" {
 `
 
 func TestAccRearPort_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"rear-ports\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +98,13 @@ func TestAccRearPort_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, rearPortTestConfigBasic+rearPortTestConfigDataSources, name),
+			Config: acctest.Render(t, rearPortTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_rear_port.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, rearPortTestConfigUpdate+rearPortTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_rear_port.by_id", "id", "netbox_rear_port.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_rear_ports.list", "items.#", "1"),
@@ -51,7 +118,7 @@ func TestAccRearPort_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, rearPortTestConfigBasic, name),
+			Config: acctest.Render(t, rearPortTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

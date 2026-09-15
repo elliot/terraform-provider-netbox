@@ -12,23 +12,27 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const wirelessLanGroupTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_wireless_lan_group" "test" {
+const wirelessLanGroupTestConfigBasic = `resource "netbox_wireless_lan_group" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const wirelessLanGroupTestConfigUpdate = `resource "netbox_wireless_lan_group" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "updated by acceptance test"
+const wirelessLanGroupTestConfigUpdate = `resource "netbox_wireless_lan_group" "parent" {
+  name = "{{.Name}}-parent"
+  slug = "{{.Name}}-parent"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_wireless_lan_group" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  parent_id   = netbox_wireless_lan_group.parent.id
+  description = "{{.Name}} updated"
+  comments    = "Campus wireless groups"
+  tags        = [netbox_tag.test.slug]
 }
 `
 

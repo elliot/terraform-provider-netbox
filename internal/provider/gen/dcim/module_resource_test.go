@@ -12,9 +12,89 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const moduleTestConfigBasic = ``
+const moduleTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_module_bay" "test" {
+  device_id = netbox_device.test.id
+  name      = "Slot 1"
+  position  = "1"
+}
+resource "netbox_module_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+}
+resource "netbox_module" "test" {
+  device_id      = netbox_device.test.id
+  module_bay_id  = netbox_module_bay.test.id
+  module_type_id = netbox_module_type.test.id
+  description    = "{{.Name}}"
+}
+`
 
-const moduleTestConfigUpdate = ``
+const moduleTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_module_bay" "test" {
+  device_id = netbox_device.test.id
+  name      = "Slot 1"
+  position  = "1"
+}
+resource "netbox_module_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+}
+resource "netbox_module" "test" {
+  device_id      = netbox_device.test.id
+  module_bay_id  = netbox_module_bay.test.id
+  module_type_id = netbox_module_type.test.id
+  status         = "planned"
+  serial         = "{{.Name}}-SN"
+  asset_tag      = "{{.Name}}-AT"
+  description    = "{{.Name}} updated"
+  comments       = "installed by acceptance test"
+}
+`
 
 const moduleTestConfigDataSources = `
 data "netbox_module" "by_id" {
@@ -27,7 +107,6 @@ data "netbox_modules" "list" {
 `
 
 func TestAccModule_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"modules\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +116,13 @@ func TestAccModule_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, moduleTestConfigBasic+moduleTestConfigDataSources, name),
+			Config: acctest.Render(t, moduleTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_module.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, moduleTestConfigUpdate+moduleTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_module.by_id", "id", "netbox_module.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_modules.list", "items.#", "1"),
@@ -51,7 +136,7 @@ func TestAccModule_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"adopt_components", "custom_fields", "replicate_components"},
 		},
 		{
-			Config: acctest.Render(t, moduleTestConfigBasic, name),
+			Config: acctest.Render(t, moduleTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
@@ -68,7 +153,7 @@ func TestAccModule_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_module", &resource.Sweeper{
 		Name:         "netbox_module",
-		Dependencies: []string{"netbox_console_port", "netbox_console_server_port", "netbox_cooling_intake", "netbox_cooling_outflow", "netbox_front_port", "netbox_interface", "netbox_module_bay", "netbox_power_outlet", "netbox_power_port", "netbox_rear_port"},
+		Dependencies: []string{"netbox_console_port", "netbox_console_server_port", "netbox_front_port", "netbox_module_bay", "netbox_rear_port"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/modules/", []string{"description__isw", "q"})
 		},

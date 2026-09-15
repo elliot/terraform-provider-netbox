@@ -12,9 +12,80 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const coolingIntakeTestConfigBasic = ``
+const coolingIntakeTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_cooling_intake" "test" {
+  device_id = netbox_device.test.id
+  name      = "Intake 1"
+}
+`
 
-const coolingIntakeTestConfigUpdate = ``
+const coolingIntakeTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_cooling_outflow" "test" {
+  device_id = netbox_device.test.id
+  name      = "Outflow 1"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cooling_intake" "test" {
+  device_id          = netbox_device.test.id
+  name               = "Intake 1"
+  label              = "Liquid in"
+  type               = "uqd"
+  diameter           = 12.7
+  diameter_unit      = "mm"
+  max_flow           = 4.5
+  max_flow_unit      = "lpm"
+  cooling_outflow_id = netbox_cooling_outflow.test.id
+  description        = "{{.Name}} updated"
+  tags               = [netbox_tag.test.slug]
+}
+`
 
 const coolingIntakeTestConfigDataSources = `
 data "netbox_cooling_intake" "by_id" {
@@ -27,7 +98,6 @@ data "netbox_cooling_intakes" "list" {
 `
 
 func TestAccCoolingIntake_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"cooling-intakes\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +107,13 @@ func TestAccCoolingIntake_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, coolingIntakeTestConfigBasic+coolingIntakeTestConfigDataSources, name),
+			Config: acctest.Render(t, coolingIntakeTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_cooling_intake.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, coolingIntakeTestConfigUpdate+coolingIntakeTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_cooling_intake.by_id", "id", "netbox_cooling_intake.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_cooling_intakes.list", "items.#", "1"),
@@ -51,7 +127,7 @@ func TestAccCoolingIntake_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, coolingIntakeTestConfigBasic, name),
+			Config: acctest.Render(t, coolingIntakeTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

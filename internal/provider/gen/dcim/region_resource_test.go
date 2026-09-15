@@ -12,23 +12,27 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const regionTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_region" "test" {
+const regionTestConfigBasic = `resource "netbox_region" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const regionTestConfigUpdate = `resource "netbox_region" "test" {
+const regionTestConfigUpdate = `resource "netbox_region" "parent" {
+  name = "{{.Name}}-parent"
+  slug = "{{.Name}}-parent"
+}
+resource "netbox_tag" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "updated by acceptance test"
+}
+resource "netbox_region" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  parent_id   = netbox_region.parent.id
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  tags        = [netbox_tag.test.slug]
 }
 `
 
@@ -89,7 +93,7 @@ func TestAccRegion_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_region", &resource.Sweeper{
 		Name:         "netbox_region",
-		Dependencies: []string{"netbox_config_context", "netbox_site"},
+		Dependencies: []string{"netbox_site"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/regions/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

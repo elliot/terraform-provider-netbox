@@ -12,17 +12,40 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const rearPortTemplateTestConfigBasic = `resource "netbox_rear_port_template" "test" {
+const rearPortTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  type = "8p8c"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_rear_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Rear 1"
+  type           = "mpo"
+  positions      = 12
 }
 `
 
-const rearPortTemplateTestConfigUpdate = `resource "netbox_rear_port_template" "test" {
+const rearPortTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  type = "8p8c"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_rear_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Rear 1"
+  type           = "mpo"
+  positions      = 12
+  label          = "R1"
+  color          = "00ffff"
+  description    = "{{.Name}} updated"
 }
 `
 

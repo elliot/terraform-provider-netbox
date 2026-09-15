@@ -12,9 +12,56 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const virtualCircuitTestConfigBasic = ``
+const virtualCircuitTestConfigBasic = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_network" "test" {
+  provider_id = netbox_provider.test.id
+  name        = "{{.Name}}"
+}
+resource "netbox_virtual_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_virtual_circuit" "test" {
+  cid                 = "{{.Name}}"
+  provider_network_id = netbox_provider_network.test.id
+  type_id             = netbox_virtual_circuit_type.test.id
+}
+`
 
-const virtualCircuitTestConfigUpdate = ``
+const virtualCircuitTestConfigUpdate = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_network" "test" {
+  provider_id = netbox_provider.test.id
+  name        = "{{.Name}}"
+}
+resource "netbox_provider_account" "test" {
+  provider_id = netbox_provider.test.id
+  account     = "{{.Name}}"
+}
+resource "netbox_virtual_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_virtual_circuit" "test" {
+  cid                 = "{{.Name}}"
+  provider_network_id = netbox_provider_network.test.id
+  provider_account_id = netbox_provider_account.test.id
+  type_id             = netbox_virtual_circuit_type.test.id
+  tenant_id           = netbox_tenant.test.id
+  status              = "planned"
+  description         = "{{.Name}} updated"
+  comments            = "updated by acceptance test"
+}
+`
 
 const virtualCircuitTestConfigDataSources = `
 data "netbox_virtual_circuit" "by_id" {
@@ -27,7 +74,6 @@ data "netbox_virtual_circuits" "list" {
 `
 
 func TestAccVirtualCircuit_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"virtual-circuits\" in generator/overrides/circuits.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +83,13 @@ func TestAccVirtualCircuit_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, virtualCircuitTestConfigBasic+virtualCircuitTestConfigDataSources, name),
+			Config: acctest.Render(t, virtualCircuitTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_virtual_circuit.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, virtualCircuitTestConfigUpdate+virtualCircuitTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_virtual_circuit.by_id", "id", "netbox_virtual_circuit.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_virtual_circuits.list", "items.#", "1"),
@@ -51,7 +103,7 @@ func TestAccVirtualCircuit_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, virtualCircuitTestConfigBasic, name),
+			Config: acctest.Render(t, virtualCircuitTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

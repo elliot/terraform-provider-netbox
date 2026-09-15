@@ -13,7 +13,7 @@ import (
 )
 
 const prefixTestConfigBasic = `resource "netbox_prefix" "test" {
-  prefix      = "10.123.0.0/24"
+  prefix      = "10.213.0.0/24"
   description = "{{.Name}}"
 }
 `
@@ -21,12 +21,29 @@ const prefixTestConfigBasic = `resource "netbox_prefix" "test" {
 const prefixTestConfigUpdate = `resource "netbox_vrf" "test" {
   name = "{{.Name}}"
 }
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_ipam_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
 resource "netbox_prefix" "test" {
-  prefix      = "10.123.0.0/24"
-  description = "{{.Name}} updated"
-  vrf_id      = netbox_vrf.test.id
-  status      = "reserved"
-  is_pool     = true
+  prefix        = "10.213.0.0/24"
+  description   = "{{.Name}} updated"
+  vrf_id        = netbox_vrf.test.id
+  tenant_id     = netbox_tenant.test.id
+  role_id       = netbox_ipam_role.test.id
+  scope_type    = "dcim.site"
+  scope_id      = netbox_site.test.id
+  status        = "reserved"
+  is_pool       = true
+  mark_utilized = true
 }
 `
 

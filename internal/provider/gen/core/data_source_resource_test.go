@@ -21,11 +21,15 @@ const dataSourceTestConfigBasic = `resource "netbox_data_source" "test" {
 `
 
 const dataSourceTestConfigUpdate = `resource "netbox_data_source" "test" {
-  name        = "{{.Name}}"
-  type        = "git"
-  source_url  = "https://github.com/netbox-community/netbox-demo-data.git"
-  enabled     = false
-  description = "updated"
+  name          = "{{.Name}}"
+  type          = "git"
+  source_url    = "https://github.com/netbox-community/netbox-demo-data.git"
+  enabled       = false
+  sync_interval = 86400
+  ignore_rules  = "*.md\n*.txt"
+  parameters    = jsonencode({ branch = "main" })
+  description   = "{{.Name}} updated"
+  comments      = "Synced daily"
 }
 `
 
@@ -86,7 +90,7 @@ func TestAccDataSource_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_data_source", &resource.Sweeper{
 		Name:         "netbox_data_source",
-		Dependencies: []string{"netbox_config_context", "netbox_config_context_profile", "netbox_config_template", "netbox_export_template"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/core/data-sources/", []string{"name__isw", "description__isw", "q"})
 		},

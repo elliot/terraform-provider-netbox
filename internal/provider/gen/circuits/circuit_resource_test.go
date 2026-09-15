@@ -12,9 +12,55 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const circuitTestConfigBasic = ``
+const circuitTestConfigBasic = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit" "test" {
+  cid         = "{{.Name}}"
+  provider_id = netbox_provider.test.id
+  type_id     = netbox_circuit_type.test.id
+  description = "{{.Name}}"
+}
+`
 
-const circuitTestConfigUpdate = ``
+const circuitTestConfigUpdate = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_account" "test" {
+  provider_id = netbox_provider.test.id
+  account     = "{{.Name}}"
+  name        = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit" "test" {
+  cid                 = "{{.Name}}"
+  provider_id         = netbox_provider.test.id
+  provider_account_id = netbox_provider_account.test.id
+  type_id             = netbox_circuit_type.test.id
+  tenant_id           = netbox_tenant.test.id
+  status              = "active"
+  install_date        = "2024-01-15"
+  termination_date    = "2027-01-15"
+  commit_rate         = 1000000
+  distance            = 12.5
+  distance_unit       = "km"
+  description         = "{{.Name}} updated"
+  comments            = "updated by acceptance test"
+}
+`
 
 const circuitTestConfigDataSources = `
 data "netbox_circuit" "by_id" {
@@ -27,7 +73,6 @@ data "netbox_circuits" "list" {
 `
 
 func TestAccCircuit_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"circuits\" in generator/overrides/circuits.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +82,13 @@ func TestAccCircuit_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, circuitTestConfigBasic+circuitTestConfigDataSources, name),
+			Config: acctest.Render(t, circuitTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_circuit.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, circuitTestConfigUpdate+circuitTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_circuit.by_id", "id", "netbox_circuit.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_circuits.list", "items.#", "1"),
@@ -51,7 +102,7 @@ func TestAccCircuit_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, circuitTestConfigBasic, name),
+			Config: acctest.Render(t, circuitTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

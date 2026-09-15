@@ -12,9 +12,50 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const l2vpnTerminationTestConfigBasic = ``
+const l2vpnTerminationTestConfigBasic = `resource "netbox_l2vpn" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+  type = "vxlan"
+}
+resource "netbox_vlan" "a" {
+  name = "{{.Name}}-a"
+  vid  = 2001
+}
+resource "netbox_vlan" "b" {
+  name = "{{.Name}}-b"
+  vid  = 2002
+}
+resource "netbox_l2vpn_termination" "test" {
+  l2vpn_id             = netbox_l2vpn.test.id
+  assigned_object_type = "ipam.vlan"
+  assigned_object_id   = netbox_vlan.a.id
+}
+`
 
-const l2vpnTerminationTestConfigUpdate = ``
+const l2vpnTerminationTestConfigUpdate = `resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_l2vpn" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+  type = "vxlan"
+}
+resource "netbox_vlan" "a" {
+  name = "{{.Name}}-a"
+  vid  = 2001
+}
+resource "netbox_vlan" "b" {
+  name = "{{.Name}}-b"
+  vid  = 2002
+}
+resource "netbox_l2vpn_termination" "test" {
+  l2vpn_id             = netbox_l2vpn.test.id
+  assigned_object_type = "ipam.vlan"
+  assigned_object_id   = netbox_vlan.b.id
+  tags                 = [netbox_tag.test.slug]
+}
+`
 
 const l2vpnTerminationTestConfigDataSources = `
 data "netbox_l2vpn_termination" "by_id" {
@@ -27,17 +68,23 @@ data "netbox_l2vpn_terminations" "list" {
 `
 
 func TestAccL2vpnTermination_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"l2vpn-terminations\" in generator/overrides/vpn.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, l2vpnTerminationTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_l2vpn_termination.test", "id"),
+				resource.TestCheckResourceAttr("netbox_l2vpn_termination.test", "assigned_object_type", "ipam.vlan"),
 			),
 		},
 		{
-			Config: acctest.Render(t, l2vpnTerminationTestConfigBasic+l2vpnTerminationTestConfigDataSources, name),
+			Config: acctest.Render(t, l2vpnTerminationTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_l2vpn_termination.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, l2vpnTerminationTestConfigUpdate+l2vpnTerminationTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_l2vpn_termination.by_id", "id", "netbox_l2vpn_termination.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_l2vpn_terminations.list", "items.#", "1"),
@@ -51,7 +98,7 @@ func TestAccL2vpnTermination_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, l2vpnTerminationTestConfigBasic, name),
+			Config: acctest.Render(t, l2vpnTerminationTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

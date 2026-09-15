@@ -12,9 +12,50 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const rackTypeTestConfigBasic = ``
+const rackTypeTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rack_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+  form_factor     = "4-post-cabinet"
+}
+`
 
-const rackTypeTestConfigUpdate = ``
+const rackTypeTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rack_type" "test" {
+  manufacturer_id    = netbox_manufacturer.test.id
+  model              = "{{.Name}}"
+  slug               = "{{.Name}}"
+  form_factor        = "4-post-frame"
+  width              = 23
+  u_height           = 48
+  starting_unit      = 1
+  desc_units         = true
+  outer_width        = 600
+  outer_height       = 2200
+  outer_depth        = 1200
+  outer_unit         = "mm"
+  weight             = 120.5
+  max_weight         = 1500
+  weight_unit        = "kg"
+  mounting_depth     = 900
+  cooling_capability = "hybrid"
+  cooling_capacity   = 25.5
+  description        = "{{.Name}} updated"
+  comments           = "updated by acceptance test"
+  tags               = [netbox_tag.test.slug]
+}
+`
 
 const rackTypeTestConfigDataSources = `
 data "netbox_rack_type" "by_id" {
@@ -27,17 +68,24 @@ data "netbox_rack_types" "list" {
 `
 
 func TestAccRackType_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"rack-types\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, rackTypeTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_rack_type.test", "id"),
+				resource.TestCheckResourceAttr("netbox_rack_type.test", "u_height", "42"),
+				resource.TestCheckResourceAttr("netbox_rack_type.test", "width", "19"),
 			),
 		},
 		{
-			Config: acctest.Render(t, rackTypeTestConfigBasic+rackTypeTestConfigDataSources, name),
+			Config: acctest.Render(t, rackTypeTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_rack_type.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, rackTypeTestConfigUpdate+rackTypeTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_rack_type.by_id", "id", "netbox_rack_type.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_rack_types.list", "items.#", "1"),
@@ -51,7 +99,7 @@ func TestAccRackType_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, rackTypeTestConfigBasic, name),
+			Config: acctest.Render(t, rackTypeTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

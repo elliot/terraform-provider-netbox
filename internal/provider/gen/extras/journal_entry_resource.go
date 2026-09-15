@@ -112,8 +112,10 @@ func journalEntryResourceAttributes() map[string]schema.Attribute {
 			Required:            true,
 		},
 		"created_by_id": schema.Int64Attribute{
-			MarkdownDescription: "ID of the User (`netbox_user`).",
+			MarkdownDescription: "ID of the User (`netbox_user`). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"kind": schema.StringAttribute{
 			MarkdownDescription: "Kind. Valid values: `info`, `success`, `warning`, `danger`. Defaults to the NetBox server default when omitted.",
@@ -271,9 +273,7 @@ func (r *JournalEntryResource) ImportState(ctx context.Context, req resource.Imp
 // journalEntryToCreate builds the WritableJournalEntryRequest request body from the plan.
 func journalEntryToCreate(ctx context.Context, plan *JournalEntryModel, diags *diag.Diagnostics) *netbox.WritableJournalEntryRequest {
 	body := netbox.NewWritableJournalEntryRequest(plan.AssignedObjectType.ValueString(), plan.AssignedObjectId.ValueInt64(), plan.Comments.ValueString())
-	if plan.CreatedById.IsNull() {
-		body.SetCreatedByNil()
-	} else if !plan.CreatedById.IsUnknown() {
+	if conv.Known(plan.CreatedById) {
 		body.SetCreatedBy(conv.Int32(plan.CreatedById))
 	}
 	if conv.Known(plan.Kind) {

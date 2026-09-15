@@ -12,24 +12,31 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const journalEntryTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
+const journalEntryTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
 }
-
 resource "netbox_journal_entry" "test" {
-  assigned_object_type = "{{.Name}}"
-  assigned_object_id = 1
-  comments = "{{.Name}}"
-  tags = [netbox_tag.test.slug]
+  assigned_object_type = "dcim.site"
+  assigned_object_id   = netbox_site.test.id
+  comments             = "{{.Name}} created by acceptance test"
 }
 `
 
-const journalEntryTestConfigUpdate = `resource "netbox_journal_entry" "test" {
-  assigned_object_type = "{{.Name}}"
-  assigned_object_id = 1
-  comments = "{{.Name}}"
-  comments = "updated by acceptance test"
+const journalEntryTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_journal_entry" "test" {
+  assigned_object_type = "dcim.site"
+  assigned_object_id   = netbox_site.test.id
+  comments             = "{{.Name}} updated"
+  kind                 = "warning"
+  tags                 = [netbox_tag.test.slug]
 }
 `
 

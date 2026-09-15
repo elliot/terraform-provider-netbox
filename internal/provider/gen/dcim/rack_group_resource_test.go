@@ -12,23 +12,22 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const rackGroupTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_rack_group" "test" {
+const rackGroupTestConfigBasic = `resource "netbox_rack_group" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const rackGroupTestConfigUpdate = `resource "netbox_rack_group" "test" {
+const rackGroupTestConfigUpdate = `resource "netbox_tag" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "updated by acceptance test"
+}
+resource "netbox_rack_group" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  tags        = [netbox_tag.test.slug]
 }
 `
 

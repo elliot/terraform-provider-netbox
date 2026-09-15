@@ -12,15 +12,38 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const powerPortTemplateTestConfigBasic = `resource "netbox_power_port_template" "test" {
+const powerPortTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_power_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "PSU1"
 }
 `
 
-const powerPortTemplateTestConfigUpdate = `resource "netbox_power_port_template" "test" {
+const powerPortTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_power_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "PSU1"
+  label          = "Power supply 1"
+  type           = "iec-60320-c14"
+  maximum_draw   = 500
+  allocated_draw = 350
+  description    = "{{.Name}} updated"
 }
 `
 

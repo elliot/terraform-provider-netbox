@@ -12,9 +12,28 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const providerNetworkTestConfigBasic = ``
+const providerNetworkTestConfigBasic = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_network" "test" {
+  provider_id = netbox_provider.test.id
+  name        = "{{.Name}}"
+}
+`
 
-const providerNetworkTestConfigUpdate = ``
+const providerNetworkTestConfigUpdate = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_network" "test" {
+  provider_id = netbox_provider.test.id
+  name        = "{{.Name}}"
+  service_id  = "SVC-{{.Name}}"
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+}
+`
 
 const providerNetworkTestConfigDataSources = `
 data "netbox_provider_network" "by_id" {
@@ -27,7 +46,6 @@ data "netbox_provider_networks" "list" {
 `
 
 func TestAccProviderNetwork_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"provider-networks\" in generator/overrides/circuits.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +55,13 @@ func TestAccProviderNetwork_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, providerNetworkTestConfigBasic+providerNetworkTestConfigDataSources, name),
+			Config: acctest.Render(t, providerNetworkTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_provider_network.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, providerNetworkTestConfigUpdate+providerNetworkTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_provider_network.by_id", "id", "netbox_provider_network.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_provider_networks.list", "items.#", "1"),
@@ -51,7 +75,7 @@ func TestAccProviderNetwork_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, providerNetworkTestConfigBasic, name),
+			Config: acctest.Render(t, providerNetworkTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

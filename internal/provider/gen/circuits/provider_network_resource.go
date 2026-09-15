@@ -67,7 +67,7 @@ func (r *ProviderNetworkResource) Metadata(_ context.Context, req resource.Metad
 
 func (r *ProviderNetworkResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox provider network (`/api/circuits/provider-networks/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox provider network (`/api/circuits/provider-networks/`): an opaque network operated by a provider (MPLS cloud, internet exchange, ...) to which circuits can terminate (`/api/circuits/provider-networks/`).",
 		Attributes:          providerNetworkResourceAttributes(),
 	}
 }

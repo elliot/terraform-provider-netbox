@@ -12,25 +12,38 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const l2vpnTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
+const l2vpnTestConfigBasic = `resource "netbox_route_target" "import" {
+  name = "65000:{{.Name}}"
 }
-
+resource "netbox_route_target" "export" {
+  name = "65001:{{.Name}}"
+}
 resource "netbox_l2vpn" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  type = "vpws"
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
   description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  type        = "vxlan"
+  identifier  = 100100
+  status      = "planned"
 }
 `
 
-const l2vpnTestConfigUpdate = `resource "netbox_l2vpn" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  type = "vpws"
-  description = "updated by acceptance test"
+const l2vpnTestConfigUpdate = `resource "netbox_route_target" "import" {
+  name = "65000:{{.Name}}"
+}
+resource "netbox_route_target" "export" {
+  name = "65001:{{.Name}}"
+}
+resource "netbox_l2vpn" "test" {
+  name              = "{{.Name}}"
+  slug              = "{{.Name}}"
+  description       = "updated by acceptance test"
+  type              = "vxlan-evpn"
+  identifier        = 100200
+  status            = "active"
+  import_target_ids = [netbox_route_target.import.id]
+  export_target_ids = [netbox_route_target.export.id]
+  comments          = "tenant overlay"
 }
 `
 
@@ -51,6 +64,8 @@ func TestAccL2vpn_basic(t *testing.T) {
 			Config: acctest.Render(t, l2vpnTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_l2vpn.test", "id"),
+				resource.TestCheckResourceAttr("netbox_l2vpn.test", "status", "planned"),
+				resource.TestCheckResourceAttr("netbox_l2vpn.test", "type", "vxlan"),
 			),
 		},
 		{

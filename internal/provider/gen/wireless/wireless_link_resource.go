@@ -480,7 +480,7 @@ func wirelessLinkFromAPI(ctx context.Context, obj *netbox.WirelessLink, prior *W
 	out.AuthType = conv.Choice(obj.GetAuthTypeOk())
 	out.AuthCipher = conv.Choice(obj.GetAuthCipherOk())
 	out.AuthPsk = conv.StringOrEmpty(obj.GetAuthPskOk())
-	out.Distance = conv.Float64From(obj.GetDistanceOk())
+	out.Distance = conv.Float64Keep(conv.Float64From(obj.GetDistanceOk()), conv.PriorFloat(prior, func(m *WirelessLinkModel) types.Float64 { return m.Distance }), 0)
 	out.DistanceUnit = conv.Choice(obj.GetDistanceUnitOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())

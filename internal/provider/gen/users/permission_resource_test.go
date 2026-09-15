@@ -12,9 +12,31 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const permissionTestConfigBasic = ``
+const permissionTestConfigBasic = `resource "netbox_permission" "test" {
+  name         = "{{.Name}}"
+  object_types = ["dcim.site"]
+  actions      = ["view"]
+}
+`
 
-const permissionTestConfigUpdate = ``
+const permissionTestConfigUpdate = `resource "netbox_user_group" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_user" "test" {
+  username = "{{.Name}}"
+  password = "{{.Name}}-Pa55word!"
+}
+resource "netbox_permission" "test" {
+  name         = "{{.Name}}"
+  description  = "updated"
+  enabled      = false
+  object_types = ["dcim.site", "dcim.device"]
+  actions      = ["view", "change"]
+  constraints  = jsonencode({ name__isw = "{{.Name}}" })
+  group_ids    = [netbox_user_group.test.id]
+  user_ids     = [netbox_user.test.id]
+}
+`
 
 const permissionTestConfigDataSources = `
 data "netbox_permission" "by_id" {
@@ -27,17 +49,23 @@ data "netbox_permissions" "list" {
 `
 
 func TestAccPermission_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"permissions\" in generator/overrides/users.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, permissionTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_permission.test", "id"),
+				resource.TestCheckResourceAttr("netbox_permission.test", "enabled", "true"),
 			),
 		},
 		{
-			Config: acctest.Render(t, permissionTestConfigBasic+permissionTestConfigDataSources, name),
+			Config: acctest.Render(t, permissionTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_permission.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, permissionTestConfigUpdate+permissionTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_permission.by_id", "id", "netbox_permission.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_permissions.list", "items.#", "1"),
@@ -50,7 +78,7 @@ func TestAccPermission_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, permissionTestConfigBasic, name),
+			Config: acctest.Render(t, permissionTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
@@ -67,7 +95,7 @@ func TestAccPermission_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_permission", &resource.Sweeper{
 		Name:         "netbox_permission",
-		Dependencies: []string{"netbox_user", "netbox_user_group"},
+		Dependencies: []string{"netbox_user"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/users/permissions/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -12,9 +12,87 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const frontPortTestConfigBasic = ``
+const frontPortTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_rear_port" "test" {
+  device_id = netbox_device.test.id
+  name      = "Rear 1"
+  type      = "mpo"
+  positions = 12
+}
+resource "netbox_front_port" "test" {
+  device_id = netbox_device.test.id
+  name      = "Front 1"
+  type      = "lc"
+  rear_ports = [
+    { position = 1, rear_port = netbox_rear_port.test.id, rear_port_position = 1 },
+  ]
+}
+`
 
-const frontPortTestConfigUpdate = ``
+const frontPortTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_rear_port" "test" {
+  device_id = netbox_device.test.id
+  name      = "Rear 1"
+  type      = "mpo"
+  positions = 12
+}
+resource "netbox_front_port" "test" {
+  device_id      = netbox_device.test.id
+  name           = "Front 1"
+  type           = "lc"
+  label          = "F1"
+  color          = "aa1409"
+  mark_connected = true
+  description    = "{{.Name}} updated"
+  rear_ports = [
+    { position = 1, rear_port = netbox_rear_port.test.id, rear_port_position = 1 },
+  ]
+}
+`
 
 const frontPortTestConfigDataSources = `
 data "netbox_front_port" "by_id" {
@@ -27,7 +105,6 @@ data "netbox_front_ports" "list" {
 `
 
 func TestAccFrontPort_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"front-ports\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +114,13 @@ func TestAccFrontPort_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, frontPortTestConfigBasic+frontPortTestConfigDataSources, name),
+			Config: acctest.Render(t, frontPortTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_front_port.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, frontPortTestConfigUpdate+frontPortTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_front_port.by_id", "id", "netbox_front_port.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_front_ports.list", "items.#", "1"),
@@ -51,7 +134,7 @@ func TestAccFrontPort_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, frontPortTestConfigBasic, name),
+			Config: acctest.Render(t, frontPortTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

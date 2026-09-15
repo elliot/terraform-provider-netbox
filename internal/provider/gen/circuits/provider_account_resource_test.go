@@ -12,9 +12,28 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const providerAccountTestConfigBasic = ``
+const providerAccountTestConfigBasic = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_account" "test" {
+  provider_id = netbox_provider.test.id
+  account     = "{{.Name}}"
+}
+`
 
-const providerAccountTestConfigUpdate = ``
+const providerAccountTestConfigUpdate = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_provider_account" "test" {
+  provider_id = netbox_provider.test.id
+  account     = "{{.Name}}"
+  name        = "{{.Name}} billing"
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+}
+`
 
 const providerAccountTestConfigDataSources = `
 data "netbox_provider_account" "by_id" {
@@ -27,7 +46,6 @@ data "netbox_provider_accounts" "list" {
 `
 
 func TestAccProviderAccount_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"provider-accounts\" in generator/overrides/circuits.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +55,13 @@ func TestAccProviderAccount_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, providerAccountTestConfigBasic+providerAccountTestConfigDataSources, name),
+			Config: acctest.Render(t, providerAccountTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_provider_account.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, providerAccountTestConfigUpdate+providerAccountTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_provider_account.by_id", "id", "netbox_provider_account.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_provider_accounts.list", "items.#", "1"),
@@ -51,7 +75,7 @@ func TestAccProviderAccount_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, providerAccountTestConfigBasic, name),
+			Config: acctest.Render(t, providerAccountTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

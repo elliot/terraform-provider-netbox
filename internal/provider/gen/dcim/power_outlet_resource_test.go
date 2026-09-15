@@ -12,9 +12,80 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const powerOutletTestConfigBasic = ``
+const powerOutletTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_power_outlet" "test" {
+  device_id = netbox_device.test.id
+  name      = "Outlet 1"
+}
+`
 
-const powerOutletTestConfigUpdate = ``
+const powerOutletTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_power_port" "test" {
+  device_id = netbox_device.test.id
+  name      = "PSU1"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_power_outlet" "test" {
+  device_id      = netbox_device.test.id
+  name           = "Outlet 1"
+  label          = "Outlet A1"
+  type           = "iec-60320-c13"
+  status         = "disabled"
+  color          = "ff9800"
+  power_port_id  = netbox_power_port.test.id
+  feed_leg       = "A"
+  mark_connected = true
+  description    = "{{.Name}} updated"
+  tags           = [netbox_tag.test.slug]
+}
+`
 
 const powerOutletTestConfigDataSources = `
 data "netbox_power_outlet" "by_id" {
@@ -27,17 +98,23 @@ data "netbox_power_outlets" "list" {
 `
 
 func TestAccPowerOutlet_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"power-outlets\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, powerOutletTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_power_outlet.test", "id"),
+				resource.TestCheckResourceAttr("netbox_power_outlet.test", "status", "enabled"),
 			),
 		},
 		{
-			Config: acctest.Render(t, powerOutletTestConfigBasic+powerOutletTestConfigDataSources, name),
+			Config: acctest.Render(t, powerOutletTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_power_outlet.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, powerOutletTestConfigUpdate+powerOutletTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_power_outlet.by_id", "id", "netbox_power_outlet.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_power_outlets.list", "items.#", "1"),
@@ -51,7 +128,7 @@ func TestAccPowerOutlet_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, powerOutletTestConfigBasic, name),
+			Config: acctest.Render(t, powerOutletTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

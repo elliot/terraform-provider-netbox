@@ -12,9 +12,58 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const powerFeedTestConfigBasic = ``
+const powerFeedTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_power_panel" "test" {
+  site_id = netbox_site.test.id
+  name    = "{{.Name}}"
+}
+resource "netbox_power_feed" "test" {
+  power_panel_id = netbox_power_panel.test.id
+  name           = "{{.Name}}"
+}
+`
 
-const powerFeedTestConfigUpdate = ``
+const powerFeedTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_power_panel" "test" {
+  site_id = netbox_site.test.id
+  name    = "{{.Name}}"
+}
+resource "netbox_rack" "test" {
+  name    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_power_feed" "test" {
+  power_panel_id  = netbox_power_panel.test.id
+  rack_id         = netbox_rack.test.id
+  name            = "{{.Name}}"
+  status          = "planned"
+  type            = "redundant"
+  supply          = "dc"
+  phase           = "three-phase"
+  voltage         = 48
+  amperage        = 32
+  max_utilization = 50
+  mark_connected  = true
+  tenant_id       = netbox_tenant.test.id
+  description     = "{{.Name}} updated"
+  comments        = "updated by acceptance test"
+  tags            = [netbox_tag.test.slug]
+}
+`
 
 const powerFeedTestConfigDataSources = `
 data "netbox_power_feed" "by_id" {
@@ -27,17 +76,29 @@ data "netbox_power_feeds" "list" {
 `
 
 func TestAccPowerFeed_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"power-feeds\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, powerFeedTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_power_feed.test", "id"),
+				resource.TestCheckResourceAttr("netbox_power_feed.test", "amperage", "20"),
+				resource.TestCheckResourceAttr("netbox_power_feed.test", "max_utilization", "80"),
+				resource.TestCheckResourceAttr("netbox_power_feed.test", "phase", "single-phase"),
+				resource.TestCheckResourceAttr("netbox_power_feed.test", "status", "active"),
+				resource.TestCheckResourceAttr("netbox_power_feed.test", "supply", "ac"),
+				resource.TestCheckResourceAttr("netbox_power_feed.test", "type", "primary"),
+				resource.TestCheckResourceAttr("netbox_power_feed.test", "voltage", "120"),
 			),
 		},
 		{
-			Config: acctest.Render(t, powerFeedTestConfigBasic+powerFeedTestConfigDataSources, name),
+			Config: acctest.Render(t, powerFeedTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_power_feed.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, powerFeedTestConfigUpdate+powerFeedTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_power_feed.by_id", "id", "netbox_power_feed.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_power_feeds.list", "items.#", "1"),
@@ -51,7 +112,7 @@ func TestAccPowerFeed_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, powerFeedTestConfigBasic, name),
+			Config: acctest.Render(t, powerFeedTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

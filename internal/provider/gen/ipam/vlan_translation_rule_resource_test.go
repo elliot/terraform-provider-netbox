@@ -12,9 +12,26 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const vlanTranslationRuleTestConfigBasic = ``
+const vlanTranslationRuleTestConfigBasic = `resource "netbox_vlan_translation_policy" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_vlan_translation_rule" "test" {
+  policy_id  = netbox_vlan_translation_policy.test.id
+  local_vid  = 100
+  remote_vid = 200
+}
+`
 
-const vlanTranslationRuleTestConfigUpdate = ``
+const vlanTranslationRuleTestConfigUpdate = `resource "netbox_vlan_translation_policy" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_vlan_translation_rule" "test" {
+  policy_id   = netbox_vlan_translation_policy.test.id
+  local_vid   = 100
+  remote_vid  = 300
+  description = "{{.Name}} updated"
+}
+`
 
 const vlanTranslationRuleTestConfigDataSources = `
 data "netbox_vlan_translation_rule" "by_id" {
@@ -27,7 +44,6 @@ data "netbox_vlan_translation_rules" "list" {
 `
 
 func TestAccVlanTranslationRule_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"vlan-translation-rules\" in generator/overrides/ipam.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +53,13 @@ func TestAccVlanTranslationRule_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, vlanTranslationRuleTestConfigBasic+vlanTranslationRuleTestConfigDataSources, name),
+			Config: acctest.Render(t, vlanTranslationRuleTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_vlan_translation_rule.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, vlanTranslationRuleTestConfigUpdate+vlanTranslationRuleTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_vlan_translation_rule.by_id", "id", "netbox_vlan_translation_rule.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_vlan_translation_rules.list", "items.#", "1"),
@@ -50,7 +72,7 @@ func TestAccVlanTranslationRule_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, vlanTranslationRuleTestConfigBasic, name),
+			Config: acctest.Render(t, vlanTranslationRuleTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

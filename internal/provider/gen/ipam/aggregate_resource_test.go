@@ -12,9 +12,34 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const aggregateTestConfigBasic = ``
+const aggregateTestConfigBasic = `resource "netbox_rir" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_aggregate" "test" {
+  prefix      = "2001:db8:213::/48"
+  rir_id      = netbox_rir.test.id
+  description = "{{.Name}}"
+}
+`
 
-const aggregateTestConfigUpdate = ``
+const aggregateTestConfigUpdate = `resource "netbox_rir" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_aggregate" "test" {
+  prefix      = "2001:db8:213::/48"
+  rir_id      = netbox_rir.test.id
+  tenant_id   = netbox_tenant.test.id
+  date_added  = "2024-01-15"
+  description = "{{.Name}} updated"
+  comments    = "Documentation prefix (RFC 3849)"
+}
+`
 
 const aggregateTestConfigDataSources = `
 data "netbox_aggregate" "by_id" {
@@ -27,7 +52,6 @@ data "netbox_aggregates" "list" {
 `
 
 func TestAccAggregate_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"aggregates\" in generator/overrides/ipam.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +61,13 @@ func TestAccAggregate_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, aggregateTestConfigBasic+aggregateTestConfigDataSources, name),
+			Config: acctest.Render(t, aggregateTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_aggregate.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, aggregateTestConfigUpdate+aggregateTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_aggregate.by_id", "id", "netbox_aggregate.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_aggregates.list", "items.#", "1"),
@@ -51,7 +81,7 @@ func TestAccAggregate_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, aggregateTestConfigBasic, name),
+			Config: acctest.Render(t, aggregateTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

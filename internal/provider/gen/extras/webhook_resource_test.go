@@ -12,23 +12,29 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const webhookTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_webhook" "test" {
-  name = "{{.Name}}"
-  payload_url = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const webhookTestConfigBasic = `resource "netbox_webhook" "test" {
+  name        = "{{.Name}}"
+  payload_url = "https://hooks.example.com/{{.Name}}"
+  description = "{{.Name}} created by acceptance test"
 }
 `
 
-const webhookTestConfigUpdate = `resource "netbox_webhook" "test" {
-  name = "{{.Name}}"
-  payload_url = "{{.Name}}"
-  description = "updated by acceptance test"
+const webhookTestConfigUpdate = `resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_webhook" "test" {
+  name               = "{{.Name}}"
+  payload_url        = "https://hooks.example.com/{{.Name}}/v2"
+  description        = "{{.Name}} updated"
+  http_method        = "PUT"
+  http_content_type  = "application/json; charset=utf-8"
+  additional_headers = "X-Source: netbox"
+  body_template      = "{{ "{{" }} data | tojson {{ "}}" }}"
+  secret             = "{{.Name}}-secret"
+  ssl_verification   = false
+  timeout            = 10
+  tags               = [netbox_tag.test.slug]
 }
 `
 
@@ -78,7 +84,7 @@ func TestAccWebhook_basic(t *testing.T) {
 			},
 		},
 	}
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProviderFactories,
 		CheckDestroy:             acctest.CheckDestroyed("netbox_webhook", "/api/extras/webhooks/"),

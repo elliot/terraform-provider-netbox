@@ -12,15 +12,43 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const coolingOutflowTemplateTestConfigBasic = `resource "netbox_cooling_outflow_template" "test" {
+const coolingOutflowTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_cooling_outflow_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Outflow 1"
 }
 `
 
-const coolingOutflowTemplateTestConfigUpdate = `resource "netbox_cooling_outflow_template" "test" {
+const coolingOutflowTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_cooling_intake_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Intake 1"
+}
+resource "netbox_cooling_outflow_template" "test" {
+  device_type_id    = netbox_device_type.test.id
+  name              = "Outflow 1"
+  label             = "Liquid out"
+  type              = "uqdb"
+  diameter          = 12.7
+  diameter_unit     = "mm"
+  cooling_intake_id = netbox_cooling_intake_template.test.id
+  description       = "{{.Name}} updated"
 }
 `
 

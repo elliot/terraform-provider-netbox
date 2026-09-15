@@ -12,9 +12,81 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const deviceBayTestConfigBasic = ``
+const deviceBayTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+  subdevice_role  = "parent"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_device_bay" "test" {
+  device_id = netbox_device.test.id
+  name      = "Bay 1"
+}
+`
 
-const deviceBayTestConfigUpdate = ``
+const deviceBayTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+  subdevice_role  = "parent"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_device_type" "child" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}-child"
+  slug            = "{{.Name}}-child"
+  u_height        = 0
+  subdevice_role  = "child"
+}
+resource "netbox_device" "child" {
+  name           = "{{.Name}}-child"
+  device_type_id = netbox_device_type.child.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_device_bay" "test" {
+  device_id           = netbox_device.test.id
+  name                = "Bay 1"
+  label               = "1"
+  description         = "{{.Name}} updated"
+  installed_device_id = netbox_device.child.id
+}
+`
 
 const deviceBayTestConfigDataSources = `
 data "netbox_device_bay" "by_id" {
@@ -27,7 +99,6 @@ data "netbox_device_bays" "list" {
 `
 
 func TestAccDeviceBay_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"device-bays\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +108,13 @@ func TestAccDeviceBay_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, deviceBayTestConfigBasic+deviceBayTestConfigDataSources, name),
+			Config: acctest.Render(t, deviceBayTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_device_bay.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, deviceBayTestConfigUpdate+deviceBayTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_device_bay.by_id", "id", "netbox_device_bay.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_device_bays.list", "items.#", "1"),
@@ -51,7 +128,7 @@ func TestAccDeviceBay_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, deviceBayTestConfigBasic, name),
+			Config: acctest.Render(t, deviceBayTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

@@ -16,19 +16,19 @@ const tunnelGroupTestConfigBasic = `resource "netbox_tag" "test" {
   name = "{{.Name}}-tag"
   slug = "{{.Name}}-tag"
 }
-
 resource "netbox_tunnel_group" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
   description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  tags        = [netbox_tag.test.slug]
 }
 `
 
 const tunnelGroupTestConfigUpdate = `resource "netbox_tunnel_group" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
   description = "updated by acceptance test"
+  comments    = "hub-and-spoke overlay"
 }
 `
 

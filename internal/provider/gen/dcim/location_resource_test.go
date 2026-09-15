@@ -12,9 +12,47 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const locationTestConfigBasic = ``
+const locationTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_location" "test" {
+  name    = "{{.Name}}"
+  slug    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+`
 
-const locationTestConfigUpdate = ``
+const locationTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_location" "parent" {
+  name    = "{{.Name}}-parent"
+  slug    = "{{.Name}}-parent"
+  site_id = netbox_site.test.id
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_location" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  site_id     = netbox_site.test.id
+  parent_id   = netbox_location.parent.id
+  status      = "planned"
+  tenant_id   = netbox_tenant.test.id
+  facility    = "Room 42"
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  tags        = [netbox_tag.test.slug]
+}
+`
 
 const locationTestConfigDataSources = `
 data "netbox_location" "by_id" {
@@ -27,17 +65,23 @@ data "netbox_locations" "list" {
 `
 
 func TestAccLocation_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"locations\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, locationTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_location.test", "id"),
+				resource.TestCheckResourceAttr("netbox_location.test", "status", "active"),
 			),
 		},
 		{
-			Config: acctest.Render(t, locationTestConfigBasic+locationTestConfigDataSources, name),
+			Config: acctest.Render(t, locationTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_location.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, locationTestConfigUpdate+locationTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_location.by_id", "id", "netbox_location.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_locations.list", "items.#", "1"),
@@ -51,7 +95,7 @@ func TestAccLocation_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, locationTestConfigBasic, name),
+			Config: acctest.Render(t, locationTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
@@ -68,7 +112,7 @@ func TestAccLocation_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_location", &resource.Sweeper{
 		Name:         "netbox_location",
-		Dependencies: []string{"netbox_config_context", "netbox_cooling_source", "netbox_device", "netbox_power_panel", "netbox_rack"},
+		Dependencies: []string{"netbox_cooling_source", "netbox_power_panel", "netbox_rack"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/locations/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

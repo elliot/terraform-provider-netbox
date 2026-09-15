@@ -12,9 +12,62 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const circuitTerminationTestConfigBasic = ``
+const circuitTerminationTestConfigBasic = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit" "test" {
+  cid         = "{{.Name}}"
+  provider_id = netbox_provider.test.id
+  type_id     = netbox_circuit_type.test.id
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_termination" "test" {
+  circuit_id       = netbox_circuit.test.id
+  term_side        = "A"
+  termination_type = "dcim.site"
+  termination_id   = netbox_site.test.id
+  description      = "{{.Name}}"
+}
+`
 
-const circuitTerminationTestConfigUpdate = ``
+const circuitTerminationTestConfigUpdate = `resource "netbox_provider" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit" "test" {
+  cid         = "{{.Name}}"
+  provider_id = netbox_provider.test.id
+  type_id     = netbox_circuit_type.test.id
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_circuit_termination" "test" {
+  circuit_id       = netbox_circuit.test.id
+  term_side        = "A"
+  termination_type = "dcim.site"
+  termination_id   = netbox_site.test.id
+  port_speed       = 1000000
+  upstream_speed   = 500000
+  xconnect_id      = "XC-{{.Name}}"
+  pp_info          = "PP01 port 12"
+  mark_connected   = true
+  description      = "{{.Name}} updated"
+}
+`
 
 const circuitTerminationTestConfigDataSources = `
 data "netbox_circuit_termination" "by_id" {
@@ -27,7 +80,6 @@ data "netbox_circuit_terminations" "list" {
 `
 
 func TestAccCircuitTermination_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"circuit-terminations\" in generator/overrides/circuits.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +89,13 @@ func TestAccCircuitTermination_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, circuitTerminationTestConfigBasic+circuitTerminationTestConfigDataSources, name),
+			Config: acctest.Render(t, circuitTerminationTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_circuit_termination.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, circuitTerminationTestConfigUpdate+circuitTerminationTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_circuit_termination.by_id", "id", "netbox_circuit_termination.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_circuit_terminations.list", "items.#", "1"),
@@ -51,7 +109,7 @@ func TestAccCircuitTermination_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, circuitTerminationTestConfigBasic, name),
+			Config: acctest.Render(t, circuitTerminationTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

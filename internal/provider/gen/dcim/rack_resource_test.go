@@ -12,9 +12,67 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const rackTestConfigBasic = ``
+const rackTestConfigBasic = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rack" "test" {
+  name    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+`
 
-const rackTestConfigUpdate = ``
+const rackTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_location" "test" {
+  name    = "{{.Name}}"
+  slug    = "{{.Name}}"
+  site_id = netbox_site.test.id
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rack_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rack" "test" {
+  name               = "{{.Name}}"
+  site_id            = netbox_site.test.id
+  location_id        = netbox_location.test.id
+  tenant_id          = netbox_tenant.test.id
+  role_id            = netbox_rack_role.test.id
+  status             = "planned"
+  facility_id        = "R-{{.Name}}"
+  serial             = "SN-{{.Name}}"
+  asset_tag          = "AT-{{.Name}}"
+  form_factor        = "4-post-cabinet"
+  width              = 23
+  u_height           = 48
+  starting_unit      = 1
+  desc_units         = true
+  weight             = 100.5
+  max_weight         = 1200
+  weight_unit        = "kg"
+  outer_width        = 600
+  outer_height       = 2200
+  outer_depth        = 1000
+  outer_unit         = "mm"
+  mounting_depth     = 900
+  airflow            = "front-to-rear"
+  cooling_capability = "air-only"
+  description        = "{{.Name}} updated"
+  comments           = "updated by acceptance test"
+  tags               = [netbox_tag.test.slug]
+}
+`
 
 const rackTestConfigDataSources = `
 data "netbox_rack" "by_id" {
@@ -27,17 +85,25 @@ data "netbox_racks" "list" {
 `
 
 func TestAccRack_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"racks\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, rackTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_rack.test", "id"),
+				resource.TestCheckResourceAttr("netbox_rack.test", "status", "active"),
+				resource.TestCheckResourceAttr("netbox_rack.test", "u_height", "42"),
+				resource.TestCheckResourceAttr("netbox_rack.test", "width", "19"),
 			),
 		},
 		{
-			Config: acctest.Render(t, rackTestConfigBasic+rackTestConfigDataSources, name),
+			Config: acctest.Render(t, rackTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_rack.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, rackTestConfigUpdate+rackTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_rack.by_id", "id", "netbox_rack.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_racks.list", "items.#", "1"),
@@ -51,7 +117,7 @@ func TestAccRack_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, rackTestConfigBasic, name),
+			Config: acctest.Render(t, rackTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
@@ -68,7 +134,7 @@ func TestAccRack_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_rack", &resource.Sweeper{
 		Name:         "netbox_rack",
-		Dependencies: []string{"netbox_cooling_feed", "netbox_device", "netbox_power_feed", "netbox_rack_reservation"},
+		Dependencies: []string{"netbox_cooling_feed", "netbox_power_feed", "netbox_rack_reservation"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/racks/", []string{"name__isw", "description__isw", "q"})
 		},

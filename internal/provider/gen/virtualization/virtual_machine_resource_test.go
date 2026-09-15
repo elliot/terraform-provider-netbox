@@ -12,21 +12,55 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const virtualMachineTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_virtual_machine" "test" {
+const virtualMachineTestConfigBasic = `resource "netbox_cluster_type" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster" "test" {
+  name    = "{{.Name}}"
+  type_id = netbox_cluster_type.test.id
+}
+resource "netbox_virtual_machine" "test" {
+  name       = "{{.Name}}"
+  cluster_id = netbox_cluster.test.id
 }
 `
 
-const virtualMachineTestConfigUpdate = `resource "netbox_virtual_machine" "test" {
+const virtualMachineTestConfigUpdate = `resource "netbox_cluster_type" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster" "test" {
+  name    = "{{.Name}}"
+  type_id = netbox_cluster_type.test.id
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_virtual_machine_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_virtual_machine" "test" {
+  name                    = "{{.Name}}"
+  cluster_id              = netbox_cluster.test.id
+  site_id                 = netbox_site.test.id
+  tenant_id               = netbox_tenant.test.id
+  virtual_machine_type_id = netbox_virtual_machine_type.test.id
+  status                  = "planned"
+  start_on_boot           = "on"
+  vcpus                   = 2.5
+  memory                  = 2048
+  disk                    = 20
+  serial                  = "VM-{{.Name}}"
+  description             = "updated"
+  comments                = "{{.Name}} comments"
+  local_context_data      = jsonencode({ role = "web" })
 }
 `
 
@@ -47,6 +81,7 @@ func TestAccVirtualMachine_basic(t *testing.T) {
 			Config: acctest.Render(t, virtualMachineTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_virtual_machine.test", "id"),
+				resource.TestCheckResourceAttr("netbox_virtual_machine.test", "status", "active"),
 			),
 		},
 		{

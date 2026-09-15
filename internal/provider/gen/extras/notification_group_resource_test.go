@@ -12,15 +12,28 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const notificationGroupTestConfigBasic = `resource "netbox_notification_group" "test" {
+const notificationGroupTestConfigBasic = `resource "netbox_user_group" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
+}
+resource "netbox_notification_group" "test" {
+  name        = "{{.Name}}"
+  description = "{{.Name}} created by acceptance test"
+  group_ids   = [netbox_user_group.test.id]
 }
 `
 
-const notificationGroupTestConfigUpdate = `resource "netbox_notification_group" "test" {
+const notificationGroupTestConfigUpdate = `resource "netbox_user_group" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+}
+resource "netbox_user" "test" {
+  username = "{{.Name}}"
+  password = "{{.Name}}-Passw0rd!"
+}
+resource "netbox_notification_group" "test" {
+  name        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  group_ids   = [netbox_user_group.test.id]
+  user_ids    = [netbox_user.test.id]
 }
 `
 

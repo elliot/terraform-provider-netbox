@@ -12,9 +12,70 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const ipsecProfileTestConfigBasic = ``
+const ipsecProfileTestConfigBasic = `resource "netbox_ike_proposal" "test" {
+  name                     = "{{.Name}}"
+  authentication_method    = "preshared-keys"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+  group                    = 14
+}
+resource "netbox_ike_policy" "test" {
+  name         = "{{.Name}}"
+  version      = 1
+  mode         = "main"
+  proposal_ids = [netbox_ike_proposal.test.id]
+}
+resource "netbox_ipsec_proposal" "test" {
+  name                     = "{{.Name}}"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+}
+resource "netbox_ipsec_policy" "test" {
+  name         = "{{.Name}}"
+  proposal_ids = [netbox_ipsec_proposal.test.id]
+  pfs_group    = 14
+}
+resource "netbox_ipsec_profile" "test" {
+  name            = "{{.Name}}"
+  description     = "created by acceptance test"
+  mode            = "esp"
+  ike_policy_id   = netbox_ike_policy.test.id
+  ipsec_policy_id = netbox_ipsec_policy.test.id
+}
+`
 
-const ipsecProfileTestConfigUpdate = ``
+const ipsecProfileTestConfigUpdate = `resource "netbox_ike_proposal" "test" {
+  name                     = "{{.Name}}"
+  authentication_method    = "preshared-keys"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+  group                    = 14
+}
+resource "netbox_ike_policy" "test" {
+  name         = "{{.Name}}"
+  version      = 1
+  mode         = "main"
+  proposal_ids = [netbox_ike_proposal.test.id]
+}
+resource "netbox_ipsec_proposal" "test" {
+  name                     = "{{.Name}}"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+}
+resource "netbox_ipsec_policy" "test" {
+  name         = "{{.Name}}"
+  proposal_ids = [netbox_ipsec_proposal.test.id]
+  pfs_group    = 14
+}
+resource "netbox_ipsec_profile" "test" {
+  name            = "{{.Name}}"
+  description     = "updated by acceptance test"
+  mode            = "ah"
+  ike_policy_id   = netbox_ike_policy.test.id
+  ipsec_policy_id = netbox_ipsec_policy.test.id
+  comments        = "site-to-site profile"
+}
+`
 
 const ipsecProfileTestConfigDataSources = `
 data "netbox_ipsec_profile" "by_id" {
@@ -27,17 +88,23 @@ data "netbox_ipsec_profiles" "list" {
 `
 
 func TestAccIpsecProfile_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"ipsec-profiles\" in generator/overrides/vpn.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, ipsecProfileTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_ipsec_profile.test", "id"),
+				resource.TestCheckResourceAttr("netbox_ipsec_profile.test", "mode", "esp"),
 			),
 		},
 		{
-			Config: acctest.Render(t, ipsecProfileTestConfigBasic+ipsecProfileTestConfigDataSources, name),
+			Config: acctest.Render(t, ipsecProfileTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_ipsec_profile.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, ipsecProfileTestConfigUpdate+ipsecProfileTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_ipsec_profile.by_id", "id", "netbox_ipsec_profile.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_ipsec_profiles.list", "items.#", "1"),
@@ -51,7 +118,7 @@ func TestAccIpsecProfile_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, ipsecProfileTestConfigBasic, name),
+			Config: acctest.Render(t, ipsecProfileTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

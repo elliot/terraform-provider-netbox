@@ -12,23 +12,54 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const siteTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_site" "test" {
+const siteTestConfigBasic = `resource "netbox_site" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const siteTestConfigUpdate = `resource "netbox_site" "test" {
+const siteTestConfigUpdate = `resource "netbox_region" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "updated by acceptance test"
+}
+resource "netbox_site_group" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_rir" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_asn" "test" {
+  asn         = 4200000001
+  rir_id      = netbox_rir.test.id
+  description = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name             = "{{.Name}}"
+  slug             = "{{.Name}}"
+  status           = "planned"
+  region_id        = netbox_region.test.id
+  group_id         = netbox_site_group.test.id
+  tenant_id        = netbox_tenant.test.id
+  facility         = "DC-{{.Name}}"
+  time_zone        = "Europe/Berlin"
+  description      = "{{.Name}} updated"
+  physical_address = "1 Example Street, Berlin"
+  shipping_address = "1 Example Street, Berlin (loading dock)"
+  latitude         = 52.520008
+  longitude        = 13.404954
+  comments         = "updated by acceptance test"
+  asn_ids          = [netbox_asn.test.id]
+  tags             = [netbox_tag.test.slug]
 }
 `
 
@@ -49,6 +80,7 @@ func TestAccSite_basic(t *testing.T) {
 			Config: acctest.Render(t, siteTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_site.test", "id"),
+				resource.TestCheckResourceAttr("netbox_site.test", "status", "active"),
 			),
 		},
 		{
@@ -89,7 +121,7 @@ func TestAccSite_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_site", &resource.Sweeper{
 		Name:         "netbox_site",
-		Dependencies: []string{"netbox_config_context", "netbox_cooling_source", "netbox_device", "netbox_location", "netbox_power_panel", "netbox_rack", "netbox_virtual_machine", "netbox_vlan"},
+		Dependencies: []string{"netbox_cooling_source", "netbox_location", "netbox_power_panel", "netbox_rack"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/sites/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

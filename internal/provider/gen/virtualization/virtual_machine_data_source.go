@@ -163,7 +163,7 @@ func virtualMachineDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"disk": dsschema.Int64Attribute{
-			MarkdownDescription: "Disk.",
+			MarkdownDescription: "Total disk size in MB. Managed by NetBox once virtual disks are attached. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

@@ -14,11 +14,23 @@ import (
 
 const userTestConfigBasic = `resource "netbox_user" "test" {
   username = "{{.Name}}"
-  password = "{{.Name}}"
+  password = "{{.Name}}-Pa55word!"
 }
 `
 
-const userTestConfigUpdate = ``
+const userTestConfigUpdate = `resource "netbox_user_group" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_user" "test" {
+  username   = "{{.Name}}"
+  password   = "{{.Name}}-Pa55word!"
+  first_name = "Terraform"
+  last_name  = "{{.Name}}"
+  email      = "{{.Name}}@example.com"
+  is_active  = false
+  group_ids  = [netbox_user_group.test.id]
+}
+`
 
 const userTestConfigDataSources = `
 data "netbox_user" "by_id" {
@@ -37,10 +49,17 @@ func TestAccUser_basic(t *testing.T) {
 			Config: acctest.Render(t, userTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_user.test", "id"),
+				resource.TestCheckResourceAttr("netbox_user.test", "is_active", "true"),
 			),
 		},
 		{
-			Config: acctest.Render(t, userTestConfigBasic+userTestConfigDataSources, name),
+			Config: acctest.Render(t, userTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_user.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, userTestConfigUpdate+userTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_user.by_id", "id", "netbox_user.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_users.list", "items.#", "1"),
@@ -54,7 +73,7 @@ func TestAccUser_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"password"},
 		},
 		{
-			Config: acctest.Render(t, userTestConfigBasic, name),
+			Config: acctest.Render(t, userTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
@@ -71,7 +90,7 @@ func TestAccUser_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_user", &resource.Sweeper{
 		Name:         "netbox_user",
-		Dependencies: []string{"netbox_journal_entry", "netbox_notification_group", "netbox_owner", "netbox_permission", "netbox_rack_reservation", "netbox_token"},
+		Dependencies: []string{"netbox_owner", "netbox_permission", "netbox_token"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/users/users/", []string{"username__isw", "q"})
 		},

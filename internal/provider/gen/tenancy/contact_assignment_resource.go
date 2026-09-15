@@ -70,7 +70,7 @@ func (r *ContactAssignmentResource) Metadata(_ context.Context, req resource.Met
 
 func (r *ContactAssignmentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox contact assignment (`/api/tenancy/contact-assignments/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox contact assignment (`/api/tenancy/contact-assignments/`): links a contact, optionally with a role and priority, to any object that supports contacts (site, device, circuit, ...) (`/api/tenancy/contact-assignments/`).",
 		Attributes:          contactAssignmentResourceAttributes(),
 	}
 }

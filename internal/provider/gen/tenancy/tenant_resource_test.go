@@ -12,23 +12,28 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const tenantTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_tenant" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const tenantTestConfigBasic = `resource "netbox_tenant" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  description = "{{.Name}}"
 }
 `
 
-const tenantTestConfigUpdate = `resource "netbox_tenant" "test" {
+const tenantTestConfigUpdate = `resource "netbox_tenant_group" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "updated by acceptance test"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  group_id    = netbox_tenant_group.test.id
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  tags        = [netbox_tag.test.slug]
 }
 `
 
@@ -89,7 +94,7 @@ func TestAccTenant_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_tenant", &resource.Sweeper{
 		Name:         "netbox_tenant",
-		Dependencies: []string{"netbox_aggregate", "netbox_asn", "netbox_asn_range", "netbox_cable", "netbox_circuit", "netbox_circuit_group", "netbox_cluster", "netbox_config_context", "netbox_cooling_feed", "netbox_device", "netbox_ip_address", "netbox_ip_range", "netbox_l2vpn", "netbox_location", "netbox_power_feed", "netbox_prefix", "netbox_rack", "netbox_rack_reservation", "netbox_route_target", "netbox_site", "netbox_tunnel", "netbox_virtual_circuit", "netbox_virtual_device_context", "netbox_virtual_machine", "netbox_vlan", "netbox_vlan_group", "netbox_vrf", "netbox_wireless_lan", "netbox_wireless_link"},
+		Dependencies: []string{"netbox_circuit", "netbox_circuit_group", "netbox_virtual_circuit"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/tenancy/tenants/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

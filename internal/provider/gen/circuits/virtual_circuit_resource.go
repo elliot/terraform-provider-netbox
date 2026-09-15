@@ -75,7 +75,7 @@ func (r *VirtualCircuitResource) Metadata(_ context.Context, req resource.Metada
 
 func (r *VirtualCircuitResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox virtual circuit (`/api/circuits/virtual-circuits/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox virtual circuit (`/api/circuits/virtual-circuits/`): a logical connection carried over a provider network, terminated on virtual interfaces (`/api/circuits/virtual-circuits/`).",
 		Attributes:          virtualCircuitResourceAttributes(),
 	}
 }

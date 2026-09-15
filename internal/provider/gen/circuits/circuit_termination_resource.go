@@ -77,7 +77,7 @@ func (r *CircuitTerminationResource) Metadata(_ context.Context, req resource.Me
 
 func (r *CircuitTerminationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox circuit termination (`/api/circuits/circuit-terminations/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox circuit termination (`/api/circuits/circuit-terminations/`): the A or Z end of a circuit, attached to a site, location, region, site group or provider network (`/api/circuits/circuit-terminations/`).",
 		Attributes:          circuitTerminationResourceAttributes(),
 	}
 }

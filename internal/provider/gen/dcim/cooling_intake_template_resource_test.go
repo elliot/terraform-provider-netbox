@@ -12,15 +12,40 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const coolingIntakeTemplateTestConfigBasic = `resource "netbox_cooling_intake_template" "test" {
+const coolingIntakeTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_cooling_intake_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Intake 1"
 }
 `
 
-const coolingIntakeTemplateTestConfigUpdate = `resource "netbox_cooling_intake_template" "test" {
+const coolingIntakeTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_cooling_intake_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Intake 1"
+  label          = "Liquid in"
+  type           = "uqd"
+  diameter       = 12.7
+  diameter_unit  = "mm"
+  max_flow       = 4.5
+  max_flow_unit  = "lpm"
+  description    = "{{.Name}} updated"
 }
 `
 

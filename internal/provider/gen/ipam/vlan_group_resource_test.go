@@ -19,11 +19,22 @@ const vlanGroupTestConfigBasic = `resource "netbox_vlan_group" "test" {
 }
 `
 
-const vlanGroupTestConfigUpdate = `resource "netbox_vlan_group" "test" {
+const vlanGroupTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_vlan_group" "test" {
   name        = "{{.Name}}"
   slug        = "{{.Name}}"
+  scope_type  = "dcim.site"
+  scope_id    = netbox_site.test.id
+  tenant_id   = netbox_tenant.test.id
   vid_ranges  = [[100, 199], [300, 399]]
-  description = "updated"
+  description = "{{.Name}} updated"
 }
 `
 

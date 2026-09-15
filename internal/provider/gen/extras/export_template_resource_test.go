@@ -12,9 +12,24 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const exportTemplateTestConfigBasic = ``
+const exportTemplateTestConfigBasic = `resource "netbox_export_template" "test" {
+  name          = "{{.Name}}"
+  object_types  = ["dcim.site"]
+  template_code = "{% for obj in queryset %}{{ "{{" }} obj.name {{ "}}" }}\n{% endfor %}"
+}
+`
 
-const exportTemplateTestConfigUpdate = ``
+const exportTemplateTestConfigUpdate = `resource "netbox_export_template" "test" {
+  name           = "{{.Name}}"
+  description    = "{{.Name}} updated"
+  object_types   = ["dcim.site", "dcim.device"]
+  template_code  = "name,status\n{% for obj in queryset %}{{ "{{" }} obj.name {{ "}}" }},{{ "{{" }} obj.status {{ "}}" }}\n{% endfor %}"
+  mime_type      = "text/csv"
+  file_name      = "{{.Name}}"
+  file_extension = "csv"
+  as_attachment  = true
+}
+`
 
 const exportTemplateTestConfigDataSources = `
 data "netbox_export_template" "by_id" {
@@ -27,7 +42,6 @@ data "netbox_export_templates" "list" {
 `
 
 func TestAccExportTemplate_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"export-templates\" in generator/overrides/extras.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +51,13 @@ func TestAccExportTemplate_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, exportTemplateTestConfigBasic+exportTemplateTestConfigDataSources, name),
+			Config: acctest.Render(t, exportTemplateTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_export_template.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, exportTemplateTestConfigUpdate+exportTemplateTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_export_template.by_id", "id", "netbox_export_template.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_export_templates.list", "items.#", "1"),
@@ -50,7 +70,7 @@ func TestAccExportTemplate_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, exportTemplateTestConfigBasic, name),
+			Config: acctest.Render(t, exportTemplateTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

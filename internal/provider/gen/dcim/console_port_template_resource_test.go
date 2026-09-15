@@ -12,15 +12,37 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const consolePortTemplateTestConfigBasic = `resource "netbox_console_port_template" "test" {
+const consolePortTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_console_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Console"
+  type           = "rj-45"
 }
 `
 
-const consolePortTemplateTestConfigUpdate = `resource "netbox_console_port_template" "test" {
+const consolePortTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_console_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Console"
+  type           = "usb-c"
+  label          = "CON"
+  description    = "{{.Name}} updated"
 }
 `
 

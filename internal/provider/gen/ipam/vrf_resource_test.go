@@ -12,21 +12,29 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const vrfTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_vrf" "test" {
+const vrfTestConfigBasic = `resource "netbox_vrf" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const vrfTestConfigUpdate = `resource "netbox_vrf" "test" {
+const vrfTestConfigUpdate = `resource "netbox_tenant" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_route_target" "import" {
+  name = "{{.Name}}:1"
+}
+resource "netbox_route_target" "export" {
+  name = "{{.Name}}:2"
+}
+resource "netbox_vrf" "test" {
+  name              = "{{.Name}}"
+  rd                = "{{.Name}}:1"
+  tenant_id         = netbox_tenant.test.id
+  enforce_unique    = false
+  import_target_ids = [netbox_route_target.import.id]
+  export_target_ids = [netbox_route_target.import.id, netbox_route_target.export.id]
+  description       = "{{.Name}} updated"
 }
 `
 
@@ -87,7 +95,7 @@ func TestAccVrf_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_vrf", &resource.Sweeper{
 		Name:         "netbox_vrf",
-		Dependencies: []string{"netbox_interface", "netbox_ip_address", "netbox_ip_range", "netbox_prefix", "netbox_vm_interface"},
+		Dependencies: []string{"netbox_ip_address", "netbox_ip_range", "netbox_prefix"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/vrfs/", []string{"name__isw", "description__isw", "q"})
 		},

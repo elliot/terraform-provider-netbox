@@ -12,9 +12,118 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const wirelessLinkTestConfigBasic = ``
+const wirelessLinkTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "a" {
+  name           = "{{.Name}}-a"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_device" "b" {
+  name           = "{{.Name}}-b"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "a" {
+  device_id = netbox_device.a.id
+  name      = "wlan0"
+  type      = "ieee802.11ax"
+  rf_role   = "ap"
+}
+resource "netbox_interface" "b" {
+  device_id = netbox_device.b.id
+  name      = "wlan0"
+  type      = "ieee802.11ax"
+  rf_role   = "station"
+}
+resource "netbox_wireless_link" "test" {
+  interface_a_id = netbox_interface.a.id
+  interface_b_id = netbox_interface.b.id
+  ssid           = "{{.Name}}"
+}
+`
 
-const wirelessLinkTestConfigUpdate = ``
+const wirelessLinkTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_device" "a" {
+  name           = "{{.Name}}-a"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_device" "b" {
+  name           = "{{.Name}}-b"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "a" {
+  device_id = netbox_device.a.id
+  name      = "wlan0"
+  type      = "ieee802.11ax"
+  rf_role   = "ap"
+}
+resource "netbox_interface" "b" {
+  device_id = netbox_device.b.id
+  name      = "wlan0"
+  type      = "ieee802.11ax"
+  rf_role   = "station"
+}
+resource "netbox_wireless_link" "test" {
+  interface_a_id = netbox_interface.a.id
+  interface_b_id = netbox_interface.b.id
+  ssid           = "{{.Name}}"
+  status         = "planned"
+  tenant_id      = netbox_tenant.test.id
+  auth_type      = "wpa-enterprise"
+  auth_cipher    = "aes"
+  distance       = 1.5
+  distance_unit  = "km"
+  description    = "{{.Name}} updated"
+  comments       = "Point-to-point backhaul"
+  tags           = [netbox_tag.test.slug]
+}
+`
 
 const wirelessLinkTestConfigDataSources = `
 data "netbox_wireless_link" "by_id" {
@@ -27,7 +136,6 @@ data "netbox_wireless_links" "list" {
 `
 
 func TestAccWirelessLink_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"wireless-links\" in generator/overrides/wireless.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +145,13 @@ func TestAccWirelessLink_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, wirelessLinkTestConfigBasic+wirelessLinkTestConfigDataSources, name),
+			Config: acctest.Render(t, wirelessLinkTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_wireless_link.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, wirelessLinkTestConfigUpdate+wirelessLinkTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_wireless_link.by_id", "id", "netbox_wireless_link.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_wireless_links.list", "items.#", "1"),
@@ -51,7 +165,7 @@ func TestAccWirelessLink_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, wirelessLinkTestConfigBasic, name),
+			Config: acctest.Render(t, wirelessLinkTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

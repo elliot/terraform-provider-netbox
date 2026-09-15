@@ -12,9 +12,41 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const eventRuleTestConfigBasic = ``
+const eventRuleTestConfigBasic = `resource "netbox_webhook" "test" {
+  name        = "{{.Name}}"
+  payload_url = "https://hooks.example.com/{{.Name}}"
+}
+resource "netbox_event_rule" "test" {
+  name               = "{{.Name}}"
+  object_types       = ["dcim.site"]
+  event_types        = ["object_created"]
+  action_type        = "webhook"
+  action_object_type = "extras.webhook"
+  action_object_id   = netbox_webhook.test.id
+}
+`
 
-const eventRuleTestConfigUpdate = ``
+const eventRuleTestConfigUpdate = `resource "netbox_webhook" "test" {
+  name        = "{{.Name}}"
+  payload_url = "https://hooks.example.com/{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_event_rule" "test" {
+  name               = "{{.Name}}"
+  object_types       = ["dcim.site", "dcim.device"]
+  event_types        = ["object_created", "object_updated"]
+  action_type        = "webhook"
+  action_object_type = "extras.webhook"
+  action_object_id   = netbox_webhook.test.id
+  enabled            = false
+  description        = "{{.Name}} updated"
+  conditions         = jsonencode({ attr = "status.value", value = "active" })
+  tags               = [netbox_tag.test.slug]
+}
+`
 
 const eventRuleTestConfigDataSources = `
 data "netbox_event_rule" "by_id" {
@@ -27,7 +59,6 @@ data "netbox_event_rules" "list" {
 `
 
 func TestAccEventRule_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"event-rules\" in generator/overrides/extras.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +68,13 @@ func TestAccEventRule_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, eventRuleTestConfigBasic+eventRuleTestConfigDataSources, name),
+			Config: acctest.Render(t, eventRuleTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_event_rule.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, eventRuleTestConfigUpdate+eventRuleTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_event_rule.by_id", "id", "netbox_event_rule.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_event_rules.list", "items.#", "1"),
@@ -51,13 +88,13 @@ func TestAccEventRule_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, eventRuleTestConfigBasic, name),
+			Config: acctest.Render(t, eventRuleTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
 		},
 	}
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProviderFactories,
 		CheckDestroy:             acctest.CheckDestroyed("netbox_event_rule", "/api/extras/event-rules/"),

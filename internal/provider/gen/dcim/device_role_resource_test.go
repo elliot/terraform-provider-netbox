@@ -12,25 +12,13 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const deviceRoleTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_device_role" "test" {
+const deviceRoleTestConfigBasic = `resource "netbox_device_role" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const deviceRoleTestConfigUpdate = `resource "netbox_device_role" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "updated by acceptance test"
-}
-`
+const deviceRoleTestConfigUpdate = "resource \"netbox_device_role\" \"parent\" {\n  name = \"{{.Name}}-parent\"\n  slug = \"{{.Name}}-parent\"\n}\nresource \"netbox_config_template\" \"test\" {\n  name          = \"{{.Name}}\"\n  template_code = \"hostname {{`{{ device.name }}`}}\"\n}\nresource \"netbox_tag\" \"test\" {\n  name = \"{{.Name}}\"\n  slug = \"{{.Name}}\"\n}\nresource \"netbox_device_role\" \"test\" {\n  name               = \"{{.Name}}\"\n  slug               = \"{{.Name}}\"\n  color              = \"4caf50\"\n  vm_role            = false\n  parent_id          = netbox_device_role.parent.id\n  config_template_id = netbox_config_template.test.id\n  description        = \"{{.Name}} updated\"\n  comments           = \"updated by acceptance test\"\n  tags               = [netbox_tag.test.slug]\n}\n"
 
 const deviceRoleTestConfigDataSources = `
 data "netbox_device_role" "by_id" {
@@ -49,6 +37,7 @@ func TestAccDeviceRole_basic(t *testing.T) {
 			Config: acctest.Render(t, deviceRoleTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_device_role.test", "id"),
+				resource.TestCheckResourceAttr("netbox_device_role.test", "vm_role", "true"),
 			),
 		},
 		{
@@ -89,7 +78,7 @@ func TestAccDeviceRole_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_device_role", &resource.Sweeper{
 		Name:         "netbox_device_role",
-		Dependencies: []string{"netbox_config_context", "netbox_device", "netbox_virtual_machine"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/device-roles/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

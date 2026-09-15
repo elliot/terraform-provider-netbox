@@ -12,9 +12,45 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const virtualDiskTestConfigBasic = ``
+const virtualDiskTestConfigBasic = `resource "netbox_cluster_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster" "test" {
+  name    = "{{.Name}}"
+  type_id = netbox_cluster_type.test.id
+}
+resource "netbox_virtual_machine" "test" {
+  name       = "{{.Name}}"
+  cluster_id = netbox_cluster.test.id
+}
+resource "netbox_virtual_disk" "test" {
+  virtual_machine_id = netbox_virtual_machine.test.id
+  name               = "disk0"
+  size               = 10240
+  description        = "{{.Name}}"
+}
+`
 
-const virtualDiskTestConfigUpdate = ``
+const virtualDiskTestConfigUpdate = `resource "netbox_cluster_type" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_cluster" "test" {
+  name    = "{{.Name}}"
+  type_id = netbox_cluster_type.test.id
+}
+resource "netbox_virtual_machine" "test" {
+  name       = "{{.Name}}"
+  cluster_id = netbox_cluster.test.id
+}
+resource "netbox_virtual_disk" "test" {
+  virtual_machine_id = netbox_virtual_machine.test.id
+  name               = "disk0"
+  size               = 20480
+  description        = "{{.Name}} updated"
+}
+`
 
 const virtualDiskTestConfigDataSources = `
 data "netbox_virtual_disk" "by_id" {
@@ -27,7 +63,6 @@ data "netbox_virtual_disks" "list" {
 `
 
 func TestAccVirtualDisk_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"virtual-disks\" in generator/overrides/virtualization.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +72,13 @@ func TestAccVirtualDisk_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, virtualDiskTestConfigBasic+virtualDiskTestConfigDataSources, name),
+			Config: acctest.Render(t, virtualDiskTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_virtual_disk.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, virtualDiskTestConfigUpdate+virtualDiskTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_virtual_disk.by_id", "id", "netbox_virtual_disk.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_virtual_disks.list", "items.#", "1"),
@@ -51,7 +92,7 @@ func TestAccVirtualDisk_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, virtualDiskTestConfigBasic, name),
+			Config: acctest.Render(t, virtualDiskTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

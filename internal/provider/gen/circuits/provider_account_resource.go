@@ -67,7 +67,7 @@ func (r *ProviderAccountResource) Metadata(_ context.Context, req resource.Metad
 
 func (r *ProviderAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox provider account (`/api/circuits/provider-accounts/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox provider account (`/api/circuits/provider-accounts/`): a billing or service account held with a circuit provider (`/api/circuits/provider-accounts/`).",
 		Attributes:          providerAccountResourceAttributes(),
 	}
 }

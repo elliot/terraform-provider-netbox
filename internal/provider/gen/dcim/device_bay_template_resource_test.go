@@ -12,9 +12,39 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const deviceBayTemplateTestConfigBasic = ``
+const deviceBayTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+  subdevice_role  = "parent"
+}
+resource "netbox_device_bay_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Bay 1"
+}
+`
 
-const deviceBayTemplateTestConfigUpdate = ``
+const deviceBayTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+  subdevice_role  = "parent"
+}
+resource "netbox_device_bay_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Bay 1"
+  label          = "1"
+  description    = "{{.Name}} updated"
+}
+`
 
 const deviceBayTemplateTestConfigDataSources = `
 data "netbox_device_bay_template" "by_id" {
@@ -27,7 +57,6 @@ data "netbox_device_bay_templates" "list" {
 `
 
 func TestAccDeviceBayTemplate_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"device-bay-templates\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +66,13 @@ func TestAccDeviceBayTemplate_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, deviceBayTemplateTestConfigBasic+deviceBayTemplateTestConfigDataSources, name),
+			Config: acctest.Render(t, deviceBayTemplateTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_device_bay_template.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, deviceBayTemplateTestConfigUpdate+deviceBayTemplateTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_device_bay_template.by_id", "id", "netbox_device_bay_template.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_device_bay_templates.list", "items.#", "1"),
@@ -50,7 +85,7 @@ func TestAccDeviceBayTemplate_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, deviceBayTemplateTestConfigBasic, name),
+			Config: acctest.Render(t, deviceBayTemplateTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

@@ -102,7 +102,7 @@ func (r *CircuitResource) Metadata(_ context.Context, req resource.MetadataReque
 
 func (r *CircuitResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox circuit (`/api/circuits/circuits/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox circuit (`/api/circuits/circuits/`): a physical or virtual connection delivered by a provider, identified by its provider-assigned circuit ID (`cid`) (`/api/circuits/circuits/`).",
 		Attributes:          circuitResourceAttributes(),
 	}
 }
@@ -539,7 +539,7 @@ func circuitFromAPI(ctx context.Context, obj *netbox.Circuit, prior *CircuitMode
 	out.TerminationDate = conv.String(obj.GetTerminationDateOk())
 	out.CommitRate = conv.Int64From32(obj.GetCommitRateOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
-	out.Distance = conv.Float64From(obj.GetDistanceOk())
+	out.Distance = conv.Float64Keep(conv.Float64From(obj.GetDistanceOk()), conv.PriorFloat(prior, func(m *CircuitModel) types.Float64 { return m.Distance }), 0)
 	out.DistanceUnit = conv.Choice(obj.GetDistanceUnitOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

@@ -12,9 +12,67 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const moduleBayTestConfigBasic = ``
+const moduleBayTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_module_bay" "test" {
+  device_id = netbox_device.test.id
+  name      = "Slot 1"
+  position  = "1"
+}
+`
 
-const moduleBayTestConfigUpdate = ``
+const moduleBayTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_module_bay" "test" {
+  device_id   = netbox_device.test.id
+  name        = "Slot 1"
+  position    = "1"
+  label       = "SLOT1"
+  description = "{{.Name}} updated"
+}
+`
 
 const moduleBayTestConfigDataSources = `
 data "netbox_module_bay" "by_id" {
@@ -27,7 +85,6 @@ data "netbox_module_bays" "list" {
 `
 
 func TestAccModuleBay_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"module-bays\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +94,13 @@ func TestAccModuleBay_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, moduleBayTestConfigBasic+moduleBayTestConfigDataSources, name),
+			Config: acctest.Render(t, moduleBayTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_module_bay.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, moduleBayTestConfigUpdate+moduleBayTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_module_bay.by_id", "id", "netbox_module_bay.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_module_bays.list", "items.#", "1"),
@@ -51,7 +114,7 @@ func TestAccModuleBay_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, moduleBayTestConfigBasic, name),
+			Config: acctest.Render(t, moduleBayTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

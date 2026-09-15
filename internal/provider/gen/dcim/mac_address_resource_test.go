@@ -12,21 +12,51 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const macAddressTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_mac_address" "test" {
-  mac_address = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const macAddressTestConfigBasic = `resource "netbox_mac_address" "test" {
+  mac_address = "02:00:5e:10:20:30"
+  description = "{{.Name}}"
 }
 `
 
-const macAddressTestConfigUpdate = `resource "netbox_mac_address" "test" {
-  mac_address = "{{.Name}}"
-  description = "updated by acceptance test"
+const macAddressTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "test" {
+  device_id = netbox_device.test.id
+  name      = "eth0"
+  type      = "1000base-t"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_mac_address" "test" {
+  mac_address          = "02:00:5e:10:20:31"
+  assigned_object_type = "dcim.interface"
+  assigned_object_id   = netbox_interface.test.id
+  description          = "{{.Name}} updated"
+  comments             = "updated by acceptance test"
+  tags                 = [netbox_tag.test.slug]
 }
 `
 
@@ -87,7 +117,7 @@ func TestAccMacAddress_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_mac_address", &resource.Sweeper{
 		Name:         "netbox_mac_address",
-		Dependencies: []string{"netbox_interface", "netbox_vm_interface"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/mac-addresses/", []string{"description__isw", "q"})
 		},

@@ -12,23 +12,33 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const ipRangeTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_ip_range" "test" {
-  start_address = "{{.Name}}"
-  end_address = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const ipRangeTestConfigBasic = `resource "netbox_ip_range" "test" {
+  start_address = "10.213.5.10/24"
+  end_address   = "10.213.5.99/24"
+  description   = "{{.Name}}"
 }
 `
 
-const ipRangeTestConfigUpdate = `resource "netbox_ip_range" "test" {
-  start_address = "{{.Name}}"
-  end_address = "{{.Name}}"
-  description = "updated by acceptance test"
+const ipRangeTestConfigUpdate = `resource "netbox_vrf" "test" {
+  name = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_ipam_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_ip_range" "test" {
+  start_address = "10.213.5.10/24"
+  end_address   = "10.213.5.99/24"
+  vrf_id        = netbox_vrf.test.id
+  tenant_id     = netbox_tenant.test.id
+  role_id       = netbox_ipam_role.test.id
+  status        = "reserved"
+  mark_utilized = true
+  description   = "{{.Name}} updated"
 }
 `
 

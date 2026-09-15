@@ -12,17 +12,56 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const frontPortTemplateTestConfigBasic = `resource "netbox_front_port_template" "test" {
+const frontPortTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  type = "8p8c"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_rear_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Rear 1"
+  type           = "mpo"
+  positions      = 12
+}
+resource "netbox_front_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Front 1"
+  type           = "lc"
+  rear_ports = [
+    { position = 1, rear_port = netbox_rear_port_template.test.id, rear_port_position = 1 },
+  ]
 }
 `
 
-const frontPortTemplateTestConfigUpdate = `resource "netbox_front_port_template" "test" {
+const frontPortTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  type = "8p8c"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_rear_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Rear 1"
+  type           = "mpo"
+  positions      = 12
+}
+resource "netbox_front_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "Front 1"
+  type           = "lc"
+  label          = "F1"
+  color          = "aa1409"
+  description    = "{{.Name}} updated"
+  rear_ports = [
+    { position = 1, rear_port = netbox_rear_port_template.test.id, rear_port_position = 1 },
+  ]
 }
 `
 

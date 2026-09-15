@@ -14,13 +14,12 @@ import (
 
 const vlanTranslationPolicyTestConfigBasic = `resource "netbox_vlan_translation_policy" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
 }
 `
 
 const vlanTranslationPolicyTestConfigUpdate = `resource "netbox_vlan_translation_policy" "test" {
-  name = "{{.Name}}"
-  description = "updated by acceptance test"
+  name        = "{{.Name}}"
+  description = "{{.Name}} updated"
 }
 `
 
@@ -80,7 +79,7 @@ func TestAccVlanTranslationPolicy_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_vlan_translation_policy", &resource.Sweeper{
 		Name:         "netbox_vlan_translation_policy",
-		Dependencies: []string{"netbox_interface", "netbox_vlan_translation_rule", "netbox_vm_interface"},
+		Dependencies: []string{"netbox_vlan_translation_rule"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/vlan-translation-policies/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -12,9 +12,30 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const configContextTestConfigBasic = ``
+const configContextTestConfigBasic = `resource "netbox_config_context" "test" {
+  name = "{{.Name}}"
+  data = jsonencode({ ntp_servers = ["10.0.0.1"] })
+}
+`
 
-const configContextTestConfigUpdate = ``
+const configContextTestConfigUpdate = `resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_config_context" "test" {
+  name        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  weight      = 500
+  is_active   = false
+  site_ids    = [netbox_site.test.id]
+  tags        = [netbox_tag.test.slug]
+  data        = jsonencode({ ntp_servers = ["10.0.0.1", "10.0.0.2"], syslog = { host = "10.0.0.3", port = 514 } })
+}
+`
 
 const configContextTestConfigDataSources = `
 data "netbox_config_context" "by_id" {
@@ -27,7 +48,6 @@ data "netbox_config_contexts" "list" {
 `
 
 func TestAccConfigContext_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"config-contexts\" in generator/overrides/extras.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +57,13 @@ func TestAccConfigContext_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, configContextTestConfigBasic+configContextTestConfigDataSources, name),
+			Config: acctest.Render(t, configContextTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_config_context.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, configContextTestConfigUpdate+configContextTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_config_context.by_id", "id", "netbox_config_context.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_config_contexts.list", "items.#", "1"),
@@ -50,13 +76,13 @@ func TestAccConfigContext_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, configContextTestConfigBasic, name),
+			Config: acctest.Render(t, configContextTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
 		},
 	}
-	resource.ParallelTest(t, resource.TestCase{
+	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { acctest.PreCheck(t) },
 		ProtoV6ProviderFactories: acctest.ProviderFactories,
 		CheckDestroy:             acctest.CheckDestroyed("netbox_config_context", "/api/extras/config-contexts/"),

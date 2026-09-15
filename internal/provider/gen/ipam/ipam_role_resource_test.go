@@ -12,23 +12,17 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const ipamRoleTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_ipam_role" "test" {
+const ipamRoleTestConfigBasic = `resource "netbox_ipam_role" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
 const ipamRoleTestConfigUpdate = `resource "netbox_ipam_role" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "updated by acceptance test"
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  weight      = 500
+  description = "{{.Name}} updated"
 }
 `
 

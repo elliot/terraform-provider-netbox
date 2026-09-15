@@ -12,15 +12,37 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const consoleServerPortTemplateTestConfigBasic = `resource "netbox_console_server_port_template" "test" {
+const consoleServerPortTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_console_server_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "ttyS1"
+  type           = "rj-45"
 }
 `
 
-const consoleServerPortTemplateTestConfigUpdate = `resource "netbox_console_server_port_template" "test" {
+const consoleServerPortTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_console_server_port_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "ttyS1"
+  type           = "rj-45"
+  label          = "1"
+  description    = "{{.Name}} updated"
 }
 `
 

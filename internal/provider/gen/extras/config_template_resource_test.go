@@ -12,23 +12,26 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const configTemplateTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_config_template" "test" {
-  name = "{{.Name}}"
-  template_code = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const configTemplateTestConfigBasic = `resource "netbox_config_template" "test" {
+  name          = "{{.Name}}"
+  template_code = "hostname {{ "{{" }} device.name {{ "}}" }}"
 }
 `
 
-const configTemplateTestConfigUpdate = `resource "netbox_config_template" "test" {
-  name = "{{.Name}}"
-  template_code = "{{.Name}}"
-  description = "updated by acceptance test"
+const configTemplateTestConfigUpdate = `resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_config_template" "test" {
+  name               = "{{.Name}}"
+  description        = "{{.Name}} updated"
+  template_code      = "hostname {{ "{{" }} device.name {{ "}}" }}\n{% for s in ntp_servers %}ntp server {{ "{{" }} s {{ "}}" }}\n{% endfor %}"
+  environment_params = jsonencode({ trim_blocks = true })
+  mime_type          = "text/plain"
+  file_name          = "{{.Name}}"
+  file_extension     = "cfg"
+  as_attachment      = true
+  tags               = [netbox_tag.test.slug]
 }
 `
 
@@ -88,7 +91,7 @@ func TestAccConfigTemplate_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_config_template", &resource.Sweeper{
 		Name:         "netbox_config_template",
-		Dependencies: []string{"netbox_device", "netbox_device_role", "netbox_platform", "netbox_virtual_machine"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/extras/config-templates/", []string{"name__isw", "description__isw", "q"})
 		},

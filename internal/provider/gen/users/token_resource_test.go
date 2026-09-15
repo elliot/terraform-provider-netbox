@@ -12,9 +12,27 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const tokenTestConfigBasic = ``
+const tokenTestConfigBasic = `resource "netbox_user" "test" {
+  username = "{{.Name}}"
+  password = "{{.Name}}-Pa55word!"
+}
+resource "netbox_token" "test" {
+  user_id     = netbox_user.test.id
+  description = "{{.Name}}"
+}
+`
 
-const tokenTestConfigUpdate = ``
+const tokenTestConfigUpdate = `resource "netbox_user" "test" {
+  username = "{{.Name}}"
+  password = "{{.Name}}-Pa55word!"
+}
+resource "netbox_token" "test" {
+  user_id       = netbox_user.test.id
+  description   = "{{.Name}} updated"
+  write_enabled = false
+  expires       = "2030-01-01T00:00:00Z"
+}
+`
 
 const tokenTestConfigDataSources = `
 data "netbox_token" "by_id" {
@@ -27,17 +45,24 @@ data "netbox_tokens" "list" {
 `
 
 func TestAccToken_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"tokens\" in generator/overrides/users.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, tokenTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_token.test", "id"),
+				resource.TestCheckResourceAttr("netbox_token.test", "enabled", "true"),
+				resource.TestCheckResourceAttr("netbox_token.test", "write_enabled", "true"),
 			),
 		},
 		{
-			Config: acctest.Render(t, tokenTestConfigBasic+tokenTestConfigDataSources, name),
+			Config: acctest.Render(t, tokenTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_token.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, tokenTestConfigUpdate+tokenTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_token.by_id", "id", "netbox_token.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_tokens.list", "items.#", "1"),
@@ -50,7 +75,7 @@ func TestAccToken_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, tokenTestConfigBasic, name),
+			Config: acctest.Render(t, tokenTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

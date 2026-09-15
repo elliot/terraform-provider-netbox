@@ -12,9 +12,110 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const tunnelTerminationTestConfigBasic = ``
+const tunnelTerminationTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "wan" {
+  device_id = netbox_device.test.id
+  name      = "eth0"
+  type      = "1000base-t"
+}
+resource "netbox_interface" "tun" {
+  device_id = netbox_device.test.id
+  name      = "tun0"
+  type      = "virtual"
+}
+resource "netbox_ip_address" "outside" {
+  address              = "203.0.113.10/24"
+  description          = "{{.Name}}"
+  assigned_object_type = "dcim.interface"
+  assigned_object_id   = netbox_interface.wan.id
+}
+resource "netbox_tunnel" "test" {
+  name          = "{{.Name}}"
+  status        = "active"
+  encapsulation = "ipsec-tunnel"
+}
+resource "netbox_tunnel_termination" "test" {
+  tunnel_id        = netbox_tunnel.test.id
+  role             = "hub"
+  termination_type = "dcim.interface"
+  termination_id   = netbox_interface.tun.id
+}
+`
 
-const tunnelTerminationTestConfigUpdate = ``
+const tunnelTerminationTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "wan" {
+  device_id = netbox_device.test.id
+  name      = "eth0"
+  type      = "1000base-t"
+}
+resource "netbox_interface" "tun" {
+  device_id = netbox_device.test.id
+  name      = "tun0"
+  type      = "virtual"
+}
+resource "netbox_ip_address" "outside" {
+  address              = "203.0.113.10/24"
+  description          = "{{.Name}}"
+  assigned_object_type = "dcim.interface"
+  assigned_object_id   = netbox_interface.wan.id
+}
+resource "netbox_tunnel" "test" {
+  name          = "{{.Name}}"
+  status        = "active"
+  encapsulation = "ipsec-tunnel"
+}
+resource "netbox_tunnel_termination" "test" {
+  tunnel_id        = netbox_tunnel.test.id
+  role             = "peer"
+  termination_type = "dcim.interface"
+  termination_id   = netbox_interface.tun.id
+  outside_ip_id    = netbox_ip_address.outside.id
+}
+`
 
 const tunnelTerminationTestConfigDataSources = `
 data "netbox_tunnel_termination" "by_id" {
@@ -27,17 +128,24 @@ data "netbox_tunnel_terminations" "list" {
 `
 
 func TestAccTunnelTermination_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"tunnel-terminations\" in generator/overrides/vpn.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
 			Config: acctest.Render(t, tunnelTerminationTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_tunnel_termination.test", "id"),
+				resource.TestCheckResourceAttr("netbox_tunnel_termination.test", "role", "hub"),
+				resource.TestCheckResourceAttr("netbox_tunnel_termination.test", "termination_type", "dcim.interface"),
 			),
 		},
 		{
-			Config: acctest.Render(t, tunnelTerminationTestConfigBasic+tunnelTerminationTestConfigDataSources, name),
+			Config: acctest.Render(t, tunnelTerminationTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_tunnel_termination.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, tunnelTerminationTestConfigUpdate+tunnelTerminationTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_tunnel_termination.by_id", "id", "netbox_tunnel_termination.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_tunnel_terminations.list", "items.#", "1"),
@@ -51,7 +159,7 @@ func TestAccTunnelTermination_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, tunnelTerminationTestConfigBasic, name),
+			Config: acctest.Render(t, tunnelTerminationTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

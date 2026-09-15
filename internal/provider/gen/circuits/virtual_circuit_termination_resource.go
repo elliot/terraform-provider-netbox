@@ -72,7 +72,7 @@ func (r *VirtualCircuitTerminationResource) Metadata(_ context.Context, req reso
 
 func (r *VirtualCircuitTerminationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox virtual circuit termination (`/api/circuits/virtual-circuit-terminations/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox virtual circuit termination (`/api/circuits/virtual-circuit-terminations/`): attaches a virtual circuit to a device interface as a peer, hub or spoke (`/api/circuits/virtual-circuit-terminations/`).",
 		Attributes:          virtualCircuitTerminationResourceAttributes(),
 	}
 }

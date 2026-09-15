@@ -1,0 +1,570 @@
+# Acceptance fixtures and examples for the ipam + core shard (validated
+# against https://demo.netbox.dev, NetBox 4.7). Merged after ipam.yaml /
+# core.yaml / _fixtures_pilot.yaml, so fixtures here win.
+#
+# Address space is deliberately unusual (10.213.x.0/24, 2001:db8:213::/48,
+# ASNs above 4200000000) so concurrent runs against the shared demo do not
+# collide on unique fields.
+resources:
+  rirs:
+    test:
+      basic: |
+        resource "netbox_rir" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_rir" "test" {
+          name        = "{{.Name}}"
+          slug        = "{{.Name}}"
+          is_private  = true
+          description = "{{.Name}} updated"
+          comments    = "Private address space managed by Terraform"
+        }
+  aggregates:
+    test:
+      basic: |
+        resource "netbox_rir" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_aggregate" "test" {
+          prefix      = "2001:db8:213::/48"
+          rir_id      = netbox_rir.test.id
+          description = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_rir" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_aggregate" "test" {
+          prefix      = "2001:db8:213::/48"
+          rir_id      = netbox_rir.test.id
+          tenant_id   = netbox_tenant.test.id
+          date_added  = "2024-01-15"
+          description = "{{.Name}} updated"
+          comments    = "Documentation prefix (RFC 3849)"
+        }
+  asns:
+    test:
+      basic: |
+        resource "netbox_rir" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_asn" "test" {
+          asn         = 4200213001
+          rir_id      = netbox_rir.test.id
+          description = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_rir" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_asn" "test" {
+          asn         = 4200213001
+          rir_id      = netbox_rir.test.id
+          tenant_id   = netbox_tenant.test.id
+          site_ids    = [netbox_site.test.id]
+          description = "{{.Name}} updated"
+          comments    = "Private 4-byte ASN (RFC 6996)"
+        }
+  asn-ranges:
+    test:
+      basic: |
+        resource "netbox_rir" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_asn_range" "test" {
+          name   = "{{.Name}}"
+          slug   = "{{.Name}}"
+          rir_id = netbox_rir.test.id
+          start  = 4200213100
+          end    = 4200213199
+        }
+      update: |
+        resource "netbox_rir" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_asn_range" "test" {
+          name        = "{{.Name}}"
+          slug        = "{{.Name}}"
+          rir_id      = netbox_rir.test.id
+          tenant_id   = netbox_tenant.test.id
+          start       = 4200213100
+          end         = 4200213299
+          description = "{{.Name}} updated"
+        }
+  roles:
+    test:
+      basic: |
+        resource "netbox_ipam_role" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_ipam_role" "test" {
+          name        = "{{.Name}}"
+          slug        = "{{.Name}}"
+          weight      = 500
+          description = "{{.Name}} updated"
+        }
+  route-targets:
+    test:
+      basic: |
+        resource "netbox_route_target" "test" {
+          name = "{{.Name}}:1"
+        }
+      update: |
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_route_target" "test" {
+          name        = "{{.Name}}:1"
+          tenant_id   = netbox_tenant.test.id
+          description = "{{.Name}} updated"
+        }
+  vrfs:
+    test:
+      basic: |
+        resource "netbox_vrf" "test" {
+          name = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_route_target" "import" {
+          name = "{{.Name}}:1"
+        }
+        resource "netbox_route_target" "export" {
+          name = "{{.Name}}:2"
+        }
+        resource "netbox_vrf" "test" {
+          name              = "{{.Name}}"
+          rd                = "{{.Name}}:1"
+          tenant_id         = netbox_tenant.test.id
+          enforce_unique    = false
+          import_target_ids = [netbox_route_target.import.id]
+          export_target_ids = [netbox_route_target.import.id, netbox_route_target.export.id]
+          description       = "{{.Name}} updated"
+        }
+  prefixes:
+    test:
+      basic: |
+        resource "netbox_prefix" "test" {
+          prefix      = "10.213.0.0/24"
+          description = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_vrf" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_ipam_role" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_prefix" "test" {
+          prefix        = "10.213.0.0/24"
+          description   = "{{.Name}} updated"
+          vrf_id        = netbox_vrf.test.id
+          tenant_id     = netbox_tenant.test.id
+          role_id       = netbox_ipam_role.test.id
+          scope_type    = "dcim.site"
+          scope_id      = netbox_site.test.id
+          status        = "reserved"
+          is_pool       = true
+          mark_utilized = true
+        }
+  ip-ranges:
+    test:
+      basic: |
+        resource "netbox_ip_range" "test" {
+          start_address = "10.213.5.10/24"
+          end_address   = "10.213.5.99/24"
+          description   = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_vrf" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_ipam_role" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_ip_range" "test" {
+          start_address = "10.213.5.10/24"
+          end_address   = "10.213.5.99/24"
+          vrf_id        = netbox_vrf.test.id
+          tenant_id     = netbox_tenant.test.id
+          role_id       = netbox_ipam_role.test.id
+          status        = "reserved"
+          mark_utilized = true
+          description   = "{{.Name}} updated"
+        }
+  ip-addresses:
+    test:
+      basic: |
+        resource "netbox_ip_address" "test" {
+          address     = "10.213.1.10/24"
+          description = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_vrf" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_ip_address" "nat" {
+          address     = "10.213.1.11/24"
+          description = "{{.Name}} nat inside"
+        }
+        resource "netbox_ip_address" "test" {
+          address       = "10.213.1.10/24"
+          vrf_id        = netbox_vrf.test.id
+          tenant_id     = netbox_tenant.test.id
+          nat_inside_id = netbox_ip_address.nat.id
+          status        = "reserved"
+          role          = "anycast"
+          dns_name      = "{{.Name}}.example.com"
+          description   = "{{.Name}} updated"
+        }
+  vlan-groups:
+    test:
+      basic: |
+        resource "netbox_vlan_group" "test" {
+          name       = "{{.Name}}"
+          slug       = "{{.Name}}"
+          vid_ranges = [[100, 199]]
+        }
+      update: |
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_vlan_group" "test" {
+          name        = "{{.Name}}"
+          slug        = "{{.Name}}"
+          scope_type  = "dcim.site"
+          scope_id    = netbox_site.test.id
+          tenant_id   = netbox_tenant.test.id
+          vid_ranges  = [[100, 199], [300, 399]]
+          description = "{{.Name}} updated"
+        }
+  vlans:
+    test:
+      basic: |
+        resource "netbox_vlan_group" "test" {
+          name       = "{{.Name}}"
+          slug       = "{{.Name}}"
+          vid_ranges = [[200, 299]]
+        }
+        resource "netbox_vlan" "test" {
+          group_id = netbox_vlan_group.test.id
+          vid      = 213
+          name     = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_vlan_group" "test" {
+          name       = "{{.Name}}"
+          slug       = "{{.Name}}"
+          vid_ranges = [[200, 299]]
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_ipam_role" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_vlan" "test" {
+          group_id    = netbox_vlan_group.test.id
+          vid         = 213
+          name        = "{{.Name}}-updated"
+          tenant_id   = netbox_tenant.test.id
+          role_id     = netbox_ipam_role.test.id
+          status      = "reserved"
+          description = "{{.Name}} updated"
+        }
+  vlan-translation-policies:
+    test:
+      basic: |
+        resource "netbox_vlan_translation_policy" "test" {
+          name = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_vlan_translation_policy" "test" {
+          name        = "{{.Name}}"
+          description = "{{.Name}} updated"
+        }
+  vlan-translation-rules:
+    test:
+      basic: |
+        resource "netbox_vlan_translation_policy" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_vlan_translation_rule" "test" {
+          policy_id  = netbox_vlan_translation_policy.test.id
+          local_vid  = 100
+          remote_vid = 200
+        }
+      update: |
+        resource "netbox_vlan_translation_policy" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_vlan_translation_rule" "test" {
+          policy_id   = netbox_vlan_translation_policy.test.id
+          local_vid   = 100
+          remote_vid  = 300
+          description = "{{.Name}} updated"
+        }
+  fhrp-groups:
+    test:
+      basic: |
+        resource "netbox_fhrp_group" "test" {
+          name     = "{{.Name}}"
+          protocol = "vrrp2"
+          group_id = 213
+        }
+      update: |
+        resource "netbox_fhrp_group" "test" {
+          name        = "{{.Name}}"
+          protocol    = "vrrp3"
+          group_id    = 213
+          auth_type   = "plaintext"
+          auth_key    = "s3cret"
+          description = "{{.Name}} updated"
+        }
+  fhrp-group-assignments:
+    test:
+      basic: |
+        resource "netbox_manufacturer" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_device_type" "test" {
+          manufacturer_id = netbox_manufacturer.test.id
+          model           = "{{.Name}}"
+          slug            = "{{.Name}}"
+        }
+        resource "netbox_device_role" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_device" "test" {
+          name           = "{{.Name}}"
+          device_type_id = netbox_device_type.test.id
+          role_id        = netbox_device_role.test.id
+          site_id        = netbox_site.test.id
+        }
+        resource "netbox_interface" "test" {
+          device_id = netbox_device.test.id
+          name      = "vlan213"
+          type      = "virtual"
+        }
+        resource "netbox_fhrp_group" "test" {
+          name     = "{{.Name}}"
+          protocol = "vrrp2"
+          group_id = 213
+        }
+        resource "netbox_fhrp_group_assignment" "test" {
+          group_id       = netbox_fhrp_group.test.id
+          interface_type = "dcim.interface"
+          interface_id   = netbox_interface.test.id
+          priority       = 100
+        }
+      update: |
+        resource "netbox_manufacturer" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_device_type" "test" {
+          manufacturer_id = netbox_manufacturer.test.id
+          model           = "{{.Name}}"
+          slug            = "{{.Name}}"
+        }
+        resource "netbox_device_role" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_device" "test" {
+          name           = "{{.Name}}"
+          device_type_id = netbox_device_type.test.id
+          role_id        = netbox_device_role.test.id
+          site_id        = netbox_site.test.id
+        }
+        resource "netbox_interface" "test" {
+          device_id = netbox_device.test.id
+          name      = "vlan213"
+          type      = "virtual"
+        }
+        resource "netbox_fhrp_group" "test" {
+          name     = "{{.Name}}"
+          protocol = "vrrp2"
+          group_id = 213
+        }
+        resource "netbox_fhrp_group_assignment" "test" {
+          group_id       = netbox_fhrp_group.test.id
+          interface_type = "dcim.interface"
+          interface_id   = netbox_interface.test.id
+          priority       = 200
+        }
+  service-templates:
+    test:
+      basic: |
+        resource "netbox_service_template" "test" {
+          name          = "{{.Name}}"
+          port_mappings = ["tcp/443"]
+        }
+      update: |
+        resource "netbox_service_template" "test" {
+          name          = "{{.Name}}"
+          port_mappings = ["tcp/443", "udp/53"]
+          description   = "{{.Name}} updated"
+          comments      = "HTTPS and DNS"
+        }
+  services:
+    test:
+      basic: |
+        resource "netbox_manufacturer" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_device_type" "test" {
+          manufacturer_id = netbox_manufacturer.test.id
+          model           = "{{.Name}}"
+          slug            = "{{.Name}}"
+        }
+        resource "netbox_device_role" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_device" "test" {
+          name           = "{{.Name}}"
+          device_type_id = netbox_device_type.test.id
+          role_id        = netbox_device_role.test.id
+          site_id        = netbox_site.test.id
+        }
+        resource "netbox_service" "test" {
+          parent_object_type = "dcim.device"
+          parent_object_id   = netbox_device.test.id
+          name               = "{{.Name}}"
+          port_mappings      = ["tcp/443"]
+        }
+      update: |
+        resource "netbox_manufacturer" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_device_type" "test" {
+          manufacturer_id = netbox_manufacturer.test.id
+          model           = "{{.Name}}"
+          slug            = "{{.Name}}"
+        }
+        resource "netbox_device_role" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_device" "test" {
+          name           = "{{.Name}}"
+          device_type_id = netbox_device_type.test.id
+          role_id        = netbox_device_role.test.id
+          site_id        = netbox_site.test.id
+        }
+        resource "netbox_interface" "test" {
+          device_id = netbox_device.test.id
+          name      = "lo0"
+          type      = "virtual"
+        }
+        resource "netbox_ip_address" "test" {
+          address              = "10.213.9.1/32"
+          assigned_object_type = "dcim.interface"
+          assigned_object_id   = netbox_interface.test.id
+          description          = "{{.Name}}"
+        }
+        resource "netbox_service" "test" {
+          parent_object_type = "dcim.device"
+          parent_object_id   = netbox_device.test.id
+          name               = "{{.Name}}"
+          port_mappings      = ["tcp/443", "udp/53"]
+          ipaddress_ids      = [netbox_ip_address.test.id]
+          description        = "{{.Name}} updated"
+        }
+  data-sources:
+    test:
+      basic: |
+        resource "netbox_data_source" "test" {
+          name       = "{{.Name}}"
+          type       = "git"
+          source_url = "https://github.com/netbox-community/netbox-demo-data.git"
+          enabled    = false
+        }
+      update: |
+        resource "netbox_data_source" "test" {
+          name          = "{{.Name}}"
+          type          = "git"
+          source_url    = "https://github.com/netbox-community/netbox-demo-data.git"
+          enabled       = false
+          sync_interval = 86400
+          ignore_rules  = "*.md\n*.txt"
+          parameters    = jsonencode({ branch = "main" })
+          description   = "{{.Name}} updated"
+          comments      = "Synced daily"
+        }

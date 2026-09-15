@@ -12,9 +12,44 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const inventoryItemTemplateTestConfigBasic = ``
+const inventoryItemTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_inventory_item_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "PSU 1"
+}
+`
 
-const inventoryItemTemplateTestConfigUpdate = ``
+const inventoryItemTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_inventory_item_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_inventory_item_template" "test" {
+  device_type_id  = netbox_device_type.test.id
+  name            = "PSU 1"
+  label           = "PSU1"
+  role_id         = netbox_inventory_item_role.test.id
+  manufacturer_id = netbox_manufacturer.test.id
+  part_id         = "PWR-C1-350WAC"
+  description     = "{{.Name}} updated"
+}
+`
 
 const inventoryItemTemplateTestConfigDataSources = `
 data "netbox_inventory_item_template" "by_id" {
@@ -27,7 +62,6 @@ data "netbox_inventory_item_templates" "list" {
 `
 
 func TestAccInventoryItemTemplate_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"inventory-item-templates\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +71,13 @@ func TestAccInventoryItemTemplate_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, inventoryItemTemplateTestConfigBasic+inventoryItemTemplateTestConfigDataSources, name),
+			Config: acctest.Render(t, inventoryItemTemplateTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_inventory_item_template.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, inventoryItemTemplateTestConfigUpdate+inventoryItemTemplateTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_inventory_item_template.by_id", "id", "netbox_inventory_item_template.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_inventory_item_templates.list", "items.#", "1"),
@@ -50,7 +90,7 @@ func TestAccInventoryItemTemplate_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, inventoryItemTemplateTestConfigBasic, name),
+			Config: acctest.Render(t, inventoryItemTemplateTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

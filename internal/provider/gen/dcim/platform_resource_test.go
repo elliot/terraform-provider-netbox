@@ -12,25 +12,13 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const platformTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_platform" "test" {
+const platformTestConfigBasic = `resource "netbox_platform" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const platformTestConfigUpdate = `resource "netbox_platform" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "updated by acceptance test"
-}
-`
+const platformTestConfigUpdate = "resource \"netbox_manufacturer\" \"test\" {\n  name = \"{{.Name}}\"\n  slug = \"{{.Name}}\"\n}\nresource \"netbox_platform\" \"parent\" {\n  name = \"{{.Name}}-parent\"\n  slug = \"{{.Name}}-parent\"\n}\nresource \"netbox_config_template\" \"test\" {\n  name          = \"{{.Name}}\"\n  template_code = \"hostname {{`{{ device.name }}`}}\"\n}\nresource \"netbox_tag\" \"test\" {\n  name = \"{{.Name}}\"\n  slug = \"{{.Name}}\"\n}\nresource \"netbox_platform\" \"test\" {\n  name               = \"{{.Name}}\"\n  slug               = \"{{.Name}}\"\n  parent_id          = netbox_platform.parent.id\n  manufacturer_id    = netbox_manufacturer.test.id\n  config_template_id = netbox_config_template.test.id\n  description        = \"{{.Name}} updated\"\n  comments           = \"updated by acceptance test\"\n  tags               = [netbox_tag.test.slug]\n}\n"
 
 const platformTestConfigDataSources = `
 data "netbox_platform" "by_id" {
@@ -89,7 +77,7 @@ func TestAccPlatform_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_platform", &resource.Sweeper{
 		Name:         "netbox_platform",
-		Dependencies: []string{"netbox_config_context", "netbox_device", "netbox_device_type", "netbox_virtual_machine", "netbox_virtual_machine_type"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/platforms/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

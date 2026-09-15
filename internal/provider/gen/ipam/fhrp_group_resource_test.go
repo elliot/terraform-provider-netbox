@@ -12,23 +12,20 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const fhrpGroupTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_fhrp_group" "test" {
+const fhrpGroupTestConfigBasic = `resource "netbox_fhrp_group" "test" {
+  name     = "{{.Name}}"
   protocol = "vrrp2"
-  group_id = 1
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  group_id = 213
 }
 `
 
 const fhrpGroupTestConfigUpdate = `resource "netbox_fhrp_group" "test" {
-  protocol = "vrrp2"
-  group_id = 1
-  description = "updated by acceptance test"
+  name        = "{{.Name}}"
+  protocol    = "vrrp3"
+  group_id    = 213
+  auth_type   = "plaintext"
+  auth_key    = "s3cret"
+  description = "{{.Name}} updated"
 }
 `
 

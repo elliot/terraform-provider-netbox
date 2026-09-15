@@ -12,9 +12,87 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const fhrpGroupAssignmentTestConfigBasic = ``
+const fhrpGroupAssignmentTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "test" {
+  device_id = netbox_device.test.id
+  name      = "vlan213"
+  type      = "virtual"
+}
+resource "netbox_fhrp_group" "test" {
+  name     = "{{.Name}}"
+  protocol = "vrrp2"
+  group_id = 213
+}
+resource "netbox_fhrp_group_assignment" "test" {
+  group_id       = netbox_fhrp_group.test.id
+  interface_type = "dcim.interface"
+  interface_id   = netbox_interface.test.id
+  priority       = 100
+}
+`
 
-const fhrpGroupAssignmentTestConfigUpdate = ``
+const fhrpGroupAssignmentTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_interface" "test" {
+  device_id = netbox_device.test.id
+  name      = "vlan213"
+  type      = "virtual"
+}
+resource "netbox_fhrp_group" "test" {
+  name     = "{{.Name}}"
+  protocol = "vrrp2"
+  group_id = 213
+}
+resource "netbox_fhrp_group_assignment" "test" {
+  group_id       = netbox_fhrp_group.test.id
+  interface_type = "dcim.interface"
+  interface_id   = netbox_interface.test.id
+  priority       = 200
+}
+`
 
 const fhrpGroupAssignmentTestConfigDataSources = `
 data "netbox_fhrp_group_assignment" "by_id" {
@@ -27,7 +105,6 @@ data "netbox_fhrp_group_assignments" "list" {
 `
 
 func TestAccFhrpGroupAssignment_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"fhrp-group-assignments\" in generator/overrides/ipam.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +114,13 @@ func TestAccFhrpGroupAssignment_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, fhrpGroupAssignmentTestConfigBasic+fhrpGroupAssignmentTestConfigDataSources, name),
+			Config: acctest.Render(t, fhrpGroupAssignmentTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_fhrp_group_assignment.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, fhrpGroupAssignmentTestConfigUpdate+fhrpGroupAssignmentTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_fhrp_group_assignment.by_id", "id", "netbox_fhrp_group_assignment.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_fhrp_group_assignments.list", "items.#", "1"),
@@ -50,7 +133,7 @@ func TestAccFhrpGroupAssignment_basic(t *testing.T) {
 			ImportStateVerify: true,
 		},
 		{
-			Config: acctest.Render(t, fhrpGroupAssignmentTestConfigBasic, name),
+			Config: acctest.Render(t, fhrpGroupAssignmentTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

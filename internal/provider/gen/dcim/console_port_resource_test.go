@@ -12,9 +12,69 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const consolePortTestConfigBasic = ``
+const consolePortTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_console_port" "test" {
+  device_id = netbox_device.test.id
+  name      = "Console"
+  type      = "rj-45"
+}
+`
 
-const consolePortTestConfigUpdate = ``
+const consolePortTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_device_role" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_device" "test" {
+  name           = "{{.Name}}"
+  device_type_id = netbox_device_type.test.id
+  role_id        = netbox_device_role.test.id
+  site_id        = netbox_site.test.id
+}
+resource "netbox_console_port" "test" {
+  device_id      = netbox_device.test.id
+  name           = "Console"
+  type           = "rj-45"
+  speed          = 115200
+  label          = "CON"
+  mark_connected = true
+  description    = "{{.Name}} updated"
+}
+`
 
 const consolePortTestConfigDataSources = `
 data "netbox_console_port" "by_id" {
@@ -27,7 +87,6 @@ data "netbox_console_ports" "list" {
 `
 
 func TestAccConsolePort_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"console-ports\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +96,13 @@ func TestAccConsolePort_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, consolePortTestConfigBasic+consolePortTestConfigDataSources, name),
+			Config: acctest.Render(t, consolePortTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_console_port.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, consolePortTestConfigUpdate+consolePortTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_console_port.by_id", "id", "netbox_console_port.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_console_ports.list", "items.#", "1"),
@@ -51,7 +116,7 @@ func TestAccConsolePort_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, consolePortTestConfigBasic, name),
+			Config: acctest.Render(t, consolePortTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

@@ -12,21 +12,40 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const wirelessLanTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_wireless_lan" "test" {
-  ssid = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const wirelessLanTestConfigBasic = `resource "netbox_wireless_lan" "test" {
+  ssid        = "{{.Name}}"
+  description = "{{.Name}} created by acceptance test"
 }
 `
 
-const wirelessLanTestConfigUpdate = `resource "netbox_wireless_lan" "test" {
-  ssid = "{{.Name}}"
-  description = "updated by acceptance test"
+const wirelessLanTestConfigUpdate = `resource "netbox_wireless_lan_group" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_vlan" "test" {
+  name = "{{.Name}}"
+  vid  = 1234
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_wireless_lan" "test" {
+  ssid        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  group_id    = netbox_wireless_lan_group.test.id
+  vlan_id     = netbox_vlan.test.id
+  tenant_id   = netbox_tenant.test.id
+  status      = "disabled"
+  auth_type   = "wpa-personal"
+  auth_cipher = "aes"
+  auth_psk    = "{{.Name}}-psk"
+  comments    = "Guest network"
+  tags        = [netbox_tag.test.slug]
 }
 `
 
@@ -87,7 +106,7 @@ func TestAccWirelessLan_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_wireless_lan", &resource.Sweeper{
 		Name:         "netbox_wireless_lan",
-		Dependencies: []string{"netbox_interface"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/wireless/wireless-lans/", []string{"description__isw", "q"})
 		},

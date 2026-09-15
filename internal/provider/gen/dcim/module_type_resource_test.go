@@ -12,9 +12,31 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const moduleTypeTestConfigBasic = ``
+const moduleTypeTestConfigBasic = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_module_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+}
+`
 
-const moduleTypeTestConfigUpdate = ``
+const moduleTypeTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_module_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  part_number     = "C9300-NM-8X"
+  airflow         = "front-to-rear"
+  weight          = 0.45
+  weight_unit     = "kg"
+  description     = "{{.Name}} updated"
+  comments        = "8x 10G SFP+ uplink module"
+}
+`
 
 const moduleTypeTestConfigDataSources = `
 data "netbox_module_type" "by_id" {
@@ -27,7 +49,6 @@ data "netbox_module_types" "list" {
 `
 
 func TestAccModuleType_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"module-types\" in generator/overrides/dcim.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +58,13 @@ func TestAccModuleType_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, moduleTypeTestConfigBasic+moduleTypeTestConfigDataSources, name),
+			Config: acctest.Render(t, moduleTypeTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_module_type.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, moduleTypeTestConfigUpdate+moduleTypeTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_module_type.by_id", "id", "netbox_module_type.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_module_types.list", "items.#", "1"),
@@ -51,7 +78,7 @@ func TestAccModuleType_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, moduleTypeTestConfigBasic, name),
+			Config: acctest.Render(t, moduleTypeTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},
@@ -68,7 +95,7 @@ func TestAccModuleType_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_module_type", &resource.Sweeper{
 		Name:         "netbox_module_type",
-		Dependencies: []string{"netbox_console_port_template", "netbox_console_server_port_template", "netbox_cooling_intake_template", "netbox_cooling_outflow_template", "netbox_front_port_template", "netbox_interface_template", "netbox_module", "netbox_module_bay_template", "netbox_power_outlet_template", "netbox_power_port_template", "netbox_rear_port_template"},
+		Dependencies: []string{"netbox_console_port_template", "netbox_console_server_port_template", "netbox_front_port_template", "netbox_interface_template", "netbox_module", "netbox_module_bay_template", "netbox_rear_port_template"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/module-types/", []string{"description__isw", "q"})
 		},

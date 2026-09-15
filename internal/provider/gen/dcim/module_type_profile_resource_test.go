@@ -12,21 +12,28 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const moduleTypeProfileTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_module_type_profile" "test" {
+const moduleTypeProfileTestConfigBasic = `resource "netbox_module_type_profile" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const moduleTypeProfileTestConfigUpdate = `resource "netbox_module_type_profile" "test" {
+const moduleTypeProfileTestConfigUpdate = `resource "netbox_tag" "test" {
   name = "{{.Name}}"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_module_type_profile" "test" {
+  name        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  schema = jsonencode({
+    type = "object"
+    properties = {
+      ports = { type = "integer", title = "Port count" }
+      speed = { type = "string", enum = ["1G", "10G", "25G"] }
+    }
+    required = ["ports"]
+  })
+  tags = [netbox_tag.test.slug]
 }
 `
 
@@ -87,7 +94,7 @@ func TestAccModuleTypeProfile_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_module_type_profile", &resource.Sweeper{
 		Name:         "netbox_module_type_profile",
-		Dependencies: []string{"netbox_module_type"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/module-type-profiles/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -12,21 +12,40 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const ipsecPolicyTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
+const ipsecPolicyTestConfigBasic = `resource "netbox_ipsec_proposal" "a" {
+  name                     = "{{.Name}}-a"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
 }
-
+resource "netbox_ipsec_proposal" "b" {
+  name                     = "{{.Name}}-b"
+  encryption_algorithm     = "aes-128-cbc"
+  authentication_algorithm = "hmac-sha1"
+}
 resource "netbox_ipsec_policy" "test" {
-  name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  name         = "{{.Name}}"
+  description  = "created by acceptance test"
+  proposal_ids = [netbox_ipsec_proposal.a.id]
+  pfs_group    = 14
 }
 `
 
-const ipsecPolicyTestConfigUpdate = `resource "netbox_ipsec_policy" "test" {
-  name = "{{.Name}}"
-  description = "updated by acceptance test"
+const ipsecPolicyTestConfigUpdate = `resource "netbox_ipsec_proposal" "a" {
+  name                     = "{{.Name}}-a"
+  encryption_algorithm     = "aes-256-cbc"
+  authentication_algorithm = "hmac-sha256"
+}
+resource "netbox_ipsec_proposal" "b" {
+  name                     = "{{.Name}}-b"
+  encryption_algorithm     = "aes-128-cbc"
+  authentication_algorithm = "hmac-sha1"
+}
+resource "netbox_ipsec_policy" "test" {
+  name         = "{{.Name}}"
+  description  = "updated by acceptance test"
+  proposal_ids = [netbox_ipsec_proposal.a.id, netbox_ipsec_proposal.b.id]
+  pfs_group    = 19
+  comments     = "phase 2 policy"
 }
 `
 
@@ -47,6 +66,7 @@ func TestAccIpsecPolicy_basic(t *testing.T) {
 			Config: acctest.Render(t, ipsecPolicyTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_ipsec_policy.test", "id"),
+				resource.TestCheckResourceAttr("netbox_ipsec_policy.test", "pfs_group", "14"),
 			),
 		},
 		{

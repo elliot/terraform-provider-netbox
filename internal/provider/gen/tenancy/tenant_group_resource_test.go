@@ -12,23 +12,22 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const tenantGroupTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_tenant_group" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const tenantGroupTestConfigBasic = `resource "netbox_tenant_group" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  description = "{{.Name}}"
 }
 `
 
-const tenantGroupTestConfigUpdate = `resource "netbox_tenant_group" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
-  description = "updated by acceptance test"
+const tenantGroupTestConfigUpdate = `resource "netbox_tenant_group" "parent" {
+  name = "{{.Name}}-parent"
+  slug = "{{.Name}}-parent"
+}
+resource "netbox_tenant_group" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  parent_id   = netbox_tenant_group.parent.id
+  description = "{{.Name}} updated"
 }
 `
 
@@ -89,7 +88,7 @@ func TestAccTenantGroup_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_tenant_group", &resource.Sweeper{
 		Name:         "netbox_tenant_group",
-		Dependencies: []string{"netbox_config_context", "netbox_tenant"},
+		Dependencies: []string{"netbox_tenant"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/tenancy/tenant-groups/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

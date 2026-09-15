@@ -12,21 +12,26 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const configContextProfileTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_config_context_profile" "test" {
-  name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+const configContextProfileTestConfigBasic = `resource "netbox_config_context_profile" "test" {
+  name        = "{{.Name}}"
+  description = "{{.Name}} created by acceptance test"
 }
 `
 
-const configContextProfileTestConfigUpdate = `resource "netbox_config_context_profile" "test" {
-  name = "{{.Name}}"
-  description = "updated by acceptance test"
+const configContextProfileTestConfigUpdate = `resource "netbox_tag" "test" {
+  name = "{{.Name}}-tag"
+  slug = "{{.Name}}-tag"
+}
+resource "netbox_config_context_profile" "test" {
+  name        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  comments    = "Schema for NTP settings"
+  schema      = jsonencode({
+    type       = "object"
+    properties = { ntp_servers = { type = "array", items = { type = "string" } } }
+    required   = ["ntp_servers"]
+  })
+  tags = [netbox_tag.test.slug]
 }
 `
 

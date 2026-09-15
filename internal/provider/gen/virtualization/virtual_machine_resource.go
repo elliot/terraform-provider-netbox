@@ -185,8 +185,10 @@ func virtualMachineResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"disk": schema.Int64Attribute{
-			MarkdownDescription: "Disk.",
+			MarkdownDescription: "Total disk size in MB. Managed by NetBox once virtual disks are attached. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -426,9 +428,7 @@ func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, diag
 	} else if !plan.Memory.IsUnknown() {
 		body.SetMemory(conv.Int32(plan.Memory))
 	}
-	if plan.Disk.IsNull() {
-		body.SetDiskNil()
-	} else if !plan.Disk.IsUnknown() {
+	if conv.Known(plan.Disk) {
 		body.SetDisk(conv.Int32(plan.Disk))
 	}
 	if !plan.Description.IsUnknown() {
@@ -589,7 +589,7 @@ func virtualMachineFromAPI(ctx context.Context, obj *netbox.VirtualMachine, prio
 	out.PlatformId = conv.BriefID(obj.GetPlatformOk())
 	out.PrimaryIp4Id = conv.BriefID(obj.GetPrimaryIp4Ok())
 	out.PrimaryIp6Id = conv.BriefID(obj.GetPrimaryIp6Ok())
-	out.Vcpus = conv.Float64From(obj.GetVcpusOk())
+	out.Vcpus = conv.Float64Keep(conv.Float64From(obj.GetVcpusOk()), conv.PriorFloat(prior, func(m *VirtualMachineModel) types.Float64 { return m.Vcpus }), 0)
 	out.Memory = conv.Int64From32(obj.GetMemoryOk())
 	out.Disk = conv.Int64From32(obj.GetDiskOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())

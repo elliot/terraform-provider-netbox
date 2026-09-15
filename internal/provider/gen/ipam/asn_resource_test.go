@@ -12,21 +12,36 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const asnTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
+const asnTestConfigBasic = `resource "netbox_rir" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
 }
-
 resource "netbox_asn" "test" {
-  asn = 1
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  asn         = 4200213001
+  rir_id      = netbox_rir.test.id
+  description = "{{.Name}}"
 }
 `
 
-const asnTestConfigUpdate = `resource "netbox_asn" "test" {
-  asn = 1
-  description = "updated by acceptance test"
+const asnTestConfigUpdate = `resource "netbox_rir" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_site" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_asn" "test" {
+  asn         = 4200213001
+  rir_id      = netbox_rir.test.id
+  tenant_id   = netbox_tenant.test.id
+  site_ids    = [netbox_site.test.id]
+  description = "{{.Name}} updated"
+  comments    = "Private 4-byte ASN (RFC 6996)"
 }
 `
 
@@ -87,7 +102,7 @@ func TestAccAsn_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_asn", &resource.Sweeper{
 		Name:         "netbox_asn",
-		Dependencies: []string{"netbox_provider", "netbox_site"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/asns/", []string{"description__isw", "q"})
 		},

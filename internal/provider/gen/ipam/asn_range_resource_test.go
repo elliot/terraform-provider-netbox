@@ -12,9 +12,37 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const asnRangeTestConfigBasic = ``
+const asnRangeTestConfigBasic = `resource "netbox_rir" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_asn_range" "test" {
+  name   = "{{.Name}}"
+  slug   = "{{.Name}}"
+  rir_id = netbox_rir.test.id
+  start  = 4200213100
+  end    = 4200213199
+}
+`
 
-const asnRangeTestConfigUpdate = ``
+const asnRangeTestConfigUpdate = `resource "netbox_rir" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_tenant" "test" {
+  name = "{{.Name}}"
+  slug = "{{.Name}}"
+}
+resource "netbox_asn_range" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  rir_id      = netbox_rir.test.id
+  tenant_id   = netbox_tenant.test.id
+  start       = 4200213100
+  end         = 4200213299
+  description = "{{.Name}} updated"
+}
+`
 
 const asnRangeTestConfigDataSources = `
 data "netbox_asn_range" "by_id" {
@@ -27,7 +55,6 @@ data "netbox_asn_ranges" "list" {
 `
 
 func TestAccAsnRange_basic(t *testing.T) {
-	t.Skip("no acceptance fixture: add test.basic/test.update for \"asn-ranges\" in generator/overrides/ipam.yaml")
 	name := acctest.RandName()
 	steps := []resource.TestStep{
 		{
@@ -37,7 +64,13 @@ func TestAccAsnRange_basic(t *testing.T) {
 			),
 		},
 		{
-			Config: acctest.Render(t, asnRangeTestConfigBasic+asnRangeTestConfigDataSources, name),
+			Config: acctest.Render(t, asnRangeTestConfigUpdate, name),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_asn_range.test", plancheck.ResourceActionUpdate)},
+			},
+		},
+		{
+			Config: acctest.Render(t, asnRangeTestConfigUpdate+asnRangeTestConfigDataSources, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrPair("data.netbox_asn_range.by_id", "id", "netbox_asn_range.test", "id"),
 				resource.TestCheckResourceAttr("data.netbox_asn_ranges.list", "items.#", "1"),
@@ -51,7 +84,7 @@ func TestAccAsnRange_basic(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
-			Config: acctest.Render(t, asnRangeTestConfigBasic, name),
+			Config: acctest.Render(t, asnRangeTestConfigUpdate, name),
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
 			},

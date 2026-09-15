@@ -12,17 +12,41 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const interfaceTemplateTestConfigBasic = `resource "netbox_interface_template" "test" {
+const interfaceTemplateTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  type = "virtual"
-  description = "created by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_interface_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "GigabitEthernet0/1"
+  type           = "1000base-t"
 }
 `
 
-const interfaceTemplateTestConfigUpdate = `resource "netbox_interface_template" "test" {
+const interfaceTemplateTestConfigUpdate = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
-  type = "virtual"
-  description = "updated by acceptance test"
+  slug = "{{.Name}}"
+}
+resource "netbox_device_type" "test" {
+  manufacturer_id = netbox_manufacturer.test.id
+  model           = "{{.Name}}"
+  slug            = "{{.Name}}"
+}
+resource "netbox_interface_template" "test" {
+  device_type_id = netbox_device_type.test.id
+  name           = "GigabitEthernet0/1"
+  type           = "1000base-t"
+  label          = "Gi0/1"
+  mgmt_only      = true
+  enabled        = false
+  poe_mode       = "pse"
+  poe_type       = "type2-ieee802.3at"
+  description    = "{{.Name}} updated"
 }
 `
 

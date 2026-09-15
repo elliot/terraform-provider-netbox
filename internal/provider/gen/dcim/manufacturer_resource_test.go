@@ -12,23 +12,22 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const manufacturerTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_manufacturer" "test" {
+const manufacturerTestConfigBasic = `resource "netbox_manufacturer" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
-const manufacturerTestConfigUpdate = `resource "netbox_manufacturer" "test" {
+const manufacturerTestConfigUpdate = `resource "netbox_tag" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
-  description = "updated by acceptance test"
+}
+resource "netbox_manufacturer" "test" {
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
+  description = "{{.Name}} updated"
+  comments    = "updated by acceptance test"
+  tags        = [netbox_tag.test.slug]
 }
 `
 
@@ -89,7 +88,7 @@ func TestAccManufacturer_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_manufacturer", &resource.Sweeper{
 		Name:         "netbox_manufacturer",
-		Dependencies: []string{"netbox_device_type", "netbox_inventory_item", "netbox_inventory_item_template", "netbox_module_bay_type", "netbox_module_type", "netbox_platform", "netbox_rack_type"},
+		Dependencies: []string{"netbox_module_bay_type", "netbox_platform", "netbox_rack_type"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/manufacturers/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

@@ -419,7 +419,7 @@ func coolingSourceFromAPI(ctx context.Context, obj *netbox.CoolingSource, prior 
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.FluidType = conv.Choice(obj.GetFluidTypeOk())
-	out.CoolingCapacity = conv.Float64From(obj.GetCoolingCapacityOk())
+	out.CoolingCapacity = conv.Float64Keep(conv.Float64From(obj.GetCoolingCapacityOk()), conv.PriorFloat(prior, func(m *CoolingSourceModel) types.Float64 { return m.CoolingCapacity }), 0)
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

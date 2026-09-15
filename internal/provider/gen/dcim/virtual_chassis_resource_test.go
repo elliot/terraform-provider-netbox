@@ -12,21 +12,16 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
-const virtualChassisTestConfigBasic = `resource "netbox_tag" "test" {
-  name = "{{.Name}}-tag"
-  slug = "{{.Name}}-tag"
-}
-
-resource "netbox_virtual_chassis" "test" {
+const virtualChassisTestConfigBasic = `resource "netbox_virtual_chassis" "test" {
   name = "{{.Name}}"
-  description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
 }
 `
 
 const virtualChassisTestConfigUpdate = `resource "netbox_virtual_chassis" "test" {
-  name = "{{.Name}}"
-  description = "updated by acceptance test"
+  name        = "{{.Name}}"
+  domain      = "stack-1"
+  description = "{{.Name}} updated"
+  comments    = "two-member stack"
 }
 `
 
@@ -87,7 +82,7 @@ func TestAccVirtualChassis_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_virtual_chassis", &resource.Sweeper{
 		Name:         "netbox_virtual_chassis",
-		Dependencies: []string{"netbox_device"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/virtual-chassis/", []string{"name__isw", "description__isw", "q"})
 		},

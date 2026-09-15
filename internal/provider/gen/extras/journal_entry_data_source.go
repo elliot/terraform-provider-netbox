@@ -71,7 +71,7 @@ func journalEntryDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"created_by_id": dsschema.Int64Attribute{
-			MarkdownDescription: "ID of the User (`netbox_user`).",
+			MarkdownDescription: "ID of the User (`netbox_user`). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"kind": dsschema.StringAttribute{
