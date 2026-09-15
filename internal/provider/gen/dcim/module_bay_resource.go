@@ -32,23 +32,22 @@ func init() { provider.RegisterResource(NewModuleBayResource) }
 
 // ModuleBayModel is the Terraform state of netbox_module_bay.
 type ModuleBayModel struct {
-	Id                types.Int64          `tfsdk:"id"`
-	DeviceId          types.Int64          `tfsdk:"device_id"`
-	ModuleId          types.Int64          `tfsdk:"module_id"`
-	Name              types.String         `tfsdk:"name"`
-	Label             types.String         `tfsdk:"label"`
-	Position          types.String         `tfsdk:"position"`
-	Enabled           types.Bool           `tfsdk:"enabled"`
-	Description       types.String         `tfsdk:"description"`
-	ModuleBayTypeIds  types.Set            `tfsdk:"module_bay_type_ids"`
-	InstalledModuleId types.Int64          `tfsdk:"installed_module_id"`
-	OwnerId           types.Int64          `tfsdk:"owner_id"`
-	Tags              types.Set            `tfsdk:"tags"`
-	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
-	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
+	Id               types.Int64          `tfsdk:"id"`
+	DeviceId         types.Int64          `tfsdk:"device_id"`
+	ModuleId         types.Int64          `tfsdk:"module_id"`
+	Name             types.String         `tfsdk:"name"`
+	Label            types.String         `tfsdk:"label"`
+	Position         types.String         `tfsdk:"position"`
+	Enabled          types.Bool           `tfsdk:"enabled"`
+	Description      types.String         `tfsdk:"description"`
+	ModuleBayTypeIds types.Set            `tfsdk:"module_bay_type_ids"`
+	OwnerId          types.Int64          `tfsdk:"owner_id"`
+	Tags             types.Set            `tfsdk:"tags"`
+	CustomFields     jsontypes.Normalized `tfsdk:"custom_fields"`
+	Url              types.String         `tfsdk:"url"`
+	Display          types.String         `tfsdk:"display"`
+	Created          timetypes.RFC3339    `tfsdk:"created"`
+	LastUpdated      timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 var (
@@ -151,10 +150,6 @@ func moduleBayResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.Int64Type, []attr.Value{})),
-		},
-		"installed_module_id": schema.Int64Attribute{
-			MarkdownDescription: "ID of the Module (`netbox_module`).",
-			Optional:            true,
 		},
 		"owner_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Owner (`netbox_owner`).",
@@ -325,11 +320,6 @@ func moduleBayToCreate(ctx context.Context, plan *ModuleBayModel, diags *diag.Di
 	if conv.Known(plan.ModuleBayTypeIds) {
 		body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
 	}
-	if plan.InstalledModuleId.IsNull() {
-		body.SetInstalledModuleNil()
-	} else if !plan.InstalledModuleId.IsUnknown() {
-		body.SetInstalledModule(conv.Int32(plan.InstalledModuleId))
-	}
 	if plan.OwnerId.IsNull() {
 		body.SetOwnerNil()
 	} else if !plan.OwnerId.IsUnknown() {
@@ -373,11 +363,6 @@ func moduleBayToPatch(ctx context.Context, plan *ModuleBayModel, diags *diag.Dia
 	if conv.Known(plan.ModuleBayTypeIds) {
 		body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
 	}
-	if plan.InstalledModuleId.IsNull() {
-		body.SetInstalledModuleNil()
-	} else if !plan.InstalledModuleId.IsUnknown() {
-		body.SetInstalledModule(conv.Int32(plan.InstalledModuleId))
-	}
 	if plan.OwnerId.IsNull() {
 		body.SetOwnerNil()
 	} else if !plan.OwnerId.IsUnknown() {
@@ -408,7 +393,6 @@ func moduleBayFromAPI(ctx context.Context, obj *netbox.ModuleBay, prior *ModuleB
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.ModuleBayTypeIds = conv.BriefIDs(obj.GetModuleBayTypes())
-	out.InstalledModuleId = conv.BriefID(obj.GetInstalledModuleOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)

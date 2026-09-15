@@ -36,7 +36,6 @@ type ModuleBayDataModel struct {
 	Enabled            types.Bool           `tfsdk:"enabled"`
 	Description        types.String         `tfsdk:"description"`
 	ModuleBayTypeIds   types.Set            `tfsdk:"module_bay_type_ids"`
-	InstalledModuleId  types.Int64          `tfsdk:"installed_module_id"`
 	OwnerId            types.Int64          `tfsdk:"owner_id"`
 	Tags               types.Set            `tfsdk:"tags"`
 	CustomFields       jsontypes.Normalized `tfsdk:"custom_fields"`
@@ -117,10 +116,6 @@ func moduleBayDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		"module_bay_type_ids": dsschema.SetAttribute{
 			MarkdownDescription: "IDs of the assigned Module Bay Type (`netbox_module_bay_type`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
-			Computed:            true,
-		},
-		"installed_module_id": dsschema.Int64Attribute{
-			MarkdownDescription: "ID of the Module (`netbox_module`).",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{
@@ -417,7 +412,6 @@ func moduleBayDataFromAPI(ctx context.Context, obj *netbox.ModuleBay, out *Modul
 	out.Enabled = conv.Bool(obj.GetEnabledOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.ModuleBayTypeIds = conv.BriefIDs(obj.GetModuleBayTypes())
-	out.InstalledModuleId = conv.BriefID(obj.GetInstalledModuleOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.AllCustomFieldsFromAPI(obj.GetCustomFields())

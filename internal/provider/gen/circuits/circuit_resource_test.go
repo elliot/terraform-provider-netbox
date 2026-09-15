@@ -119,7 +119,7 @@ func TestAccCircuit_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_circuit", &resource.Sweeper{
 		Name:         "netbox_circuit",
-		Dependencies: []string{"netbox_circuit_termination"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/circuits/circuits/", []string{"description__isw", "cid__isw", "q"})
 		},

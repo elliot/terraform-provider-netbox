@@ -44,7 +44,6 @@ type CircuitDataModel struct {
 	Comments          types.String         `tfsdk:"comments"`
 	Tags              types.Set            `tfsdk:"tags"`
 	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	Assignments       types.List           `tfsdk:"assignments"`
 	Url               types.String         `tfsdk:"url"`
 	Display           types.String         `tfsdk:"display"`
 	Created           timetypes.RFC3339    `tfsdk:"created"`
@@ -158,20 +157,6 @@ func circuitDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
 			CustomType:          jsontypes.NormalizedType{},
 			Computed:            true,
-		},
-		"assignments": dsschema.ListNestedAttribute{
-			MarkdownDescription: "Assignments.",
-			NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-				"group_id": dsschema.Int64Attribute{
-					MarkdownDescription: "ID of the Circuit Group (`netbox_circuit_group`).",
-					Computed:            true,
-				},
-				"priority": dsschema.StringAttribute{
-					MarkdownDescription: "Priority. Valid values: `primary`, `secondary`, `tertiary`, `inactive`.",
-					Computed:            true,
-				},
-			}},
-			Computed: true,
 		},
 		"url": dsschema.StringAttribute{
 			MarkdownDescription: "Url.",
@@ -453,18 +438,6 @@ func circuitDataFromAPI(ctx context.Context, obj *netbox.Circuit, out *CircuitDa
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.AllCustomFieldsFromAPI(obj.GetCustomFields())
-	{
-		items := obj.GetAssignments()
-		vals := make([]CircuitAssignmentsItem, 0, len(items))
-		for i := range items {
-			src := &items[i]
-			vals = append(vals, CircuitAssignmentsItem{
-				GroupId:  conv.BriefID(src.GetGroupOk()),
-				Priority: conv.Choice(src.GetPriorityOk()),
-			})
-		}
-		out.Assignments = conv.ObjectList(ctx, circuitAssignmentsItemAttrTypes, vals, nil, diags)
-	}
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

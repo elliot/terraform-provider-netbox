@@ -1,5 +1,6 @@
+# Free-text search across name and payload URL.
 data "netbox_webhooks" "example_com" {
-  filters = [{ name = "payload_url__ic", value = "example.com" }]
+  filters = [{ name = "q", value = "example.com" }]
 }
 
 output "example_webhook_urls" {

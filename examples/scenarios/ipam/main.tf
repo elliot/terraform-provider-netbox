@@ -96,6 +96,12 @@ resource "netbox_site" "dc1" {
   name      = "${local.prefix} DC1"
   slug      = "${local.prefix}-dc1"
   tenant_id = netbox_tenant.acme.id
+
+  # netbox_asn.core1 attaches itself to this site through site_ids; the same
+  # relation is exposed here as asn_ids, so let the ASN own it.
+  lifecycle {
+    ignore_changes = [asn_ids]
+  }
 }
 
 resource "netbox_manufacturer" "generic" {

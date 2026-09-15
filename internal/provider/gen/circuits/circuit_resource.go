@@ -39,11 +39,6 @@ var circuitDistanceUnitValues = []string{
 	"km", "m", "mi", "ft",
 }
 
-// circuitAssignmentsPriorityValues lists the valid values of netbox_circuit.priority.
-var circuitAssignmentsPriorityValues = []string{
-	"primary", "secondary", "tertiary", "inactive",
-}
-
 // CircuitModel is the Terraform state of netbox_circuit.
 type CircuitModel struct {
 	Id                types.Int64          `tfsdk:"id"`
@@ -63,22 +58,10 @@ type CircuitModel struct {
 	Comments          types.String         `tfsdk:"comments"`
 	Tags              types.Set            `tfsdk:"tags"`
 	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	Assignments       types.List           `tfsdk:"assignments"`
 	Url               types.String         `tfsdk:"url"`
 	Display           types.String         `tfsdk:"display"`
 	Created           timetypes.RFC3339    `tfsdk:"created"`
 	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
-}
-
-// CircuitAssignmentsItem is one element of netbox_circuit.assignments.
-type CircuitAssignmentsItem struct {
-	GroupId  types.Int64  `tfsdk:"group_id"`
-	Priority types.String `tfsdk:"priority"`
-}
-
-var circuitAssignmentsItemAttrTypes = map[string]attr.Type{
-	"group_id": types.Int64Type,
-	"priority": types.StringType,
 }
 
 var (
@@ -102,7 +85,7 @@ func (r *CircuitResource) Metadata(_ context.Context, req resource.MetadataReque
 
 func (r *CircuitResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox Manages a NetBox circuit (`/api/circuits/circuits/`): a physical or virtual connection delivered by a provider, identified by its provider-assigned circuit ID (`cid`) (`/api/circuits/circuits/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox circuit (`/api/circuits/circuits/`): a physical or virtual connection delivered by a provider, identified by its provider-assigned circuit ID (`cid`). Group membership is managed with `netbox_circuit_group_assignment` (`/api/circuits/circuits/`).",
 		Attributes:          circuitResourceAttributes(),
 	}
 }
@@ -214,21 +197,6 @@ func circuitResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Custom field values as a JSON object (`jsonencode({...})`). Only keys present in the configuration are tracked.",
 			CustomType:          jsontypes.NormalizedType{},
 			Optional:            true,
-		},
-		"assignments": schema.ListNestedAttribute{
-			MarkdownDescription: "Assignments.",
-			NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
-				"group_id": schema.Int64Attribute{
-					MarkdownDescription: "ID of the Circuit Group (`netbox_circuit_group`).",
-					Required:            true,
-				},
-				"priority": schema.StringAttribute{
-					MarkdownDescription: "Priority. Valid values: `primary`, `secondary`, `tertiary`, `inactive`.",
-					Optional:            true,
-					Validators:          []validator.String{stringvalidator.OneOf(circuitAssignmentsPriorityValues...)},
-				},
-			}},
-			Optional: true,
 		},
 		"url": schema.StringAttribute{
 			MarkdownDescription: "Url.",
@@ -418,21 +386,6 @@ func circuitToCreate(ctx context.Context, plan *CircuitModel, diags *diag.Diagno
 	if conv.Known(plan.CustomFields) {
 		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
 	}
-	if conv.Known(plan.Assignments) {
-		assignmentsItems := []netbox.BriefCircuitGroupAssignmentSerializerRequest{}
-		if conv.Known(plan.Assignments) {
-			var items []CircuitAssignmentsItem
-			diags.Append(plan.Assignments.ElementsAs(ctx, &items, false)...)
-			for _, it := range items {
-				e := netbox.NewBriefCircuitGroupAssignmentSerializerRequest(conv.Int32(it.GroupId))
-				if conv.Known(it.Priority) {
-					e.SetPriority(it.Priority.ValueString())
-				}
-				assignmentsItems = append(assignmentsItems, *e)
-			}
-		}
-		body.SetAssignments(assignmentsItems)
-	}
 	return body
 }
 
@@ -503,21 +456,6 @@ func circuitToPatch(ctx context.Context, plan *CircuitModel, diags *diag.Diagnos
 	if conv.Known(plan.CustomFields) {
 		body.SetCustomFields(conv.JSONObjectToAPI(plan.CustomFields, diags))
 	}
-	if conv.Known(plan.Assignments) {
-		assignmentsItems := []netbox.BriefCircuitGroupAssignmentSerializerRequest{}
-		if conv.Known(plan.Assignments) {
-			var items []CircuitAssignmentsItem
-			diags.Append(plan.Assignments.ElementsAs(ctx, &items, false)...)
-			for _, it := range items {
-				e := netbox.NewBriefCircuitGroupAssignmentSerializerRequest(conv.Int32(it.GroupId))
-				if conv.Known(it.Priority) {
-					e.SetPriority(it.Priority.ValueString())
-				}
-				assignmentsItems = append(assignmentsItems, *e)
-			}
-		}
-		body.SetAssignments(assignmentsItems)
-	}
 	return body
 }
 
@@ -545,22 +483,6 @@ func circuitFromAPI(ctx context.Context, obj *netbox.Circuit, prior *CircuitMode
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = conv.CustomFieldsFromAPI(obj.GetCustomFields(), priorCustomFields)
-	{
-		items := obj.GetAssignments()
-		vals := make([]CircuitAssignmentsItem, 0, len(items))
-		for i := range items {
-			src := &items[i]
-			vals = append(vals, CircuitAssignmentsItem{
-				GroupId:  conv.BriefID(src.GetGroupOk()),
-				Priority: conv.Choice(src.GetPriorityOk()),
-			})
-		}
-		var priorVal attr.Value
-		if prior != nil {
-			priorVal = prior.Assignments
-		}
-		out.Assignments = conv.ObjectList(ctx, circuitAssignmentsItemAttrTypes, vals, priorVal, diags)
-	}
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())

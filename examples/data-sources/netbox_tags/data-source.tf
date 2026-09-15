@@ -1,8 +1,9 @@
-# Tags applicable to devices.
-data "netbox_tags" "device" {
-  filters = [{ name = "for_object_type", value = "dcim.device" }]
+# Tags whose name or slug contains "managed". Note: object_types /
+# for_object_type_id take numeric content-type IDs, not "app.model" labels.
+data "netbox_tags" "managed" {
+  filters = [{ name = "q", value = "managed" }]
 }
 
-output "device_tag_slugs" {
-  value = data.netbox_tags.device.items[*].slug
+output "managed_tag_slugs" {
+  value = data.netbox_tags.managed.items[*].slug
 }

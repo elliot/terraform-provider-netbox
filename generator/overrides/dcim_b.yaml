@@ -687,6 +687,7 @@ resources:
         }
 
   module-bays:
+    attributes: { installed_module: { skip: true } }
     test:
       basic: |
         resource "netbox_manufacturer" "test" {

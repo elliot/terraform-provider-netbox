@@ -4,7 +4,14 @@
 resources:
   # ---------------------------------------------------------------- circuits
   circuits:
-    description: "Manages a NetBox circuit (`/api/circuits/circuits/`): a physical or virtual connection delivered by a provider, identified by its provider-assigned circuit ID (`cid`)."
+    description: "Manages a NetBox circuit (`/api/circuits/circuits/`): a physical or virtual connection delivered by a provider, identified by its provider-assigned circuit ID (`cid`). Group membership is managed with `netbox_circuit_group_assignment`."
+    attributes:
+      # `assignments` appears in WritableCircuitRequest but NetBox 4.7 rejects
+      # any value ("Related object not found using the provided attributes")
+      # and omits the key from the read serializer, so the generated nested
+      # list can neither be written nor refreshed. Use
+      # netbox_circuit_group_assignment instead.
+      assignments: { skip: true }
     test:
       basic: |
         resource "netbox_provider" "test" {

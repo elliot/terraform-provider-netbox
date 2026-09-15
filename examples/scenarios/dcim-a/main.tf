@@ -401,7 +401,7 @@ data "netbox_site" "fra1" {
 }
 
 data "netbox_power_feeds" "a01" {
-  filters = [{ name = "rack_id", value = tostring(netbox_rack.a01.id) }]
+  filters    = [{ name = "rack_id", value = tostring(netbox_rack.a01.id) }]
   depends_on = [netbox_power_feed.a01_a, netbox_power_feed.a01_b]
 }
 

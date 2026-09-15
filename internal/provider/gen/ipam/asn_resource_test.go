@@ -34,6 +34,9 @@ resource "netbox_tenant" "test" {
 resource "netbox_site" "test" {
   name = "{{.Name}}"
   slug = "{{.Name}}"
+  # The site <-> ASN relation is writable from both sides; let the
+  # ASN own it (see docs/validation/ipam-core.md).
+  lifecycle { ignore_changes = [asn_ids] }
 }
 resource "netbox_asn" "test" {
   asn         = 4200213001
