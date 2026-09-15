@@ -32,6 +32,9 @@ resource "netbox_device" "test" {
   device_type_id = netbox_device_type.test.id
   role_id        = netbox_device_role.test.id
   site_id        = netbox_site.test.id
+  lifecycle {
+    ignore_changes = [primary_ip4_id, primary_ip6_id]
+  }
 }
 resource "netbox_interface" "test" {
   device_id = netbox_device.test.id
@@ -120,6 +123,9 @@ resource "netbox_cluster" "test" {
 resource "netbox_virtual_machine" "test" {
   name       = "{{.Name}}"
   cluster_id = netbox_cluster.test.id
+  lifecycle {
+    ignore_changes = [primary_ip4_id, primary_ip6_id]
+  }
 }
 resource "netbox_vm_interface" "test" {
   virtual_machine_id = netbox_virtual_machine.test.id

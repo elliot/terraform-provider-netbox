@@ -7,14 +7,12 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -29,12 +27,11 @@ func init() { provider.RegisterResource(NewUserGroupResource) }
 
 // UserGroupModel is the Terraform state of netbox_user_group.
 type UserGroupModel struct {
-	Id            types.Int64  `tfsdk:"id"`
-	Name          types.String `tfsdk:"name"`
-	Description   types.String `tfsdk:"description"`
-	PermissionIds types.Set    `tfsdk:"permission_ids"`
-	Url           types.String `tfsdk:"url"`
-	Display       types.String `tfsdk:"display"`
+	Id          types.Int64  `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	Url         types.String `tfsdk:"url"`
+	Display     types.String `tfsdk:"display"`
 }
 
 var (
@@ -102,13 +99,6 @@ func userGroupResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
 			Default:             stringdefault.StaticString(""),
-		},
-		"permission_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to an empty set.",
-			ElementType:         types.Int64Type,
-			Optional:            true,
-			Computed:            true,
-			Default:             setdefault.StaticValue(types.SetValueMust(types.Int64Type, []attr.Value{})),
 		},
 		"url": schema.StringAttribute{
 			MarkdownDescription: "Url.",
@@ -235,9 +225,6 @@ func userGroupToCreate(ctx context.Context, plan *UserGroupModel, diags *diag.Di
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if conv.Known(plan.PermissionIds) {
-		body.SetPermissions(conv.Int32s(ctx, plan.PermissionIds, diags))
-	}
 	return body
 }
 
@@ -250,9 +237,6 @@ func userGroupToPatch(ctx context.Context, plan *UserGroupModel, diags *diag.Dia
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
-	if conv.Known(plan.PermissionIds) {
-		body.SetPermissions(conv.Int32s(ctx, plan.PermissionIds, diags))
-	}
 	return body
 }
 
@@ -262,7 +246,6 @@ func userGroupFromAPI(ctx context.Context, obj *netbox.Group, prior *UserGroupMo
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Name = conv.String(obj.GetNameOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
-	out.PermissionIds = conv.BriefIDs(obj.GetPermissions())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 }

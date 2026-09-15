@@ -146,9 +146,11 @@ func (r *PrimaryIpResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"which would otherwise create a dependency cycle (%[1]s -> interface -> IP address -> %[1]s).\n\n"+
 			"NetBox requires the address to be assigned to an interface of the %[1]s. The resource ID is the %[1]s ID; "+
 			"`terraform import netbox%[4]s.example <%[5]s>` picks the primary IPv4 when set, otherwise the primary IPv6. "+
-			"Destroying the resource clears the primary address on the %[1]s. Leave `primary_ip4_id` / `primary_ip6_id` unset on the "+
-			"`%[3]s` resource: an update of that resource sends null for them and would clear the assignment made here "+
-			"(the next plan of this resource detects and repairs that).",
+			"Destroying the resource clears the primary address on the %[1]s.\n\n"+
+			"The `%[3]s` resource also tracks `primary_ip4_id` / `primary_ip6_id`, so add "+
+			"`lifecycle { ignore_changes = [primary_ip4_id, primary_ip6_id] }` to the `%[3]s` managing the parent; "+
+			"otherwise its next refresh reports the assignment made here as drift and its next update clears it "+
+			"(which this resource would then detect and repair).",
 			k.label, k.apiPath, k.parentResource, k.suffix, k.parentAttr),
 		Attributes: map[string]schema.Attribute{
 			"id": idAttribute(fmt.Sprintf("The numeric ID of the %s (same as `%s`).", k.label, k.parentAttr)),

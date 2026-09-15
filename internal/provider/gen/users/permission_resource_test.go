@@ -95,7 +95,7 @@ func TestAccPermission_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_permission", &resource.Sweeper{
 		Name:         "netbox_permission",
-		Dependencies: []string{"netbox_user"},
+		Dependencies: []string{},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/users/permissions/", []string{"name__isw", "description__isw", "q"})
 		},

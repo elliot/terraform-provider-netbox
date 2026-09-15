@@ -26,20 +26,19 @@ func init() {
 
 // UserDataModel is the state of data.netbox_user and of items of data.netbox_users.
 type UserDataModel struct {
-	Id            types.Int64       `tfsdk:"id"`
-	Username      types.String      `tfsdk:"username"`
-	Password      types.String      `tfsdk:"password"`
-	FirstName     types.String      `tfsdk:"first_name"`
-	LastName      types.String      `tfsdk:"last_name"`
-	Email         types.String      `tfsdk:"email"`
-	IsActive      types.Bool        `tfsdk:"is_active"`
-	DateJoined    timetypes.RFC3339 `tfsdk:"date_joined"`
-	LastLogin     timetypes.RFC3339 `tfsdk:"last_login"`
-	GroupIds      types.Set         `tfsdk:"group_ids"`
-	PermissionIds types.Set         `tfsdk:"permission_ids"`
-	Url           types.String      `tfsdk:"url"`
-	Display       types.String      `tfsdk:"display"`
-	DisplayUrl    types.String      `tfsdk:"display_url"`
+	Id         types.Int64       `tfsdk:"id"`
+	Username   types.String      `tfsdk:"username"`
+	Password   types.String      `tfsdk:"password"`
+	FirstName  types.String      `tfsdk:"first_name"`
+	LastName   types.String      `tfsdk:"last_name"`
+	Email      types.String      `tfsdk:"email"`
+	IsActive   types.Bool        `tfsdk:"is_active"`
+	DateJoined timetypes.RFC3339 `tfsdk:"date_joined"`
+	LastLogin  timetypes.RFC3339 `tfsdk:"last_login"`
+	GroupIds   types.Set         `tfsdk:"group_ids"`
+	Url        types.String      `tfsdk:"url"`
+	Display    types.String      `tfsdk:"display"`
+	DisplayUrl types.String      `tfsdk:"display_url"`
 }
 
 // userFilterNames lists the query parameters accepted by /api/users/users/ (sorted).
@@ -105,11 +104,6 @@ func userDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"group_ids": dsschema.SetAttribute{
 			MarkdownDescription: "IDs of the assigned Group (`netbox_user_group`). Defaults to an empty set.",
-			ElementType:         types.Int64Type,
-			Computed:            true,
-		},
-		"permission_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
@@ -375,7 +369,6 @@ func userDataFromAPI(ctx context.Context, obj *netbox.User, out *UserDataModel, 
 	out.DateJoined = conv.RFC3339(obj.GetDateJoinedOk())
 	out.LastLogin = conv.RFC3339(obj.GetLastLoginOk())
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
-	out.PermissionIds = conv.BriefIDs(obj.GetPermissions())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())

@@ -32,19 +32,18 @@ func init() { provider.RegisterResource(NewUserResource) }
 
 // UserModel is the Terraform state of netbox_user.
 type UserModel struct {
-	Id            types.Int64       `tfsdk:"id"`
-	Username      types.String      `tfsdk:"username"`
-	Password      types.String      `tfsdk:"password"`
-	FirstName     types.String      `tfsdk:"first_name"`
-	LastName      types.String      `tfsdk:"last_name"`
-	Email         types.String      `tfsdk:"email"`
-	IsActive      types.Bool        `tfsdk:"is_active"`
-	DateJoined    timetypes.RFC3339 `tfsdk:"date_joined"`
-	LastLogin     timetypes.RFC3339 `tfsdk:"last_login"`
-	GroupIds      types.Set         `tfsdk:"group_ids"`
-	PermissionIds types.Set         `tfsdk:"permission_ids"`
-	Url           types.String      `tfsdk:"url"`
-	Display       types.String      `tfsdk:"display"`
+	Id         types.Int64       `tfsdk:"id"`
+	Username   types.String      `tfsdk:"username"`
+	Password   types.String      `tfsdk:"password"`
+	FirstName  types.String      `tfsdk:"first_name"`
+	LastName   types.String      `tfsdk:"last_name"`
+	Email      types.String      `tfsdk:"email"`
+	IsActive   types.Bool        `tfsdk:"is_active"`
+	DateJoined timetypes.RFC3339 `tfsdk:"date_joined"`
+	LastLogin  timetypes.RFC3339 `tfsdk:"last_login"`
+	GroupIds   types.Set         `tfsdk:"group_ids"`
+	Url        types.String      `tfsdk:"url"`
+	Display    types.String      `tfsdk:"display"`
 }
 
 var (
@@ -155,13 +154,6 @@ func userResourceAttributes() map[string]schema.Attribute {
 		},
 		"group_ids": schema.SetAttribute{
 			MarkdownDescription: "IDs of the assigned Group (`netbox_user_group`). Defaults to an empty set.",
-			ElementType:         types.Int64Type,
-			Optional:            true,
-			Computed:            true,
-			Default:             setdefault.StaticValue(types.SetValueMust(types.Int64Type, []attr.Value{})),
-		},
-		"permission_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Permission (`netbox_permission`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Optional:            true,
 			Computed:            true,
@@ -312,9 +304,6 @@ func userToCreate(ctx context.Context, plan *UserModel, diags *diag.Diagnostics)
 	if conv.Known(plan.GroupIds) {
 		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
 	}
-	if conv.Known(plan.PermissionIds) {
-		body.SetPermissions(conv.Int32s(ctx, plan.PermissionIds, diags))
-	}
 	return body
 }
 
@@ -350,9 +339,6 @@ func userToPatch(ctx context.Context, plan *UserModel, diags *diag.Diagnostics) 
 	if conv.Known(plan.GroupIds) {
 		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
 	}
-	if conv.Known(plan.PermissionIds) {
-		body.SetPermissions(conv.Int32s(ctx, plan.PermissionIds, diags))
-	}
 	return body
 }
 
@@ -371,7 +357,6 @@ func userFromAPI(ctx context.Context, obj *netbox.User, prior *UserModel, out *U
 	out.DateJoined = conv.RFC3339(obj.GetDateJoinedOk())
 	out.LastLogin = conv.RFC3339(obj.GetLastLoginOk())
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
-	out.PermissionIds = conv.BriefIDs(obj.GetPermissions())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 }

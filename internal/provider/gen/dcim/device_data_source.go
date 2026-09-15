@@ -222,11 +222,11 @@ func deviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"primary_ip4_id": dsschema.Int64Attribute{
-			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`).",
+			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"primary_ip6_id": dsschema.Int64Attribute{
-			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`).",
+			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"oob_ip_id": dsschema.Int64Attribute{

@@ -30,7 +30,6 @@ type ProviderDataModel struct {
 	Id           types.Int64          `tfsdk:"id"`
 	Name         types.String         `tfsdk:"name"`
 	Slug         types.String         `tfsdk:"slug"`
-	AccountIds   types.Set            `tfsdk:"account_ids"`
 	Description  types.String         `tfsdk:"description"`
 	OwnerId      types.Int64          `tfsdk:"owner_id"`
 	Comments     types.String         `tfsdk:"comments"`
@@ -79,11 +78,6 @@ func providerDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"slug": dsschema.StringAttribute{
 			MarkdownDescription: "Slug.",
-			Computed:            true,
-		},
-		"account_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Account (`netbox_provider_account`). Defaults to an empty set.",
-			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{
@@ -391,7 +385,6 @@ func providerDataFromAPI(ctx context.Context, obj *netbox.Provider, out *Provide
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Name = conv.String(obj.GetNameOk())
 	out.Slug = conv.String(obj.GetSlugOk())
-	out.AccountIds = conv.BriefIDs(obj.GetAccounts())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

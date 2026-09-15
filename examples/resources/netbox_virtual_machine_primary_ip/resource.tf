@@ -15,8 +15,11 @@ resource "netbox_virtual_machine" "app01" {
   cluster_id = netbox_cluster.dc1.id
   vcpus      = 4
   memory     = 8192
-  # Do not set primary_ip4_id / primary_ip6_id here: the address depends on the
-  # interface, which depends on this virtual machine.
+  # The primary address depends on the interface, which depends on this VM,
+  # so it is assigned by netbox_virtual_machine_primary_ip below and ignored here.
+  lifecycle {
+    ignore_changes = [primary_ip4_id, primary_ip6_id]
+  }
 }
 
 resource "netbox_vm_interface" "app01_eth0" {

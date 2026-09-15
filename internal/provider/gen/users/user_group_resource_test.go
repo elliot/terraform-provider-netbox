@@ -80,7 +80,7 @@ func TestAccUserGroup_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_user_group", &resource.Sweeper{
 		Name:         "netbox_user_group",
-		Dependencies: []string{"netbox_notification_group", "netbox_owner", "netbox_permission", "netbox_user"},
+		Dependencies: []string{"netbox_permission", "netbox_user"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/users/groups/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -26,8 +26,11 @@ resource "netbox_device" "leaf1" {
   device_type_id = netbox_device_type.dcs_7050.id
   role_id        = netbox_device_role.leaf.id
   site_id        = netbox_site.dc1.id
-  # Do not set primary_ip4_id / primary_ip6_id here: the address depends on the
-  # interface, which depends on this device.
+  # The primary address depends on the interface, which depends on this
+  # device, so it is assigned by netbox_device_primary_ip below and ignored here.
+  lifecycle {
+    ignore_changes = [primary_ip4_id, primary_ip6_id]
+  }
 }
 
 resource "netbox_interface" "leaf1_mgmt" {

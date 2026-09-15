@@ -146,8 +146,10 @@ func tokenResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 		},
 		"pepper_id": schema.Int64Attribute{
-			MarkdownDescription: "ID of the cryptographic pepper used to hash the token (v2 only).",
+			MarkdownDescription: "ID of the cryptographic pepper used to hash the token (v2 only). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"url": schema.StringAttribute{
 			MarkdownDescription: "Url.",
@@ -299,9 +301,7 @@ func tokenToCreate(ctx context.Context, plan *TokenModel, diags *diag.Diagnostic
 	if conv.Known(plan.WriteEnabled) {
 		body.SetWriteEnabled(plan.WriteEnabled.ValueBool())
 	}
-	if plan.PepperId.IsNull() {
-		body.SetPepperIdNil()
-	} else if !plan.PepperId.IsUnknown() {
+	if conv.Known(plan.PepperId) {
 		body.SetPepperId(conv.Int32(plan.PepperId))
 	}
 	return body

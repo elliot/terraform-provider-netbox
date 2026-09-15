@@ -35,7 +35,6 @@ type ProviderModel struct {
 	Id           types.Int64          `tfsdk:"id"`
 	Name         types.String         `tfsdk:"name"`
 	Slug         types.String         `tfsdk:"slug"`
-	AccountIds   types.Set            `tfsdk:"account_ids"`
 	Description  types.String         `tfsdk:"description"`
 	OwnerId      types.Int64          `tfsdk:"owner_id"`
 	Comments     types.String         `tfsdk:"comments"`
@@ -69,7 +68,7 @@ func (r *ProviderResource) Metadata(_ context.Context, req resource.MetadataRequ
 
 func (r *ProviderResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "Manages a NetBox provider (`/api/circuits/providers/`).",
+		MarkdownDescription: "Manages a NetBox Manages a NetBox circuit provider (`/api/circuits/providers/`): a carrier or service provider that delivers circuits. Accounts are managed with `netbox_provider_account` (`/api/circuits/providers/`).",
 		Attributes:          providerResourceAttributes(),
 	}
 }
@@ -111,13 +110,6 @@ func providerResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Slug.",
 			Required:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100), stringvalidator.RegexMatches(regexp.MustCompile("^[-a-zA-Z0-9_]+$"), "must match ^[-a-zA-Z0-9_]+$")},
-		},
-		"account_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Account (`netbox_provider_account`). Defaults to an empty set.",
-			ElementType:         types.Int64Type,
-			Optional:            true,
-			Computed:            true,
-			Default:             setdefault.StaticValue(types.SetValueMust(types.Int64Type, []attr.Value{})),
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -288,9 +280,6 @@ func (r *ProviderResource) ImportState(ctx context.Context, req resource.ImportS
 // providerToCreate builds the ProviderRequest request body from the plan.
 func providerToCreate(ctx context.Context, plan *ProviderModel, diags *diag.Diagnostics) *netbox.ProviderRequest {
 	body := netbox.NewProviderRequest(plan.Name.ValueString(), plan.Slug.ValueString())
-	if conv.Known(plan.AccountIds) {
-		body.SetAccounts(conv.Int32s(ctx, plan.AccountIds, diags))
-	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
@@ -322,9 +311,6 @@ func providerToPatch(ctx context.Context, plan *ProviderModel, diags *diag.Diagn
 	}
 	if conv.Known(plan.Slug) {
 		body.SetSlug(plan.Slug.ValueString())
-	}
-	if conv.Known(plan.AccountIds) {
-		body.SetAccounts(conv.Int32s(ctx, plan.AccountIds, diags))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -359,7 +345,6 @@ func providerFromAPI(ctx context.Context, obj *netbox.Provider, prior *ProviderM
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Name = conv.String(obj.GetNameOk())
 	out.Slug = conv.String(obj.GetSlugOk())
-	out.AccountIds = conv.BriefIDs(obj.GetAccounts())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

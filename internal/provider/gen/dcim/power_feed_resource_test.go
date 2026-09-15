@@ -82,13 +82,10 @@ func TestAccPowerFeed_basic(t *testing.T) {
 			Config: acctest.Render(t, powerFeedTestConfigBasic, name),
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_power_feed.test", "id"),
-				resource.TestCheckResourceAttr("netbox_power_feed.test", "amperage", "20"),
-				resource.TestCheckResourceAttr("netbox_power_feed.test", "max_utilization", "80"),
 				resource.TestCheckResourceAttr("netbox_power_feed.test", "phase", "single-phase"),
 				resource.TestCheckResourceAttr("netbox_power_feed.test", "status", "active"),
 				resource.TestCheckResourceAttr("netbox_power_feed.test", "supply", "ac"),
 				resource.TestCheckResourceAttr("netbox_power_feed.test", "type", "primary"),
-				resource.TestCheckResourceAttr("netbox_power_feed.test", "voltage", "120"),
 			),
 		},
 		{

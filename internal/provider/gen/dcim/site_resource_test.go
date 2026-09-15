@@ -38,6 +38,8 @@ resource "netbox_asn" "test" {
   asn         = 4200000001
   rir_id      = netbox_rir.test.id
   description = "{{.Name}}"
+  # netbox_asn.site_ids mirrors netbox_site.asn_ids; the site owns the link here.
+  lifecycle { ignore_changes = [site_ids] }
 }
 resource "netbox_tag" "test" {
   name = "{{.Name}}"
@@ -121,7 +123,7 @@ func TestAccSite_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_site", &resource.Sweeper{
 		Name:         "netbox_site",
-		Dependencies: []string{"netbox_cooling_source", "netbox_location", "netbox_power_panel", "netbox_rack"},
+		Dependencies: []string{"netbox_rack"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/sites/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},

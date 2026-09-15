@@ -128,7 +128,7 @@ func TestAccDevice_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_device", &resource.Sweeper{
 		Name:         "netbox_device",
-		Dependencies: []string{"netbox_console_port", "netbox_console_server_port", "netbox_cooling_intake", "netbox_cooling_outflow", "netbox_device_bay", "netbox_front_port", "netbox_interface", "netbox_inventory_item", "netbox_module", "netbox_module_bay", "netbox_power_outlet", "netbox_power_port", "netbox_rear_port", "netbox_virtual_chassis", "netbox_virtual_device_context", "netbox_virtual_machine"},
+		Dependencies: []string{"netbox_virtual_machine"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/devices/", []string{"name__isw", "description__isw", "q"})
 		},

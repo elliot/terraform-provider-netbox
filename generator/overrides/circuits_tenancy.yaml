@@ -202,6 +202,16 @@ resources:
           description = "{{.Name}} updated"
           tags        = [netbox_tag.test.slug]
         }
+  providers:
+    description: "Manages a NetBox circuit provider (`/api/circuits/providers/`): a carrier or service provider that delivers circuits. Accounts are managed with `netbox_provider_account`."
+    attributes:
+      # `accounts` is the reverse side of ProviderAccount.provider: NetBox
+      # reports it on every provider and it can never be set from the provider
+      # itself, so exposing it as Optional+Computed with an empty default
+      # produces a perpetual `account_ids = [] -> [n]` diff as soon as a
+      # netbox_provider_account exists. Dropped until the generator treats
+      # reverse relations as read-only (see docs/validation/circuits-tenancy.md).
+      accounts: { skip: true }
   provider-accounts:
     description: "Manages a NetBox provider account (`/api/circuits/provider-accounts/`): a billing or service account held with a circuit provider."
     test:

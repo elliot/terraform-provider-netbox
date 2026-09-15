@@ -169,12 +169,16 @@ func virtualMachineResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"primary_ip4_id": schema.Int64Attribute{
-			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`).",
+			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"primary_ip6_id": schema.Int64Attribute{
-			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`).",
+			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"vcpus": schema.Float64Attribute{
 			MarkdownDescription: "Vcpus.",
@@ -408,14 +412,10 @@ func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, diag
 	} else if !plan.PlatformId.IsUnknown() {
 		body.SetPlatform(conv.Int32(plan.PlatformId))
 	}
-	if plan.PrimaryIp4Id.IsNull() {
-		body.SetPrimaryIp4Nil()
-	} else if !plan.PrimaryIp4Id.IsUnknown() {
+	if conv.Known(plan.PrimaryIp4Id) {
 		body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
 	}
-	if plan.PrimaryIp6Id.IsNull() {
-		body.SetPrimaryIp6Nil()
-	} else if !plan.PrimaryIp6Id.IsUnknown() {
+	if conv.Known(plan.PrimaryIp6Id) {
 		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
 	}
 	if plan.Vcpus.IsNull() {

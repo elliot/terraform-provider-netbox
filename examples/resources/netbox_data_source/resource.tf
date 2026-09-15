@@ -5,7 +5,7 @@ resource "netbox_data_source" "templates" {
   type          = "git"
   source_url    = "https://github.com/example/netbox-templates.git"
   enabled       = true
-  sync_interval = 86400
+  sync_interval = 1440
   ignore_rules  = "*.md\nREADME*"
   parameters    = jsonencode({ branch = "main" })
   description   = "Device configuration templates"

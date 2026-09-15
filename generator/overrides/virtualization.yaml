@@ -8,3 +8,7 @@ resources:
         target: vm_interface
       bridge:
         target: vm_interface
+  virtual-machines:
+    attributes:
+      primary_ip4: { computed: true }
+      primary_ip6: { computed: true }

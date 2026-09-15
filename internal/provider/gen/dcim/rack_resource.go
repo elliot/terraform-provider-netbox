@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -239,12 +240,16 @@ func rackResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"weight": schema.Float64Attribute{
-			MarkdownDescription: "Weight.",
+			MarkdownDescription: "Weight. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"max_weight": schema.Int64Attribute{
-			MarkdownDescription: "Maximum load capacity for the rack.",
+			MarkdownDescription: "Maximum load capacity for the rack. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"weight_unit": schema.StringAttribute{
 			MarkdownDescription: "Weight Unit. Valid values: `kg`, `g`, `lb`, `oz`. Defaults to the NetBox server default when omitted.",
@@ -260,16 +265,22 @@ func rackResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 		},
 		"outer_width": schema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (width).",
+			MarkdownDescription: "Outer dimension of rack (width). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"outer_height": schema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (height).",
+			MarkdownDescription: "Outer dimension of rack (height). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"outer_depth": schema.Int64Attribute{
-			MarkdownDescription: "Outer dimension of rack (depth).",
+			MarkdownDescription: "Outer dimension of rack (depth). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"outer_unit": schema.StringAttribute{
 			MarkdownDescription: "Outer Unit. Valid values: `mm`, `in`. Defaults to the NetBox server default when omitted.",
@@ -279,8 +290,10 @@ func rackResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"mounting_depth": schema.Int64Attribute{
-			MarkdownDescription: "Maximum depth of a mounted device, in millimeters. For four-post racks, this is the distance between the front and rear rails.",
+			MarkdownDescription: "Maximum depth of a mounted device, in millimeters. For four-post racks, this is the distance between the front and rear rails. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"airflow": schema.StringAttribute{
 			MarkdownDescription: "Airflow. Valid values: `front-to-rear`, `rear-to-front`. Defaults to the NetBox server default when omitted.",
@@ -517,14 +530,10 @@ func rackToCreate(ctx context.Context, plan *RackModel, diags *diag.Diagnostics)
 	if conv.Known(plan.StartingUnit) {
 		body.SetStartingUnit(conv.Int32(plan.StartingUnit))
 	}
-	if plan.Weight.IsNull() {
-		body.SetWeightNil()
-	} else if !plan.Weight.IsUnknown() {
+	if conv.Known(plan.Weight) {
 		body.SetWeight(plan.Weight.ValueFloat64())
 	}
-	if plan.MaxWeight.IsNull() {
-		body.SetMaxWeightNil()
-	} else if !plan.MaxWeight.IsUnknown() {
+	if conv.Known(plan.MaxWeight) {
 		body.SetMaxWeight(conv.Int32(plan.MaxWeight))
 	}
 	if plan.WeightUnit.IsNull() {
@@ -535,19 +544,13 @@ func rackToCreate(ctx context.Context, plan *RackModel, diags *diag.Diagnostics)
 	if conv.Known(plan.DescUnits) {
 		body.SetDescUnits(plan.DescUnits.ValueBool())
 	}
-	if plan.OuterWidth.IsNull() {
-		body.SetOuterWidthNil()
-	} else if !plan.OuterWidth.IsUnknown() {
+	if conv.Known(plan.OuterWidth) {
 		body.SetOuterWidth(conv.Int32(plan.OuterWidth))
 	}
-	if plan.OuterHeight.IsNull() {
-		body.SetOuterHeightNil()
-	} else if !plan.OuterHeight.IsUnknown() {
+	if conv.Known(plan.OuterHeight) {
 		body.SetOuterHeight(conv.Int32(plan.OuterHeight))
 	}
-	if plan.OuterDepth.IsNull() {
-		body.SetOuterDepthNil()
-	} else if !plan.OuterDepth.IsUnknown() {
+	if conv.Known(plan.OuterDepth) {
 		body.SetOuterDepth(conv.Int32(plan.OuterDepth))
 	}
 	if plan.OuterUnit.IsNull() {
@@ -555,9 +558,7 @@ func rackToCreate(ctx context.Context, plan *RackModel, diags *diag.Diagnostics)
 	} else if !plan.OuterUnit.IsUnknown() {
 		body.SetOuterUnit(plan.OuterUnit.ValueString())
 	}
-	if plan.MountingDepth.IsNull() {
-		body.SetMountingDepthNil()
-	} else if !plan.MountingDepth.IsUnknown() {
+	if conv.Known(plan.MountingDepth) {
 		body.SetMountingDepth(conv.Int32(plan.MountingDepth))
 	}
 	if plan.Airflow.IsNull() {

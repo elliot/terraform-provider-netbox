@@ -230,12 +230,16 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"primary_ip4_id": schema.Int64Attribute{
-			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`).",
+			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"primary_ip6_id": schema.Int64Attribute{
-			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`).",
+			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`). Defaults to the NetBox server default when omitted.",
 			Optional:            true,
+			Computed:            true,
+			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"oob_ip_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Ip Address (`netbox_ip_address`).",
@@ -494,14 +498,10 @@ func deviceToCreate(ctx context.Context, plan *DeviceModel, diags *diag.Diagnost
 	} else if !plan.CoolingMethod.IsUnknown() {
 		body.SetCoolingMethod(plan.CoolingMethod.ValueString())
 	}
-	if plan.PrimaryIp4Id.IsNull() {
-		body.SetPrimaryIp4Nil()
-	} else if !plan.PrimaryIp4Id.IsUnknown() {
+	if conv.Known(plan.PrimaryIp4Id) {
 		body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
 	}
-	if plan.PrimaryIp6Id.IsNull() {
-		body.SetPrimaryIp6Nil()
-	} else if !plan.PrimaryIp6Id.IsUnknown() {
+	if conv.Known(plan.PrimaryIp6Id) {
 		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
 	}
 	if plan.OobIpId.IsNull() {
@@ -716,10 +716,10 @@ func deviceFromAPI(ctx context.Context, obj *netbox.Device, prior *DeviceModel, 
 	out.SiteId = conv.BriefID(obj.GetSiteOk())
 	out.LocationId = conv.BriefID(obj.GetLocationOk())
 	out.RackId = conv.BriefID(obj.GetRackOk())
-	out.Position = conv.Float64From(obj.GetPositionOk())
+	out.Position = conv.Float64Keep(conv.Float64From(obj.GetPositionOk()), conv.PriorFloat(prior, func(m *DeviceModel) types.Float64 { return m.Position }), 0)
 	out.Face = conv.Choice(obj.GetFaceOk())
-	out.Latitude = conv.Float64From(obj.GetLatitudeOk())
-	out.Longitude = conv.Float64From(obj.GetLongitudeOk())
+	out.Latitude = conv.Float64Keep(conv.Float64From(obj.GetLatitudeOk()), conv.PriorFloat(prior, func(m *DeviceModel) types.Float64 { return m.Latitude }), 0)
+	out.Longitude = conv.Float64Keep(conv.Float64From(obj.GetLongitudeOk()), conv.PriorFloat(prior, func(m *DeviceModel) types.Float64 { return m.Longitude }), 0)
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.Airflow = conv.Choice(obj.GetAirflowOk())
 	out.CoolingMethod = conv.Choice(obj.GetCoolingMethodOk())

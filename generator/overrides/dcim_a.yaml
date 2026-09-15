@@ -80,6 +80,8 @@ resources:
           asn         = 4200000001
           rir_id      = netbox_rir.test.id
           description = "{{.Name}}"
+          # netbox_asn.site_ids mirrors netbox_site.asn_ids; the site owns the link here.
+          lifecycle { ignore_changes = [site_ids] }
         }
         resource "netbox_tag" "test" {
           name = "{{.Name}}"
@@ -242,6 +244,17 @@ resources:
         u_height: "42"
 
   racks:
+    # NetBox copies the physical attributes of the rack type (form factor,
+    # width, height, outer dimensions, weight, mounting depth) onto the rack
+    # whenever rack_type is set, so the nullable ones must be Optional+Computed
+    # or Terraform reports an inconsistent result after apply.
+    attributes:
+      outer_width: { computed: true }
+      outer_height: { computed: true }
+      outer_depth: { computed: true }
+      mounting_depth: { computed: true }
+      weight: { computed: true }
+      max_weight: { computed: true }
     test:
       basic: |
         resource "netbox_site" "test" {
@@ -448,14 +461,13 @@ resources:
           comments        = "updated by acceptance test"
           tags            = [netbox_tag.test.slug]
         }
+      # voltage/amperage/max_utilization defaults come from the NetBox settings
+      # POWERFEED_DEFAULT_* (the demo uses 220 V / 16 A), so they are not checked.
       checks:
         status: active
         type: primary
         supply: ac
         phase: single-phase
-        voltage: "120"
-        amperage: "20"
-        max_utilization: "80"
 
   power-ports:
     test:
@@ -1166,10 +1178,13 @@ resources:
         }
 
   mac-addresses:
+    # NetBox normalises MAC addresses to upper case (EUI-48 with colons); write
+    # them upper-case in configuration or Terraform reports an inconsistent
+    # result after apply.
     test:
       basic: |
         resource "netbox_mac_address" "test" {
-          mac_address = "02:00:5e:10:20:30"
+          mac_address = "02:00:5E:10:20:30"
           description = "{{.Name}}"
         }
       update: |
@@ -1206,7 +1221,7 @@ resources:
           slug = "{{.Name}}"
         }
         resource "netbox_mac_address" "test" {
-          mac_address          = "02:00:5e:10:20:31"
+          mac_address          = "02:00:5E:10:20:31"
           assigned_object_type = "dcim.interface"
           assigned_object_id   = netbox_interface.test.id
           description          = "{{.Name}} updated"

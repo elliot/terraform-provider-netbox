@@ -97,7 +97,7 @@ func tokenDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"pepper_id": dsschema.Int64Attribute{
-			MarkdownDescription: "ID of the cryptographic pepper used to hash the token (v2 only).",
+			MarkdownDescription: "ID of the cryptographic pepper used to hash the token (v2 only). Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"url": dsschema.StringAttribute{

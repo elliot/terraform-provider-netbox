@@ -125,7 +125,7 @@ func rearPortDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"front_ports": dsschema.ListNestedAttribute{
-			MarkdownDescription: "Front Ports.",
+			MarkdownDescription: "Front Ports. Defaults to the NetBox server default when omitted.",
 			NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
 				"position": dsschema.Int64Attribute{
 					MarkdownDescription: "Position.",

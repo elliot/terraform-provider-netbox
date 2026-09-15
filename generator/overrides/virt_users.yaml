@@ -200,6 +200,12 @@ resources:
       checks:
         enabled: "true"
 
+  groups:
+    attributes:
+      # Reverse side of ObjectPermission.groups; see users.permissions.
+      permissions:
+        skip: true
+
   owners:
     test:
       basic: |
@@ -259,6 +265,10 @@ resources:
         enabled: "true"
 
   tokens:
+    attributes:
+      # NetBox fills pepper_id (v2 tokens) server-side; track its value.
+      pepper_id:
+        computed: true
     test:
       basic: |
         resource "netbox_user" "test" {
@@ -285,6 +295,12 @@ resources:
         write_enabled: "true"
 
   users:
+    attributes:
+      # Reverse side of ObjectPermission.users: managing it here conflicts
+      # with netbox_permission.user_ids (perpetual diff). Assign permissions
+      # from netbox_permission instead.
+      permissions:
+        skip: true
     test:
       basic: |
         resource "netbox_user" "test" {

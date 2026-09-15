@@ -1,13 +1,11 @@
 resource "netbox_webhook" "slack" {
-  name             = "slack-netops"
-  payload_url      = "https://hooks.slack.com/services/T000/B000/XXXX"
-  http_method      = "POST"
+  name              = "slack-netops"
+  payload_url       = "https://hooks.slack.com/services/T000/B000/XXXX"
+  http_method       = "POST"
   http_content_type = "application/json"
-  body_template    = <<-EOT
-    {"text": "{{ event }} {{ model }} {{ data.name }} by {{ username }}"}
-  EOT
-  ssl_verification = true
-  timeout          = 10
+  body_template     = "{\"text\": \"{{ event }} {{ model }} {{ data.name }} by {{ username }}\"}"
+  ssl_verification  = true
+  timeout           = 10
 }
 
 # A signed webhook with custom headers; the secret is used for X-Hook-Signature.

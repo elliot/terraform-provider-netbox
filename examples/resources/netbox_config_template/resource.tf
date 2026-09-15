@@ -3,7 +3,8 @@
 resource "netbox_config_template" "base" {
   name        = "base-config"
   description = "Hostname, NTP and syslog from config context"
-  template_code = <<-EOT
+  # NetBox strips surrounding whitespace from text fields: trim the heredoc.
+  template_code = trimspace(<<-EOT
     hostname {{ device.name }}
     {% for server in ntp_servers %}
     ntp server {{ server }}
@@ -12,6 +13,7 @@ resource "netbox_config_template" "base" {
     logging host {{ syslog.host }}
     {% endif %}
   EOT
+  )
   environment_params = jsonencode({ trim_blocks = true, lstrip_blocks = true })
   mime_type          = "text/plain"
   file_extension     = "cfg"

@@ -5,5 +5,5 @@ data "netbox_module_types" "all" {
   ]
 }
 output "module_types_names" {
-  value = data.netbox_module_types.all.items[*].name
+  value = data.netbox_module_types.all.items[*].model
 }

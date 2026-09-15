@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -164,7 +165,7 @@ func rearPortTemplateResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"front_ports": schema.ListNestedAttribute{
-			MarkdownDescription: "Front Ports.",
+			MarkdownDescription: "Front Ports. Defaults to the NetBox server default when omitted.",
 			NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
 				"position": schema.Int64Attribute{
 					MarkdownDescription: "Position.",
@@ -179,7 +180,9 @@ func rearPortTemplateResourceAttributes() map[string]schema.Attribute {
 					Optional:            true,
 				},
 			}},
-			Optional: true,
+			Optional:      true,
+			Computed:      true,
+			PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",

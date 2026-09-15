@@ -562,7 +562,7 @@ resources:
           type          = "git"
           source_url    = "https://github.com/netbox-community/netbox-demo-data.git"
           enabled       = false
-          sync_interval = 86400
+          sync_interval = 1440
           ignore_rules  = "*.md\n*.txt"
           parameters    = jsonencode({ branch = "main" })
           description   = "{{.Name}} updated"

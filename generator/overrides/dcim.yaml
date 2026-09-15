@@ -47,3 +47,9 @@ resources:
     attributes:
       latitude: { precision: 6 }
       longitude: { precision: 6 }
+  devices:
+    attributes:
+      # Usually managed through netbox_device_primary_ip (breaks the
+      # device -> interface -> ip -> device cycle); track the server value.
+      primary_ip4: { computed: true }
+      primary_ip6: { computed: true }
