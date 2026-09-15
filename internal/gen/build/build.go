@@ -375,11 +375,14 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		case ints == 1 && refs == 1:
 			kind = model.KindFK
 		case strs == len(rs.OneOf):
+			// oneOf [string(pattern), string(maxLength 0)]: blank or pattern.
 			kind = model.KindString
 			for _, alt := range rs.OneOf {
 				if alt.MaxLength != nil && *alt.MaxLength > 0 {
 					a.MaxLength = alt.MaxLength
-					a.Pattern = alt.Pattern
+					if alt.Pattern != "" {
+						a.Pattern = "^$|" + alt.Pattern
+					}
 				}
 			}
 		default:
@@ -484,7 +487,9 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		case model.KindString:
 			if !a.Nullable {
 				a.Computed = true
-				a.DefaultEmptyString = true
+				// Default to "" (and always send it) only when NetBox accepts a
+				// blank value; otherwise behave like a server-defaulted field.
+				a.DefaultEmptyString = blankAllowed(a)
 			}
 		case model.KindInt, model.KindFloat:
 			if !a.Nullable {
@@ -536,6 +541,21 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		a.Description = defaultDescription(a)
 	}
 	return a, nil
+}
+
+// blankAllowed reports whether "" is a valid value for a string property.
+func blankAllowed(a *model.Attr) bool {
+	if a.MinLength != nil && *a.MinLength > 0 {
+		return false
+	}
+	if a.Pattern == "" {
+		return true
+	}
+	re, err := regexp.Compile(a.Pattern)
+	if err != nil {
+		return true
+	}
+	return re.MatchString("")
 }
 
 func defaultDescription(a *model.Attr) string {

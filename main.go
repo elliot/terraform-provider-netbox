@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
+	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/all"
 )
 
 // version is set by goreleaser via -ldflags "-X main.version=...".
