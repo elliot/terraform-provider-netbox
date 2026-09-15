@@ -74,7 +74,7 @@ func autoFixture(r *model.Resource, update bool) (string, bool) {
 }
 
 // testFile renders <name>_resource_test.go.
-func testFile(r *model.Resource, version string) (string, error) {
+func testFile(r *model.Resource, version string) string {
 	basic, update := r.Test.Basic, r.Test.Update
 	auto := false
 	if basic == "" {
@@ -118,6 +118,16 @@ func testFile(r *model.Resource, version string) (string, error) {
 `)
 	fmt.Fprintf(&b, "const %sTestConfigBasic = %s\n\n", lower(r.GoName), backtick(basic))
 	fmt.Fprintf(&b, "const %sTestConfigUpdate = %s\n\n", lower(r.GoName), backtick(update))
+	dsCfg := fmt.Sprintf(`
+data %[1]q "by_id" {
+  id = %[1]s.test.id
+}
+
+data %[2]q "list" {
+  filters = [{ name = "id", value = tostring(%[1]s.test.id) }]
+}
+`, r.TFType(), r.TFPluralType())
+	fmt.Fprintf(&b, "const %sTestConfigDataSources = %s\n\n", lower(r.GoName), backtick(dsCfg))
 
 	testFunc := "resource.ParallelTest"
 	if r.Test.Serial {
@@ -154,6 +164,16 @@ func testFile(r *model.Resource, version string) (string, error) {
 	if update != "" {
 		lastCfg = lower(r.GoName) + "TestConfigUpdate"
 	}
+	// Data source step: read the object back by id and through the list data source.
+	fmt.Fprintf(&b, `		{
+			Config: acctest.Render(t, %[1]s+%[2]sTestConfigDataSources, name),
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttrPair("data.%[3]s.by_id", "id", %[4]q, "id"),
+				resource.TestCheckResourceAttr("data.%[5]s.list", "items.#", "1"),
+				resource.TestCheckResourceAttrPair("data.%[5]s.list", "items.0.id", %[4]q, "id"),
+			),
+		},
+`, lastCfg, lower(r.GoName), r.TFType(), r.TFType()+".test", r.TFPluralType())
 	ign := ""
 	if len(ignore) > 0 {
 		ign = "\t\t\tImportStateVerifyIgnore: []string{\"" + strings.Join(ignore, "\", \"") + "\"},\n"
@@ -188,7 +208,7 @@ func init() {
 	})
 }
 `, r.TFType()+".test", ign, lastCfg, testFunc, r.TFType(), r.Path, goStringSlice(depTypes(r)), goStringSlice(sweepFilters(r)))
-	return b.String(), nil
+	return b.String()
 }
 
 // depTypes returns the Terraform types that must be swept before this one
@@ -268,7 +288,7 @@ func sortedKeys(m map[string]string) []string {
 
 func writeExamples(r *model.Resource, dir string) error {
 	d := filepath.Join(dir, "resources", r.TFType())
-	if err := os.MkdirAll(d, 0o755); err != nil {
+	if err := os.MkdirAll(d, 0o750); err != nil {
 		return err
 	}
 	example := r.Test.Basic
@@ -292,7 +312,7 @@ func writeExamples(r *model.Resource, dir string) error {
 
 func writeDataSourceExamples(r *model.Resource, dir string) error {
 	d := filepath.Join(dir, "data-sources", r.TFType())
-	if err := os.MkdirAll(d, 0o755); err != nil {
+	if err := os.MkdirAll(d, 0o750); err != nil {
 		return err
 	}
 	var single string
@@ -312,7 +332,7 @@ func writeDataSourceExamples(r *model.Resource, dir string) error {
 		return err
 	}
 	dp := filepath.Join(dir, "data-sources", r.TFPluralType())
-	if err := os.MkdirAll(dp, 0o755); err != nil {
+	if err := os.MkdirAll(dp, 0o750); err != nil {
 		return err
 	}
 	list := fmt.Sprintf("data %q \"all\" {}\n\ndata %q \"filtered\" {\n  filters = [\n    { name = \"q\", value = \"example\" },\n  ]\n  limit = 10\n}\n\noutput \"%s_ids\" {\n  value = data.%s.filtered.items[*].id\n}\n", r.TFPluralType(), r.TFPluralType(), r.Plural, r.TFPluralType())
@@ -326,7 +346,7 @@ func writeIfGenerated(path, content string) error {
 	if data, err := os.ReadFile(path); err == nil && !strings.HasPrefix(string(data), marker) {
 		return nil
 	}
-	return os.WriteFile(path, []byte(marker+content), 0o644)
+	return os.WriteFile(path, []byte(marker+content), 0o600)
 }
 
 func skeletonExample(r *model.Resource) string {

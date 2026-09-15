@@ -26,6 +26,16 @@ const tagTestConfigUpdate = `resource "netbox_tag" "test" {
 }
 `
 
+const tagTestConfigDataSources = `
+data "netbox_tag" "by_id" {
+  id = netbox_tag.test.id
+}
+
+data "netbox_tags" "list" {
+  filters = [{ name = "id", value = tostring(netbox_tag.test.id) }]
+}
+`
+
 func TestAccTag_basic(t *testing.T) {
 	name := acctest.RandName()
 	steps := []resource.TestStep{
@@ -40,6 +50,14 @@ func TestAccTag_basic(t *testing.T) {
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_tag.test", plancheck.ResourceActionUpdate)},
 			},
+		},
+		{
+			Config: acctest.Render(t, tagTestConfigUpdate+tagTestConfigDataSources, name),
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttrPair("data.netbox_tag.by_id", "id", "netbox_tag.test", "id"),
+				resource.TestCheckResourceAttr("data.netbox_tags.list", "items.#", "1"),
+				resource.TestCheckResourceAttrPair("data.netbox_tags.list", "items.0.id", "netbox_tag.test", "id"),
+			),
 		},
 		{
 			ResourceName:      "netbox_tag.test",

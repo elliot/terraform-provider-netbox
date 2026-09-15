@@ -35,23 +35,26 @@ Transformations (in order):
 Usage: fix_spec.py <input.json> <output.json>
 """
 
-import copy
 import json
+import os
 import sys
 
 CHOICE_STRING = "ChoiceString"
 CHOICE_INTEGER = "ChoiceInteger"
 
-# Request schemas whose ``required`` list disagrees with NetBox's real validation.
-REQUIRED_FIXES = {
-    # schema: (add, remove)
-    "WritableRackTypeRequest": ([], ["form_factor"]),  # deprecated in 4.7, has a default
-    "CustomFieldRequest": ([], ["type"]),
-    "IKEPolicyRequest": ([], ["version"]),
-    "TunnelRequest": ([], ["status"]),
-    "TunnelTerminationRequest": ([], ["role"]),
-    "NestedTagRequest": (["slug"], ["name"]),
-}
+# Request schemas whose ``required`` list disagrees with NetBox's real validation
+# live in spec/required-fixes.json (shared with internal/gen).
+def load_required_fixes(spec_path):
+    path = os.path.join(os.path.dirname(os.path.abspath(spec_path)), "required-fixes.json")
+    with open(path) as f:
+        data = json.load(f)
+    out = {}
+    for name, fix in data.items():
+        if name.startswith("_"):
+            continue
+        out[name] = (fix.get("add", []), fix.get("remove", []))
+    return out
+
 
 BINARY_FIELDS = {"front_image", "rear_image", "image"}
 
@@ -223,9 +226,9 @@ def relax_read_required(schemas):
     return n
 
 
-def fix_request_required(schemas):
+def fix_request_required(schemas, fixes):
     n = 0
-    for name, (add, remove) in REQUIRED_FIXES.items():
+    for name, (add, remove) in fixes.items():
         schema = schemas.get(name)
         if not schema:
             continue
@@ -281,7 +284,7 @@ def main(src, dst):
     stats["string_oneof"] = collapse_string_oneof(schemas)
     stats["choice_objects"] = hoist_choice_objects(schemas)
     stats["read_required"] = relax_read_required(schemas)
-    stats["request_required"] = fix_request_required(schemas)
+    stats["request_required"] = fix_request_required(schemas, load_required_fixes(src))
     stats["binary_ranges"] = fix_binary_and_ranges(schemas)
     stats["enums"] = strip_enums(doc)
     doc.setdefault("info", {})["x-fix-spec"] = stats

@@ -140,6 +140,19 @@ func JSONObjectToAPI(v jsontypes.Normalized, diags *diag.Diagnostics) map[string
 	return out
 }
 
+// JSONStringMapToAPI decodes a normalized JSON object of strings.
+func JSONStringMapToAPI(v jsontypes.Normalized, diags *diag.Diagnostics) map[string]string {
+	if !Known(v) {
+		return nil
+	}
+	out := map[string]string{}
+	if err := json.Unmarshal([]byte(v.ValueString()), &out); err != nil {
+		diags.AddError("Invalid JSON object of strings", err.Error())
+		return nil
+	}
+	return out
+}
+
 // IntRangesToAPI converts a List(List(Int64)) into [][]int32.
 func IntRangesToAPI(ctx context.Context, v types.List, diags *diag.Diagnostics) [][]int32 {
 	out := [][]int32{}

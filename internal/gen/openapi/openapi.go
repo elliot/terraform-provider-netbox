@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -163,7 +164,9 @@ func orderedKeys(data []byte, field string) []string {
 	return nil
 }
 
-// Load reads and parses an OpenAPI JSON document.
+// Load reads and parses an OpenAPI JSON document and applies the required-list
+// corrections from required-fixes.json next to it (the same file the client
+// generator uses), so both sides agree on constructor arguments.
 func Load(path string) (*Document, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -173,7 +176,70 @@ func Load(path string) (*Document, error) {
 	if err := json.Unmarshal(data, &doc); err != nil {
 		return nil, fmt.Errorf("parse %s: %w", path, err)
 	}
+	if err := doc.applyRequiredFixes(filepath.Join(filepath.Dir(path), "required-fixes.json")); err != nil {
+		return nil, err
+	}
 	return &doc, nil
+}
+
+type requiredFix struct {
+	Add    []string `json:"add"`
+	Remove []string `json:"remove"`
+}
+
+func (d *Document) applyRequiredFixes(path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return fmt.Errorf("parse %s: %w", path, err)
+	}
+	for name, msg := range raw {
+		if strings.HasPrefix(name, "_") {
+			continue
+		}
+		var fix requiredFix
+		if err := json.Unmarshal(msg, &fix); err != nil {
+			return fmt.Errorf("parse %s: %s: %w", path, name, err)
+		}
+		s := d.Components.Schemas[name]
+		if s == nil {
+			continue
+		}
+		var req []string
+		for _, r := range s.Required {
+			keep := true
+			for _, rm := range fix.Remove {
+				if rm == r {
+					keep = false
+				}
+			}
+			if keep {
+				req = append(req, r)
+			}
+		}
+		for _, a := range fix.Add {
+			if !contains(req, a) {
+				req = append(req, a)
+			}
+		}
+		s.Required = req
+	}
+	return nil
+}
+
+func contains(list []string, s string) bool {
+	for _, v := range list {
+		if v == s {
+			return true
+		}
+	}
+	return false
 }
 
 // RefName returns the component name of a $ref ("#/components/schemas/Site" -> "Site").

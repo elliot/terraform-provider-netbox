@@ -51,7 +51,7 @@ func All(resources []*model.Resource, netboxVersion string, opts Options) error 
 	sort.Strings(appNames)
 	for _, app := range appNames {
 		dir := filepath.Join(opts.OutDir, pkgName(app))
-		if err := os.MkdirAll(dir, 0o755); err != nil {
+		if err := os.MkdirAll(dir, 0o750); err != nil {
 			return err
 		}
 		for _, r := range apps[app] {
@@ -91,11 +91,7 @@ func renderResource(r *model.Resource, version, dir string, opts Options) error 
 		if err := writeGo(filepath.Join(dir, r.Name+"_resource.go"), src); err != nil {
 			return err
 		}
-		test, err := testFile(r, version)
-		if err != nil {
-			return err
-		}
-		if test != "" {
+		if test := testFile(r, version); test != "" {
 			if err := writeGo(filepath.Join(dir, r.Name+"_resource_test.go"), test); err != nil {
 				return err
 			}
@@ -115,15 +111,15 @@ func writeGo(path, src string) error {
 	out, err := imports.Process(path, []byte(src), &imports.Options{Comments: true, TabIndent: true, TabWidth: 8, FormatOnly: false})
 	if err != nil {
 		// Write the raw source to help debugging, then fail.
-		_ = os.WriteFile(path+".broken", []byte(src), 0o644)
+		_ = os.WriteFile(path+".broken", []byte(src), 0o600)
 		return fmt.Errorf("format %s: %w (raw source written to %s.broken)", path, err, path)
 	}
-	return os.WriteFile(path, out, 0o644)
+	return os.WriteFile(path, out, 0o600)
 }
 
 func writeAllPackage(apps []string, version, outDir string) error {
 	dir := filepath.Join(outDir, "all")
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, 0o750); err != nil {
 		return err
 	}
 	var b strings.Builder
@@ -133,11 +129,11 @@ func writeAllPackage(apps []string, version, outDir string) error {
 		fmt.Fprintf(&b, "\t_ \"github.com/elliot/terraform-provider-netbox/internal/provider/gen/%s\"\n", app)
 	}
 	b.WriteString(")\n")
-	return os.WriteFile(filepath.Join(dir, "all.go"), []byte(b.String()), 0o644)
+	return os.WriteFile(filepath.Join(dir, "all.go"), []byte(b.String()), 0o600)
 }
 
 func writeResourcesDoc(resources []*model.Resource, docsDir string) error {
-	if err := os.MkdirAll(docsDir, 0o755); err != nil {
+	if err := os.MkdirAll(docsDir, 0o750); err != nil {
 		return err
 	}
 	var b strings.Builder
@@ -161,5 +157,5 @@ func writeResourcesDoc(resources []*model.Resource, docsDir string) error {
 		}
 		fmt.Fprintf(&b, "| %s | `%s` | %s | %s | %s | %s |\n", r.App, r.Path, res, ds, lds, note)
 	}
-	return os.WriteFile(filepath.Join(docsDir, "RESOURCES.md"), []byte(b.String()), 0o644)
+	return os.WriteFile(filepath.Join(docsDir, "RESOURCES.md"), []byte(b.String()), 0o600)
 }

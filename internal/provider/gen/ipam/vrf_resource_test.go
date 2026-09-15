@@ -30,6 +30,16 @@ const vrfTestConfigUpdate = `resource "netbox_vrf" "test" {
 }
 `
 
+const vrfTestConfigDataSources = `
+data "netbox_vrf" "by_id" {
+  id = netbox_vrf.test.id
+}
+
+data "netbox_vrfs" "list" {
+  filters = [{ name = "id", value = tostring(netbox_vrf.test.id) }]
+}
+`
+
 func TestAccVrf_basic(t *testing.T) {
 	name := acctest.RandName()
 	steps := []resource.TestStep{
@@ -44,6 +54,14 @@ func TestAccVrf_basic(t *testing.T) {
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_vrf.test", plancheck.ResourceActionUpdate)},
 			},
+		},
+		{
+			Config: acctest.Render(t, vrfTestConfigUpdate+vrfTestConfigDataSources, name),
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttrPair("data.netbox_vrf.by_id", "id", "netbox_vrf.test", "id"),
+				resource.TestCheckResourceAttr("data.netbox_vrfs.list", "items.#", "1"),
+				resource.TestCheckResourceAttrPair("data.netbox_vrfs.list", "items.0.id", "netbox_vrf.test", "id"),
+			),
 		},
 		{
 			ResourceName:            "netbox_vrf.test",
@@ -69,7 +87,7 @@ func TestAccVrf_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_vrf", &resource.Sweeper{
 		Name:         "netbox_vrf",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_interface", "netbox_ip_address", "netbox_ip_range", "netbox_prefix", "netbox_vm_interface"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/ipam/vrfs/", []string{"name__isw", "description__isw", "q"})
 		},

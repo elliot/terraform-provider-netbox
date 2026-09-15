@@ -48,7 +48,8 @@ func RandName() string {
 	return Prefix + acctest.RandStringFromCharSet(8, acctest.CharSetAlphaNum)
 }
 
-// Render executes an HCL text/template with {{.Name}} set to name and the
+// Render executes an HCL text/template with {{.Name}} set to name ({{.Snake}}
+// is the same with underscores, for identifiers that forbid dashes) and the
 // provider block prepended.
 func Render(t *testing.T, tmpl, name string) string {
 	t.Helper()
@@ -57,7 +58,7 @@ func Render(t *testing.T, tmpl, name string) string {
 		t.Fatalf("bad test config template: %v", err)
 	}
 	var buf bytes.Buffer
-	if err := tp.Execute(&buf, map[string]string{"Name": name, "Prefix": Prefix}); err != nil {
+	if err := tp.Execute(&buf, map[string]string{"Name": name, "Snake": strings.ReplaceAll(name, "-", "_"), "Prefix": Prefix}); err != nil {
 		t.Fatalf("render test config: %v", err)
 	}
 	return "provider \"netbox\" {}\n\n" + buf.String()

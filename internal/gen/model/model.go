@@ -83,6 +83,9 @@ type Attr struct {
 	// Precision is the number of decimals NetBox stores for floats (0 = unknown).
 	Precision int
 
+	// StringMap marks JSON attributes whose client type is map[string]string.
+	StringMap bool
+
 	// Client typing.
 	Int64    bool // client scalar is int64 (else int32)
 	Float32  bool // client scalar is float32 (else float64)

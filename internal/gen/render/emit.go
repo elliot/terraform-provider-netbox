@@ -427,6 +427,9 @@ func collectionExpr(a model.Attr, v string) string {
 	case model.KindCustomFields:
 		return "conv.JSONObjectToAPI(" + v + ", diags)"
 	case model.KindJSON:
+		if a.StringMap {
+			return "conv.JSONStringMapToAPI(" + v + ", diags)"
+		}
 		return "conv.JSONToAPI(" + v + ", diags)"
 	case model.KindIntRangeList:
 		return "conv.IntRangesToAPI(ctx, " + v + ", diags)"
@@ -506,7 +509,7 @@ func setterCode(a model.Attr, body, v string, patch bool) string {
 			return fmt.Sprintf("if %s.IsNull() {\n%sNil()\n} else if !%s.IsUnknown() {\n%s(%s)\n}\n", v, set, v, set, scalarExpr(a, v))
 		case a.Required:
 			return fmt.Sprintf("if conv.Known(%s) {\n%s(%s)\n}\n", v, set, scalarExpr(a, v))
-		case a.Nullable && !(a.Computed && a.Kind != model.KindChoice && a.Kind != model.KindDateTime):
+		case a.Nullable && (!a.Computed || a.Kind == model.KindChoice || a.Kind == model.KindDateTime):
 			// Optional nullable: null clears explicitly.
 			return fmt.Sprintf("if %s.IsNull() {\n%sNil()\n} else if !%s.IsUnknown() {\n%s(%s)\n}\n", v, set, v, set, scalarExpr(a, v))
 		case a.Nullable && a.Computed:

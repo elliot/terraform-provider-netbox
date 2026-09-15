@@ -4,8 +4,14 @@
 package all
 
 import (
+	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/circuits"
+	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/core"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/dcim"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/extras"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/ipam"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/tenancy"
+	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/users"
+	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/virtualization"
+	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/vpn"
+	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/wireless"
 )

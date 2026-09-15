@@ -3,6 +3,7 @@
 package build
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"sort"
@@ -461,6 +462,9 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 			return nil, fmt.Errorf("%s: inline object not supported", pname)
 		}
 		kind = model.KindJSON
+		if ap := additionalPropertiesType(rs); ap == "string" {
+			a.StringMap = true
+		}
 	default:
 		return nil, fmt.Errorf("%s: unsupported type %q", pname, rs.Type)
 	}
@@ -543,6 +547,20 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 	return a, nil
 }
 
+// additionalPropertiesType returns the declared type of additionalProperties ("" when free-form).
+func additionalPropertiesType(s *openapi.Schema) string {
+	if len(s.AdditionalProperties) == 0 {
+		return ""
+	}
+	var sub struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(s.AdditionalProperties, &sub); err != nil {
+		return ""
+	}
+	return sub.Type
+}
+
 // blankAllowed reports whether "" is a valid value for a string property.
 func blankAllowed(a *model.Attr) bool {
 	if a.MinLength != nil && *a.MinLength > 0 {
@@ -603,6 +621,9 @@ func (b *Builder) pairRead(a *model.Attr, readProp *openapi.Schema) {
 		return
 	}
 	switch {
+	case len(rs.OneOf) > 0:
+		// oneOf of strings (colour, dns_name, email): the client reads a plain string.
+		a.ReadKind = model.ReadScalar
 	case isChoiceObject(rs):
 		a.ReadKind = model.ReadChoice
 		if v := rs.Properties["value"]; v != nil && v.Type == "integer" {
@@ -717,7 +738,7 @@ func (b *Builder) buildNested(r *model.Resource, a *model.Attr, itemReq *openapi
 // classifyReadOnly maps a read-only property (counts, display_url, ...) to a computed attribute.
 func (b *Builder) classifyReadOnly(pname string, prop *openapi.Schema) (model.Attr, bool) {
 	doc := b.Doc
-	a := model.Attr{Name: pname, JSON: pname, GoField: naming.GoField(pname), ReadGoField: naming.GoField(pname), ReadOnly: true, Computed: true,
+	a := model.Attr{Name: strings.TrimLeft(pname, "_"), JSON: pname, GoField: naming.GoField(pname), ReadGoField: naming.GoField(pname), ReadOnly: true, Computed: true,
 		Description: strings.TrimSpace(prop.Description), Nullable: prop.Nullable}
 	rs, refName := doc.Resolve(prop)
 	if rs == nil {
@@ -736,7 +757,7 @@ func (b *Builder) classifyReadOnly(pname string, prop *openapi.Schema) (model.At
 		if _, hasID := rs.Properties["id"]; hasID {
 			a.ReadKind = model.ReadBrief
 			a.Kind = model.KindFK
-			a.Name = pname + "_id"
+			a.Name += "_id"
 			a.Target = b.targetFromRead(refName)
 		} else {
 			return a, false
@@ -749,11 +770,12 @@ func (b *Builder) classifyReadOnly(pname string, prop *openapi.Schema) (model.At
 		a.Kind, a.ReadKind = model.KindBool, model.ReadScalar
 	case rs.Type == "string":
 		a.ReadKind = model.ReadScalar
-		if rs.Format == "date-time" {
+		switch rs.Format {
+		case "date-time":
 			a.Kind = model.KindDateTime
-		} else if rs.Format == "binary" {
+		case "binary":
 			return a, false
-		} else {
+		default:
 			a.Kind = model.KindString
 		}
 	case rs.Type == "array":
@@ -770,7 +792,7 @@ func (b *Builder) classifyReadOnly(pname string, prop *openapi.Schema) (model.At
 		case irs.Type == "object" || len(irs.Properties) > 0:
 			if _, hasID := irs.Properties["id"]; hasID {
 				a.Kind, a.ReadKind = model.KindFKList, model.ReadBriefList
-				a.Name = naming.Singular(pname) + "_ids"
+				a.Name = naming.Singular(a.Name) + "_ids"
 				a.Target = b.targetFromRead(iref)
 			} else {
 				return a, false

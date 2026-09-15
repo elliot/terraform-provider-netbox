@@ -61,8 +61,10 @@ type Test struct {
 	Checks             map[string]string `yaml:"checks"`
 }
 
-// Load reads every *.yaml file in dir and merges them; later files must not
-// redefine a path segment already defined.
+// Load reads every *.yaml file in dir (sorted by name) and merges them. A
+// resource may appear in several files (e.g. naming in one, fixtures in
+// another): non-empty scalar fields from later files win, attribute maps are
+// merged per property, and a later test block replaces an earlier one.
 func Load(dir string) (map[string]*Resource, error) {
 	out := map[string]*Resource{}
 	entries, err := os.ReadDir(dir)
@@ -89,14 +91,51 @@ func Load(dir string) (map[string]*Resource, error) {
 			return nil, fmt.Errorf("%s: %w", n, err)
 		}
 		for seg, r := range f.Resources {
-			if _, dup := out[seg]; dup {
-				return nil, fmt.Errorf("%s: resource %q already defined in another overrides file", n, seg)
-			}
 			if r == nil {
 				r = &Resource{}
+			}
+			if prev, dup := out[seg]; dup {
+				merge(prev, r)
+				continue
 			}
 			out[seg] = r
 		}
 	}
 	return out, nil
+}
+
+func merge(dst, src *Resource) {
+	if src.Name != "" {
+		dst.Name = src.Name
+	}
+	if src.Plural != "" {
+		dst.Plural = src.Plural
+	}
+	if src.Skip {
+		dst.Skip = true
+	}
+	if src.SkipReason != "" {
+		dst.SkipReason = src.SkipReason
+	}
+	if src.Description != "" {
+		dst.Description = src.Description
+	}
+	if src.Lookups != nil {
+		dst.Lookups = src.Lookups
+	}
+	dst.ImportVerifyIgnore = append(dst.ImportVerifyIgnore, src.ImportVerifyIgnore...)
+	if src.SerialTest {
+		dst.SerialTest = true
+	}
+	if len(src.Attributes) > 0 {
+		if dst.Attributes == nil {
+			dst.Attributes = map[string]*Attribute{}
+		}
+		for k, v := range src.Attributes {
+			dst.Attributes[k] = v
+		}
+	}
+	if src.Test != nil {
+		dst.Test = src.Test
+	}
 }

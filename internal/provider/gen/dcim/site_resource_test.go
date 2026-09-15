@@ -32,6 +32,16 @@ const siteTestConfigUpdate = `resource "netbox_site" "test" {
 }
 `
 
+const siteTestConfigDataSources = `
+data "netbox_site" "by_id" {
+  id = netbox_site.test.id
+}
+
+data "netbox_sites" "list" {
+  filters = [{ name = "id", value = tostring(netbox_site.test.id) }]
+}
+`
+
 func TestAccSite_basic(t *testing.T) {
 	name := acctest.RandName()
 	steps := []resource.TestStep{
@@ -46,6 +56,14 @@ func TestAccSite_basic(t *testing.T) {
 			ConfigPlanChecks: resource.ConfigPlanChecks{
 				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction("netbox_site.test", plancheck.ResourceActionUpdate)},
 			},
+		},
+		{
+			Config: acctest.Render(t, siteTestConfigUpdate+siteTestConfigDataSources, name),
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttrPair("data.netbox_site.by_id", "id", "netbox_site.test", "id"),
+				resource.TestCheckResourceAttr("data.netbox_sites.list", "items.#", "1"),
+				resource.TestCheckResourceAttrPair("data.netbox_sites.list", "items.0.id", "netbox_site.test", "id"),
+			),
 		},
 		{
 			ResourceName:            "netbox_site.test",
@@ -71,7 +89,7 @@ func TestAccSite_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_site", &resource.Sweeper{
 		Name:         "netbox_site",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_config_context", "netbox_cooling_source", "netbox_device", "netbox_location", "netbox_power_panel", "netbox_rack", "netbox_virtual_machine", "netbox_vlan"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/sites/", []string{"name__isw", "slug__isw", "description__isw", "q"})
 		},
