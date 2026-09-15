@@ -55,7 +55,10 @@ make gen && git diff --exit-code            # what CI enforces
 | API shape | Terraform |
 |---|---|
 | required property | `Required` |
-| nullable scalar / FK | `Optional`; `null` is sent as JSON null |
+| nullable string / FK | `Optional`; `null` is sent as JSON null |
+| nullable number, nullable choice, timestamp | `Optional+Computed`, `UseStateForUnknown`; never sent as null (NetBox derives or rejects blanks) |
+| ID set that is the reverse side of a required FK (`provider.accounts`) | `Computed` only |
+| request-only nested list not echoed on read (`circuit.assignments`) | dropped |
 | non-nullable optional string that may be blank | `Optional+Computed`, default `""`, always sent |
 | non-nullable optional string with a pattern (colour) | `Optional+Computed`, `UseStateForUnknown`, sent when known |
 | choice / boolean / non-nullable number | `Optional+Computed`, `UseStateForUnknown`, sent when known |
@@ -65,7 +68,10 @@ make gen && git diff --exit-code            # what CI enforces
 | other read-only fields (`*_count`, `display_url`, ...) | data sources only |
 
 Update always uses PATCH built from the full plan; unknown or null values of
-computed attributes are omitted so NetBox keeps its defaults.
+computed attributes are omitted so NetBox keeps its defaults. On read, strings
+keep the configured value when NetBox only trimmed whitespace (or changed the
+case of a MAC address / WWN), and floats keep it when equal at the field's
+precision, so normalisation never produces a diff.
 
 ## Overrides reference
 
@@ -94,6 +100,9 @@ resources:
         requires_replace: true
         sensitive: true
         computed: false        # force Optional-only (no server default tracking)
+        read_only: true        # keep as Computed only (reverse side of a relation)
+        expose: true           # include a read-only API property as a Computed attribute;
+                               #   the prior state is kept when the API returns null (token secret)
         optional: true         # make a required property optional
         precision: 6           # float decimals (documentation for now)
         ordered_list: true     # List instead of Set
