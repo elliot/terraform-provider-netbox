@@ -17,7 +17,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
@@ -54,7 +53,6 @@ type RearPortModel struct {
 	Type          types.String         `tfsdk:"type"`
 	Color         types.String         `tfsdk:"color"`
 	Positions     types.Int64          `tfsdk:"positions"`
-	FrontPorts    types.List           `tfsdk:"front_ports"`
 	Description   types.String         `tfsdk:"description"`
 	MarkConnected types.Bool           `tfsdk:"mark_connected"`
 	OwnerId       types.Int64          `tfsdk:"owner_id"`
@@ -64,19 +62,6 @@ type RearPortModel struct {
 	Display       types.String         `tfsdk:"display"`
 	Created       timetypes.RFC3339    `tfsdk:"created"`
 	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
-}
-
-// RearPortFrontPortsItem is one element of netbox_rear_port.front_ports.
-type RearPortFrontPortsItem struct {
-	Position          types.Int64 `tfsdk:"position"`
-	FrontPort         types.Int64 `tfsdk:"front_port"`
-	FrontPortPosition types.Int64 `tfsdk:"front_port_position"`
-}
-
-var rearPortFrontPortsItemAttrTypes = map[string]attr.Type{
-	"position":            types.Int64Type,
-	"front_port":          types.Int64Type,
-	"front_port_position": types.Int64Type,
 }
 
 var (
@@ -170,26 +155,6 @@ func rearPortResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 			Computed:            true,
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
-		},
-		"front_ports": schema.ListNestedAttribute{
-			MarkdownDescription: "Front Ports. Defaults to the NetBox server default when omitted.",
-			NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
-				"position": schema.Int64Attribute{
-					MarkdownDescription: "Position.",
-					Required:            true,
-				},
-				"front_port": schema.Int64Attribute{
-					MarkdownDescription: "Front Port.",
-					Required:            true,
-				},
-				"front_port_position": schema.Int64Attribute{
-					MarkdownDescription: "Front Port Position.",
-					Optional:            true,
-				},
-			}},
-			Optional:      true,
-			Computed:      true,
-			PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -367,21 +332,6 @@ func rearPortToCreate(ctx context.Context, plan *RearPortModel, diags *diag.Diag
 	if conv.Known(plan.Positions) {
 		body.SetPositions(conv.Int32(plan.Positions))
 	}
-	if conv.Known(plan.FrontPorts) {
-		frontPortsItems := []netbox.RearPortMappingRequest{}
-		if conv.Known(plan.FrontPorts) {
-			var items []RearPortFrontPortsItem
-			diags.Append(plan.FrontPorts.ElementsAs(ctx, &items, false)...)
-			for _, it := range items {
-				e := netbox.NewRearPortMappingRequest(conv.Int32(it.Position), conv.Int32(it.FrontPort))
-				if conv.Known(it.FrontPortPosition) {
-					e.SetFrontPortPosition(conv.Int32(it.FrontPortPosition))
-				}
-				frontPortsItems = append(frontPortsItems, *e)
-			}
-		}
-		body.SetFrontPorts(frontPortsItems)
-	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
@@ -428,21 +378,6 @@ func rearPortToPatch(ctx context.Context, plan *RearPortModel, diags *diag.Diagn
 	if conv.Known(plan.Positions) {
 		body.SetPositions(conv.Int32(plan.Positions))
 	}
-	if conv.Known(plan.FrontPorts) {
-		frontPortsItems := []netbox.RearPortMappingRequest{}
-		if conv.Known(plan.FrontPorts) {
-			var items []RearPortFrontPortsItem
-			diags.Append(plan.FrontPorts.ElementsAs(ctx, &items, false)...)
-			for _, it := range items {
-				e := netbox.NewRearPortMappingRequest(conv.Int32(it.Position), conv.Int32(it.FrontPort))
-				if conv.Known(it.FrontPortPosition) {
-					e.SetFrontPortPosition(conv.Int32(it.FrontPortPosition))
-				}
-				frontPortsItems = append(frontPortsItems, *e)
-			}
-		}
-		body.SetFrontPorts(frontPortsItems)
-	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
@@ -478,23 +413,6 @@ func rearPortFromAPI(ctx context.Context, obj *netbox.RearPort, prior *RearPortM
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Color = conv.StringOrEmpty(obj.GetColorOk())
 	out.Positions = conv.Int64From32(obj.GetPositionsOk())
-	{
-		items := obj.GetFrontPorts()
-		vals := make([]RearPortFrontPortsItem, 0, len(items))
-		for i := range items {
-			src := &items[i]
-			vals = append(vals, RearPortFrontPortsItem{
-				Position:          conv.Int64From32(src.GetPositionOk()),
-				FrontPort:         conv.Int64From32(src.GetFrontPortOk()),
-				FrontPortPosition: conv.Int64From32(src.GetFrontPortPositionOk()),
-			})
-		}
-		var priorVal attr.Value
-		if prior != nil {
-			priorVal = prior.FrontPorts
-		}
-		out.FrontPorts = conv.ObjectList(ctx, rearPortFrontPortsItemAttrTypes, vals, priorVal, diags)
-	}
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())

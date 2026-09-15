@@ -17,7 +17,7 @@ const asnTestConfigBasic = `resource "netbox_rir" "test" {
   slug = "{{.Name}}"
 }
 resource "netbox_asn" "test" {
-  asn         = 4200213001
+  asn         = 4200213007
   rir_id      = netbox_rir.test.id
   description = "{{.Name}}"
 }
@@ -39,7 +39,7 @@ resource "netbox_site" "test" {
   lifecycle { ignore_changes = [asn_ids] }
 }
 resource "netbox_asn" "test" {
-  asn         = 4200213001
+  asn         = 4200213007
   rir_id      = netbox_rir.test.id
   tenant_id   = netbox_tenant.test.id
   site_ids    = [netbox_site.test.id]

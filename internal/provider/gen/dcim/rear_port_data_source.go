@@ -35,7 +35,6 @@ type RearPortDataModel struct {
 	Type          types.String         `tfsdk:"type"`
 	Color         types.String         `tfsdk:"color"`
 	Positions     types.Int64          `tfsdk:"positions"`
-	FrontPorts    types.List           `tfsdk:"front_ports"`
 	Description   types.String         `tfsdk:"description"`
 	MarkConnected types.Bool           `tfsdk:"mark_connected"`
 	OwnerId       types.Int64          `tfsdk:"owner_id"`
@@ -123,24 +122,6 @@ func rearPortDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		"positions": dsschema.Int64Attribute{
 			MarkdownDescription: "Positions. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
-		},
-		"front_ports": dsschema.ListNestedAttribute{
-			MarkdownDescription: "Front Ports. Defaults to the NetBox server default when omitted.",
-			NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-				"position": dsschema.Int64Attribute{
-					MarkdownDescription: "Position.",
-					Computed:            true,
-				},
-				"front_port": dsschema.Int64Attribute{
-					MarkdownDescription: "Front Port.",
-					Computed:            true,
-				},
-				"front_port_position": dsschema.Int64Attribute{
-					MarkdownDescription: "Front Port Position.",
-					Computed:            true,
-				},
-			}},
-			Computed: true,
 		},
 		"description": dsschema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -451,19 +432,6 @@ func rearPortDataFromAPI(ctx context.Context, obj *netbox.RearPort, out *RearPor
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Color = conv.StringOrEmpty(obj.GetColorOk())
 	out.Positions = conv.Int64From32(obj.GetPositionsOk())
-	{
-		items := obj.GetFrontPorts()
-		vals := make([]RearPortFrontPortsItem, 0, len(items))
-		for i := range items {
-			src := &items[i]
-			vals = append(vals, RearPortFrontPortsItem{
-				Position:          conv.Int64From32(src.GetPositionOk()),
-				FrontPort:         conv.Int64From32(src.GetFrontPortOk()),
-				FrontPortPosition: conv.Int64From32(src.GetFrontPortPositionOk()),
-			})
-		}
-		out.FrontPorts = conv.ObjectList(ctx, rearPortFrontPortsItemAttrTypes, vals, nil, diags)
-	}
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())

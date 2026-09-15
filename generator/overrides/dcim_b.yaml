@@ -230,7 +230,7 @@ resources:
         }
 
   rear-port-templates:
-    attributes: { front_ports: { computed: true } }
+    attributes: { front_ports: { skip: true } }
     test:
       basic: |
         resource "netbox_manufacturer" "test" {
@@ -534,7 +534,7 @@ resources:
         }
 
   rear-ports:
-    attributes: { front_ports: { computed: true } }
+    attributes: { front_ports: { skip: true } }
     test:
       basic: |
         resource "netbox_manufacturer" "test" {
