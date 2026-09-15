@@ -31,3 +31,16 @@ go.work.sum
 # .idea/
 # .vscode/
 .cache/
+.env.*
+.env*
+!.env.example
+
+# Build output
+/terraform-provider-netbox
+/dist/
+
+# Scratch
+/.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl

@@ -1,0 +1,91 @@
+name: Tests
+
+on:
+  pull_request:
+    paths-ignore:
+      - "README.md"
+      - "CHANGELOG.md"
+      - "docs/**"
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - run: go mod download
+      - run: go build -v ./...
+      - run: go vet ./...
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.5.0
+
+  generate:
+    name: Generated code is up to date
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: make gen-check
+        run: |
+          # The generator lands in a later phase; skip cleanly until it exists.
+          if [ -d internal/gen ]; then
+            make gen-check
+          else
+            echo "internal/gen not present yet, skipping gen-check"
+          fi
+      - name: Docs are up to date
+        run: |
+          if [ -d docs ]; then
+            make docs
+            git diff --exit-code -- docs/
+          else
+            echo "docs/ not present yet, skipping docs check"
+          fi
+
+  test:
+    name: Unit tests (terraform ${{ matrix.terraform }})
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        terraform:
+          - "1.13.*"
+          - "1.14.*"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ matrix.terraform }}
+          terraform_wrapper: false
+      - run: go mod download
+      - name: go test (TF_ACC unset)
+        env:
+          TF_ACC: ""
+        run: go test ./internal/... -count=1 -v -cover -timeout 15m

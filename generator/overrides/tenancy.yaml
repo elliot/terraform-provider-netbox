@@ -1,0 +1,7 @@
+resources:
+  contact-groups:
+    attributes:
+      parent: { target: contact_group }
+  tenant-groups:
+    attributes:
+      parent: { target: tenant_group }

@@ -1,0 +1,4 @@
+resources:
+  wireless-lan-groups:
+    attributes:
+      parent: { target: wireless_lan_group }

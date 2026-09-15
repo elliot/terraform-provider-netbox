@@ -229,6 +229,11 @@ func (c *APIClient) PostRaw(ctx context.Context, apiPath string, body any, out a
 	return c.doRaw(ctx, http.MethodPost, apiPath, body, out)
 }
 
+// DeleteRaw performs a DELETE against apiPath.
+func (c *APIClient) DeleteRaw(ctx context.Context, apiPath string) error {
+	return c.doRaw(ctx, http.MethodDelete, apiPath, nil, nil)
+}
+
 func (c *APIClient) doRaw(ctx context.Context, method, apiPath string, body any, out any) error {
 	base, err := c.cfg.ServerURLWithContext(ctx, "")
 	if err != nil {

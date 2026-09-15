@@ -1,0 +1,10 @@
+resources:
+  # /api/virtualization/interfaces/ collides with dcim interfaces.
+  virtualization/interfaces:
+    name: vm_interface
+    plural: vm_interfaces
+    attributes:
+      parent:
+        target: vm_interface
+      bridge:
+        target: vm_interface

@@ -1,0 +1,49 @@
+resources:
+  dcim/interfaces:
+    attributes:
+      parent: { target: interface }
+      bridge: { target: interface }
+      lag: { target: interface }
+  interface-templates:
+    attributes:
+      parent: { target: interface_template }
+      bridge: { target: interface_template }
+  device-roles:
+    attributes:
+      parent: { target: device_role }
+  locations:
+    attributes:
+      parent: { target: location }
+  platforms:
+    attributes:
+      parent: { target: platform }
+  regions:
+    attributes:
+      parent: { target: region }
+  site-groups:
+    attributes:
+      parent: { target: site_group }
+  virtual-chassis:
+    plural: virtual_chassis_list
+    attributes:
+      master: { target: device }
+  inventory-items:
+    attributes:
+      parent: { kind: fk, target: inventory_item }
+  inventory-item-templates:
+    attributes:
+      parent: { kind: fk, target: inventory_item_template }
+  modules:
+    attributes:
+      module_bay: { target: module_bay }
+  cooling-intakes:
+    attributes:
+      cooling_outflow: { target: cooling_outflow }
+  device-types:
+    attributes:
+      front_image: { skip: true }
+      rear_image: { skip: true }
+  sites:
+    attributes:
+      latitude: { precision: 6 }
+      longitude: { precision: 6 }

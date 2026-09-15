@@ -1,0 +1,22 @@
+resources:
+  image-attachments:
+    skip: true
+    skip_reason: requires a multipart image upload
+  notifications:
+    skip: true
+    skip_reason: per-user UI state
+  subscriptions:
+    skip: true
+    skip_reason: per-user UI state
+  bookmarks:
+    skip: true
+    skip_reason: per-user UI state
+  saved-filters:
+    skip: true
+    skip_reason: per-user UI state
+  table-configs:
+    skip: true
+    skip_reason: per-user UI state
+  journal-entries:
+    attributes:
+      created_by: { kind: fk, target: user }
