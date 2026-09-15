@@ -27,6 +27,7 @@ func main() {
 		outDir    = flag.String("out", "internal/provider/gen", "output directory for generated Go packages")
 		exDir     = flag.String("examples", "examples", "output directory for examples")
 		docsDir   = flag.String("docs", "docs", "output directory for generated markdown tables")
+		tmplDir   = flag.String("templates", "templates", "output directory for tfplugindocs templates")
 		only      = flag.String("only", "", "comma-separated resource names to generate")
 		dump      = flag.Bool("dump", false, "print the resource model and exit")
 		listNames = flag.Bool("list", false, "print resource names and exit")
@@ -81,7 +82,7 @@ func main() {
 	case *dump:
 		dumpModel(resources)
 	default:
-		if err := render.All(resources, doc.Info.Version, render.Options{OutDir: *outDir, ExamplesDir: *exDir, DocsDir: *docsDir, Partial: *only != ""}); err != nil {
+		if err := render.All(resources, doc.Info.Version, render.Options{OutDir: *outDir, ExamplesDir: *exDir, DocsDir: *docsDir, TemplatesDir: *tmplDir, Partial: *only != ""}); err != nil {
 			fatal(err)
 		}
 	}

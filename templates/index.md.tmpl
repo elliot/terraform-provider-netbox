@@ -1,0 +1,43 @@
+---
+page_title: "NetBox Provider"
+description: |-
+  Manage NetBox 4.7 objects with Terraform.
+---
+
+# NetBox Provider
+
+The NetBox provider manages objects in [NetBox](https://netboxlabs.com/oss/netbox/) 4.7 through its REST API.
+Every CRUD collection of the NetBox 4.7 API is available as a resource (`netbox_<object>`), a single-object data source
+(`data.netbox_<object>`) and a list data source (`data.netbox_<objects>`); see the resource index in the sidebar.
+
+## Authentication
+
+Only NetBox v2 API tokens (`nbt_<key>.<secret>`, NetBox 4.5+) are supported. Create one under
+*Admin → API Tokens* or with `POST /api/users/tokens/provision/`. The token is sent as
+`Authorization: Bearer nbt_<key>.<secret>`.
+
+## Rate limiting, retries and delays
+
+All requests of a provider instance share one client-side token bucket (`requests_per_second`, `request_burst`),
+an optional fixed delay per request (`request_delay_ms`, plus `write_delay_ms` for writes), and an optional mutex that
+serializes requests (`serialize_requests`) regardless of Terraform's `-parallelism`. HTTP 429 and 5xx responses are
+retried with exponential backoff and jitter (`max_retries`, `retry_wait_min_ms`, `retry_wait_max_ms`), honouring the
+`Retry-After` header. Every setting can also be provided through an environment variable (see below).
+
+## Example Usage
+
+{{ tffile "examples/provider/provider.tf" }}
+
+## Conventions
+
+* Foreign keys are numeric IDs named `<field>_id`; many-to-many relations are sets named `<field>_ids`.
+* `tags` is a set of tag slugs. `custom_fields` and other free-form JSON fields are JSON strings (`jsonencode({...})`);
+  only the custom-field keys present in the configuration are tracked.
+* Choice fields accept the machine value (`active`, `1000base-t`, ...). Attributes with a server-side default are
+  `Optional` + `Computed`.
+* Every resource can be imported by its NetBox ID (`terraform import netbox_site.x 12`) or through an `import` block
+  with `identity = { id = 12 }`.
+* Data sources look an object up by `id`, by a small set of unique attributes (for example `name` or `slug`) or by
+  arbitrary API filters (`filters = [{ name = "tenant_id", value = "3" }]`). List data sources return `items`.
+
+{{ .SchemaMarkdown | trimspace }}

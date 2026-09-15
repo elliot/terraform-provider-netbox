@@ -1,0 +1,24 @@
+resources:
+  data-sources:
+    attributes:
+      # The request schema types this as a free string because backends are
+      # pluggable; NetBox ships these three.
+      type:
+        kind: choice
+        enum: [local, git, amazon-s3]
+    test:
+      basic: |
+        resource "netbox_data_source" "test" {
+          name       = "{{.Name}}"
+          type       = "git"
+          source_url = "https://github.com/netbox-community/netbox-demo-data.git"
+          enabled    = false
+        }
+      update: |
+        resource "netbox_data_source" "test" {
+          name        = "{{.Name}}"
+          type        = "git"
+          source_url  = "https://github.com/netbox-community/netbox-demo-data.git"
+          enabled     = false
+          description = "updated"
+        }

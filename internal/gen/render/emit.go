@@ -129,7 +129,12 @@ func description(a model.Attr) string {
 	if a.Kind == model.KindFKList && a.Target != "" && !strings.Contains(d, "netbox_") {
 		d += fmt.Sprintf(" References `netbox_%s`.", a.Target)
 	}
-	if a.Computed && !a.ReadOnly && !a.Required {
+	switch {
+	case a.DefaultEmptySet:
+		d += " Defaults to an empty set."
+	case a.DefaultEmptyString:
+		d += " Defaults to an empty string."
+	case a.Computed && !a.ReadOnly && !a.Required:
 		d += " Defaults to the NetBox server default when omitted."
 	}
 	if a.WriteOnly {

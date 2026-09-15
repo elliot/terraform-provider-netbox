@@ -18,6 +18,8 @@ type Options struct {
 	OutDir      string
 	ExamplesDir string
 	DocsDir     string
+	// TemplatesDir receives tfplugindocs templates (subcategory per app).
+	TemplatesDir string
 	// Partial means only a subset is rendered; stale files are not removed.
 	Partial bool
 }
@@ -73,6 +75,14 @@ func All(resources []*model.Resource, netboxVersion string, opts Options) error 
 	}
 	if err := writeAllPackage(onDisk, version, opts.OutDir); err != nil {
 		return err
+	}
+	for _, r := range resources {
+		if r.Skip {
+			continue
+		}
+		if err := writeDocTemplates(r, opts.TemplatesDir); err != nil {
+			return err
+		}
 	}
 	if !opts.Partial {
 		if err := writeResourcesDoc(resources, opts.DocsDir); err != nil {
@@ -158,4 +168,86 @@ func writeResourcesDoc(resources []*model.Resource, docsDir string) error {
 		fmt.Fprintf(&b, "| %s | `%s` | %s | %s | %s | %s |\n", r.App, r.Path, res, ds, lds, note)
 	}
 	return os.WriteFile(filepath.Join(docsDir, "RESOURCES.md"), []byte(b.String()), 0o600)
+}
+
+var appTitles = map[string]string{
+	"circuits": "Circuits", "core": "Core", "dcim": "DCIM", "extras": "Extras", "ipam": "IPAM",
+	"tenancy": "Tenancy", "users": "Users", "virtualization": "Virtualization", "vpn": "VPN", "wireless": "Wireless",
+}
+
+const resourceDocTemplate = `---
+page_title: "{{.Name}} {{.Type}} - {{.RenderedProviderName}}"
+subcategory: "%s"
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{ tffile .ExampleFile }}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}
+{{- if .HasImport }}
+
+## Import
+
+Import is supported using the following syntax:
+
+{{ codefile "shell" .ImportFile }}
+{{- end }}
+`
+
+const dataSourceDocTemplate = `---
+page_title: "{{.Name}} {{.Type}} - {{.RenderedProviderName}}"
+subcategory: "%s"
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{ tffile .ExampleFile }}
+{{- end }}
+
+{{ .SchemaMarkdown | trimspace }}
+`
+
+// writeDocTemplates writes per-type tfplugindocs templates so pages are grouped
+// by NetBox app in the registry sidebar.
+func writeDocTemplates(r *model.Resource, dir string) error {
+	if dir == "" {
+		return nil
+	}
+	title := appTitles[r.App]
+	if title == "" {
+		title = strings.ToUpper(r.App[:1]) + r.App[1:]
+	}
+	if !r.DataSourceOnly {
+		if err := os.MkdirAll(filepath.Join(dir, "resources"), 0o750); err != nil {
+			return err
+		}
+		if err := os.WriteFile(filepath.Join(dir, "resources", r.Name+".md.tmpl"), []byte(fmt.Sprintf(resourceDocTemplate, title)), 0o600); err != nil {
+			return err
+		}
+	}
+	if err := os.MkdirAll(filepath.Join(dir, "data-sources"), 0o750); err != nil {
+		return err
+	}
+	for _, n := range []string{r.Name, r.Plural} {
+		if err := os.WriteFile(filepath.Join(dir, "data-sources", n+".md.tmpl"), []byte(fmt.Sprintf(dataSourceDocTemplate, title)), 0o600); err != nil {
+			return err
+		}
+	}
+	return nil
 }
