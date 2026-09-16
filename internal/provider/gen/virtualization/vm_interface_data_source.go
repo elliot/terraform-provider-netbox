@@ -48,12 +48,12 @@ type VmInterfaceDataModel struct {
 	Tags                    types.Set            `tfsdk:"tags"`
 	CustomFields            jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url                     types.String         `tfsdk:"url"`
-	Display                 types.String         `tfsdk:"display"`
 	Created                 timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated             timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl              types.String         `tfsdk:"display_url"`
+	Display                 types.String         `tfsdk:"display"`
 	MacAddressIds           types.Set            `tfsdk:"mac_address_ids"`
 	L2vpnTerminationId      types.Int64          `tfsdk:"l2vpn_termination_id"`
+	LastUpdated             timetypes.RFC3339    `tfsdk:"last_updated"`
 	CountIpaddresses        types.Int64          `tfsdk:"count_ipaddresses"`
 	CountFhrpGroups         types.Int64          `tfsdk:"count_fhrp_groups"`
 }
@@ -170,22 +170,17 @@ func vmInterfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"mac_address_ids": dsschema.SetAttribute{
@@ -195,6 +190,11 @@ func vmInterfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"l2vpn_termination_id": dsschema.Int64Attribute{
 			MarkdownDescription: "L2vpn Termination. References `netbox_l2vpn_termination`.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 		"count_ipaddresses": dsschema.Int64Attribute{
@@ -466,12 +466,12 @@ func vmInterfaceDataFromAPI(ctx context.Context, obj *netbox.VMInterface, out *V
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.MacAddressIds = conv.BriefIDs(obj.GetMacAddresses())
 	out.L2vpnTerminationId = conv.BriefID(obj.GetL2vpnTerminationOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.CountIpaddresses = conv.Int64From32(obj.GetCountIpaddressesOk())
 	out.CountFhrpGroups = conv.Int64From32(obj.GetCountFhrpGroupsOk())
 }

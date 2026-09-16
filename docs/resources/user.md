@@ -55,7 +55,6 @@ resource "netbox_user" "jdoe" {
 
 ### Read-Only
 
-- `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `url` (String) Url.
 

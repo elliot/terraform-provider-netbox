@@ -32,7 +32,6 @@ type UserGroupModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	Url         types.String `tfsdk:"url"`
-	Display     types.String `tfsdk:"display"`
 }
 
 var (
@@ -107,10 +106,6 @@ func userGroupResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
 		},
 	}
 }
@@ -256,5 +251,4 @@ func userGroupFromAPI(ctx context.Context, obj *netbox.Group, prior *UserGroupMo
 	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *UserGroupModel) types.String { return m.Name }), false)
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *UserGroupModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 }

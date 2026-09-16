@@ -38,11 +38,11 @@ type PowerPanelDataModel struct {
 	Tags           types.Set            `tfsdk:"tags"`
 	CustomFields   jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url            types.String         `tfsdk:"url"`
-	Display        types.String         `tfsdk:"display"`
 	Created        timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated    timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl     types.String         `tfsdk:"display_url"`
+	Display        types.String         `tfsdk:"display"`
 	PowerfeedCount types.Int64          `tfsdk:"powerfeed_count"`
+	LastUpdated    timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // powerPanelFilterNames lists the query parameters accepted by /api/dcim/power-panels/ (sorted).
@@ -109,17 +109,8 @@ func powerPanelDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -127,8 +118,17 @@ func powerPanelDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"powerfeed_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Powerfeed Count.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 	}
@@ -382,9 +382,9 @@ func powerPanelDataFromAPI(ctx context.Context, obj *netbox.PowerPanel, out *Pow
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.PowerfeedCount = conv.Int64From64(obj.GetPowerfeedCountOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

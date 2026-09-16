@@ -54,12 +54,12 @@ type CustomFieldDataModel struct {
 	OwnerId             types.Int64          `tfsdk:"owner_id"`
 	Comments            types.String         `tfsdk:"comments"`
 	Url                 types.String         `tfsdk:"url"`
-	Display             types.String         `tfsdk:"display"`
 	Created             timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl          types.String         `tfsdk:"display_url"`
+	Display             types.String         `tfsdk:"display"`
 	DataType            types.String         `tfsdk:"data_type"`
 	Status              types.String         `tfsdk:"status"`
+	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // customFieldFilterNames lists the query parameters accepted by /api/extras/custom-fields/ (sorted).
@@ -218,22 +218,17 @@ func customFieldDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"data_type": dsschema.StringAttribute{
@@ -242,6 +237,11 @@ func customFieldDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"status": dsschema.StringAttribute{
 			MarkdownDescription: "Status.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 	}
@@ -512,10 +512,10 @@ func customFieldDataFromAPI(ctx context.Context, obj *netbox.CustomField, out *C
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.DataType = conv.String(obj.GetDataTypeOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

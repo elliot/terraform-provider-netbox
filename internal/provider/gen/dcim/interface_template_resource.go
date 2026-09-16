@@ -95,9 +95,7 @@ type InterfaceTemplateModel struct {
 	PoeType      types.String      `tfsdk:"poe_type"`
 	RfRole       types.String      `tfsdk:"rf_role"`
 	Url          types.String      `tfsdk:"url"`
-	Display      types.String      `tfsdk:"display"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -246,20 +244,11 @@ func interfaceTemplateResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -527,7 +516,5 @@ func interfaceTemplateFromAPI(ctx context.Context, obj *netbox.InterfaceTemplate
 	out.PoeType = conv.Choice(obj.GetPoeTypeOk())
 	out.RfRole = conv.Choice(obj.GetRfRoleOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

@@ -46,12 +46,12 @@ type CircuitDataModel struct {
 	Tags              types.Set            `tfsdk:"tags"`
 	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
 	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl        types.String         `tfsdk:"display_url"`
+	Display           types.String         `tfsdk:"display"`
 	TerminationAId    types.Int64          `tfsdk:"termination_a_id"`
 	TerminationZId    types.Int64          `tfsdk:"termination_z_id"`
+	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // circuitFilterNames lists the query parameters accepted by /api/circuits/circuits/ (sorted).
@@ -163,22 +163,17 @@ func circuitDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"termination_a_id": dsschema.Int64Attribute{
@@ -187,6 +182,11 @@ func circuitDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"termination_z_id": dsschema.Int64Attribute{
 			MarkdownDescription: "Termination Z.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 	}
@@ -440,10 +440,10 @@ func circuitDataFromAPI(ctx context.Context, obj *netbox.Circuit, out *CircuitDa
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.TerminationAId = conv.BriefID(obj.GetTerminationAOk())
 	out.TerminationZId = conv.BriefID(obj.GetTerminationZOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

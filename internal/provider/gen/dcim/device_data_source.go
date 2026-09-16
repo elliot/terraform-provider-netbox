@@ -61,13 +61,13 @@ type DeviceDataModel struct {
 	Tags                   types.Set            `tfsdk:"tags"`
 	CustomFields           jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url                    types.String         `tfsdk:"url"`
-	Display                types.String         `tfsdk:"display"`
 	Created                timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated            timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl             types.String         `tfsdk:"display_url"`
+	Display                types.String         `tfsdk:"display"`
 	ParentDeviceId         types.Int64          `tfsdk:"parent_device_id"`
 	PrimaryIpId            types.Int64          `tfsdk:"primary_ip_id"`
 	ConfigContext          jsontypes.Normalized `tfsdk:"config_context"`
+	LastUpdated            timetypes.RFC3339    `tfsdk:"last_updated"`
 	ConsolePortCount       types.Int64          `tfsdk:"console_port_count"`
 	ConsoleServerPortCount types.Int64          `tfsdk:"console_server_port_count"`
 	PowerPortCount         types.Int64          `tfsdk:"power_port_count"`
@@ -285,22 +285,17 @@ func deviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"parent_device_id": dsschema.Int64Attribute{
@@ -314,6 +309,11 @@ func deviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		"config_context": dsschema.StringAttribute{
 			MarkdownDescription: "Config Context.",
 			CustomType:          jsontypes.NormalizedType{},
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 		"console_port_count": dsschema.Int64Attribute{
@@ -638,13 +638,13 @@ func deviceDataFromAPI(ctx context.Context, obj *netbox.Device, out *DeviceDataM
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.ParentDeviceId = conv.BriefID(obj.GetParentDeviceOk())
 	out.PrimaryIpId = conv.BriefID(obj.GetPrimaryIpOk())
 	out.ConfigContext = conv.JSONFromAPI(obj.GetConfigContext())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.ConsolePortCount = conv.Int64From32(obj.GetConsolePortCountOk())
 	out.ConsoleServerPortCount = conv.Int64From32(obj.GetConsoleServerPortCountOk())
 	out.PowerPortCount = conv.Int64From32(obj.GetPowerPortCountOk())

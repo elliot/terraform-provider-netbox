@@ -43,6 +43,7 @@ data "netbox_rear_port" "example" {
 - `device_id` (Number) ID of the Device (`netbox_device`).
 - `display` (String) Display.
 - `display_url` (String) Display Url.
+- `front_ports` (Attributes List) Front port mappings onto this rear port, managed from `netbox_front_port.rear_ports`; read-only here. (see [below for nested schema](#nestedatt--front_ports))
 - `label` (String) Physical label. Defaults to an empty string.
 - `last_updated` (String) Last Updated.
 - `link_peers_type` (String) Return the type of the peer link terminations, or None.
@@ -62,3 +63,13 @@ Required:
 
 - `name` (String) Query parameter name.
 - `value` (String) Query parameter value.
+
+
+<a id="nestedatt--front_ports"></a>
+### Nested Schema for `front_ports`
+
+Read-Only:
+
+- `front_port` (Number) Front Port.
+- `front_port_position` (Number) Front Port Position.
+- `position` (Number) Position.

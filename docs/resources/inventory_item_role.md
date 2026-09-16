@@ -45,9 +45,7 @@ resource "netbox_inventory_item_role" "fan" {
 ### Read-Only
 
 - `created` (String) Created.
-- `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
-- `last_updated` (String) Last Updated.
 - `url` (String) Url.
 
 ## Import

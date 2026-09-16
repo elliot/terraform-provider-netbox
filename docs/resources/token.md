@@ -54,7 +54,6 @@ resource "netbox_token" "automation_ro" {
 ### Read-Only
 
 - `created` (String) Created.
-- `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `key` (String) The v2 token identification key (`nbt_<key>`).
 - `token` (String, Sensitive) The token secret (v2: the part after the dot). Only returned by NetBox on creation; kept in state afterwards.

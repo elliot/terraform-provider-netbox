@@ -35,16 +35,14 @@ var circuitGroupAssignmentPriorityValues = []string{
 
 // CircuitGroupAssignmentModel is the Terraform state of netbox_circuit_group_assignment.
 type CircuitGroupAssignmentModel struct {
-	Id          types.Int64       `tfsdk:"id"`
-	GroupId     types.Int64       `tfsdk:"group_id"`
-	MemberType  types.String      `tfsdk:"member_type"`
-	MemberId    types.Int64       `tfsdk:"member_id"`
-	Priority    types.String      `tfsdk:"priority"`
-	Tags        types.Set         `tfsdk:"tags"`
-	Url         types.String      `tfsdk:"url"`
-	Display     types.String      `tfsdk:"display"`
-	Created     timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated timetypes.RFC3339 `tfsdk:"last_updated"`
+	Id         types.Int64       `tfsdk:"id"`
+	GroupId    types.Int64       `tfsdk:"group_id"`
+	MemberType types.String      `tfsdk:"member_type"`
+	MemberId   types.Int64       `tfsdk:"member_id"`
+	Priority   types.String      `tfsdk:"priority"`
+	Tags       types.Set         `tfsdk:"tags"`
+	Url        types.String      `tfsdk:"url"`
+	Created    timetypes.RFC3339 `tfsdk:"created"`
 }
 
 var (
@@ -134,20 +132,11 @@ func circuitGroupAssignmentResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -314,7 +303,5 @@ func circuitGroupAssignmentFromAPI(ctx context.Context, obj *netbox.CircuitGroup
 	out.Priority = conv.Choice(obj.GetPriorityOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

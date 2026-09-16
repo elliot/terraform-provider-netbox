@@ -39,7 +39,6 @@ resource "netbox_vlan_translation_rule" "customer_a_100" {
 
 ### Read-Only
 
-- `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `url` (String) Url.
 

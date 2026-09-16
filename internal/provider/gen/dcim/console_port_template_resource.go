@@ -43,9 +43,7 @@ type ConsolePortTemplateModel struct {
 	Type         types.String      `tfsdk:"type"`
 	Description  types.String      `tfsdk:"description"`
 	Url          types.String      `tfsdk:"url"`
-	Display      types.String      `tfsdk:"display"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -143,20 +141,11 @@ func consolePortTemplateResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -342,7 +331,5 @@ func consolePortTemplateFromAPI(ctx context.Context, obj *netbox.ConsolePortTemp
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ConsolePortTemplateModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

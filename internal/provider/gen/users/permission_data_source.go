@@ -36,8 +36,8 @@ type PermissionDataModel struct {
 	GroupIds    types.Set            `tfsdk:"group_ids"`
 	UserIds     types.Set            `tfsdk:"user_ids"`
 	Url         types.String         `tfsdk:"url"`
-	Display     types.String         `tfsdk:"display"`
 	DisplayUrl  types.String         `tfsdk:"display_url"`
+	Display     types.String         `tfsdk:"display"`
 }
 
 // permissionFilterNames lists the query parameters accepted by /api/users/permissions/ (sorted).
@@ -103,12 +103,12 @@ func permissionDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 	}
@@ -362,6 +362,6 @@ func permissionDataFromAPI(ctx context.Context, obj *netbox.ObjectPermission, ou
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
 	out.UserIds = conv.BriefIDs(obj.GetUsers())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 }

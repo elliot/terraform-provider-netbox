@@ -44,7 +44,6 @@ type TokenModel struct {
 	WriteEnabled types.Bool        `tfsdk:"write_enabled"`
 	PepperId     types.Int64       `tfsdk:"pepper_id"`
 	Url          types.String      `tfsdk:"url"`
-	Display      types.String      `tfsdk:"display"`
 	Key          types.String      `tfsdk:"key"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
 	Token        types.String      `tfsdk:"token"`
@@ -160,10 +159,6 @@ func tokenResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
 		},
 		"key": schema.StringAttribute{
 			MarkdownDescription: "The v2 token identification key (`nbt_<key>`).",
@@ -378,7 +373,6 @@ func tokenFromAPI(ctx context.Context, obj *netbox.Token, prior *TokenModel, out
 	out.WriteEnabled = conv.Bool(obj.GetWriteEnabledOk())
 	out.PepperId = conv.Int64From32(obj.GetPepperIdOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Key = conv.KeepWhenNull(conv.String(obj.GetKeyOk()), conv.PriorString(prior, func(m *TokenModel) types.String { return m.Key }))
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
 	out.Token = conv.KeepWhenNull(conv.String(obj.GetTokenOk()), conv.PriorString(prior, func(m *TokenModel) types.String { return m.Token }))

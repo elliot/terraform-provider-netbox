@@ -34,11 +34,11 @@ type TagDataModel struct {
 	Weight      types.Int64       `tfsdk:"weight"`
 	ObjectTypes types.Set         `tfsdk:"object_types"`
 	Url         types.String      `tfsdk:"url"`
-	Display     types.String      `tfsdk:"display"`
 	Created     timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated timetypes.RFC3339 `tfsdk:"last_updated"`
 	DisplayUrl  types.String      `tfsdk:"display_url"`
+	Display     types.String      `tfsdk:"display"`
 	TaggedItems types.Int64       `tfsdk:"tagged_items"`
+	LastUpdated timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 // tagFilterNames lists the query parameters accepted by /api/extras/tags/ (sorted).
@@ -98,17 +98,8 @@ func tagDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -116,8 +107,17 @@ func tagDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"tagged_items": dsschema.Int64Attribute{
 			MarkdownDescription: "Tagged Items.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 	}
@@ -377,9 +377,9 @@ func tagDataFromAPI(ctx context.Context, obj *netbox.Tag, out *TagDataModel, dia
 	out.Weight = conv.Int64From32(obj.GetWeightOk())
 	out.ObjectTypes = conv.StringSet(obj.GetObjectTypes())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.TaggedItems = conv.Int64From64(obj.GetTaggedItemsOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

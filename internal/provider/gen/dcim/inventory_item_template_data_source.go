@@ -38,8 +38,8 @@ type InventoryItemTemplateDataModel struct {
 	ComponentType  types.String      `tfsdk:"component_type"`
 	ComponentId    types.Int64       `tfsdk:"component_id"`
 	Url            types.String      `tfsdk:"url"`
-	Display        types.String      `tfsdk:"display"`
 	Created        timetypes.RFC3339 `tfsdk:"created"`
+	Display        types.String      `tfsdk:"display"`
 	LastUpdated    timetypes.RFC3339 `tfsdk:"last_updated"`
 	Depth          types.Int64       `tfsdk:"depth"`
 }
@@ -116,13 +116,13 @@ func inventoryItemTemplateDataAttributes(lookup bool) map[string]dsschema.Attrib
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"last_updated": dsschema.StringAttribute{
@@ -391,8 +391,8 @@ func inventoryItemTemplateDataFromAPI(ctx context.Context, obj *netbox.Inventory
 	out.ComponentType = conv.String(obj.GetComponentTypeOk())
 	out.ComponentId = conv.Int64From64(obj.GetComponentIdOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.Depth = conv.Int64From32(obj.GetDepthOk())
 }

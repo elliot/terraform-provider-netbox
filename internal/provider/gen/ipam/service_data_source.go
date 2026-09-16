@@ -40,11 +40,11 @@ type ServiceDataModel struct {
 	Tags             types.Set            `tfsdk:"tags"`
 	CustomFields     jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url              types.String         `tfsdk:"url"`
-	Display          types.String         `tfsdk:"display"`
 	Created          timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated      timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl       types.String         `tfsdk:"display_url"`
+	Display          types.String         `tfsdk:"display"`
 	Parent           jsontypes.Normalized `tfsdk:"parent"`
+	LastUpdated      timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // serviceFilterNames lists the query parameters accepted by /api/ipam/services/ (sorted).
@@ -123,17 +123,8 @@ func serviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -141,9 +132,18 @@ func serviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"parent": dsschema.StringAttribute{
 			MarkdownDescription: "Parent.",
 			CustomType:          jsontypes.NormalizedType{},
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 	}
@@ -399,9 +399,9 @@ func serviceDataFromAPI(ctx context.Context, obj *netbox.Service, out *ServiceDa
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.Parent = conv.JSONFromAPI(obj.GetParent())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

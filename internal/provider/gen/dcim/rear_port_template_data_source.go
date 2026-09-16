@@ -34,10 +34,11 @@ type RearPortTemplateDataModel struct {
 	Type         types.String      `tfsdk:"type"`
 	Color        types.String      `tfsdk:"color"`
 	Positions    types.Int64       `tfsdk:"positions"`
+	FrontPorts   types.List        `tfsdk:"front_ports"`
 	Description  types.String      `tfsdk:"description"`
 	Url          types.String      `tfsdk:"url"`
-	Display      types.String      `tfsdk:"display"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
+	Display      types.String      `tfsdk:"display"`
 	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
@@ -98,6 +99,24 @@ func rearPortTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Positions. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
+		"front_ports": dsschema.ListNestedAttribute{
+			MarkdownDescription: "Front port template mappings onto this rear port template, managed from `netbox_front_port_template.rear_ports`; read-only here.",
+			NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
+				"position": dsschema.Int64Attribute{
+					MarkdownDescription: "Position.",
+					Computed:            true,
+				},
+				"front_port": dsschema.Int64Attribute{
+					MarkdownDescription: "Front Port.",
+					Computed:            true,
+				},
+				"front_port_position": dsschema.Int64Attribute{
+					MarkdownDescription: "Front Port Position.",
+					Computed:            true,
+				},
+			}},
+			Computed: true,
+		},
 		"description": dsschema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
@@ -106,13 +125,13 @@ func rearPortTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"last_updated": dsschema.StringAttribute{
@@ -371,9 +390,22 @@ func rearPortTemplateDataFromAPI(ctx context.Context, obj *netbox.RearPortTempla
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Color = conv.StringOrEmpty(obj.GetColorOk())
 	out.Positions = conv.Int64From32(obj.GetPositionsOk())
+	{
+		items := obj.GetFrontPorts()
+		vals := make([]RearPortTemplateFrontPortsItem, 0, len(items))
+		for i := range items {
+			src := &items[i]
+			vals = append(vals, RearPortTemplateFrontPortsItem{
+				Position:          conv.Int64From32(src.GetPositionOk()),
+				FrontPort:         conv.Int64From32(src.GetFrontPortOk()),
+				FrontPortPosition: conv.Int64From32(src.GetFrontPortPositionOk()),
+			})
+		}
+		out.FrontPorts = conv.ObjectList(ctx, rearPortTemplateFrontPortsItemAttrTypes, vals, nil, diags)
+	}
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

@@ -40,10 +40,10 @@ type AsnDataModel struct {
 	CustomFields  jsontypes.Normalized `tfsdk:"custom_fields"`
 	SiteIds       types.Set            `tfsdk:"site_ids"`
 	Url           types.String         `tfsdk:"url"`
-	Display       types.String         `tfsdk:"display"`
 	Created       timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl    types.String         `tfsdk:"display_url"`
+	Display       types.String         `tfsdk:"display"`
+	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
 	SiteCount     types.Int64          `tfsdk:"site_count"`
 	ProviderCount types.Int64          `tfsdk:"provider_count"`
 }
@@ -121,22 +121,22 @@ func asnDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
+		"display_url": dsschema.StringAttribute{
+			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"last_updated": dsschema.StringAttribute{
 			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"display_url": dsschema.StringAttribute{
-			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
 		"site_count": dsschema.Int64Attribute{
@@ -400,10 +400,10 @@ func asnDataFromAPI(ctx context.Context, obj *netbox.ASN, out *AsnDataModel, dia
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.SiteIds = conv.BriefIDs(obj.GetSites())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.SiteCount = conv.Int64From64(obj.GetSiteCountOk())
 	out.ProviderCount = conv.Int64From64(obj.GetProviderCountOk())
 }

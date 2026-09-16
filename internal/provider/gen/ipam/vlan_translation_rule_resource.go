@@ -34,7 +34,6 @@ type VlanTranslationRuleModel struct {
 	RemoteVid   types.Int64  `tfsdk:"remote_vid"`
 	Description types.String `tfsdk:"description"`
 	Url         types.String `tfsdk:"url"`
-	Display     types.String `tfsdk:"display"`
 }
 
 var (
@@ -116,10 +115,6 @@ func vlanTranslationRuleResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
 		},
 	}
 }
@@ -277,5 +272,4 @@ func vlanTranslationRuleFromAPI(ctx context.Context, obj *netbox.VLANTranslation
 	out.RemoteVid = conv.Int64From32(obj.GetRemoteVidOk())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VlanTranslationRuleModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 }

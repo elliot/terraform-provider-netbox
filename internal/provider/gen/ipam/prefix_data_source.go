@@ -45,11 +45,11 @@ type PrefixDataModel struct {
 	Tags         types.Set            `tfsdk:"tags"`
 	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
 	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl   types.String         `tfsdk:"display_url"`
+	Display      types.String         `tfsdk:"display"`
 	Family       types.Int64          `tfsdk:"family"`
+	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 	Children     types.Int64          `tfsdk:"children"`
 	Depth        types.Int64          `tfsdk:"depth"`
 }
@@ -157,17 +157,8 @@ func prefixDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -175,8 +166,17 @@ func prefixDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"family": dsschema.Int64Attribute{
 			MarkdownDescription: "Family.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 		"children": dsschema.Int64Attribute{
@@ -445,11 +445,11 @@ func prefixDataFromAPI(ctx context.Context, obj *netbox.Prefix, out *PrefixDataM
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.Family = conv.ChoiceInt(obj.GetFamilyOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.Children = conv.Int64From32(obj.GetChildrenOk())
 	out.Depth = conv.Int64From32(obj.GetDepthOk())
 }

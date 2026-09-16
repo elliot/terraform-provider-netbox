@@ -250,8 +250,10 @@ func (b *Builder) buildResource(r *model.Resource) error {
 			r.Attrs = append(r.Attrs, *attr)
 		}
 
-		// Read-only extras: url, display, created, last_updated on the resource;
-		// everything else that is readable-only goes to ReadOnlyAttrs (data sources).
+		// Read-only extras: url and created on the resource (immutable, so they can
+		// use UseStateForUnknown); display and last_updated change on every write
+		// and would show "(known after apply)" in every plan, so they are data
+		// source only. Everything else that is readable-only goes to ReadOnlyAttrs.
 		for _, pname := range readSchema.OrderedProperties() {
 			if pname == "id" || r.Attr(pname) != nil || r.Attr(pname+"_id") != nil || r.Attr(naming.Singular(pname)+"_ids") != nil {
 				continue
@@ -266,7 +268,7 @@ func (b *Builder) buildResource(r *model.Resource) error {
 			}
 			ao := o.Attributes[pname]
 			switch {
-			case pname == "url" || pname == "display" || pname == "created" || pname == "last_updated":
+			case pname == "url" || pname == "created":
 				r.Attrs = append(r.Attrs, ro)
 			case ao != nil && ao.Expose:
 				ro.KeepPriorWhenNull = true
@@ -591,13 +593,17 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 	return a, nil
 }
 
-// markReadOnly turns an attribute into a computed-only one.
+// markReadOnly turns an attribute (and, for nested lists, every item
+// attribute) into a computed-only one that is never sent to the API.
 func markReadOnly(a *model.Attr) {
 	a.ReadOnly = true
 	a.Computed = true
 	a.Required = false
 	a.DefaultEmptySet = false
 	a.DefaultEmptyString = false
+	for i := range a.Nested {
+		markReadOnly(&a.Nested[i])
+	}
 }
 
 // additionalPropertiesType returns the declared type of additionalProperties ("" when free-form).

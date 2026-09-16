@@ -42,13 +42,13 @@ type ConfigTemplateDataModel struct {
 	OwnerId           types.Int64          `tfsdk:"owner_id"`
 	Tags              types.Set            `tfsdk:"tags"`
 	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
 	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl        types.String         `tfsdk:"display_url"`
+	Display           types.String         `tfsdk:"display"`
 	DataPath          types.String         `tfsdk:"data_path"`
 	DataFileId        types.Int64          `tfsdk:"data_file_id"`
 	DataSynced        timetypes.RFC3339    `tfsdk:"data_synced"`
+	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // configTemplateFilterNames lists the query parameters accepted by /api/extras/config-templates/ (sorted).
@@ -140,22 +140,17 @@ func configTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"data_path": dsschema.StringAttribute{
@@ -168,6 +163,11 @@ func configTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"data_synced": dsschema.StringAttribute{
 			MarkdownDescription: "Data Synced.",
+			CustomType:          timetypes.RFC3339Type{},
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -427,11 +427,11 @@ func configTemplateDataFromAPI(ctx context.Context, obj *netbox.ConfigTemplate, 
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.DataPath = conv.String(obj.GetDataPathOk())
 	out.DataFileId = conv.BriefID(obj.GetDataFileOk())
 	out.DataSynced = conv.RFC3339(obj.GetDataSyncedOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

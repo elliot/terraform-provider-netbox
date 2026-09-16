@@ -36,11 +36,11 @@ type TokenDataModel struct {
 	WriteEnabled types.Bool        `tfsdk:"write_enabled"`
 	PepperId     types.Int64       `tfsdk:"pepper_id"`
 	Url          types.String      `tfsdk:"url"`
-	Display      types.String      `tfsdk:"display"`
 	Key          types.String      `tfsdk:"key"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
 	Token        types.String      `tfsdk:"token"`
 	DisplayUrl   types.String      `tfsdk:"display_url"`
+	Display      types.String      `tfsdk:"display"`
 }
 
 // tokenFilterNames lists the query parameters accepted by /api/users/tokens/ (sorted).
@@ -104,10 +104,6 @@ func tokenDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"key": dsschema.StringAttribute{
 			MarkdownDescription: "The v2 token identification key (`nbt_<key>`).",
 			Computed:            true,
@@ -124,6 +120,10 @@ func tokenDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 	}
@@ -369,9 +369,9 @@ func tokenDataFromAPI(ctx context.Context, obj *netbox.Token, out *TokenDataMode
 	out.WriteEnabled = conv.Bool(obj.GetWriteEnabledOk())
 	out.PepperId = conv.Int64From32(obj.GetPepperIdOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Key = conv.String(obj.GetKeyOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
 	out.Token = conv.String(obj.GetTokenOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 }

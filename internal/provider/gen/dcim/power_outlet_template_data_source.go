@@ -37,8 +37,8 @@ type PowerOutletTemplateDataModel struct {
 	FeedLeg      types.String      `tfsdk:"feed_leg"`
 	Description  types.String      `tfsdk:"description"`
 	Url          types.String      `tfsdk:"url"`
-	Display      types.String      `tfsdk:"display"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
+	Display      types.String      `tfsdk:"display"`
 	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
@@ -112,13 +112,13 @@ func powerOutletTemplateDataAttributes(lookup bool) map[string]dsschema.Attribut
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"last_updated": dsschema.StringAttribute{
@@ -382,7 +382,7 @@ func powerOutletTemplateDataFromAPI(ctx context.Context, obj *netbox.PowerOutlet
 	out.FeedLeg = conv.Choice(obj.GetFeedLegOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

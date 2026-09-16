@@ -44,15 +44,15 @@ type PowerOutletDataModel struct {
 	Tags                        types.Set            `tfsdk:"tags"`
 	CustomFields                jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url                         types.String         `tfsdk:"url"`
-	Display                     types.String         `tfsdk:"display"`
 	Created                     timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated                 timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl                  types.String         `tfsdk:"display_url"`
+	Display                     types.String         `tfsdk:"display"`
 	CableId                     types.Int64          `tfsdk:"cable_id"`
 	CableEnd                    types.String         `tfsdk:"cable_end"`
 	LinkPeersType               types.String         `tfsdk:"link_peers_type"`
 	ConnectedEndpointsType      types.String         `tfsdk:"connected_endpoints_type"`
 	ConnectedEndpointsReachable types.Bool           `tfsdk:"connected_endpoints_reachable"`
+	LastUpdated                 timetypes.RFC3339    `tfsdk:"last_updated"`
 	Occupied                    types.Bool           `tfsdk:"occupied"`
 }
 
@@ -165,22 +165,17 @@ func powerOutletDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"cable_id": dsschema.Int64Attribute{
@@ -201,6 +196,11 @@ func powerOutletDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"connected_endpoints_reachable": dsschema.BoolAttribute{
 			MarkdownDescription: "Connected Endpoints Reachable.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 		"occupied": dsschema.BoolAttribute{
@@ -464,14 +464,14 @@ func powerOutletDataFromAPI(ctx context.Context, obj *netbox.PowerOutlet, out *P
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.CableId = conv.BriefID(obj.GetCableOk())
 	out.CableEnd = conv.String(obj.GetCableEndOk())
 	out.LinkPeersType = conv.String(obj.GetLinkPeersTypeOk())
 	out.ConnectedEndpointsType = conv.String(obj.GetConnectedEndpointsTypeOk())
 	out.ConnectedEndpointsReachable = conv.Bool(obj.GetConnectedEndpointsReachableOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.Occupied = conv.Bool(obj.GetOccupiedOk())
 }

@@ -68,9 +68,7 @@ resource "netbox_wireless_link" "backhaul" {
 ### Read-Only
 
 - `created` (String) Created.
-- `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
-- `last_updated` (String) Last Updated.
 - `url` (String) Url.
 
 ## Import

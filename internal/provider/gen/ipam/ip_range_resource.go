@@ -52,9 +52,7 @@ type IpRangeModel struct {
 	MarkPopulated types.Bool        `tfsdk:"mark_populated"`
 	MarkUtilized  types.Bool        `tfsdk:"mark_utilized"`
 	Url           types.String      `tfsdk:"url"`
-	Display       types.String      `tfsdk:"display"`
 	Created       timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -185,20 +183,11 @@ func ipRangeResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -454,7 +443,5 @@ func ipRangeFromAPI(ctx context.Context, obj *netbox.IPRange, prior *IpRangeMode
 	out.MarkPopulated = conv.Bool(obj.GetMarkPopulatedOk())
 	out.MarkUtilized = conv.Bool(obj.GetMarkUtilizedOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

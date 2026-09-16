@@ -32,8 +32,8 @@ type OwnerDataModel struct {
 	UserGroupIds types.Set    `tfsdk:"user_group_ids"`
 	UserIds      types.Set    `tfsdk:"user_ids"`
 	Url          types.String `tfsdk:"url"`
-	Display      types.String `tfsdk:"display"`
 	DisplayUrl   types.String `tfsdk:"display_url"`
+	Display      types.String `tfsdk:"display"`
 }
 
 // ownerFilterNames lists the query parameters accepted by /api/users/owners/ (sorted).
@@ -81,12 +81,12 @@ func ownerDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 	}
@@ -337,6 +337,6 @@ func ownerDataFromAPI(ctx context.Context, obj *netbox.Owner, out *OwnerDataMode
 	out.UserGroupIds = conv.BriefIDs(obj.GetUserGroups())
 	out.UserIds = conv.BriefIDs(obj.GetUsers())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 }

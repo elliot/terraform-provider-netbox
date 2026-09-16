@@ -42,7 +42,6 @@ type PermissionModel struct {
 	GroupIds    types.Set            `tfsdk:"group_ids"`
 	UserIds     types.Set            `tfsdk:"user_ids"`
 	Url         types.String         `tfsdk:"url"`
-	Display     types.String         `tfsdk:"display"`
 }
 
 var (
@@ -152,10 +151,6 @@ func permissionResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
 		},
 	}
 }
@@ -349,5 +344,4 @@ func permissionFromAPI(ctx context.Context, obj *netbox.ObjectPermission, prior 
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
 	out.UserIds = conv.BriefIDs(obj.GetUsers())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 }

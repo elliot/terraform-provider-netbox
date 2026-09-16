@@ -43,10 +43,10 @@ type L2vpnDataModel struct {
 	Tags            types.Set            `tfsdk:"tags"`
 	CustomFields    jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url             types.String         `tfsdk:"url"`
-	Display         types.String         `tfsdk:"display"`
 	Created         timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated     timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl      types.String         `tfsdk:"display_url"`
+	Display         types.String         `tfsdk:"display"`
+	LastUpdated     timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // l2vpnFilterNames lists the query parameters accepted by /api/vpn/l2vpns/ (sorted).
@@ -143,22 +143,22 @@ func l2vpnDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
+		"display_url": dsschema.StringAttribute{
+			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"last_updated": dsschema.StringAttribute{
 			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"display_url": dsschema.StringAttribute{
-			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
 	}
@@ -425,8 +425,8 @@ func l2vpnDataFromAPI(ctx context.Context, obj *netbox.L2VPN, out *L2vpnDataMode
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

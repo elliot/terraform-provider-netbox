@@ -41,9 +41,7 @@ type InventoryItemTemplateModel struct {
 	ComponentType  types.String      `tfsdk:"component_type"`
 	ComponentId    types.Int64       `tfsdk:"component_id"`
 	Url            types.String      `tfsdk:"url"`
-	Display        types.String      `tfsdk:"display"`
 	Created        timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated    timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -159,20 +157,11 @@ func inventoryItemTemplateResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -395,7 +384,5 @@ func inventoryItemTemplateFromAPI(ctx context.Context, obj *netbox.InventoryItem
 	out.ComponentType = conv.StringKeep(conv.String(obj.GetComponentTypeOk()), conv.PriorString(prior, func(m *InventoryItemTemplateModel) types.String { return m.ComponentType }), false)
 	out.ComponentId = conv.Int64From64(obj.GetComponentIdOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

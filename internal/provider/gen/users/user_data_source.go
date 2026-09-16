@@ -37,8 +37,8 @@ type UserDataModel struct {
 	LastLogin  timetypes.RFC3339 `tfsdk:"last_login"`
 	GroupIds   types.Set         `tfsdk:"group_ids"`
 	Url        types.String      `tfsdk:"url"`
-	Display    types.String      `tfsdk:"display"`
 	DisplayUrl types.String      `tfsdk:"display_url"`
+	Display    types.String      `tfsdk:"display"`
 }
 
 // userFilterNames lists the query parameters accepted by /api/users/users/ (sorted).
@@ -111,12 +111,12 @@ func userDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 	}
@@ -370,6 +370,6 @@ func userDataFromAPI(ctx context.Context, obj *netbox.User, out *UserDataModel, 
 	out.LastLogin = conv.RFC3339(obj.GetLastLoginOk())
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 }

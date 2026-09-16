@@ -32,7 +32,6 @@ resource "netbox_owner_group" "infrastructure" {
 
 ### Read-Only
 
-- `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `url` (String) Url.
 

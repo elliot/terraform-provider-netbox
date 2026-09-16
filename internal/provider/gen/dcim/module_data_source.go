@@ -43,10 +43,10 @@ type ModuleDataModel struct {
 	ReplicateComponents types.Bool           `tfsdk:"replicate_components"`
 	AdoptComponents     types.Bool           `tfsdk:"adopt_components"`
 	Url                 types.String         `tfsdk:"url"`
-	Display             types.String         `tfsdk:"display"`
 	Created             timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl          types.String         `tfsdk:"display_url"`
+	Display             types.String         `tfsdk:"display"`
+	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
 	IsBayCompatible     types.Bool           `tfsdk:"is_bay_compatible"`
 }
 
@@ -141,22 +141,22 @@ func moduleDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
+		"display_url": dsschema.StringAttribute{
+			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"last_updated": dsschema.StringAttribute{
 			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"display_url": dsschema.StringAttribute{
-			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
 		"is_bay_compatible": dsschema.BoolAttribute{
@@ -409,9 +409,9 @@ func moduleDataFromAPI(ctx context.Context, obj *netbox.Module, out *ModuleDataM
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.IsBayCompatible = conv.Bool(obj.GetIsBayCompatibleOk())
 }

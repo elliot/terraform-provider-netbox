@@ -34,7 +34,6 @@ type VlanTranslationPolicyModel struct {
 	OwnerId     types.Int64  `tfsdk:"owner_id"`
 	Comments    types.String `tfsdk:"comments"`
 	Url         types.String `tfsdk:"url"`
-	Display     types.String `tfsdk:"display"`
 }
 
 var (
@@ -119,10 +118,6 @@ func vlanTranslationPolicyResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
 		},
 	}
 }
@@ -288,5 +283,4 @@ func vlanTranslationPolicyFromAPI(ctx context.Context, obj *netbox.VLANTranslati
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *VlanTranslationPolicyModel) types.String { return m.Comments }), false)
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 }

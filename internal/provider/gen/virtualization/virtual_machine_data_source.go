@@ -53,11 +53,11 @@ type VirtualMachineDataModel struct {
 	ConfigTemplateId     types.Int64          `tfsdk:"config_template_id"`
 	CustomFields         jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url                  types.String         `tfsdk:"url"`
-	Display              types.String         `tfsdk:"display"`
 	Created              timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated          timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl           types.String         `tfsdk:"display_url"`
+	Display              types.String         `tfsdk:"display"`
 	PrimaryIpId          types.Int64          `tfsdk:"primary_ip_id"`
+	LastUpdated          timetypes.RFC3339    `tfsdk:"last_updated"`
 	InterfaceCount       types.Int64          `tfsdk:"interface_count"`
 	VirtualDiskCount     types.Int64          `tfsdk:"virtual_disk_count"`
 	ConfigContext        jsontypes.Normalized `tfsdk:"config_context"`
@@ -210,17 +210,8 @@ func virtualMachineDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -228,8 +219,17 @@ func virtualMachineDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"primary_ip_id": dsschema.Int64Attribute{
 			MarkdownDescription: "Primary Ip. References `netbox_ip_address`.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 		"interface_count": dsschema.Int64Attribute{
@@ -511,11 +511,11 @@ func virtualMachineDataFromAPI(ctx context.Context, obj *netbox.VirtualMachine, 
 	out.ConfigTemplateId = conv.BriefID(obj.GetConfigTemplateOk())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.PrimaryIpId = conv.BriefID(obj.GetPrimaryIpOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.InterfaceCount = conv.Int64From32(obj.GetInterfaceCountOk())
 	out.VirtualDiskCount = conv.Int64From32(obj.GetVirtualDiskCountOk())
 	out.ConfigContext = conv.JSONFromAPI(obj.GetConfigContext())

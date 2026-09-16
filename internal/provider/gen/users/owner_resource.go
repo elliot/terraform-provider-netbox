@@ -37,7 +37,6 @@ type OwnerModel struct {
 	UserGroupIds types.Set    `tfsdk:"user_group_ids"`
 	UserIds      types.Set    `tfsdk:"user_ids"`
 	Url          types.String `tfsdk:"url"`
-	Display      types.String `tfsdk:"display"`
 }
 
 var (
@@ -130,10 +129,6 @@ func ownerResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
 		},
 	}
 }
@@ -305,5 +300,4 @@ func ownerFromAPI(ctx context.Context, obj *netbox.Owner, prior *OwnerModel, out
 	out.UserGroupIds = conv.BriefIDs(obj.GetUserGroups())
 	out.UserIds = conv.BriefIDs(obj.GetUsers())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 }

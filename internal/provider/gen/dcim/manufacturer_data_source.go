@@ -37,10 +37,10 @@ type ManufacturerDataModel struct {
 	Tags               types.Set            `tfsdk:"tags"`
 	CustomFields       jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url                types.String         `tfsdk:"url"`
-	Display            types.String         `tfsdk:"display"`
 	Created            timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl         types.String         `tfsdk:"display_url"`
+	Display            types.String         `tfsdk:"display"`
+	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
 	DevicetypeCount    types.Int64          `tfsdk:"devicetype_count"`
 	ModuletypeCount    types.Int64          `tfsdk:"moduletype_count"`
 	InventoryitemCount types.Int64          `tfsdk:"inventoryitem_count"`
@@ -106,22 +106,22 @@ func manufacturerDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
+		"display_url": dsschema.StringAttribute{
+			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"last_updated": dsschema.StringAttribute{
 			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"display_url": dsschema.StringAttribute{
-			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
 		"devicetype_count": dsschema.Int64Attribute{
@@ -398,10 +398,10 @@ func manufacturerDataFromAPI(ctx context.Context, obj *netbox.Manufacturer, out 
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DevicetypeCount = conv.Int64From64(obj.GetDevicetypeCountOk())
 	out.ModuletypeCount = conv.Int64From64(obj.GetModuletypeCountOk())
 	out.InventoryitemCount = conv.Int64From64(obj.GetInventoryitemCountOk())

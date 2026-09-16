@@ -61,9 +61,7 @@ resource "netbox_custom_field_choice_set" "countries" {
 ### Read-Only
 
 - `created` (String) Created.
-- `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
-- `last_updated` (String) Last Updated.
 - `url` (String) Url.
 
 ## Import

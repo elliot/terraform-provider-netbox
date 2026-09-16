@@ -10,7 +10,7 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 | Resources / data sources | 126 generated resources, 266 data sources, 7 hand-written resources; see [RESOURCES.md](RESOURCES.md) |
 | Acceptance on demo.netbox.dev (4.7.0) | 135/135 pass (create, update, data sources, import, empty plan); 7 scenarios applied and destroyed |
 | Per-app validation reports | [validation/](validation/README.md) (written before the last generator fixes; see the banner there) |
-| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test; actions pinned to SHAs, Renovate monthly |
+| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum); actions pinned to SHAs, Renovate monthly |
 | Release | GoReleaser (unsigned by default) + network mirror on GitHub Pages + `scripts/install.sh`; `CHANGELOG.md` cut for 0.1.0; no tag pushed yet, see [INSTALL.md](INSTALL.md) |
 | Registry | namespace `elliot` reserved, address `elliot/netbox` final; listing not yet published |
 
@@ -18,9 +18,8 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 
 1. Enable GitHub Pages (Settings → Pages → Source "GitHub Actions") so the release workflow can publish the network mirror.
 2. Tag `v0.1.0`, confirm the release assets, the mirror at `https://elliot.github.io/terraform-provider-netbox/` and `scripts/install.sh` against the real release.
-3. Run the docker-compose acceptance workflow (`.github/workflows/acceptance.yml`) once by `workflow_dispatch`; it has only ever been executed against the public demo. Expect to tune shard timeouts.
-4. Add a client reproducibility job (`make client-gen && git diff --exit-code -- netbox/`) with Java 17 and a pinned SHA-256 for the openapi-generator jar in `tools/client-gen/generate.sh`.
-5. Registry listing: add the RSA (or DSA) GPG public key to the registry account, add the `GPG_PRIVATE_KEY` / `PASSPHRASE` secrets (the release workflow then signs automatically), publish the repository once through the registry UI and verify the docs in the registry preview tool.
+3. Get the docker-compose acceptance workflow green once: it now runs nightly, on `workflow_dispatch`, and on pull requests labelled `run-acceptance` (12 shards, one NetBox each); it has only ever been executed against the public demo, so expect to tune shard timeouts.
+4. Registry listing: add the RSA (or DSA) GPG public key to the registry account, add the `GPG_PRIVATE_KEY` / `PASSPHRASE` secrets (the release workflow then signs automatically), publish the repository once through the registry UI and verify the docs in the registry preview tool.
 
 ## Milestones
 
@@ -28,9 +27,8 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 Everything above. Behaviour that is deliberately conservative: reverse sides of relations are read-only; nullable numbers and choices track the server value; `custom_fields` tracks only configured keys.
 
 ### v0.2: generator polish
-- `display` / `last_updated` are plain `Computed` and show `(known after apply)` on every change; give them `UseStateForUnknown` or a plan modifier that copies state when nothing else changed. This is what forced `rear_port.front_ports` to be skipped.
-- Reverse-side *nested* lists (`rear_port.front_ports`, `rear_port_template.front_ports`) need a generic read-only rule like the one for ID sets; today they are `skip: true` and missing from the data sources.
-- Symmetric many-to-many pairs (`user.permissions` / `permission.user_ids`) are skip-only; decide the owning side per pair or emit the reverse side as computed.
+- Symmetric many-to-many pairs (`user.permissions` / `permission.user_ids`) are skip-only; decide the owning side per pair or emit the reverse side as computed (the `read_only` override used for `rear_port.front_ports` is the mechanism).
+- Reverse-side computed lists (`asn.site_ids`, `rear_port.front_ports`) are unknown during updates of the owning resource; a state-copying plan modifier would remove that line from plans but risks an inconsistent-result error when the other side changes in the same apply.
 - Re-verify `module_bay.installed_module` (skipped after a NetBox 500 that the "no null on create" fix may have removed) and retire redundant overrides listed below.
 - Validate `filters[*].name` in data sources against the endpoint parameter list at plan time (NetBox ignores unknown filters and returns everything).
 - A MAC/WWN format validator (`aa:bb:cc:dd:ee:ff`) instead of case folding by property name.
@@ -52,13 +50,11 @@ Everything above. Behaviour that is deliberately conservative: reverse sides of 
 
 ## Todos (file-anchored)
 
-- [ ] `internal/gen/render/emit.go`: `UseStateForUnknown` for `display` / `last_updated` (see v0.2).
-- [ ] `internal/gen/build/build.go`: extend pass 3 (reverse one-to-many) to nested lists; add a `format: mac` check; drop the property-name special case for `mac_address` / `wwn`.
+- [ ] `internal/gen/build/build.go`: add a `format: mac` check; drop the property-name special case for `mac_address` / `wwn`.
 - [ ] `internal/gen/render/datasource.go`: emit a `OneOf` validator (or a warning) for `filters[*].name`.
 - [ ] `generator/overrides`: remove `circuits.assignments` and `providers.accounts` skips (both now handled generically; `accounts` should become read-only, not skipped), remove `racks.*`, `virtual-machines.disk` and `tokens.pepper_id` `computed: true` (default now), keep `journal-entries.created_by` but define it in one file only.
 - [ ] `generator/overrides/dcim_a.yaml`: drop the `ignore_changes = [site_ids]` in the ASN fixture (`asn.site_ids` is read-only now) and re-run `TestAccAsn_basic`.
 - [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
-- [ ] `tools/client-gen/generate.sh`: pin the jar checksum.
 - [ ] `docs/validation/*.md`: refresh after the next full run so they stop describing fixed issues as workarounds.
 - [ ] Review Renovate's first dependency dashboard after the PR merges (`.github/renovate.json5`).
 
@@ -125,7 +121,7 @@ Attributes hidden or forced by overrides (revisit on every spec bump):
 |---|---|---|---|
 | circuit | assignments | skip | not echoed by the read serializer (now dropped generically) |
 | provider | accounts | skip | reverse side of provider_account.provider (generic rule now makes it read-only) |
-| rear_port, rear_port_template | front_ports | skip | reverse nested list, perpetual empty updates |
+| rear_port, rear_port_template | front_ports | read_only | reverse side of front_port.rear_ports; NetBox accepts writes from both sides, the front port owns the mapping |
 | module_bay | installed_module | skip | NetBox 500 on any write, re-verify |
 | asn | sites | read_only | reverse side of site.asn_ids |
 | user, user_group | permissions | skip | reverse side of permission.user_ids / group_ids |

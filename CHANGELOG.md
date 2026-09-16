@@ -42,8 +42,12 @@ _Nothing yet._
   fields are omitted on create instead of being sent as null.
 - `form_factor` (rack types), `status` (tunnels), `role` (tunnel terminations) and `version` (IKE policies)
   are required, matching NetBox validation.
-- Reverse sides of relations are computed-only (`netbox_asn.site_ids`) or not exposed
-  (`netbox_provider.account_ids`, `netbox_circuit.assignments`, `netbox_user.permission_ids`).
+- Reverse sides of relations are computed-only (`netbox_asn.site_ids`, `netbox_rear_port.front_ports`,
+  `netbox_rear_port_template.front_ports`) or not exposed (`netbox_provider.account_ids`,
+  `netbox_circuit.assignments`, `netbox_user.permission_ids`).
+- Resources no longer expose `display` and `last_updated`: both change on every write and produced a
+  `(known after apply)` line in every plan. They remain available on the data sources; `id`, `url` and
+  `created` stay on resources and are stable across updates.
 - Nullable numbers, choices and timestamps with server defaults are `Optional+Computed` and are never sent as null.
 
 ### Fixed

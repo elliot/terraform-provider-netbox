@@ -50,9 +50,7 @@ type VirtualDeviceContextModel struct {
 	Tags         types.Set         `tfsdk:"tags"`
 	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
 	Url          types.String      `tfsdk:"url"`
-	Display      types.String      `tfsdk:"display"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -176,20 +174,11 @@ func virtualDeviceContextResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -433,7 +422,5 @@ func virtualDeviceContextFromAPI(ctx context.Context, obj *netbox.VirtualDeviceC
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

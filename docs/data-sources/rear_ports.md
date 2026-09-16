@@ -61,6 +61,7 @@ Read-Only:
 - `device_id` (Number) ID of the Device (`netbox_device`).
 - `display` (String) Display.
 - `display_url` (String) Display Url.
+- `front_ports` (Attributes List) Front port mappings onto this rear port, managed from `netbox_front_port.rear_ports`; read-only here. (see [below for nested schema](#nestedatt--items--front_ports))
 - `id` (Number) The numeric ID of the object in NetBox.
 - `label` (String) Physical label. Defaults to an empty string.
 - `last_updated` (String) Last Updated.
@@ -74,3 +75,12 @@ Read-Only:
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `type` (String) Type. One of 63 valid NetBox choices (see the NetBox documentation).
 - `url` (String) Url.
+
+<a id="nestedatt--items--front_ports"></a>
+### Nested Schema for `items.front_ports`
+
+Read-Only:
+
+- `front_port` (Number) Front Port.
+- `front_port_position` (Number) Front Port Position.
+- `position` (Number) Position.

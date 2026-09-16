@@ -40,11 +40,11 @@ type RackReservationDataModel struct {
 	Tags         types.Set            `tfsdk:"tags"`
 	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
 	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl   types.String         `tfsdk:"display_url"`
+	Display      types.String         `tfsdk:"display"`
 	UnitCount    types.Int64          `tfsdk:"unit_count"`
+	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // rackReservationFilterNames lists the query parameters accepted by /api/dcim/rack-reservations/ (sorted).
@@ -123,17 +123,8 @@ func rackReservationDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -141,8 +132,17 @@ func rackReservationDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"unit_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Unit Count.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 	}
@@ -392,9 +392,9 @@ func rackReservationDataFromAPI(ctx context.Context, obj *netbox.RackReservation
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.UnitCount = conv.Int64From32(obj.GetUnitCountOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

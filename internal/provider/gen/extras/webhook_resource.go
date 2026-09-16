@@ -53,9 +53,7 @@ type WebhookModel struct {
 	OwnerId           types.Int64       `tfsdk:"owner_id"`
 	Tags              types.Set         `tfsdk:"tags"`
 	Url               types.String      `tfsdk:"url"`
-	Display           types.String      `tfsdk:"display"`
 	Created           timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -201,20 +199,11 @@ func webhookResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -475,7 +464,5 @@ func webhookFromAPI(ctx context.Context, obj *netbox.Webhook, prior *WebhookMode
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

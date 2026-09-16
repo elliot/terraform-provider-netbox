@@ -43,8 +43,8 @@ type InterfaceTemplateDataModel struct {
 	PoeType      types.String      `tfsdk:"poe_type"`
 	RfRole       types.String      `tfsdk:"rf_role"`
 	Url          types.String      `tfsdk:"url"`
-	Display      types.String      `tfsdk:"display"`
 	Created      timetypes.RFC3339 `tfsdk:"created"`
+	Display      types.String      `tfsdk:"display"`
 	LastUpdated  timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
@@ -147,13 +147,13 @@ func interfaceTemplateDataAttributes(lookup bool) map[string]dsschema.Attribute 
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"last_updated": dsschema.StringAttribute{
@@ -421,7 +421,7 @@ func interfaceTemplateDataFromAPI(ctx context.Context, obj *netbox.InterfaceTemp
 	out.PoeType = conv.Choice(obj.GetPoeTypeOk())
 	out.RfRole = conv.Choice(obj.GetRfRoleOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

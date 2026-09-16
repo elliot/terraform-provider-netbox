@@ -57,9 +57,7 @@ type PowerPortTemplateModel struct {
 	AllocatedDraw types.Int64       `tfsdk:"allocated_draw"`
 	Description   types.String      `tfsdk:"description"`
 	Url           types.String      `tfsdk:"url"`
-	Display       types.String      `tfsdk:"display"`
 	Created       timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -169,20 +167,11 @@ func powerPortTemplateResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -386,7 +375,5 @@ func powerPortTemplateFromAPI(ctx context.Context, obj *netbox.PowerPortTemplate
 	out.AllocatedDraw = conv.Int64From32(obj.GetAllocatedDrawOk())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *PowerPortTemplateModel) types.String { return m.Description }), false)
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

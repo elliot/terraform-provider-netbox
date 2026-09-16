@@ -230,7 +230,10 @@ resources:
         }
 
   rear-port-templates:
-    attributes: { front_ports: { skip: true } }
+    attributes:
+      front_ports:
+        read_only: true
+        description: Front port template mappings onto this rear port template, managed from `netbox_front_port_template.rear_ports`; read-only here.
     test:
       basic: |
         resource "netbox_manufacturer" "test" {
@@ -537,7 +540,10 @@ resources:
         }
 
   rear-ports:
-    attributes: { front_ports: { skip: true } }
+    attributes:
+      front_ports:
+        read_only: true
+        description: Front port mappings onto this rear port, managed from `netbox_front_port.rear_ports`; read-only here.
     test:
       basic: |
         resource "netbox_manufacturer" "test" {

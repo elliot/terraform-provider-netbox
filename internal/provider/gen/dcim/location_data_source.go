@@ -42,10 +42,10 @@ type LocationDataModel struct {
 	OwnerId      types.Int64          `tfsdk:"owner_id"`
 	Comments     types.String         `tfsdk:"comments"`
 	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
 	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl   types.String         `tfsdk:"display_url"`
+	Display      types.String         `tfsdk:"display"`
+	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 	RackCount    types.Int64          `tfsdk:"rack_count"`
 	DeviceCount  types.Int64          `tfsdk:"device_count"`
 	PrefixCount  types.Int64          `tfsdk:"prefix_count"`
@@ -140,22 +140,22 @@ func locationDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
+		"display_url": dsschema.StringAttribute{
+			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"last_updated": dsschema.StringAttribute{
 			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"display_url": dsschema.StringAttribute{
-			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
 		"rack_count": dsschema.Int64Attribute{
@@ -437,10 +437,10 @@ func locationDataFromAPI(ctx context.Context, obj *netbox.Location, out *Locatio
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.RackCount = conv.Int64From32(obj.GetRackCountOk())
 	out.DeviceCount = conv.Int64From32(obj.GetDeviceCountOk())
 	out.PrefixCount = conv.Int64From64(obj.GetPrefixCountOk())

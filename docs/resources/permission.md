@@ -65,7 +65,6 @@ resource "netbox_permission" "automation_active_sites" {
 
 ### Read-Only
 
-- `display` (String) Display.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `url` (String) Url.
 

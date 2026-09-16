@@ -42,11 +42,11 @@ type EventRuleDataModel struct {
 	OwnerId           types.Int64          `tfsdk:"owner_id"`
 	Tags              types.Set            `tfsdk:"tags"`
 	Url               types.String         `tfsdk:"url"`
-	Display           types.String         `tfsdk:"display"`
 	Created           timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl        types.String         `tfsdk:"display_url"`
+	Display           types.String         `tfsdk:"display"`
 	ActionIsAvailable types.Bool           `tfsdk:"action_is_available"`
+	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // eventRuleFilterNames lists the query parameters accepted by /api/extras/event-rules/ (sorted).
@@ -135,17 +135,8 @@ func eventRuleDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -153,8 +144,17 @@ func eventRuleDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"action_is_available": dsschema.BoolAttribute{
 			MarkdownDescription: "Action Is Available.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 	}
@@ -412,9 +412,9 @@ func eventRuleDataFromAPI(ctx context.Context, obj *netbox.EventRule, out *Event
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.ActionIsAvailable = conv.Bool(obj.GetActionIsAvailableOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

@@ -39,6 +39,7 @@ data "netbox_rear_port_template" "example" {
 - `description` (String) Description. Defaults to an empty string.
 - `device_type_id` (Number) ID of the Device Type (`netbox_device_type`).
 - `display` (String) Display.
+- `front_ports` (Attributes List) Front port template mappings onto this rear port template, managed from `netbox_front_port_template.rear_ports`; read-only here. (see [below for nested schema](#nestedatt--front_ports))
 - `label` (String) Physical label. Defaults to an empty string.
 - `last_updated` (String) Last Updated.
 - `module_type_id` (Number) ID of the Module Type (`netbox_module_type`).
@@ -53,3 +54,13 @@ Required:
 
 - `name` (String) Query parameter name.
 - `value` (String) Query parameter value.
+
+
+<a id="nestedatt--front_ports"></a>
+### Nested Schema for `front_ports`
+
+Read-Only:
+
+- `front_port` (Number) Front Port.
+- `front_port_position` (Number) Front Port Position.
+- `position` (Number) Position.

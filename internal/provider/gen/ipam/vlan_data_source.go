@@ -44,11 +44,11 @@ type VlanDataModel struct {
 	Tags               types.Set            `tfsdk:"tags"`
 	CustomFields       jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url                types.String         `tfsdk:"url"`
-	Display            types.String         `tfsdk:"display"`
 	Created            timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl         types.String         `tfsdk:"display_url"`
+	Display            types.String         `tfsdk:"display"`
 	L2vpnTerminationId types.Int64          `tfsdk:"l2vpn_termination_id"`
+	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
 	PrefixCount        types.Int64          `tfsdk:"prefix_count"`
 }
 
@@ -150,17 +150,8 @@ func vlanDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -168,8 +159,17 @@ func vlanDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"l2vpn_termination_id": dsschema.Int64Attribute{
 			MarkdownDescription: "L2vpn Termination. References `netbox_l2vpn_termination`.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 		"prefix_count": dsschema.Int64Attribute{
@@ -433,10 +433,10 @@ func vlanDataFromAPI(ctx context.Context, obj *netbox.VLAN, out *VlanDataModel, 
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.L2vpnTerminationId = conv.BriefID(obj.GetL2vpnTerminationOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.PrefixCount = conv.Int64From64(obj.GetPrefixCountOk())
 }

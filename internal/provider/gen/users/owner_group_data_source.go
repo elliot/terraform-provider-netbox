@@ -29,8 +29,8 @@ type OwnerGroupDataModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	Url         types.String `tfsdk:"url"`
-	Display     types.String `tfsdk:"display"`
 	DisplayUrl  types.String `tfsdk:"display_url"`
+	Display     types.String `tfsdk:"display"`
 	MemberCount types.Int64  `tfsdk:"member_count"`
 }
 
@@ -63,12 +63,12 @@ func ownerGroupDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"member_count": dsschema.Int64Attribute{
@@ -320,7 +320,7 @@ func ownerGroupDataFromAPI(ctx context.Context, obj *netbox.OwnerGroup, out *Own
 	out.Name = conv.String(obj.GetNameOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.MemberCount = conv.Int64From64(obj.GetMemberCountOk())
 }

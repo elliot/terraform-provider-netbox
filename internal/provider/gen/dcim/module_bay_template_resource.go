@@ -42,9 +42,7 @@ type ModuleBayTemplateModel struct {
 	Description      types.String      `tfsdk:"description"`
 	ModuleBayTypeIds types.Set         `tfsdk:"module_bay_type_ids"`
 	Url              types.String      `tfsdk:"url"`
-	Display          types.String      `tfsdk:"display"`
 	Created          timetypes.RFC3339 `tfsdk:"created"`
-	LastUpdated      timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
 var (
@@ -155,20 +153,11 @@ func moduleBayTemplateResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": schema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"last_updated": schema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
 		},
 	}
 }
@@ -372,7 +361,5 @@ func moduleBayTemplateFromAPI(ctx context.Context, obj *netbox.ModuleBayTemplate
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ModuleBayTemplateModel) types.String { return m.Description }), false)
 	out.ModuleBayTypeIds = conv.BriefIDs(obj.GetModuleBayTypes())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

@@ -37,8 +37,8 @@ type CoolingOutflowTemplateDataModel struct {
 	CoolingIntakeId types.Int64       `tfsdk:"cooling_intake_id"`
 	Description     types.String      `tfsdk:"description"`
 	Url             types.String      `tfsdk:"url"`
-	Display         types.String      `tfsdk:"display"`
 	Created         timetypes.RFC3339 `tfsdk:"created"`
+	Display         types.String      `tfsdk:"display"`
 	LastUpdated     timetypes.RFC3339 `tfsdk:"last_updated"`
 }
 
@@ -111,13 +111,13 @@ func coolingOutflowTemplateDataAttributes(lookup bool) map[string]dsschema.Attri
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"last_updated": dsschema.StringAttribute{
@@ -381,7 +381,7 @@ func coolingOutflowTemplateDataFromAPI(ctx context.Context, obj *netbox.CoolingO
 	out.CoolingIntakeId = conv.BriefID(obj.GetCoolingIntakeOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

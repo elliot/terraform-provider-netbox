@@ -41,11 +41,11 @@ type DataSourceDataModel struct {
 	Comments     types.String         `tfsdk:"comments"`
 	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url          types.String         `tfsdk:"url"`
-	Display      types.String         `tfsdk:"display"`
 	Created      timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl   types.String         `tfsdk:"display_url"`
+	Display      types.String         `tfsdk:"display"`
 	Status       types.String         `tfsdk:"status"`
+	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 	LastSynced   timetypes.RFC3339    `tfsdk:"last_synced"`
 	FileCount    types.Int64          `tfsdk:"file_count"`
 }
@@ -132,17 +132,8 @@ func dataSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
@@ -150,8 +141,17 @@ func dataSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
+			Computed:            true,
+		},
 		"status": dsschema.StringAttribute{
 			MarkdownDescription: "Status.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 		"last_synced": dsschema.StringAttribute{
@@ -417,11 +417,11 @@ func dataSourceDataFromAPI(ctx context.Context, obj *netbox.DataSource, out *Dat
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.LastSynced = conv.RFC3339(obj.GetLastSyncedOk())
 	out.FileCount = conv.Int64From64(obj.GetFileCountOk())
 }

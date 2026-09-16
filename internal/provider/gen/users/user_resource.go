@@ -44,7 +44,6 @@ type UserModel struct {
 	LastLogin  timetypes.RFC3339 `tfsdk:"last_login"`
 	GroupIds   types.Set         `tfsdk:"group_ids"`
 	Url        types.String      `tfsdk:"url"`
-	Display    types.String      `tfsdk:"display"`
 }
 
 var (
@@ -166,10 +165,6 @@ func userResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-		},
-		"display": schema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
 		},
 	}
 }
@@ -377,5 +372,4 @@ func userFromAPI(ctx context.Context, obj *netbox.User, prior *UserModel, out *U
 	out.LastLogin = conv.RFC3339(obj.GetLastLoginOk())
 	out.GroupIds = conv.BriefIDs(obj.GetGroups())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 }

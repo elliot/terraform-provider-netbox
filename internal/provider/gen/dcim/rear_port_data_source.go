@@ -36,19 +36,20 @@ type RearPortDataModel struct {
 	Type          types.String         `tfsdk:"type"`
 	Color         types.String         `tfsdk:"color"`
 	Positions     types.Int64          `tfsdk:"positions"`
+	FrontPorts    types.List           `tfsdk:"front_ports"`
 	Description   types.String         `tfsdk:"description"`
 	MarkConnected types.Bool           `tfsdk:"mark_connected"`
 	OwnerId       types.Int64          `tfsdk:"owner_id"`
 	Tags          types.Set            `tfsdk:"tags"`
 	CustomFields  jsontypes.Normalized `tfsdk:"custom_fields"`
 	Url           types.String         `tfsdk:"url"`
-	Display       types.String         `tfsdk:"display"`
 	Created       timetypes.RFC3339    `tfsdk:"created"`
-	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
 	DisplayUrl    types.String         `tfsdk:"display_url"`
+	Display       types.String         `tfsdk:"display"`
 	CableId       types.Int64          `tfsdk:"cable_id"`
 	CableEnd      types.String         `tfsdk:"cable_end"`
 	LinkPeersType types.String         `tfsdk:"link_peers_type"`
+	LastUpdated   timetypes.RFC3339    `tfsdk:"last_updated"`
 	Occupied      types.Bool           `tfsdk:"occupied"`
 }
 
@@ -124,6 +125,24 @@ func rearPortDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Positions. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
+		"front_ports": dsschema.ListNestedAttribute{
+			MarkdownDescription: "Front port mappings onto this rear port, managed from `netbox_front_port.rear_ports`; read-only here.",
+			NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
+				"position": dsschema.Int64Attribute{
+					MarkdownDescription: "Position.",
+					Computed:            true,
+				},
+				"front_port": dsschema.Int64Attribute{
+					MarkdownDescription: "Front Port.",
+					Computed:            true,
+				},
+				"front_port_position": dsschema.Int64Attribute{
+					MarkdownDescription: "Front Port Position.",
+					Computed:            true,
+				},
+			}},
+			Computed: true,
+		},
 		"description": dsschema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
 			Computed:            true,
@@ -150,22 +169,17 @@ func rearPortDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Url.",
 			Computed:            true,
 		},
-		"display": dsschema.StringAttribute{
-			MarkdownDescription: "Display.",
-			Computed:            true,
-		},
 		"created": dsschema.StringAttribute{
 			MarkdownDescription: "Created.",
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"last_updated": dsschema.StringAttribute{
-			MarkdownDescription: "Last Updated.",
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-		},
 		"display_url": dsschema.StringAttribute{
 			MarkdownDescription: "Display Url.",
+			Computed:            true,
+		},
+		"display": dsschema.StringAttribute{
+			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
 		"cable_id": dsschema.Int64Attribute{
@@ -178,6 +192,11 @@ func rearPortDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"link_peers_type": dsschema.StringAttribute{
 			MarkdownDescription: "Return the type of the peer link terminations, or None.",
+			Computed:            true,
+		},
+		"last_updated": dsschema.StringAttribute{
+			MarkdownDescription: "Last Updated.",
+			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
 		"occupied": dsschema.BoolAttribute{
@@ -433,18 +452,31 @@ func rearPortDataFromAPI(ctx context.Context, obj *netbox.RearPort, out *RearPor
 	out.Type = conv.Choice(obj.GetTypeOk())
 	out.Color = conv.StringOrEmpty(obj.GetColorOk())
 	out.Positions = conv.Int64From32(obj.GetPositionsOk())
+	{
+		items := obj.GetFrontPorts()
+		vals := make([]RearPortFrontPortsItem, 0, len(items))
+		for i := range items {
+			src := &items[i]
+			vals = append(vals, RearPortFrontPortsItem{
+				Position:          conv.Int64From32(src.GetPositionOk()),
+				FrontPort:         conv.Int64From32(src.GetFrontPortOk()),
+				FrontPortPosition: conv.Int64From32(src.GetFrontPortPositionOk()),
+			})
+		}
+		out.FrontPorts = conv.ObjectList(ctx, rearPortFrontPortsItemAttrTypes, vals, nil, diags)
+	}
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.MarkConnected = conv.Bool(obj.GetMarkConnectedOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
 	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
-	out.Display = conv.String(obj.GetDisplayOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
-	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
+	out.Display = conv.String(obj.GetDisplayOk())
 	out.CableId = conv.BriefID(obj.GetCableOk())
 	out.CableEnd = conv.String(obj.GetCableEndOk())
 	out.LinkPeersType = conv.String(obj.GetLinkPeersTypeOk())
+	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.Occupied = conv.Bool(obj.GetOccupiedOk())
 }
