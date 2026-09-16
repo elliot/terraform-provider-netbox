@@ -29,6 +29,9 @@ x-netbox: &netbox
     REDIS_CACHE_DATABASE: "1"
     REDIS_CACHE_SSL: "false"
     SECRET_KEY: "r(m)9nLGnz$(_q3N-2Nw4ZWr9bHfQx7FBnqoeEwZvuvHX7HTF1i0BUXe1tfacc-only"
+    # v2 API tokens (the only kind the provider accepts) need at least one
+    # pepper; without it /api/users/tokens/provision/ returns 500. Test-only value.
+    API_TOKEN_PEPPER_1: ${API_TOKEN_PEPPER_1:-tfacc-pepper-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV}
     SKIP_SUPERUSER: "false"
     SUPERUSER_NAME: ${SUPERUSER_NAME:-admin}
     SUPERUSER_EMAIL: ${SUPERUSER_EMAIL:-admin@example.com}
@@ -41,7 +44,6 @@ x-netbox: &netbox
     LOGIN_REQUIRED: "false"
     METRICS_ENABLED: "false"
     RELEASE_CHECK_URL: ""
-    HOUSEKEEPING_INTERVAL: "86400"
 
 services:
   netbox:
@@ -72,18 +74,9 @@ services:
       timeout: 3s
       retries: 3
 
-  netbox-housekeeping:
-    <<: *netbox
-    depends_on:
-      netbox:
-        condition: service_healthy
-    command: /opt/netbox/housekeeping.sh
-    healthcheck:
-      test: ["CMD-SHELL", "ps -aux | grep -v grep | grep -q housekeeping || exit 1"]
-      start_period: 40s
-      interval: 15s
-      timeout: 3s
-      retries: 3
+  # No housekeeping container: NetBox 4.x runs housekeeping as a scheduled
+  # background job and the 4.7 image no longer ships /opt/netbox/housekeeping.sh
+  # (the container exits 127 and breaks `compose up --wait`).
 
   postgres:
     image: docker.io/postgres:18-alpine
