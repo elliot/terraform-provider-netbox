@@ -1,0 +1,76 @@
+name: Client is reproducible
+
+# Regenerates ./netbox from the pinned OpenAPI document and fails if the result
+# differs from what is committed, so the generated client can never drift from
+# the spec and the generator configuration.
+on:
+  pull_request:
+    paths:
+      - "spec/**"
+      - "tools/client-gen/**"
+      - "netbox/**"
+      - ".github/workflows/client-gen.yml"
+  push:
+    branches: [main]
+    paths:
+      - "spec/**"
+      - "tools/client-gen/**"
+      - "netbox/**"
+      - ".github/workflows/client-gen.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Keep in sync with OAG_VERSION / OAG_SHA256 in tools/client-gen/generate.sh;
+  # they key the jar cache so a bump downloads and re-verifies the new jar.
+  OAG_VERSION: "7.11.0"
+  OAG_SHA256: "113c25df5a781d5a1fc2b883f12fe8f263db285ab12e15854d5b15306e1bf7fc"
+
+jobs:
+  client-gen:
+    name: make client-gen
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Cache the openapi-generator jar
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/
+          key: openapi-generator-${{ env.OAG_VERSION }}-${{ env.OAG_SHA256 }}
+
+      - name: Regenerate the client
+        run: make client-gen
+
+      - name: Check for drift
+        run: |
+          git diff --exit-code --stat -- netbox/
+          # --exit-code only looks at tracked files; catch newly generated ones too.
+          untracked=$(git ls-files --others --exclude-standard -- netbox/)
+          if [ -n "$untracked" ]; then
+            echo "untracked generated files:"
+            echo "$untracked"
+            exit 1
+          fi
+
+      - name: Show the drift (on failure)
+        if: failure()
+        run: |
+          echo "::error::./netbox is out of date. Run 'make client-gen' and commit the result."
+          git status --porcelain -- netbox/
+          git diff -- netbox/ | head -n 500

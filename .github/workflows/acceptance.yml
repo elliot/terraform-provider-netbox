@@ -14,9 +14,18 @@ on:
   schedule:
     # Nightly at 03:17 UTC.
     - cron: "17 3 * * *"
+  # On PRs the job only runs when the PR carries the `run-acceptance` label; the
+  # `labeled` type makes adding the label start the run on an existing PR.
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
 
 permissions:
   contents: read
+
+# Twelve NetBox stacks per run, so never let re-pushes to the same branch pile up.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   NETBOX_SUPERUSER_NAME: admin
@@ -25,6 +34,8 @@ env:
 jobs:
   acceptance:
     name: ${{ matrix.shard }}
+    # Scheduled and manual runs always go ahead; PRs need the `run-acceptance` label.
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'run-acceptance')
     runs-on: ubuntu-latest
     timeout-minutes: 150
     strategy:

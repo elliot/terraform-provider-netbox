@@ -60,6 +60,13 @@ attribute form). `make sweep` deletes every `tfacc-*` object on the configured s
    add overrides for new FK targets or fixtures as needed.
 5. Update the version check in `internal/provider/provider.go` if the supported major.minor changes.
 
+The generator jar is pinned by SHA-256 (`OAG_SHA256` next to `OAG_VERSION` in
+`tools/client-gen/generate.sh`), which is verified before every run and must be updated together with
+`OAG_VERSION`; `.github/workflows/client-gen.yml` regenerates the client on any change to `spec/`,
+`tools/client-gen/` or `netbox/` and fails on drift, so commit the regenerated `netbox/` with the bump.
+Acceptance tests (`.github/workflows/acceptance.yml`) run nightly, on demand via *Run workflow*, and on
+pull requests labelled `run-acceptance`.
+
 ## Releasing
 
 Releases are built by GoReleaser from `v*` tags (`.github/workflows/release.yml`):

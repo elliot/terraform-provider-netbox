@@ -5,13 +5,21 @@
 #   OPENAPI_GENERATOR_JAR=...    # optional: path to openapi-generator-cli jar
 #
 # Requirements: java 17+, python3, gofmt. The openapi-generator jar (7.11.0, the
-# version go-netbox uses) is downloaded from Maven Central into .cache/ if absent.
+# version go-netbox uses) is downloaded from Maven Central into .cache/ if absent
+# and is checked against the pinned OAG_SHA256 below before every run.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
 
 OAG_VERSION="7.11.0"
+# SHA-256 of openapi-generator-cli-${OAG_VERSION}.jar on Maven Central. Central
+# publishes only .sha1/.md5 next to this artifact (there is no .jar.sha256), so
+# this digest was taken from the jar whose published checksums match:
+#   sha1 9261333ecbfd8738956b09be0beff611b47fbaff
+#   md5  4931bca886d30823b3ba2c7f36607925
+# Update both OAG_VERSION and OAG_SHA256 together when bumping the generator.
+OAG_SHA256="113c25df5a781d5a1fc2b883f12fe8f263db285ab12e15854d5b15306e1bf7fc"
 NETBOX_VERSION="$(cat spec/VERSION)"
 SPEC="spec/netbox-${NETBOX_VERSION}.openapi.json"
 CACHE="${ROOT}/.cache"
@@ -20,10 +28,37 @@ OUT="${ROOT}/netbox"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
+verify_jar() {
+  # Checks "$1" against $OAG_SHA256; prints nothing on success.
+  if command -v sha256sum >/dev/null 2>&1; then
+    printf '%s  %s\n' "$OAG_SHA256" "$1" | sha256sum -c --status -
+  elif command -v shasum >/dev/null 2>&1; then
+    printf '%s  %s\n' "$OAG_SHA256" "$1" | shasum -a 256 -c --status -
+  else
+    echo "!! neither sha256sum nor shasum found; cannot verify ${1}" >&2
+    return 1
+  fi
+}
+
 if [[ ! -f "$JAR" ]]; then
   mkdir -p "$(dirname "$JAR")"
   echo ">> downloading openapi-generator-cli ${OAG_VERSION}"
   curl -sSL -o "$JAR" "https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${OAG_VERSION}/openapi-generator-cli-${OAG_VERSION}.jar"
+fi
+
+echo ">> verifying ${JAR}"
+if ! verify_jar "$JAR"; then
+  echo "!! checksum mismatch for ${JAR}" >&2
+  echo "!!   expected sha256: ${OAG_SHA256}" >&2
+  echo "!!   actual   sha256: $( (sha256sum "$JAR" 2>/dev/null || shasum -a 256 "$JAR" 2>/dev/null) | awk '{print $1}')" >&2
+  if [[ -n "${OPENAPI_GENERATOR_JAR:-}" ]]; then
+    echo "!! OPENAPI_GENERATOR_JAR points at a jar that is not openapi-generator-cli ${OAG_VERSION};" >&2
+    echo "!! unset it to let this script download the pinned version, or update OAG_SHA256." >&2
+  else
+    rm -f "$JAR"
+    echo "!! deleted the cached jar; re-run 'make client-gen' to download it again." >&2
+  fi
+  exit 1
 fi
 
 echo ">> normalising spec ${SPEC}"
