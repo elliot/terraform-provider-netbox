@@ -1,6 +1,13 @@
 # Visit https://goreleaser.com for documentation on how to customize this
-# behavior. Release process: push a v* tag; .github/workflows/release.yml runs
-# goreleaser with a GPG key so the Terraform Registry can verify the checksums.
+# behavior.
+#
+# Release process: push a v* tag; .github/workflows/release.yml runs GoReleaser.
+# When the GPG_PRIVATE_KEY secret is present the checksum file is signed (required
+# only by the public Terraform Registry); otherwise the workflow passes
+# --skip=sign and the release is still usable through the network mirror,
+# scripts/install.sh or a filesystem mirror. See docs/INSTALL.md.
+#
+# Local dry run (unsigned, nothing published):  make dist
 version: 2
 
 before:
@@ -16,20 +23,13 @@ builds:
     ldflags:
       - "-s -w -X main.version={{.Version}}"
     goos:
-      - freebsd
-      - windows
       - linux
       - darwin
+      - freebsd
+      - windows
     goarch:
       - amd64
-      - "386"
-      - arm
       - arm64
-    ignore:
-      - goos: darwin
-        goarch: "386"
-      - goos: darwin
-        goarch: arm
     binary: "{{ .ProjectName }}_v{{ .Version }}"
 
 archives:
@@ -42,6 +42,11 @@ checksum:
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
   name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
   algorithm: sha256
+
+snapshot:
+  # Snapshot builds (make dist) get a semver-valid pre-release version so the
+  # mirror index and Terraform accept them, e.g. 0.1.0-SNAPSHOT-3f2a1c9.
+  version_template: "{{ .Version }}-SNAPSHOT-{{ .ShortCommit }}"
 
 signs:
   - artifacts: checksum

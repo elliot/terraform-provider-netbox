@@ -24,6 +24,10 @@ All notable changes to this project are documented in this file. The format foll
   exponential backoff (honouring `Retry-After`), request logging with token redaction.
 - Version check against `GET /api/status/` on configure (warning when the server is not 4.7.x).
 - Local NetBox 4.7 docker compose stack and `scripts/demo-token.sh` for the public demo.
+- Off-registry distribution: unsigned GitHub Releases (signed only when a GPG key is configured), a provider
+  network mirror published to GitHub Pages by `tools/mirror-index`, `scripts/install.sh` for Terraform's
+  implied local mirror, `make dist mirror mirror-check install-local` and `docs/INSTALL.md`. 32-bit builds
+  were dropped from the release matrix.
 
 ### Changed
 

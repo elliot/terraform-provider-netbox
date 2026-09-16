@@ -57,6 +57,17 @@ attribute form). `make sweep` deletes every `tfacc-*` object on the configured s
 
 ## Releasing
 
-Releases are built by GoReleaser from `v*` tags (`.github/workflows/release.yml`). The Terraform Registry
-requires the repository to be public, GPG-signed checksums (RSA or DSA key, `GPG_PRIVATE_KEY` and
-`PASSPHRASE` secrets) and `terraform-registry-manifest.json` (protocol 6.0, already present).
+Releases are built by GoReleaser from `v*` tags (`.github/workflows/release.yml`):
+
+1. `git tag v0.1.0 && git push origin v0.1.0`.
+2. The workflow builds `linux`/`darwin`/`freebsd`/`windows` × `amd64`/`arm64` zips, `SHA256SUMS` and the
+   registry manifest, publishes the GitHub Release, then runs `tools/mirror-index` and deploys the
+   provider network mirror to GitHub Pages (one-time: Settings → Pages → Source "GitHub Actions"). Earlier
+   versions are carried over from the live mirror so they stay installable.
+3. Signing is optional. With `GPG_PRIVATE_KEY`/`PASSPHRASE` secrets the checksum file is signed; without
+   them GoReleaser runs with `--skip=sign`. Only the public Terraform Registry needs the signature (plus a
+   public repository and the `terraform-registry-manifest.json` already present).
+
+Before tagging, `make dist mirror mirror-check` reproduces the release build locally and installs it through
+both the network mirror and `scripts/install.sh`; the `package` job in `test.yml` does the same on every pull
+request. Installation channels for users are documented in [INSTALL.md](INSTALL.md).

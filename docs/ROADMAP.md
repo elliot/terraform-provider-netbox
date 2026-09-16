@@ -10,11 +10,11 @@ Status as of the `v0.1.0` candidate on branch `claude/compassionate-hamilton-drd
 | Acceptance on demo.netbox.dev (4.7.0) | 135/135 pass (create, update, data sources, import, empty plan); 7 scenarios applied and destroyed |
 | Per-app validation reports | [validation/](validation/README.md) (written before the last generator fixes; see the banner there) |
 | Docs | rendered by tfplugindocs; CI enforces `make gen` and `make docs` are committed |
-| Release | GoReleaser + registry manifest present; never run |
+| Release | GoReleaser (unsigned by default) + network mirror on GitHub Pages + `scripts/install.sh`; snapshot build and install smoke test run on every PR (`package` job); no tag pushed yet, see [INSTALL.md](INSTALL.md) |
 
 ## Next steps to `v0.1.0`
 
-1. Create an RSA (or DSA) GPG key for the Terraform Registry and add `GPG_PRIVATE_KEY` and `PASSPHRASE` as repository secrets. Add a `goreleaser release --snapshot --skip=publish` job so the release build is exercised before tagging.
+1. Enable GitHub Pages (Settings → Pages → Source "GitHub Actions") so the release workflow can publish the network mirror. Optionally add an RSA (or DSA) GPG key as `GPG_PRIVATE_KEY`/`PASSPHRASE` secrets; only the public Terraform Registry needs the signature.
 2. Run the docker-compose acceptance workflow (`.github/workflows/acceptance.yml`) once by `workflow_dispatch`; it has only ever been executed against the public demo. Expect to tune shard timeouts.
 3. Add `make docs-check` (`tfplugindocs validate`) and Terraform `1.16.*` to the unit-test matrix in `.github/workflows/test.yml`.
 4. Add a client reproducibility job (`make client-gen && git diff --exit-code -- netbox/`) with Java 17 and a pinned SHA-256 for the openapi-generator jar in `tools/client-gen/generate.sh`.
@@ -58,7 +58,7 @@ Everything above. Behaviour that is deliberately conservative: reverse sides of 
 - [ ] `generator/overrides/dcim_a.yaml`: drop the `ignore_changes = [site_ids]` in the ASN fixture (`asn.site_ids` is read-only now) and re-run `TestAccAsn_basic`.
 - [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
 - [ ] `tools/client-gen/generate.sh`: pin the jar checksum.
-- [ ] `.github/workflows/test.yml`: `docs-check`, Terraform 1.16 matrix entry, snapshot release job.
+- [ ] `.github/workflows/test.yml`: `docs-check`, Terraform 1.16 matrix entry (the snapshot release job exists as `package`).
 - [ ] `docs/validation/*.md`: refresh after the next full run so they stop describing fixed issues as workarounds.
 
 ## Sharp edges for users

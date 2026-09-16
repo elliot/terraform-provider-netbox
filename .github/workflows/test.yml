@@ -83,3 +83,41 @@ jobs:
         env:
           TF_ACC: ""
         run: go test ./internal/... -count=1 -v -cover -timeout 15m
+
+  package:
+    # Builds the release artifacts exactly as the release workflow does (unsigned,
+    # nothing published), generates the network mirror index and installs the
+    # snapshot through both the network mirror and scripts/install.sh.
+    name: Package (goreleaser snapshot + install smoke test)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.14.*"
+          terraform_wrapper: false
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --snapshot --clean --skip=sign,publish
+      - name: Build network mirror index
+        run: go run ./tools/mirror-index -dist dist -out dist/mirror
+      - name: Install through network mirror and install.sh
+        run: ./scripts/mirror-smoke.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snapshot-${{ github.sha }}
+          path: |
+            dist/*.zip
+            dist/*_SHA256SUMS
+            dist/*_manifest.json
+          retention-days: 7

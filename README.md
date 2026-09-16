@@ -23,6 +23,33 @@ see [docs/RESOURCES.md](docs/RESOURCES.md)).
   `netbox_available_vlan`, `netbox_available_asn`, and `netbox_device_primary_ip` /
   `netbox_virtual_machine_primary_ip` to break the device → interface → IP → device cycle.
 
+## Installation
+
+The provider is not on the public Terraform Registry yet. Releases on GitHub ship zips for Linux and
+macOS (`amd64`, `arm64`) and install through any of Terraform's off-registry channels while keeping the
+normal `source = "elliot/netbox"` address:
+
+```sh
+# 1. one machine: verified download into Terraform's implied local mirror, no CLI config needed
+curl -fsSL https://raw.githubusercontent.com/elliot/terraform-provider-netbox/main/scripts/install.sh | sh
+```
+
+```hcl
+# 2. teams: provider network mirror published on GitHub Pages (~/.terraformrc)
+provider_installation {
+  network_mirror {
+    url     = "https://elliot.github.io/terraform-provider-netbox/"
+    include = ["elliot/netbox"]
+  }
+  direct {
+    exclude = ["elliot/netbox"]
+  }
+}
+```
+
+A filesystem mirror for air-gapped hosts, lock-file guidance for mixed Linux/macOS teams and the local
+build/verify loop (`make dist mirror mirror-check`) are described in [docs/INSTALL.md](docs/INSTALL.md).
+
 ## Usage
 
 ```hcl
