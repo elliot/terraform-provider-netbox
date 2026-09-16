@@ -15,9 +15,11 @@
 #   TF_PLUGIN_DIR      plugin directory (default: $HOME/.terraform.d/plugins)
 #   OS / ARCH          override detection (linux|darwin|freebsd, amd64|arm64)
 #
-# The archive is verified against the release's SHA256SUMS and installed in
-# Terraform's "packed" filesystem mirror layout:
-#   $TF_PLUGIN_DIR/registry.terraform.io/elliot/netbox/terraform-provider-netbox_<version>_<os>_<arch>.zip
+# The archive is verified against the release's SHA256SUMS and unpacked into
+# Terraform's filesystem mirror layout:
+#   $TF_PLUGIN_DIR/registry.terraform.io/elliot/netbox/<version>/<os>_<arch>/terraform-provider-netbox_v<version>
+# (The "packed" layout, a zip in the provider directory, is not used because
+# Terraform only recognises it for plain x.y.z versions, not pre-releases.)
 set -eu
 
 REPO=${REPO:-elliot/terraform-provider-netbox}
@@ -88,17 +90,33 @@ fi
 log "Checksum verified."
 
 # --- install --------------------------------------------------------------
-DEST="$TF_PLUGIN_DIR/$HOSTNAME_/$NAMESPACE/$NAME"
+DEST="$TF_PLUGIN_DIR/$HOSTNAME_/$NAMESPACE/$NAME/$VERSION/${OS}_${ARCH}"
+mkdir -p "$TMP/unpack"
+if command -v unzip >/dev/null 2>&1; then
+  unzip -q -o "$TMP/$ZIP" -d "$TMP/unpack"
+elif command -v python3 >/dev/null 2>&1; then
+  python3 -m zipfile -e "$TMP/$ZIP" "$TMP/unpack"
+elif command -v bsdtar >/dev/null 2>&1; then
+  bsdtar -xf "$TMP/$ZIP" -C "$TMP/unpack"
+else
+  die "need unzip, python3 or bsdtar to extract $ZIP"
+fi
+BIN=$(find "$TMP/unpack" -maxdepth 1 -type f -name "${PROJECT}_v*" | head -n 1)
+[ -n "$BIN" ] || die "$ZIP does not contain a ${PROJECT}_v* binary"
+rm -rf "$DEST"
 mkdir -p "$DEST"
-cp "$TMP/$ZIP" "$DEST/$ZIP"
-chmod 0644 "$DEST/$ZIP"
+cp "$BIN" "$DEST/"
+chmod 0755 "$DEST/$(basename "$BIN")"
+for extra in LICENSE README.md CHANGELOG.md; do
+  [ -f "$TMP/unpack/$extra" ] && cp "$TMP/unpack/$extra" "$DEST/" || true
+done
 if [ "$OS" = darwin ] && command -v xattr >/dev/null 2>&1; then
-  xattr -d com.apple.quarantine "$DEST/$ZIP" 2>/dev/null || true
+  xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
 fi
 
 log ""
 log "Installed $PROJECT $VERSION (${OS}_${ARCH}) to"
-log "  $DEST/$ZIP"
+log "  $DEST/$(basename "$BIN")"
 log ""
 log "Terraform picks it up automatically (implied local mirror). Reference it with:"
 log ""

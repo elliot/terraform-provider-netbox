@@ -32,9 +32,12 @@ jobs:
       - run: go build -v ./...
       - run: go vet ./...
       - name: golangci-lint
+        # Same package list as `make lint`: linting the generated client and
+        # resources exhausts the runner (the job was killed after ~8 minutes).
         uses: golangci/golangci-lint-action@v8
         with:
           version: v2.5.0
+          args: run . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
 
   generate:
     name: Generated code is up to date

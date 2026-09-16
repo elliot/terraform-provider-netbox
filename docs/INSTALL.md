@@ -38,17 +38,18 @@ VERSION=0.1.0 sh scripts/install.sh
 ```
 
 The script detects the OS and CPU, downloads the zip and `SHA256SUMS` from the GitHub Release, verifies
-the checksum and copies the archive to
+the checksum and unpacks the binary to
 
 ```
-~/.terraform.d/plugins/registry.terraform.io/elliot/netbox/terraform-provider-netbox_<version>_<os>_<arch>.zip
+~/.terraform.d/plugins/registry.terraform.io/elliot/netbox/<version>/<os>_<arch>/terraform-provider-netbox_v<version>
 ```
 
-This is one of Terraform's [implied local mirror directories](https://developer.hashicorp.com/terraform/cli/config/config-file#implied-local-mirror-directories)
-in the "packed" layout, so **no CLI configuration is required**: `terraform init` finds the provider
-there and never contacts the registry for it. Set `TF_PLUGIN_DIR` to install somewhere else (for example a
-directory named in a `filesystem_mirror` block), `REPO`/`RELEASE_BASE_URL` to install from a fork or an
-internal artifact store, and `OS`/`ARCH` to override detection.
+This is one of Terraform's [implied local mirror directories](https://developer.hashicorp.com/terraform/cli/config/config-file#implied-local-mirror-directories),
+so **no CLI configuration is required**: `terraform init` finds the provider there and never contacts the
+registry for it. Set `TF_PLUGIN_DIR` to install somewhere else (for example a directory named in a
+`filesystem_mirror` block), `REPO`/`RELEASE_BASE_URL` to install from a fork or an internal artifact store,
+and `OS`/`ARCH` to override detection. The unpacked layout is used because Terraform only recognises the
+packed (zip) layout for plain `x.y.z` versions, not pre-releases or snapshots.
 
 On macOS, Terraform plugins need no notarization. The script removes the `com.apple.quarantine` attribute
 in case the archive was fetched by a browser earlier; downloads made by `curl` never carry it.
@@ -123,11 +124,15 @@ runner with "does not match any of the checksums recorded in the dependency lock
 platform your team uses once and commit the lock file:
 
 ```sh
-terraform providers lock -platform=linux_amd64 -platform=darwin_arm64 -platform=darwin_amd64
-# with the network mirror configured above, or explicitly:
-terraform providers lock -net-mirror=https://elliot.github.io/terraform-provider-netbox/ -platform=linux_amd64 -platform=darwin_arm64
+# network mirror
+terraform providers lock -net-mirror=https://elliot.github.io/terraform-provider-netbox/ \
+  -platform=linux_amd64 -platform=darwin_arm64 -platform=darwin_amd64
+# filesystem mirror / install script (only the platforms present in the directory)
 terraform providers lock -fs-mirror=$HOME/.terraform.d/plugins -platform=linux_amd64 -platform=darwin_arm64
 ```
+
+`terraform providers lock` does not read `provider_installation` from the CLI configuration: without
+`-net-mirror` or `-fs-mirror` it asks the public registry, which does not know this provider.
 
 ## Development builds
 

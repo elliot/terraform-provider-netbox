@@ -34,8 +34,11 @@ linters:
       - common-false-positives
       - std-error-handling
     paths:
-      # The regenerated go-netbox style client is not hand-maintained.
+      # The regenerated go-netbox style client and the generated resources are
+      # not hand-maintained. `make lint` and CI also restrict the package list
+      # (LINT_PKGS in the GNUmakefile) so these are never analysed.
       - netbox/
+      - internal/provider/gen/
     rules:
       - path: _test\.go
         linters:

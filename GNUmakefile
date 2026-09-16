@@ -25,9 +25,14 @@ install:
 fmt:
 	gofmt -s -w .
 
+# Hand-written packages only: the regenerated client (netbox/, 1,100+ files) and
+# the generated resources (internal/provider/gen/) carry "Code generated" headers
+# and linting them exhausts CI runner memory without finding anything.
+LINT_PKGS ?= . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
+
 .PHONY: lint
 lint:
-	golangci-lint run
+	golangci-lint run $(LINT_PKGS)
 
 .PHONY: test
 test:

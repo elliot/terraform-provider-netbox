@@ -94,8 +94,10 @@ EOF
     echo "==> terraform init (network mirror)"
     "$TERRAFORM" init -input=false -no-color | grep -E "Installing|Installed|Terraform has been" || true
     grep -q "h1:" .terraform.lock.hcl || { echo "lock file has no h1: hash" >&2; cat .terraform.lock.hcl; exit 1; }
-    echo "==> terraform providers lock -platform=linux_amd64 -platform=darwin_arm64 -platform=darwin_amd64"
-    "$TERRAFORM" providers lock -no-color -platform=linux_amd64 -platform=darwin_arm64 -platform=darwin_amd64 | tail -n 3
+    # `providers lock` ignores provider_installation in the CLI config and
+    # would ask the public registry; the mirror must be named explicitly.
+    echo "==> terraform providers lock -net-mirror=https://$HOST:$PORT/ -platform=linux_amd64 -platform=darwin_arm64 -platform=darwin_amd64"
+    "$TERRAFORM" providers lock -no-color -net-mirror="https://$HOST:$PORT/" -platform=linux_amd64 -platform=darwin_arm64 -platform=darwin_amd64 | tail -n 3
     n=$(grep -c "h1:" .terraform.lock.hcl)
     [ "$n" -ge 3 ] || { echo "expected at least 3 h1: hashes, got $n" >&2; cat .terraform.lock.hcl; exit 1; }
     "$TERRAFORM" providers -no-color | grep -q "$NAMESPACE/$NAME" || { echo "provider not listed" >&2; exit 1; }
@@ -108,15 +110,14 @@ fi
 
 # --- 2. install.sh into an implied local mirror -----------------------------
 echo "==> scripts/install.sh from file://$DIST_DIR/"
-export TF_PLUGIN_DIR="$work/plugins"
-VERSION="$version" RELEASE_BASE_URL="file://$DIST_DIR/" sh "$ROOT/scripts/install.sh" 2>&1 | grep -E "Checksum|Installed|error" || true
-zip="$TF_PLUGIN_DIR/registry.terraform.io/$NAMESPACE/$NAME/terraform-provider-${NAME}_${version}_${platform}.zip"
-[ -f "$zip" ] || { echo "install.sh did not create $zip" >&2; exit 1; }
-
 # Terraform's implied local mirror is ~/.terraform.d/plugins; point HOME at a
-# scratch dir so the test does not touch the real one.
-mkdir -p "$work/home/.terraform.d"
-ln -s "$TF_PLUGIN_DIR" "$work/home/.terraform.d/plugins"
+# scratch dir so the test does not touch the real one. (A real directory, not
+# a symlink: Terraform's directory walk does not follow a symlinked root.)
+export TF_PLUGIN_DIR="$work/home/.terraform.d/plugins"
+VERSION="$version" RELEASE_BASE_URL="file://$DIST_DIR/" sh "$ROOT/scripts/install.sh" 2>&1 | grep -E "Checksum|Installed|error" || true
+bin="$TF_PLUGIN_DIR/registry.terraform.io/$NAMESPACE/$NAME/$version/$platform/terraform-provider-${NAME}_v${version}"
+[ -x "$bin" ] || { echo "install.sh did not create $bin" >&2; exit 1; }
+
 write_config "$work/fs"
 (
   cd "$work/fs"
