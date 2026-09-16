@@ -37,7 +37,7 @@ jobs:
         uses: golangci/golangci-lint-action@v8
         with:
           version: v2.5.0
-          args: run . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
+          args: . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
 
   generate:
     name: Generated code is up to date
