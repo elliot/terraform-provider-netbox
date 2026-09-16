@@ -9,16 +9,18 @@ Status as of the `v0.1.0` candidate on branch `claude/compassionate-hamilton-drd
 | Resources / data sources | 126 generated resources, 266 data sources, 7 hand-written resources; see [RESOURCES.md](RESOURCES.md) |
 | Acceptance on demo.netbox.dev (4.7.0) | 135/135 pass (create, update, data sources, import, empty plan); 7 scenarios applied and destroyed |
 | Per-app validation reports | [validation/](validation/README.md) (written before the last generator fixes; see the banner there) |
-| Docs | rendered by tfplugindocs; CI enforces `make gen` and `make docs` are committed |
+| Docs | rendered by tfplugindocs; CI enforces `make gen`/`make docs` are committed and runs `make docs-check` |
 | Release | GoReleaser (unsigned by default) + network mirror on GitHub Pages + `scripts/install.sh`; snapshot build and install smoke test run on every PR (`package` job); no tag pushed yet, see [INSTALL.md](INSTALL.md) |
 
 ## Next steps to `v0.1.0`
 
 1. Enable GitHub Pages (Settings → Pages → Source "GitHub Actions") so the release workflow can publish the network mirror. Optionally add an RSA (or DSA) GPG key as `GPG_PRIVATE_KEY`/`PASSPHRASE` secrets; only the public Terraform Registry needs the signature.
 2. Run the docker-compose acceptance workflow (`.github/workflows/acceptance.yml`) once by `workflow_dispatch`; it has only ever been executed against the public demo. Expect to tune shard timeouts.
-3. Add `make docs-check` (`tfplugindocs validate`) and Terraform `1.16.*` to the unit-test matrix in `.github/workflows/test.yml`.
+3. Done: `.github/workflows/test.yml` runs `make docs-check` (`tfplugindocs validate`) and the unit-test matrix now includes Terraform `1.16.*` alongside `1.13.*`/`1.14.*`.
 4. Add a client reproducibility job (`make client-gen && git diff --exit-code -- netbox/`) with Java 17 and a pinned SHA-256 for the openapi-generator jar in `tools/client-gen/generate.sh`.
-5. Decide the registry namespace (`elliot/netbox` is assumed by `main.go`, `examples/provider/provider.tf` and the docs).
+5. The Terraform Registry namespace `elliot` is reserved and `elliot/netbox` is final. Remaining registry
+   steps: add the RSA (or DSA) GPG public key to the registry account, add the `GPG_PRIVATE_KEY`/`PASSPHRASE`
+   secrets, and publish the repository once through the registry UI after the first tag.
 6. Cut `CHANGELOG.md`, tag `v0.1.0`, verify the docs in the Registry preview tool.
 
 ## Milestones
@@ -58,8 +60,9 @@ Everything above. Behaviour that is deliberately conservative: reverse sides of 
 - [ ] `generator/overrides/dcim_a.yaml`: drop the `ignore_changes = [site_ids]` in the ASN fixture (`asn.site_ids` is read-only now) and re-run `TestAccAsn_basic`.
 - [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
 - [ ] `tools/client-gen/generate.sh`: pin the jar checksum.
-- [ ] `.github/workflows/test.yml`: `docs-check`, Terraform 1.16 matrix entry (the snapshot release job exists as `package`).
 - [ ] `docs/validation/*.md`: refresh after the next full run so they stop describing fixed issues as workarounds.
+- [ ] Renovate (`.github/renovate.json5`, monthly) now manages Go modules, GitHub Actions digests, the
+      docker compose images and the openapi-generator jar; review its first dependency dashboard.
 
 ## Sharp edges for users
 
@@ -105,13 +108,23 @@ Virtualization, users, VPN, circuits
 - Never run `go run ./internal/gen` without `-only` while someone else is regenerating; a full run deletes and rewrites every generated file.
 - Generated examples are only rewritten when a `.generated` marker exists in the directory; every current example is hand-maintained.
 - `spec/required-fixes.json` feeds both the client generator and the provider generator; after changing it run `make client-gen` and `make gen` together or constructors will not match.
-- `golangci-lint run ./...` over the whole module is too slow because of `netbox/`; lint the hand-written packages (see `GNUmakefile`).
 - In sandboxes set `TF_ACC_TERRAFORM_PATH` to a local Terraform binary; otherwise the test harness contacts `checkpoint-api.hashicorp.com` and the whole test binary fails on timeout.
 - Terraform 1.16 CLI configuration wants `dev_overrides { ... }` as a block; the documented `dev_overrides = { ... }` form is rejected.
 - Terraform 1.16.2 can crash and write an empty state when a provider returns an inconsistent result on create; every such bug therefore orphans objects.
 - `make sweep` deletes every `tfacc-*` object on whatever `NETBOX_SERVER_URL` points at.
 - The demo resets daily: accounts, tokens and IDs disappear; `make demo-token` provisions a new account.
 - Overrides for one resource should live in one file; files merge in name order and later files win, which is easy to miss.
+
+### CI lint time
+
+`golangci-lint` over the whole module, including the regenerated client in `netbox/` (1,100+ files) and
+the generated resources under `internal/provider/gen/`, used more memory than the GitHub runner has, and
+the job was killed after about 8 minutes on every push ("The runner has received a shutdown signal").
+Linting is now restricted to the hand-written packages through `LINT_PKGS` in the `GNUmakefile`, with the
+same package list repeated in the workflow; that completes in about 4 seconds in CI and under a minute
+locally. The `golangci-lint-action` already caches its analysis cache, and `setup-go` caches modules and
+the build cache, so no extra caching was added. Generated files are also excluded by path in
+`.golangci.yml`. If a new hand-written package is added, append it to `LINT_PKGS`.
 
 ## Things to circle back to
 

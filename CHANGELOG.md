@@ -6,6 +6,10 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [0.1.0] - 2026-09-16
+
 ### Added
 
 - `custom_fields` is a native Terraform object with per-key plans, name validation against the NetBox
@@ -20,14 +24,17 @@ All notable changes to this project are documented in this file. The format foll
 - Provider configuration (`server_url`, `api_token`, rate limiting, request/write delays,
   request serialisation, retries with backoff, timeouts, extra headers, TLS options,
   `skip_version_check`, `user_agent`), each also settable through `NETBOX_*` environment variables.
+- Only NetBox v2 API tokens (`nbt_<key>.<secret>`) are supported; v1 tokens are rejected at configure time.
 - HTTP transport chain with client-side token-bucket rate limiting, fixed delays, retry with
   exponential backoff (honouring `Retry-After`), request logging with token redaction.
 - Version check against `GET /api/status/` on configure (warning when the server is not 4.7.x).
 - Local NetBox 4.7 docker compose stack and `scripts/demo-token.sh` for the public demo.
-- Off-registry distribution: unsigned GitHub Releases (signed only when a GPG key is configured), a provider
+- Off-registry release: unsigned GitHub Releases (signed only when a GPG key is configured), a provider
   network mirror published to GitHub Pages by `tools/mirror-index`, `scripts/install.sh` for Terraform's
-  implied local mirror, `make dist mirror mirror-check install-local` and `docs/INSTALL.md`. 32-bit builds
-  were dropped from the release matrix.
+  implied local mirror, a filesystem mirror for air-gapped installs, `make dist mirror mirror-check
+  install-local` and `docs/INSTALL.md`. The Terraform Registry listing under the reserved namespace
+  `elliot/netbox` is pending, so this is the only way to install the provider today. 32-bit builds were
+  dropped from the release matrix.
 
 ### Changed
 
@@ -50,3 +57,6 @@ All notable changes to this project are documented in this file. The format foll
 ### Known limitations
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
+
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/elliot/terraform-provider-netbox/releases/tag/v0.1.0
