@@ -1,0 +1,120 @@
+{
+  // yaml-language-server / editor support for this config file.
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  extends: [
+    // Sane, well-maintained baseline (grouping, rate limiting, changelogs, etc).
+    // We deliberately do NOT add ":semanticCommitsDisabled" — keep whatever
+    // commit-message convention config:recommended/the repo already implies.
+    "config:recommended",
+    // Rewrites `uses: owner/action@vX` to a pinned commit SHA with a
+    // `# vX.Y.Z` trailing comment, matching how this repo's workflows under
+    // .github/workflows/ are pinned.
+    "helpers:pinGitHubActionDigests",
+    // Monthly cadence: Renovate's preset expands to "before 4am on the first
+    // day of the month" (evaluated in the timezone below). Security fixes
+    // bypass the schedule, see osvVulnerabilityAlerts at the bottom.
+    "schedule:monthly",
+  ],
+
+  timezone: "Europe/London",
+
+  // --- Managers ---------------------------------------------------------
+  // Explicitly enable only the managers we actually want Renovate to run
+  // in this repo (custom.regex is the name used for our customManagers
+  // regex manager below).
+  enabledManagers: ["gomod", "github-actions", "docker-compose", "custom.regex"],
+
+  gomod: {
+    enabled: true,
+    // Keep go.sum / vendored module graph consistent after Renovate bumps
+    // a require line.
+    postUpdateOptions: ["gomodTidy"],
+  },
+
+  "github-actions": {
+    enabled: true,
+  },
+
+  "docker-compose": {
+    enabled: true,
+    // Only docker/docker-compose.yml uses Docker Compose in this repo.
+    managerFilePatterns: ["docker/docker-compose\\.yml$"],
+  },
+
+  // --- Custom regex manager: openapi-generator jar pin -----------------
+  // tools/client-gen/generate.sh pins the openapi-generator-cli jar via a
+  // plain shell variable: OAG_VERSION="7.11.0". There's no manifest for
+  // this dependency, so we teach Renovate to read/write that line using
+  // Maven Central (the jar's actual distribution point) as the datasource.
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: ["^tools/client-gen/generate\\.sh$"],
+      matchStrings: [
+        'OAG_VERSION="(?<currentValue>[^"]+)"',
+      ],
+      datasourceTemplate: "maven",
+      depNameTemplate: "org.openapitools:openapi-generator-cli",
+      versioningTemplate: "semver",
+    },
+  ],
+
+  // --- Package rules ----------------------------------------------------
+  packageRules: [
+    {
+      // Bundle every GitHub Actions digest/version bump into a single PR.
+      description: "Group all GitHub Actions updates together",
+      matchManagers: ["github-actions"],
+      groupName: "github actions dependencies",
+    },
+    {
+      // Go minor/patch bumps land together in one "go dependencies" PR.
+      // Major bumps deliberately do NOT match this rule (matchUpdateTypes
+      // only lists minor/patch), so Renovate falls back to its default of
+      // one ungrouped PR per major update, letting each be reviewed on
+      // its own merits.
+      description: "Group Go minor and patch updates together",
+      matchManagers: ["gomod"],
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "go dependencies",
+    },
+    {
+      // The provider targets NetBox 4.7 (see docker/docker-compose.yml and
+      // its NETBOX_IMAGE_TAG default of v4.7); only let patch releases of
+      // that image through automatically. Major/minor bumps need a
+      // deliberate, manual compatibility bump.
+      description: "Keep the netboxcommunity/netbox test image on the 4.7 minor line (patch only)",
+      matchManagers: ["docker-compose"],
+      matchPackageNames: ["netboxcommunity/netbox"],
+      matchUpdateTypes: ["major", "minor"],
+      enabled: false,
+    },
+    {
+      // Never let Renovate touch the `go` directive or `toolchain` line in
+      // go.mod itself: bumping the language/toolchain version is a
+      // deliberate maintainer decision, not something to automate.
+      // (depTypes: ["golang"] is how gomod classifies the `go` and
+      // `toolchain` entries as of current Renovate.)
+      description: "Do not bump the go directive/toolchain in go.mod",
+      matchManagers: ["gomod"],
+      matchDepTypes: ["golang"],
+      enabled: false,
+    },
+  ],
+
+  // --- PR / dashboard behaviour ------------------------------------------
+  prConcurrentLimit: 5,
+  dependencyDashboard: true,
+  labels: ["dependencies"],
+  // lockFileMaintenance is a lockfile-refresh feature (npm/yarn/etc.);
+  // Go has no such lockfile artifact to refresh, so it's skipped entirely.
+
+  // --- Security ------------------------------------------------------
+  vulnerabilityAlerts: {
+    enabled: true,
+  },
+  // Let OSV-sourced vulnerability fixes raise PRs immediately, ignoring
+  // the monthly `schedule` above.
+  osvVulnerabilityAlerts: true,
+}
