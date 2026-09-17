@@ -8,7 +8,7 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 | Area | State |
 |---|---|
 | Resources / data sources | 126 generated resources, 266 data sources, 7 hand-written resources; see [RESOURCES.md](RESOURCES.md) |
-| Acceptance on demo.netbox.dev (4.7.0) | 135/135 pass (create, update, data sources, import, empty plan); 7 scenarios applied and destroyed |
+| Acceptance | 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. The docker-compose workflow (12 shards, one NetBox 4.7 each) is green on Actions; it runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (written before the last generator fixes; see the banner there) |
 | CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum); actions pinned to SHAs, Renovate monthly |
 | Release | GoReleaser (unsigned by default) + network mirror on GitHub Pages + `scripts/install.sh`; `CHANGELOG.md` cut for 0.1.0; no tag pushed yet, see [INSTALL.md](INSTALL.md) |
@@ -18,8 +18,7 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 
 1. Enable GitHub Pages (Settings → Pages → Source "GitHub Actions") so the release workflow can publish the network mirror.
 2. Tag `v0.1.0`, confirm the release assets, the mirror at `https://elliot.github.io/terraform-provider-netbox/` and `scripts/install.sh` against the real release.
-3. Get the docker-compose acceptance workflow green once: it now runs nightly, on `workflow_dispatch`, and on pull requests labelled `run-acceptance` (12 shards, one NetBox each); it has only ever been executed against the public demo, so expect to tune shard timeouts.
-4. Registry listing: add the RSA (or DSA) GPG public key to the registry account, add the `GPG_PRIVATE_KEY` / `PASSPHRASE` secrets (the release workflow then signs automatically), publish the repository once through the registry UI and verify the docs in the registry preview tool.
+3. Registry listing: add the RSA (or DSA) GPG public key to the registry account, add the `GPG_PRIVATE_KEY` / `PASSPHRASE` secrets (the release workflow then signs automatically), publish the repository once through the registry UI and verify the docs in the registry preview tool.
 
 ## Milestones
 
@@ -104,7 +103,7 @@ Virtualization, users, VPN, circuits
 - Generated examples are only rewritten when a `.generated` marker exists in the directory; every current example is hand-maintained.
 - `spec/required-fixes.json` feeds both the client generator and the provider generator; after changing it run `make client-gen` and `make gen` together or constructors will not match.
 - `make lint` and CI lint only the packages in `LINT_PKGS` (GNUmakefile): linting the generated client and resources exhausts the GitHub runner's memory. Append new hand-written packages to that list.
-- Building all release targets in parallel needs about 4 GB per target for the generated client; on small machines run `make dist` with `GORELEASER="goreleaser --parallelism 2"` or similar.
+- Building release targets needs about 4 GB per target while the generated client compiles; `make dist DIST_PARALLELISM=1` on small machines. GitHub's 7 GB runners already run GoReleaser with `--parallelism 1` and `GOGC=50` for the same reason.
 - In sandboxes set `TF_ACC_TERRAFORM_PATH` to a local Terraform binary; otherwise the test harness contacts `checkpoint-api.hashicorp.com` and the whole test binary fails on timeout.
 - Terraform 1.16 CLI configuration wants `dev_overrides { ... }` as a block; the documented `dev_overrides = { ... }` form is rejected.
 - Terraform 1.16.2 can crash and write an empty state when a provider returns an inconsistent result on create; every such bug therefore orphans objects.

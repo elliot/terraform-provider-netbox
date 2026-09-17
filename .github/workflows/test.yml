@@ -97,7 +97,10 @@ jobs:
     name: Package (goreleaser snapshot + install smoke test)
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # Eight targets built one at a time: compiling the generated client needs
+    # about 4 GB, and two parallel builds exhaust the 7 GB runner (the runner is
+    # killed with "received a shutdown signal").
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -114,7 +117,9 @@ jobs:
         with:
           distribution: goreleaser
           version: "~> v2"
-          args: release --snapshot --clean --skip=sign,publish
+          args: release --snapshot --clean --skip=sign,publish --parallelism 1
+        env:
+          GOGC: "50"
       - name: Build network mirror index
         run: go run ./tools/mirror-index -dist dist -out dist/mirror
       - name: Install through network mirror and install.sh

@@ -88,9 +88,12 @@ HOST_ARCH     := $(shell go env GOARCH)
 MIRROR_ARGS   ?=
 
 # Unsigned snapshot release into dist/: one zip per OS/arch, SHA256SUMS, manifest.
+# Each target needs ~4 GB while compiling the generated client; lower
+# DIST_PARALLELISM on small machines (CI uses 1).
+DIST_PARALLELISM ?= 2
 .PHONY: dist
 dist:
-	$(GORELEASER) release --snapshot --clean --skip=sign,publish
+	$(GORELEASER) release --snapshot --clean --skip=sign,publish --parallelism $(DIST_PARALLELISM)
 
 # Network-mirror tree (index.json, <version>.json, zips) under dist/mirror.
 # Pass MIRROR_ARGS='-base-url https://.../' to point at hosted zips instead.
