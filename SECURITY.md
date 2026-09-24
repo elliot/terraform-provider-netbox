@@ -29,8 +29,9 @@ gh attestation verify terraform-provider-netbox_<version>_linux_amd64.zip \
 ```
 
 `scripts/install.sh` checks the zip against `SHA256SUMS`, and Terraform checks mirror downloads against the
-`h1:` hashes in `.terraform.lock.hcl`. When the GPG secrets are configured, `SHA256SUMS` is also signed
-(`SHA256SUMS.sig`), which is what the public Terraform Registry verifies.
+`h1:` hashes in `.terraform.lock.hcl`. From the release after `v0.1.0`, `SHA256SUMS` is also GPG-signed
+(`SHA256SUMS.sig`), which is what the public Terraform Registry verifies; the release job refuses to run
+without the key and re-verifies the signature after upload.
 
 ## How the build and release pipeline is protected
 

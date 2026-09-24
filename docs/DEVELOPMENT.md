@@ -78,10 +78,12 @@ Releases are built by GoReleaser from `v*` tags (`.github/workflows/release.yml`
    registry manifest, publishes the GitHub Release, attests build provenance for every asset, then runs
    `tools/mirror-index` and deploys the provider network mirror to GitHub Pages. Earlier versions are
    carried over from the live mirror so they stay installable.
-4. Signing is optional. With `GPG_PRIVATE_KEY`/`PASSPHRASE` secrets in the `release` environment the
-   checksum file is signed; without them GoReleaser runs with `--skip=sign`. Only the public Terraform
-   Registry needs the signature (plus a public repository and the `terraform-registry-manifest.json`
-   already present).
+4. `SHA256SUMS` is signed with the key stored as `GPG_PRIVATE_KEY` / `PASSPHRASE` environment secrets;
+   the job fails before building if they are missing. After the upload the workflow re-verifies the
+   signature and, when the `RELEASE_KEY_FINGERPRINT` repository variable is set, checks that the imported
+   key is the expected one. The public Terraform Registry verifies that signature (and needs a public
+   repository plus the `terraform-registry-manifest.json` already present); the same public key must be
+   registered under the `elliot` namespace.
 
 The repository settings that protect this pipeline (environment reviewers, tag rulesets, immutable
 releases, SHA-pinning policy) are listed in [SECURITY.md](../SECURITY.md).
