@@ -8,8 +8,6 @@ All notable changes to this project are documented in this file. The format foll
 
 ### Changed
 
-- `netbox_owner.group_id` is optional and defaults to `1` (no group). The generator gains a `default`
-  attribute override for integer and FK attributes.
 - Building from source requires Go 1.26; terraform-plugin-framework 1.19.0, terraform-plugin-go 0.31.0 and
   all other Go dependencies updated.
 - `SHA256SUMS` is always GPG-signed: the release job fails without the key in the `release` environment,
