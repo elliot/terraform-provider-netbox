@@ -1,0 +1,103 @@
+name: Acceptance tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      shard:
+        description: "Go package pattern to test (overrides the matrix, e.g. ./internal/provider/gen/dcim/)"
+        required: false
+        default: ""
+      terraform:
+        description: "Terraform version"
+        required: false
+        default: "1.14.*"
+  schedule:
+    # Nightly at 03:17 UTC.
+    - cron: "17 3 * * *"
+  # On PRs the job only runs when the PR carries the `run-acceptance` label; the
+  # `labeled` type makes adding the label start the run on an existing PR.
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+
+permissions:
+  contents: read
+
+# Twelve NetBox stacks per run, so never let re-pushes to the same branch pile up.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NETBOX_SUPERUSER_NAME: admin
+  NETBOX_SUPERUSER_PASSWORD: admin-tfacc-password
+
+jobs:
+  acceptance:
+    name: ${{ matrix.shard }}
+    # Scheduled and manual runs always go ahead; PRs need the `run-acceptance` label.
+    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'run-acceptance')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        # One shard per Go package (NetBox app); each job runs its own NetBox.
+        shard:
+          - ./internal/provider/
+          - ./internal/provider/gen/dcim/
+          - ./internal/provider/gen/ipam/
+          - ./internal/provider/gen/extras/
+          - ./internal/provider/gen/circuits/
+          - ./internal/provider/gen/vpn/
+          - ./internal/provider/gen/virtualization/
+          - ./internal/provider/gen/tenancy/
+          - ./internal/provider/gen/users/
+          - ./internal/provider/gen/wireless/
+          - ./internal/provider/gen/core/
+          - ./internal/provider/manual/
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ github.event.inputs.terraform || '1.14.*' }}
+          terraform_wrapper: false
+
+      - name: Start NetBox 4.7
+        env:
+          SUPERUSER_NAME: ${{ env.NETBOX_SUPERUSER_NAME }}
+          SUPERUSER_PASSWORD: ${{ env.NETBOX_SUPERUSER_PASSWORD }}
+        run: docker compose -f docker/docker-compose.yml up -d --wait --wait-timeout 600
+
+      - name: Provision a v2 API token
+        id: token
+        run: |
+          set -euo pipefail
+          resp=$(curl -sS -f -X POST http://localhost:8000/api/users/tokens/provision/ \
+            -H 'Content-Type: application/json' -H 'Accept: application/json' \
+            -d "{\"username\":\"${NETBOX_SUPERUSER_NAME}\",\"password\":\"${NETBOX_SUPERUSER_PASSWORD}\",\"version\":2,\"write_enabled\":true,\"description\":\"github-actions\"}")
+          key=$(echo "$resp" | jq -r '.key')
+          secret=$(echo "$resp" | jq -r '.token')
+          token="nbt_${key#nbt_}.${secret}"
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Run acceptance tests
+        env:
+          TF_ACC: "1"
+          NETBOX_SERVER_URL: http://localhost:8000
+          NETBOX_API_TOKEN: ${{ steps.token.outputs.token }}
+          NETBOX_REQUESTS_PER_SECOND: "10"
+          ACC_SHARD: ${{ github.event.inputs.shard || matrix.shard }}
+        run: go test "$ACC_SHARD" -v -count=1 -run TestAcc -timeout 120m -parallel 4
+
+      - name: NetBox logs (on failure)
+        if: failure()
+        run: docker compose -f docker/docker-compose.yml logs --no-color netbox | tail -n 500
+
+      - name: Stop NetBox
+        if: always()
+        run: docker compose -f docker/docker-compose.yml down -v

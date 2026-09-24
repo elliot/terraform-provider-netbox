@@ -1,0 +1,31 @@
+resources:
+  ip-addresses:
+    lookups: [address]
+    attributes:
+      nat_inside: { target: ip_address }
+  vlans:
+    attributes:
+      qinq_svlan: { target: vlan }
+  vlan-translation-rules:
+    attributes:
+      policy: { kind: fk, target: vlan_translation_policy }
+  prefixes:
+    lookups: [prefix]
+  aggregates:
+    lookups: [prefix]
+  ip-ranges:
+    lookups: [start_address]
+  asns:
+    lookups: [asn]
+    attributes:
+      # Reverse side of netbox_site.asn_ids.
+      sites: { read_only: true }
+  services:
+    attributes:
+      # deprecated in 4.7 in favour of port_mappings
+      protocol: { skip: true }
+      ports: { skip: true }
+  service-templates:
+    attributes:
+      protocol: { skip: true }
+      ports: { skip: true }

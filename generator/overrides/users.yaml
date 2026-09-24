@@ -1,0 +1,15 @@
+resources:
+  users:
+    lookups: [username]
+    attributes:
+      password: { sensitive: true }
+  tokens:
+    attributes:
+      # The secret is returned once, on create; keep it in state afterwards.
+      token:
+        expose: true
+        sensitive: true
+        description: "The token secret (v2: the part after the dot). Only returned by NetBox on creation; kept in state afterwards."
+      key:
+        expose: true
+        description: "The v2 token identification key (`nbt_<key>`)."

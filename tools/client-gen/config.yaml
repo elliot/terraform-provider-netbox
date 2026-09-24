@@ -1,0 +1,20 @@
+# openapi-generator configuration for the in-repo NetBox client (package netbox).
+# Mirrors netbox-community/go-netbox/.openapi-generator/config.yaml so the generated
+# surface stays go-netbox compatible.
+generatorName: go
+packageName: netbox
+
+globalProperty:
+  apiDocs: "false"
+  modelDocs: "false"
+  apiTests: "false"
+  modelTests: "false"
+
+additionalProperties:
+  disallowAdditionalPropertiesIfNotPresent: "false"
+  generateInterfaces: "true"
+  packageVersion: "4.7.0"
+  enumClassPrefix: "true"
+  useDefaultValuesForRequiredVars: "true"
+  withGoMod: "false"
+  isGoSubmodule: "true"

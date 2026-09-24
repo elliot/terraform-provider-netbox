@@ -1,0 +1,46 @@
+{
+  "_comment": "Corrections to the required lists of request schemas where drf-spectacular disagrees with NetBox validation (verified against NetBox 4.7). Used by tools/client-gen/fix_spec.py and internal/gen.",
+  "CustomFieldRequest": {
+    "remove": [
+      "type"
+    ]
+  },
+  "IKEPolicyRequest": {
+    "remove": [
+      "version"
+    ]
+  },
+  "TunnelRequest": {
+    "remove": [
+      "status"
+    ]
+  },
+  "TunnelTerminationRequest": {
+    "remove": [
+      "role"
+    ]
+  },
+  "NestedTagRequest": {
+    "add": [
+      "slug"
+    ],
+    "remove": [
+      "name"
+    ]
+  },
+  "WritableIKEPolicyRequest": {
+    "add": [
+      "version"
+    ]
+  },
+  "WritableTunnelRequest": {
+    "add": [
+      "status"
+    ]
+  },
+  "WritableTunnelTerminationRequest": {
+    "add": [
+      "role"
+    ]
+  }
+}

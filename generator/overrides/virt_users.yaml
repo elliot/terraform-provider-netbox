@@ -1,0 +1,324 @@
+# Acceptance-test fixtures and tuning for the virtualization and users apps.
+# Keyed by API path segment ({{.Name}} is a unique tfacc- name). Validated
+# against https://demo.netbox.dev (NetBox 4.7.0); see docs/validation/virt-users.md.
+resources:
+  clusters:
+    test:
+      basic: |
+        resource "netbox_cluster_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster" "test" {
+          name    = "{{.Name}}"
+          type_id = netbox_cluster_type.test.id
+        }
+      update: |
+        resource "netbox_cluster_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster_group" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster" "test" {
+          name        = "{{.Name}}"
+          type_id     = netbox_cluster_type.test.id
+          group_id    = netbox_cluster_group.test.id
+          tenant_id   = netbox_tenant.test.id
+          scope_type  = "dcim.site"
+          scope_id    = netbox_site.test.id
+          status      = "planned"
+          description = "updated"
+          comments    = "{{.Name}} comments"
+        }
+      checks:
+        status: active
+
+  virtual-machines:
+    attributes:
+      # NetBox derives the VM disk size from its virtual disks once any exist;
+      # track the server value instead of fighting it.
+      disk:
+        computed: true
+        description: "Total disk size in MB. Managed by NetBox once virtual disks are attached."
+    test:
+      basic: |
+        resource "netbox_cluster_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster" "test" {
+          name    = "{{.Name}}"
+          type_id = netbox_cluster_type.test.id
+        }
+        resource "netbox_virtual_machine" "test" {
+          name       = "{{.Name}}"
+          cluster_id = netbox_cluster.test.id
+        }
+      update: |
+        resource "netbox_cluster_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster" "test" {
+          name    = "{{.Name}}"
+          type_id = netbox_cluster_type.test.id
+        }
+        resource "netbox_site" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_tenant" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_virtual_machine_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_virtual_machine" "test" {
+          name                    = "{{.Name}}"
+          cluster_id              = netbox_cluster.test.id
+          site_id                 = netbox_site.test.id
+          tenant_id               = netbox_tenant.test.id
+          virtual_machine_type_id = netbox_virtual_machine_type.test.id
+          status                  = "planned"
+          start_on_boot           = "on"
+          vcpus                   = 2.5
+          memory                  = 2048
+          disk                    = 20
+          serial                  = "VM-{{.Name}}"
+          description             = "updated"
+          comments                = "{{.Name}} comments"
+          local_context_data      = jsonencode({ role = "web" })
+        }
+      checks:
+        status: active
+
+  virtual-disks:
+    test:
+      basic: |
+        resource "netbox_cluster_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster" "test" {
+          name    = "{{.Name}}"
+          type_id = netbox_cluster_type.test.id
+        }
+        resource "netbox_virtual_machine" "test" {
+          name       = "{{.Name}}"
+          cluster_id = netbox_cluster.test.id
+        }
+        resource "netbox_virtual_disk" "test" {
+          virtual_machine_id = netbox_virtual_machine.test.id
+          name               = "disk0"
+          size               = 10240
+          description        = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_cluster_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster" "test" {
+          name    = "{{.Name}}"
+          type_id = netbox_cluster_type.test.id
+        }
+        resource "netbox_virtual_machine" "test" {
+          name       = "{{.Name}}"
+          cluster_id = netbox_cluster.test.id
+        }
+        resource "netbox_virtual_disk" "test" {
+          virtual_machine_id = netbox_virtual_machine.test.id
+          name               = "disk0"
+          size               = 20480
+          description        = "{{.Name}} updated"
+        }
+
+  virtualization/interfaces:
+    test:
+      basic: |
+        resource "netbox_cluster_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster" "test" {
+          name    = "{{.Name}}"
+          type_id = netbox_cluster_type.test.id
+        }
+        resource "netbox_virtual_machine" "test" {
+          name       = "{{.Name}}"
+          cluster_id = netbox_cluster.test.id
+        }
+        resource "netbox_vm_interface" "test" {
+          virtual_machine_id = netbox_virtual_machine.test.id
+          name               = "eth0"
+          description        = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_cluster_type" "test" {
+          name = "{{.Name}}"
+          slug = "{{.Name}}"
+        }
+        resource "netbox_cluster" "test" {
+          name    = "{{.Name}}"
+          type_id = netbox_cluster_type.test.id
+        }
+        resource "netbox_virtual_machine" "test" {
+          name       = "{{.Name}}"
+          cluster_id = netbox_cluster.test.id
+        }
+        resource "netbox_vlan" "test" {
+          name = "{{.Name}}"
+          vid  = 100
+        }
+        resource "netbox_vrf" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_vm_interface" "test" {
+          virtual_machine_id = netbox_virtual_machine.test.id
+          name               = "eth0"
+          enabled            = false
+          mtu                = 9000
+          mode               = "tagged"
+          untagged_vlan_id   = netbox_vlan.test.id
+          tagged_vlan_ids    = [netbox_vlan.test.id]
+          vrf_id             = netbox_vrf.test.id
+          description        = "{{.Name}} updated"
+        }
+      checks:
+        enabled: "true"
+
+  groups:
+    attributes:
+      # Reverse side of ObjectPermission.groups; see users.permissions.
+      permissions:
+        skip: true
+
+  owners:
+    test:
+      basic: |
+        resource "netbox_owner_group" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_owner" "test" {
+          name     = "{{.Name}}"
+          group_id = netbox_owner_group.test.id
+        }
+      update: |
+        resource "netbox_owner_group" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_user_group" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_user" "test" {
+          username = "{{.Name}}"
+          password = "{{.Name}}-Pa55word!"
+        }
+        resource "netbox_owner" "test" {
+          name           = "{{.Name}}"
+          group_id       = netbox_owner_group.test.id
+          description    = "updated"
+          user_group_ids = [netbox_user_group.test.id]
+          user_ids       = [netbox_user.test.id]
+        }
+
+  permissions:
+    test:
+      basic: |
+        resource "netbox_permission" "test" {
+          name         = "{{.Name}}"
+          object_types = ["dcim.site"]
+          actions      = ["view"]
+        }
+      update: |
+        resource "netbox_user_group" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_user" "test" {
+          username = "{{.Name}}"
+          password = "{{.Name}}-Pa55word!"
+        }
+        resource "netbox_permission" "test" {
+          name         = "{{.Name}}"
+          description  = "updated"
+          enabled      = false
+          object_types = ["dcim.site", "dcim.device"]
+          actions      = ["view", "change"]
+          constraints  = jsonencode({ name__isw = "{{.Name}}" })
+          group_ids    = [netbox_user_group.test.id]
+          user_ids     = [netbox_user.test.id]
+        }
+      checks:
+        enabled: "true"
+
+  tokens:
+    attributes:
+      # NetBox fills pepper_id (v2 tokens) server-side; track its value.
+      pepper_id:
+        computed: true
+    test:
+      basic: |
+        resource "netbox_user" "test" {
+          username = "{{.Name}}"
+          password = "{{.Name}}-Pa55word!"
+        }
+        resource "netbox_token" "test" {
+          user_id     = netbox_user.test.id
+          description = "{{.Name}}"
+        }
+      update: |
+        resource "netbox_user" "test" {
+          username = "{{.Name}}"
+          password = "{{.Name}}-Pa55word!"
+        }
+        resource "netbox_token" "test" {
+          user_id       = netbox_user.test.id
+          description   = "{{.Name}} updated"
+          write_enabled = false
+          expires       = "2030-01-01T00:00:00Z"
+        }
+      checks:
+        enabled: "true"
+        write_enabled: "true"
+
+  users:
+    attributes:
+      # Reverse side of ObjectPermission.users: managing it here conflicts
+      # with netbox_permission.user_ids (perpetual diff). Assign permissions
+      # from netbox_permission instead.
+      permissions:
+        skip: true
+    test:
+      basic: |
+        resource "netbox_user" "test" {
+          username = "{{.Name}}"
+          password = "{{.Name}}-Pa55word!"
+        }
+      update: |
+        resource "netbox_user_group" "test" {
+          name = "{{.Name}}"
+        }
+        resource "netbox_user" "test" {
+          username   = "{{.Name}}"
+          password   = "{{.Name}}-Pa55word!"
+          first_name = "Terraform"
+          last_name  = "{{.Name}}"
+          email      = "{{.Name}}@example.com"
+          is_active  = false
+          group_ids  = [netbox_user_group.test.id]
+        }
+      checks:
+        is_active: "true"

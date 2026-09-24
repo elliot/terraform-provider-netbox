@@ -1,0 +1,71 @@
+# Visit https://goreleaser.com for documentation on how to customize this
+# behavior.
+#
+# Release process: push a v* tag; .github/workflows/release.yml runs GoReleaser.
+# When the GPG_PRIVATE_KEY secret is present the checksum file is signed (required
+# only by the public Terraform Registry); otherwise the workflow passes
+# --skip=sign and the release is still usable through the network mirror,
+# scripts/install.sh or a filesystem mirror. See docs/INSTALL.md.
+#
+# Local dry run (unsigned, nothing published):  make dist
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - "-s -w -X main.version={{.Version}}"
+    goos:
+      - linux
+      - darwin
+      - freebsd
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    binary: "{{ .ProjectName }}_v{{ .Version }}"
+
+archives:
+  - formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  extra_files:
+    - glob: terraform-registry-manifest.json
+      name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
+  name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
+  algorithm: sha256
+
+snapshot:
+  # Snapshot builds (make dist) get a semver-valid pre-release version so the
+  # mirror index and Terraform accept them, e.g. 0.1.0-SNAPSHOT-3f2a1c9.
+  version_template: "{{ .Version }}-SNAPSHOT-{{ .ShortCommit }}"
+
+signs:
+  - artifacts: checksum
+    args:
+      # The GPG_FINGERPRINT environment variable is set by the release workflow.
+      - "--batch"
+      - "--local-user"
+      - "{{ .Env.GPG_FINGERPRINT }}"
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"
+
+release:
+  extra_files:
+    - glob: terraform-registry-manifest.json
+      name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
+  # Drafts let a human review the notes before publishing.
+  draft: false
+
+changelog:
+  disable: true

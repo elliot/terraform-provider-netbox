@@ -1,0 +1,10 @@
+# Name collisions and awkward names. Keyed by API path segment.
+resources:
+  permissions:
+    name: permission
+  roles:
+    name: ipam_role
+    plural: ipam_roles
+  groups:
+    name: user_group
+    plural: user_groups

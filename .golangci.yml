@@ -1,0 +1,59 @@
+version: "2"
+
+run:
+  timeout: 10m
+  tests: true
+
+linters:
+  default: standard
+  enable:
+    - copyloopvar
+    - durationcheck
+    - errorlint
+    - forcetypeassert
+    - gocritic
+    - gosec
+    - misspell
+    - nilerr
+    - predeclared
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - whitespace
+  settings:
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+    gosec:
+      excludes:
+        - G404 # math/rand is fine for jitter and test names
+  exclusions:
+    # Generated files (// Code generated ... DO NOT EDIT.) are linted leniently.
+    generated: lax
+    presets:
+      - common-false-positives
+      - std-error-handling
+    paths:
+      # The regenerated go-netbox style client and the generated resources are
+      # not hand-maintained. `make lint` and CI also restrict the package list
+      # (LINT_PKGS in the GNUmakefile) so these are never analysed.
+      - netbox/
+      - internal/provider/gen/
+    rules:
+      - path: _test\.go
+        linters:
+          - gosec
+          - unparam
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/elliot/terraform-provider-netbox
+  exclusions:
+    generated: lax
+    paths:
+      - netbox/
