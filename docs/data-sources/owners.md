@@ -57,7 +57,7 @@ Read-Only:
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
-- `group_id` (Number) ID of the Owner Group (`netbox_owner_group`).
+- `group_id` (Number) ID of the Owner Group (`netbox_owner_group`). Group `1` means no group. Defaults to `1`.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `name` (String) Name.
 - `url` (String) Url.

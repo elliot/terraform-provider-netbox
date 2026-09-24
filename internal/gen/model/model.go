@@ -76,6 +76,8 @@ type Attr struct {
 	DefaultEmptyString bool
 	// DefaultEmptySet marks set attributes that default to [] and are always sent.
 	DefaultEmptySet bool
+	// DefaultInt is the static default of an Optional+Computed integer or FK.
+	DefaultInt *int64
 	// OrderedList renders a List instead of a Set.
 	OrderedList bool
 

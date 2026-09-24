@@ -112,6 +112,7 @@ resources:
         expose: true           # include a read-only API property as a Computed attribute;
                                #   the prior state is kept when the API returns null (token secret)
         optional: true         # make a required property optional
+        default: 1             # static default for an integer/FK attribute (makes it Optional+Computed)
         precision: 6           # decimals NetBox stores; drives float semantic equality (default 6)
         ordered_list: true     # List instead of Set
         description: "..."

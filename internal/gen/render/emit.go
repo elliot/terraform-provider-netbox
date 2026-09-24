@@ -140,6 +140,8 @@ func description(a model.Attr) string {
 		d += " Defaults to an empty set."
 	case a.DefaultEmptyString:
 		d += " Defaults to an empty string."
+	case a.DefaultInt != nil:
+		d += fmt.Sprintf(" Defaults to `%d`.", *a.DefaultInt)
 	case a.Computed && !a.ReadOnly && !a.Required:
 		d += " Defaults to the NetBox server default when omitted."
 	}
@@ -286,6 +288,8 @@ func schemaAttr(r *model.Resource, a model.Attr, pkg string, dataSource bool, lo
 			switch {
 			case a.DefaultEmptyString:
 				b.WriteString("Default: stringdefault.StaticString(\"\"),\n")
+			case a.DefaultInt != nil:
+				fmt.Fprintf(&b, "Default: int64default.StaticInt64(%d),\n", *a.DefaultInt)
 			case a.DefaultEmptySet && !a.OrderedList:
 				elem := "types.StringType"
 				if a.Kind == model.KindFKList || a.Kind == model.KindIntList {
