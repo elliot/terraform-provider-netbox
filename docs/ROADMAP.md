@@ -1,7 +1,7 @@
 # Roadmap, todos and sharp edges
 
-Status after the `v0.1.0` release. Items that have been actioned are removed from this file; `CHANGELOG.md`
-is the record of what shipped.
+Status as of `v0.1.0` (released 2026-09-24 from `main`). Items that have been actioned are removed from this
+file; `CHANGELOG.md` is the record of what shipped.
 
 ## Where things stand
 
@@ -11,7 +11,7 @@ is the record of what shipped.
 | Acceptance | 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. The docker-compose workflow (12 shards, one NetBox 4.7 each) is green on Actions; it runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (written before the last generator fixes; see the banner there) |
 | CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), zizmor workflow audit, CodeQL (Go and Actions, weekly and per PR), PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate monthly with a 7-day cooldown |
-| Release | `v0.1.0` released: GoReleaser + network mirror on GitHub Pages + `scripts/install.sh`, see [INSTALL.md](INSTALL.md). From the next release: `release` environment, build provenance attestations, GPG signing when the secrets are set (the 0.1.0 checksums are unsigned because of a workflow bug, now fixed) |
+| Release | `v0.1.0` published 2026-09-24 (unsigned): GitHub Release with eight platform zips, network mirror live at `https://elliot.github.io/terraform-provider-netbox/`, `scripts/install.sh` and `terraform init` through the mirror verified against the published assets; see [INSTALL.md](INSTALL.md). From the next release: `release` environment, build provenance attestations, GPG signing when the secrets are set (the 0.1.0 checksums are unsigned because of a workflow bug, now fixed) |
 | Registry | namespace `elliot` reserved, address `elliot/netbox` final; listing not yet published |
 
 ## Next steps
