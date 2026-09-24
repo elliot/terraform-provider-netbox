@@ -27,7 +27,6 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 ### v0.2: generator polish
 - Reverse-side computed lists (`asn.site_ids`, `rear_port.front_ports`) are unknown during updates of the owning resource; a state-copying plan modifier would remove that line from plans but risks an inconsistent-result error when the other side changes in the same apply.
 - Re-verify `module_bay.installed_module` (skipped after a NetBox 500 that the "no null on create" fix may have removed) and retire redundant overrides listed below.
-- A MAC/WWN format validator (`aa:bb:cc:dd:ee:ff`) instead of case folding by property name.
 - Allow clearing JSON attributes (`local_context_data`, `data`, `parameters`) by sending an explicit null through `PatchRaw`.
 - Description polish: rack dimensions copied from the rack type, `extra_choices` as `[value, label]` pairs, `sync_interval` in minutes, list data source item shapes.
 - Per-field float precision in overrides for every decimal field (only sites carry `precision` today; the default is 6).
@@ -46,7 +45,6 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 
 ## Todos (file-anchored)
 
-- [ ] `internal/gen/build/build.go`: add a `format: mac` check; drop the property-name special case for `mac_address` / `wwn`.
 - [ ] `generator/overrides`: remove `circuits.assignments` and `providers.accounts` skips (both now handled generically; `accounts` should become read-only, not skipped), remove `racks.*`, `virtual-machines.disk` and `tokens.pepper_id` `computed: true` (default now), keep `journal-entries.created_by` but define it in one file only.
 - [ ] `generator/overrides/dcim_a.yaml`: drop the `ignore_changes = [site_ids]` in the ASN fixture (`asn.site_ids` is read-only now) and re-run `TestAccAsn_basic`.
 - [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
@@ -59,7 +57,7 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 General
 - Only v2 tokens (`nbt_<key>.<secret>`) work; v1 tokens are rejected at configure time.
 - Attributes with a server default are `Optional+Computed`: removing them from the configuration keeps the current value rather than resetting it. Set them explicitly to change them.
-- NetBox trims whitespace from text fields and upper-cases MAC addresses; the provider keeps your configured value when the difference is only that.
+- NetBox trims whitespace from text fields and upper-cases MAC addresses and WWNs; the provider keeps your configured value when the difference is only that. MAC addresses and WWNs must be written in colon notation (`aa:bb:cc:dd:ee:ff`): NetBox rewrites other notations, so the provider rejects them at plan time.
 - Reverse sides of relations are read-only: attach ASNs from `netbox_site.asn_ids`, permissions from `netbox_permission`, provider accounts by creating `netbox_provider_account`.
 - `custom_fields` tracks only the keys you configure; the data sources return every field as a JSON string. Unknown field names fail at plan time.
 - Data-source `filters` names are checked against the endpoint's query parameters at plan time (with suggestions for typos); custom-field filters (`cf_<name>`) are not accepted yet.

@@ -8,6 +8,7 @@ resources:
         target: vm_interface
       bridge:
         target: vm_interface
+      mac_address: { format: mac }
   virtual-machines:
     attributes:
       primary_ip4: { computed: true }

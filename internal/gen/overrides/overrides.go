@@ -49,9 +49,12 @@ type Attribute struct {
 	// Expose includes a read-only API property (id/url excluded) as a Computed
 	// resource attribute; the prior state is kept when the API returns null
 	// (write-once values such as token secrets).
-	Expose      bool     `yaml:"expose"`
-	Optional    *bool    `yaml:"optional"`
-	Precision   int      `yaml:"precision"`
+	Expose    bool  `yaml:"expose"`
+	Optional  *bool `yaml:"optional"`
+	Precision int   `yaml:"precision"`
+	// Format names a value format NetBox normalises (mac, wwn): the attribute
+	// gets a format validator and keeps the configured letter case on read.
+	Format      string   `yaml:"format"`
 	OrderedList bool     `yaml:"ordered_list"`
 	Description string   `yaml:"description"`
 	Enum        []string `yaml:"enum"`

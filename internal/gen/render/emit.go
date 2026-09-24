@@ -249,6 +249,12 @@ func schemaAttr(r *model.Resource, a model.Attr, pkg string, dataSource bool, lo
 		if a.Pattern != "" && goRegexpOK(a.Pattern) && !a.Nullable {
 			vals = append(vals, fmt.Sprintf("stringvalidator.RegexMatches(regexp.MustCompile(%s), %q)", q(a.Pattern), "must match "+a.Pattern))
 		}
+		switch a.Format {
+		case model.FormatMAC:
+			vals = append(vals, "conv.MACAddress()")
+		case model.FormatWWN:
+			vals = append(vals, "conv.WWN()")
+		}
 	case model.KindChoice:
 		vtype = "String"
 		if len(a.Enum) > 0 {
@@ -789,7 +795,7 @@ func fromAPIFunc(r *model.Resource, dataSource bool) string {
 			case a.KeepPriorWhenNull:
 				expr = fmt.Sprintf("conv.KeepWhenNull(%s, %s)", expr, priorExpr)
 			case a.Kind == model.KindString && !a.ReadOnly:
-				expr = fmt.Sprintf("conv.StringKeep(%s, %s, %t)", expr, priorExpr, a.FoldCase)
+				expr = fmt.Sprintf("conv.StringKeep(%s, %s, %t)", expr, priorExpr, a.Format != "")
 			}
 		}
 		fmt.Fprintf(&b, "%s = %s\n", f, expr)
