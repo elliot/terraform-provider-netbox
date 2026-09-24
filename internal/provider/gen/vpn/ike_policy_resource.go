@@ -144,6 +144,7 @@ func ikePolicyResourceAttributes() map[string]schema.Attribute {
 		},
 		"preshared_key": schema.StringAttribute{
 			MarkdownDescription: "Preshared Key. Defaults to an empty string.",
+			Sensitive:           true,
 			Optional:            true,
 			Computed:            true,
 			Default:             stringdefault.StaticString(""),

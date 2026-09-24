@@ -41,6 +41,8 @@ resources:
         group: "14"
         authentication_algorithm: hmac-sha256
   ike-policies:
+    attributes:
+      preshared_key: { sensitive: true }
     test:
       basic: |
         resource "netbox_ike_proposal" "a" {

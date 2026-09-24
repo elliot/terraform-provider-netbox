@@ -51,7 +51,7 @@ resource "netbox_event_rule" "vm_changes" {
 - `last_updated` (String) Last Updated.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `payload_url` (String) This URL will be called using the HTTP method defined when the webhook is called. Must be http:// or https://. Jinja2 template processing is supported (with the same context as the request body) for part or all of the URL.
-- `secret` (String) When provided, the request will include a <code>X-Hook-Signature</code> header containing a HMAC hex digest of the payload body using the secret as the key. The secret is not transmitted in the request. Defaults to an empty string.
+- `secret` (String, Sensitive) When provided, the request will include a <code>X-Hook-Signature</code> header containing a HMAC hex digest of the payload body using the secret as the key. The secret is not transmitted in the request. Defaults to an empty string.
 - `ssl_verification` (Boolean) Enable SSL certificate verification. Disable with caution!. Defaults to the NetBox server default when omitted.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `timeout` (Number) The maximum time (in seconds) to wait for a response before failing the request. Leave blank to use the system default (60 seconds). Defaults to the NetBox server default when omitted.

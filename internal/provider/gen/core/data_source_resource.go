@@ -150,6 +150,7 @@ func dataSourceResourceAttributes() map[string]schema.Attribute {
 		"parameters": schema.StringAttribute{
 			MarkdownDescription: "Parameters as a JSON document (`jsonencode({...})`).",
 			CustomType:          jsontypes.NormalizedType{},
+			Sensitive:           true,
 			Optional:            true,
 		},
 		"ignore_rules": schema.StringAttribute{
