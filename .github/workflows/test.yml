@@ -36,7 +36,7 @@ jobs:
         # resources exhausts the runner (the job was killed after ~8 minutes).
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         with:
-          version: v2.5.0
+          version: v2.13.2
           args: . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
 
   generate:
