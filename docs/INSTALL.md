@@ -14,9 +14,9 @@ exactly as they do for registry providers.
 Every GitHub Release ships `terraform-provider-netbox_<version>_<os>_<arch>.zip` for **linux** and
 **darwin** (`amd64`, `arm64`), plus `freebsd`/`windows`, a `_SHA256SUMS` file and the registry
 manifest. Each of those files has a Sigstore build provenance attestation (see
-[Verifying a release](../SECURITY.md#verifying-a-release)). The checksum file is GPG-signed only when a key is
-configured (only the public registry requires the signature; Terraform itself verifies mirror downloads with
-the `h1:` hashes in the lock file).
+[Verifying a release](../SECURITY.md#verifying-a-release)). From the release after `v0.1.0` the checksum file
+is also GPG-signed (`_SHA256SUMS.sig`); the public registry verifies that signature, while Terraform itself
+verifies mirror downloads with the `h1:` hashes in the lock file.
 
 Reference the provider the same way in every case:
 
@@ -159,6 +159,5 @@ tag only publishes what has already been installed at least once.
 
 Nothing above changes when the provider is eventually published: users switch `provider_installation`
 off (or keep it; a mirror takes precedence only for the providers it `include`s). The registry additionally
-requires a public repository, a GPG-signed `SHA256SUMS` (`GPG_PRIVATE_KEY` and `PASSPHRASE` secrets in the
-`release` environment make the release workflow sign automatically) and the `terraform-registry-manifest.json` that is already part
-of every release.
+requires a public repository, a GPG-signed `SHA256SUMS` (the release workflow signs it automatically) and
+the `terraform-registry-manifest.json` that is already part of every release.

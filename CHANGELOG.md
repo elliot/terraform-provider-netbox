@@ -10,6 +10,8 @@ All notable changes to this project are documented in this file. The format foll
 
 - Building from source requires Go 1.26; terraform-plugin-framework 1.19.0, terraform-plugin-go 0.31.0 and
   all other Go dependencies updated.
+- `SHA256SUMS` is always GPG-signed: the release job fails without the key in the `release` environment,
+  verifies the signature after upload and can pin the expected key fingerprint (`RELEASE_KEY_FINGERPRINT`).
 
 ### Fixed
 

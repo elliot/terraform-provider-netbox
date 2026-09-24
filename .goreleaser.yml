@@ -1,11 +1,10 @@
 # Visit https://goreleaser.com for documentation on how to customize this
 # behavior.
 #
-# Release process: push a v* tag; .github/workflows/release.yml runs GoReleaser.
-# When the GPG_PRIVATE_KEY secret is present the checksum file is signed (required
-# only by the public Terraform Registry); otherwise the workflow passes
-# --skip=sign and the release is still usable through the network mirror,
-# scripts/install.sh or a filesystem mirror. See docs/INSTALL.md.
+# Release process: push a v* tag; .github/workflows/release.yml runs GoReleaser
+# and signs the checksum file (the Terraform Registry requires the signature).
+# The release is also served through the network mirror, scripts/install.sh or
+# a filesystem mirror. See docs/INSTALL.md.
 #
 # Local dry run (unsigned, nothing published):  make dist
 version: 2

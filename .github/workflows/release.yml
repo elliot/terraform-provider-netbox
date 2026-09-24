@@ -1,25 +1,10 @@
-# Publishes a GitHub Release whenever a v* tag is pushed and refreshes the
-# provider network mirror on GitHub Pages (docs/INSTALL.md).
+# Builds a GitHub Release from every v* tag and refreshes the provider network
+# mirror on GitHub Pages (docs/INSTALL.md).
 #
-# The build job runs in the `release` deployment environment. Keep release
-# secrets there (not at repository level) so no other workflow can read them,
-# and protect the environment with a required reviewer and a v* tag rule
-# (SECURITY.md).
-#
-# Optional `release` environment secrets:
-#   GPG_PRIVATE_KEY, PASSPHRASE   sign the checksum file (needed only by the public
-#                                 Terraform Registry). Without them the release is
-#                                 built unsigned and remains installable through the
-#                                 mirror, scripts/install.sh or a filesystem mirror.
-#
-# Every release zip, checksum file and manifest also gets a Sigstore build
-# provenance attestation (`gh attestation verify <zip> --repo <owner>/<repo>`).
-# Optional repository variables:
-#   MIRROR_URL       public URL of the mirror root when it is not the default
-#                    https://<owner>.github.io/<repo>/ (custom domain, other host).
-#   PUBLISH_MIRROR   set to "false" to skip the GitHub Pages deployment.
-#
-# One-time setup for the mirror: Settings -> Pages -> Source: "GitHub Actions".
+# `release` environment secrets:  GPG_PRIVATE_KEY, PASSPHRASE  (sign SHA256SUMS)
+# Repository variables (optional): RELEASE_KEY_FINGERPRINT     expected signing key
+#                                  MIRROR_URL                  mirror root, default https://<owner>.github.io/<repo>/
+#                                  PUBLISH_MIRROR              "false" skips the Pages deployment
 name: Release
 
 on:
@@ -29,7 +14,6 @@ on:
 
 permissions: {}
 
-# Never run two releases at once, and never cancel one half-way.
 concurrency:
   group: release
   cancel-in-progress: false
@@ -40,16 +24,23 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     permissions:
-      contents: write # create the GitHub release and upload its assets
-      id-token: write # obtain the OIDC token that signs the provenance attestation
+      contents: write # publish the release and its assets
+      id-token: write # OIDC token for the provenance attestation
       attestations: write # store the provenance attestation
-    # One build at a time: compiling the generated client needs about 4 GB per
-    # target and two in parallel exhaust the 7 GB runner.
+    # One target at a time: the generated client needs ~4 GB to compile.
     timeout-minutes: 60
     env:
-      HAVE_GPG: ${{ secrets.GPG_PRIVATE_KEY != '' }}
       MIRROR_URL: ${{ vars.MIRROR_URL || format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) }}
     steps:
+      - name: Check signing secrets
+        env:
+          HAVE_KEY: ${{ secrets.GPG_PRIVATE_KEY != '' }}
+          HAVE_PASSPHRASE: ${{ secrets.PASSPHRASE != '' }}
+        run: |
+          if [ "$HAVE_KEY" != "true" ] || [ "$HAVE_PASSPHRASE" != "true" ]; then
+            echo "::error::GPG_PRIVATE_KEY and PASSPHRASE must be set in the 'release' environment"
+            exit 1
+          fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
@@ -57,29 +48,42 @@ jobs:
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-          # Release builds never use the Actions cache (cache poisoning).
           cache: false
       - name: Import GPG key
         id: import_gpg
-        if: env.HAVE_GPG == 'true'
         uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
+      - name: Check key fingerprint
+        if: vars.RELEASE_KEY_FINGERPRINT != ''
+        env:
+          IMPORTED: ${{ steps.import_gpg.outputs.fingerprint }}
+          EXPECTED: ${{ vars.RELEASE_KEY_FINGERPRINT }}
+        run: |
+          if [ "$IMPORTED" != "$EXPECTED" ]; then
+            echo "::error::imported key $IMPORTED does not match RELEASE_KEY_FINGERPRINT $EXPECTED"
+            exit 1
+          fi
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
         with:
           distribution: goreleaser
-          # Exact version: a range would let an upstream release change what
-          # builds our artifacts without a reviewed commit here.
           version: v2.18.2 # renovate: datasource=github-releases depName=goreleaser/goreleaser
-          # `cond && '' || x` always yields x because '' is falsy, so the
-          # condition is inverted to put the non-empty value first.
-          args: release --clean --parallelism 1 ${{ env.HAVE_GPG != 'true' && '--skip=sign' || '' }}
+          args: release --clean --parallelism 1
         env:
           GOGC: "50"
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify checksum signature
+        env:
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+        run: |
+          sums=$(ls dist/*_SHA256SUMS)
+          gpg --batch --status-fd 1 --verify "$sums.sig" "$sums" \
+            | tee /dev/stderr \
+            | grep -E "^\[GNUPG:\] VALIDSIG .*${GPG_FINGERPRINT}( |$)" >/dev/null
+          echo "signature on $(basename "$sums") verified with $GPG_FINGERPRINT"
       - name: Attest build provenance
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
@@ -88,8 +92,7 @@ jobs:
             dist/*_SHA256SUMS
             dist/*_manifest.json
       - name: Build network mirror index
-        # The JSON points at the release assets; earlier versions are carried
-        # over from the currently published mirror so they stay installable.
+        # Earlier versions are merged in from the live mirror so they stay installable.
         env:
           REPOSITORY: ${{ github.repository }}
           TAG: ${{ github.ref_name }}
