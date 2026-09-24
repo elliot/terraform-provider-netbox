@@ -37,8 +37,8 @@ without the key and re-verifies the signature after upload.
 
 The measures follow [Open source security at Astral](https://astral.sh/blog/open-source-security-at-astral)
 and are checked in CI by [zizmor](https://docs.zizmor.sh) (`.github/workflows/zizmor.yml`). The Go sources
-and the workflows are also scanned by [CodeQL](https://codeql.github.com/) (`.github/workflows/codeql.yml`) on
-every pull request, on `main` and weekly; results appear under Security → Code scanning.
+and the workflows are also scanned by [CodeQL](https://codeql.github.com/) (`.github/workflows/codeql.yml` and
+`codeql-actions.yml`) on pull requests and pushes to `main` that change them, and weekly; results appear under Security → Code scanning.
 
 In the repository:
 
@@ -49,7 +49,8 @@ In the repository:
   versions, and the openapi-generator jar is pinned by SHA-256.
 * Workflows start from `permissions: {}` and each job requests only the scopes it uses; checkouts do not
   persist the token.
-* Release builds run without the Actions cache, inside the `release` deployment environment that holds
+* CI Go caches are written only by pushes to `main`; pull requests restore them but never save. Release
+  builds run without the Actions cache, inside the `release` deployment environment that holds
   the signing secrets, and publish provenance attestations.
 * Renovate proposes dependency updates only after a 7-day cooldown; security fixes bypass it.
 
