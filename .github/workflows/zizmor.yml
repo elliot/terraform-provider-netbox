@@ -1,0 +1,41 @@
+name: Workflow security
+
+# Static analysis of the GitHub Actions workflows with zizmor
+# (https://docs.zizmor.sh): template injection, excessive permissions,
+# credential persistence, cache poisoning, dangerous triggers, unpinned or
+# impostor action commits and more. Run locally with `uvx zizmor .github/`.
+on:
+  pull_request:
+    paths:
+      - ".github/**"
+  push:
+    branches: [main]
+    paths:
+      - ".github/**"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  zizmor:
+    name: zizmor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # check out the repository; online audits read action repositories
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+        with:
+          version: 1.30.1 # renovate: datasource=pypi depName=zizmor
+          persona: auditor
+          # Fail the job on findings instead of uploading SARIF, which would
+          # need security-events: write.
+          advanced-security: false
+          annotations: true
