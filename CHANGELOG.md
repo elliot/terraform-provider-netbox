@@ -12,6 +12,10 @@ All notable changes to this project are documented in this file. The format foll
   all other Go dependencies updated.
 - `SHA256SUMS` is always GPG-signed: the release job fails without the key in the `release` environment,
   verifies the signature after upload and can pin the expected key fingerprint (`RELEASE_KEY_FINGERPRINT`).
+- Faster CI: Go build and module caches are keyed per commit, restored incrementally and written only from
+  `main` (the GoReleaser snapshot build drops from about 12 minutes to one or two when `netbox/` is
+  unchanged), and CodeQL analyses Go only when Go sources or modules change and the workflows only when
+  `.github/` changes.
 
 ### Fixed
 
