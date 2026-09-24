@@ -43,7 +43,7 @@ output "owner_id" {
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
-- `group_id` (Number) ID of the Owner Group (`netbox_owner_group`).
+- `group_id` (Number) ID of the Owner Group (`netbox_owner_group`). Group `1` means no group. Defaults to `1`.
 - `url` (String) Url.
 - `user_group_ids` (Set of Number) IDs of the assigned User Group (`netbox_user_group`). Defaults to an empty set.
 - `user_ids` (Set of Number) IDs of the assigned User (`netbox_user`). Defaults to an empty set.

@@ -573,6 +573,14 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		if ao.Optional != nil && *ao.Optional {
 			a.Required = false
 		}
+		if ao.Default != nil {
+			if kind != model.KindInt && kind != model.KindFK {
+				return nil, fmt.Errorf("%s.%s: default is only supported on integer and FK attributes", r.Name, pname)
+			}
+			a.Required = false
+			a.Computed = true
+			a.DefaultInt = ao.Default
+		}
 		if ao.Precision > 0 {
 			a.Precision = ao.Precision
 		}
@@ -601,6 +609,7 @@ func markReadOnly(a *model.Attr) {
 	a.Required = false
 	a.DefaultEmptySet = false
 	a.DefaultEmptyString = false
+	a.DefaultInt = nil
 	for i := range a.Nested {
 		markReadOnly(&a.Nested[i])
 	}
@@ -789,6 +798,7 @@ func (b *Builder) buildNested(r *model.Resource, a *model.Attr, itemReq *openapi
 		na.Computed = false
 		na.DefaultEmptyString = false
 		na.DefaultEmptySet = false
+		na.DefaultInt = nil
 		a.Nested = append(a.Nested, *na)
 	}
 	return nil

@@ -134,6 +134,9 @@ func printAttr(indent string, a model.Attr) {
 	if a.DefaultEmptySet {
 		flags = append(flags, "def=[]")
 	}
+	if a.DefaultInt != nil {
+		flags = append(flags, fmt.Sprintf("def=%d", *a.DefaultInt))
+	}
 	if a.Target != "" {
 		flags = append(flags, "->"+a.Target)
 	}
