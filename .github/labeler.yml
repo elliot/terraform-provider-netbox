@@ -11,7 +11,7 @@ enhancement:
 bug:
   - head-branch: ["^fix[/-]"]
 
-# --- Area -----------------------------------------------------------------
+# --- Component --------------------------------------------------------------
 
 documentation:
   - changed-files:
@@ -75,63 +75,63 @@ tooling:
           - docker/**
           - tools/mirror-index/**
 
-# --- NetBox app -----------------------------------------------------------
+# --- NetBox app (area/<app>) --------------------------------------------
 
-"app/circuits":
+"area/circuits":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/circuits/**
           - "generator/overrides/*circuits*.yaml"
 
-"app/core":
+"area/core":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/core/**
           - "generator/overrides/*core*.yaml"
 
-"app/dcim":
+"area/dcim":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/dcim/**
           - "generator/overrides/*dcim*.yaml"
 
-"app/extras":
+"area/extras":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/extras/**
           - "generator/overrides/*extras*.yaml"
 
-"app/ipam":
+"area/ipam":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/ipam/**
           - "generator/overrides/*ipam*.yaml"
 
-"app/tenancy":
+"area/tenancy":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/tenancy/**
           - "generator/overrides/*tenancy*.yaml"
 
-"app/users":
+"area/users":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/users/**
           - "generator/overrides/*users*.yaml"
 
-"app/virtualization":
+"area/virtualization":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/virtualization/**
           - "generator/overrides/*virtualization*.yaml"
 
-"app/vpn":
+"area/vpn":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/vpn/**
           - "generator/overrides/*vpn*.yaml"
 
-"app/wireless":
+"area/wireless":
   - changed-files:
       - any-glob-to-any-file:
           - internal/provider/gen/wireless/**
