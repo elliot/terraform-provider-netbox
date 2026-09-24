@@ -64,7 +64,7 @@ Read-Only:
 - `id` (Number) The numeric ID of the object in NetBox.
 - `is_primary` (Boolean) Is Primary.
 - `last_updated` (String) Last Updated.
-- `mac_address` (String) Mac Address.
+- `mac_address` (String) Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.

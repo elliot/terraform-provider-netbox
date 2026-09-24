@@ -76,8 +76,11 @@ make gen && git diff --exit-code            # what CI enforces
 Update always uses PATCH built from the full plan; unknown or null values of
 computed attributes are omitted so NetBox keeps its defaults. On read, strings
 keep the configured value when NetBox only trimmed whitespace (or changed the
-case of a MAC address / WWN), and floats keep it when equal at the field's
-precision, so normalisation never produces a diff.
+case of an attribute with `format: mac` / `wwn`), and floats keep it when equal
+at the field's precision, so normalisation never produces a diff. The `format`
+comes from the spec when NetBox declares one, otherwise from the overrides
+(4.7 declares none); it also adds a colon-notation validator, because NetBox
+rewrites dashed or dotted MAC addresses and the result would not match.
 
 ## Overrides reference
 
@@ -114,6 +117,7 @@ resources:
                                #   the prior state is kept when the API returns null (token secret)
         optional: true         # make a required property optional
         precision: 6           # decimals NetBox stores; drives float semantic equality (default 6)
+        format: mac            # mac or wwn: colon-notation validator, letter case ignored on read
         ordered_list: true     # List instead of Set
         description: "..."
         enum: [a, b]           # replace the allowed values

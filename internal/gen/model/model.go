@@ -90,8 +90,10 @@ type Attr struct {
 
 	// StringMap marks JSON attributes whose client type is map[string]string.
 	StringMap bool
-	// FoldCase marks strings NetBox normalises to upper case (MAC addresses, WWNs).
-	FoldCase bool
+	// Format is a value format NetBox normalises (FormatMAC, FormatWWN): a
+	// validator enforces it and letter case is ignored on read, because
+	// NetBox upper-cases these values.
+	Format string
 	// KeepPriorWhenNull marks exposed read-only attributes that NetBox returns
 	// only once (token secrets): the prior state is kept when the API returns null.
 	KeepPriorWhenNull bool
@@ -127,6 +129,12 @@ func (a Attr) IsCollection() bool {
 	}
 	return false
 }
+
+// Value formats of string attributes (Attr.Format).
+const (
+	FormatMAC = "mac" // EUI-48, aa:bb:cc:dd:ee:ff
+	FormatWWN = "wwn" // EUI-64, aa:bb:cc:dd:ee:ff:00:11
+)
 
 // Filter is a list-endpoint query parameter usable by data sources.
 type Filter struct {

@@ -73,7 +73,7 @@ func macAddressDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"mac_address": dsschema.StringAttribute{
-			MarkdownDescription: "Mac Address.",
+			MarkdownDescription: "Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.",
 			Computed:            true,
 		},
 		"assigned_object_type": dsschema.StringAttribute{

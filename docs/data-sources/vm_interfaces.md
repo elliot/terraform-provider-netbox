@@ -66,7 +66,7 @@ Read-Only:
 - `id` (Number) The numeric ID of the object in NetBox.
 - `l2vpn_termination_id` (Number) L2vpn Termination. References `netbox_l2vpn_termination`.
 - `last_updated` (String) Last Updated.
-- `mac_address` (String) Mac Address.
+- `mac_address` (String) Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.
 - `mac_address_ids` (Set of Number) Mac Addresses. References `netbox_mac_address`.
 - `mode` (String) IEEE 802.1Q tagging strategy. Valid values: `access`, `tagged`, `tagged-all`, `q-in-q`. Defaults to the NetBox server default when omitted.
 - `mtu` (Number) Mtu. Defaults to the NetBox server default when omitted.

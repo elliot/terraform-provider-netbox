@@ -548,8 +548,8 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		b.warn("%s.%s: request-only nested list not echoed by the read serializer; skipped", r.Name, pname)
 		return nil, nil
 	}
-	if kind == model.KindString && (pname == "mac_address" || pname == "wwn") {
-		a.FoldCase = true
+	if kind == model.KindString && (rs.Format == model.FormatMAC || rs.Format == model.FormatWWN) {
+		a.Format = rs.Format
 	}
 
 	// Terraform naming.
@@ -616,6 +616,15 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		if ao.Precision > 0 {
 			a.Precision = ao.Precision
 		}
+		if ao.Format != "" {
+			if ao.Format != model.FormatMAC && ao.Format != model.FormatWWN {
+				return nil, fmt.Errorf("%s: unknown format %q (want %s or %s)", pname, ao.Format, model.FormatMAC, model.FormatWWN)
+			}
+			if a.Kind != model.KindString {
+				return nil, fmt.Errorf("%s: format %q needs a string attribute, not %s", pname, ao.Format, a.Kind)
+			}
+			a.Format = ao.Format
+		}
 		a.OrderedList = ao.OrderedList
 		if ao.Description != "" {
 			a.Description = ao.Description
@@ -629,6 +638,12 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 	}
 	if a.Description == "" {
 		a.Description = defaultDescription(a)
+	}
+	switch a.Format {
+	case model.FormatMAC:
+		a.Description += " Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case."
+	case model.FormatWWN:
+		a.Description += " Colon notation, e.g. `50:01:43:80:12:34:56:78`; NetBox stores it in upper case."
 	}
 	return a, nil
 }

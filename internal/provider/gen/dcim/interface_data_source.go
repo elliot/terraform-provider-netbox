@@ -214,7 +214,7 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"mac_address": dsschema.StringAttribute{
-			MarkdownDescription: "Mac Address.",
+			MarkdownDescription: "Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.",
 			Computed:            true,
 		},
 		"primary_mac_address_id": dsschema.Int64Attribute{
@@ -230,7 +230,7 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"wwn": dsschema.StringAttribute{
-			MarkdownDescription: "Wwn.",
+			MarkdownDescription: "Wwn. Colon notation, e.g. `50:01:43:80:12:34:56:78`; NetBox stores it in upper case.",
 			Computed:            true,
 		},
 		"mgmt_only": dsschema.BoolAttribute{

@@ -94,7 +94,7 @@ resource "netbox_interface" "te1_1_1" {
 - `enabled` (Boolean) Enabled. Defaults to the NetBox server default when omitted.
 - `label` (String) Physical label. Defaults to an empty string.
 - `lag_id` (Number) ID of the Interface (`netbox_interface`).
-- `mac_address` (String) Mac Address.
+- `mac_address` (String) Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.
 - `mark_connected` (Boolean) Treat as if a cable is connected. Defaults to the NetBox server default when omitted.
 - `mgmt_only` (Boolean) This interface is used only for out-of-band management. Defaults to the NetBox server default when omitted.
 - `mode` (String) IEEE 802.1Q tagging strategy. Valid values: `access`, `tagged`, `tagged-all`, `q-in-q`. Defaults to the NetBox server default when omitted.
@@ -119,7 +119,7 @@ resource "netbox_interface" "te1_1_1" {
 - `vlan_translation_policy_id` (Number) ID of the Vlan Translation Policy (`netbox_vlan_translation_policy`).
 - `vrf_id` (Number) ID of the Vrf (`netbox_vrf`).
 - `wireless_lan_ids` (Set of Number) IDs of the assigned Wireless Lan (`netbox_wireless_lan`). Defaults to an empty set.
-- `wwn` (String) Wwn.
+- `wwn` (String) Wwn. Colon notation, e.g. `50:01:43:80:12:34:56:78`; NetBox stores it in upper case.
 
 ### Read-Only
 

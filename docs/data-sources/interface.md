@@ -59,7 +59,7 @@ data "netbox_interface" "filtered" {
 - `lag_id` (Number) ID of the Interface (`netbox_interface`).
 - `last_updated` (String) Last Updated.
 - `link_peers_type` (String) Return the type of the peer link terminations, or None.
-- `mac_address` (String) Mac Address.
+- `mac_address` (String) Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.
 - `mac_address_ids` (Set of Number) Mac Addresses. References `netbox_mac_address`.
 - `mark_connected` (Boolean) Treat as if a cable is connected. Defaults to the NetBox server default when omitted.
 - `mgmt_only` (Boolean) This interface is used only for out-of-band management. Defaults to the NetBox server default when omitted.
@@ -89,7 +89,7 @@ data "netbox_interface" "filtered" {
 - `vrf_id` (Number) ID of the Vrf (`netbox_vrf`).
 - `wireless_lan_ids` (Set of Number) IDs of the assigned Wireless Lan (`netbox_wireless_lan`). Defaults to an empty set.
 - `wireless_link_id` (Number) Wireless Link. References `netbox_wireless_link`.
-- `wwn` (String) Wwn.
+- `wwn` (String) Wwn. Colon notation, e.g. `50:01:43:80:12:34:56:78`; NetBox stores it in upper case.
 
 <a id="nestedatt--filters"></a>
 ### Nested Schema for `filters`
