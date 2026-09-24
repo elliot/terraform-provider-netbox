@@ -1,13 +1,15 @@
 name: Labeler
 
-# pull_request_target so PRs from forks can be labelled too. The workflow never
-# checks out or runs PR code; it only reads the changed-file list through the API.
+# Deliberately `pull_request`, not `pull_request_target`: the latter runs with a
+# write token in the base repository's context and is the root of most "pwn
+# request" compromises. The trade-off is that pull requests from forks get a
+# read-only token, so the job is skipped for them and a maintainer labels those
+# by hand.
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened]
 
-permissions:
-  contents: read
+permissions: {}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -16,11 +18,12 @@ concurrency:
 jobs:
   label:
     name: Label pull request
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
-      contents: read
-      pull-requests: write
+      contents: read # read .github/labeler.yml
+      pull-requests: write # add labels to the pull request
     steps:
       - uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
         with:
