@@ -19,6 +19,15 @@
 
   timezone: "Europe/London",
 
+  // --- Cooldown ---------------------------------------------------------
+  // Wait a week after a release is published before proposing it: a
+  // compromised release is usually caught and yanked within days, and this
+  // keeps us from being in the first wave that installs it. "strict" means
+  // Renovate does not even open the PR until the release is old enough.
+  // Security fixes bypass the cooldown (see vulnerabilityAlerts below).
+  minimumReleaseAge: "7 days",
+  internalChecksFilter: "strict",
+
   // --- Managers ---------------------------------------------------------
   // Explicitly enable only the managers we actually want Renovate to run
   // in this repo (custom.regex is the name used for our customManagers
@@ -48,6 +57,15 @@
   // this dependency, so we teach Renovate to read/write that line using
   // Maven Central (the jar's actual distribution point) as the datasource.
   customManagers: [
+    {
+      // Tool versions pinned inside workflow inputs, annotated in place:
+      //   version: v2.18.2 # renovate: datasource=github-releases depName=goreleaser/goreleaser
+      customType: "regex",
+      managerFilePatterns: ["^\\.github/workflows/[^/]+\\.ya?ml$"],
+      matchStrings: [
+        'version: "?(?<currentValue>[^"\\s]+)"? # renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)',
+      ],
+    },
     {
       customType: "regex",
       managerFilePatterns: ["^tools/client-gen/generate\\.sh$"],
@@ -113,6 +131,8 @@
   // --- Security ------------------------------------------------------
   vulnerabilityAlerts: {
     enabled: true,
+    // Security fixes skip the cooldown above.
+    minimumReleaseAge: null,
   },
   // Let OSV-sourced vulnerability fixes raise PRs immediately, ignoring
   // the monthly `schedule` above.
