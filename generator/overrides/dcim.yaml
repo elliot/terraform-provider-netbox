@@ -4,6 +4,8 @@ resources:
       parent: { target: interface }
       bridge: { target: interface }
       lag: { target: interface }
+      mac_address: { format: mac }
+      wwn: { format: wwn }
   interface-templates:
     attributes:
       parent: { target: interface_template }

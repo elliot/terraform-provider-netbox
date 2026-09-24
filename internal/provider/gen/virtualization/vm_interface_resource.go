@@ -146,8 +146,9 @@ func vmInterfaceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"mac_address": schema.StringAttribute{
-			MarkdownDescription: "Mac Address.",
+			MarkdownDescription: "Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.",
 			Optional:            true,
+			Validators:          []validator.String{conv.MACAddress()},
 		},
 		"primary_mac_address_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Mac Address (`netbox_mac_address`).",

@@ -1178,13 +1178,15 @@ resources:
         }
 
   mac-addresses:
-    # NetBox normalises MAC addresses to upper case (EUI-48 with colons); write
-    # them upper-case in configuration or Terraform reports an inconsistent
-    # result after apply.
+    attributes:
+      # NetBox stores EUI-48 in upper-case colon notation: the validator
+      # rejects other notations, and reads keep the configured letter case
+      # (the lower-case fixture below exercises that).
+      mac_address: { format: mac }
     test:
       basic: |
         resource "netbox_mac_address" "test" {
-          mac_address = "02:00:5E:10:20:30"
+          mac_address = "02:00:5e:10:20:30"
           description = "{{.Name}}"
         }
       update: |
