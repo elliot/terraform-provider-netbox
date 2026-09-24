@@ -3,6 +3,7 @@
 [![Tests](https://github.com/elliot/terraform-provider-netbox/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/elliot/terraform-provider-netbox/actions/workflows/test.yml)
 [![Acceptance tests](https://github.com/elliot/terraform-provider-netbox/actions/workflows/acceptance.yml/badge.svg?branch=main)](https://github.com/elliot/terraform-provider-netbox/actions/workflows/acceptance.yml)
 [![Client is reproducible](https://github.com/elliot/terraform-provider-netbox/actions/workflows/client-gen.yml/badge.svg?branch=main)](https://github.com/elliot/terraform-provider-netbox/actions/workflows/client-gen.yml)
+[![CodeQL](https://github.com/elliot/terraform-provider-netbox/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/elliot/terraform-provider-netbox/actions/workflows/codeql.yml)
 [![Latest release](https://img.shields.io/github/v/release/elliot/terraform-provider-netbox?include_prereleases&sort=semver)](https://github.com/elliot/terraform-provider-netbox/releases)
 [![NetBox](https://img.shields.io/badge/NetBox-4.x-blue)](https://github.com/netbox-community/netbox)
 [![Terraform](https://img.shields.io/badge/Terraform-%E2%89%A5%201.12-844FBA?logo=terraform)](https://developer.hashicorp.com/terraform)

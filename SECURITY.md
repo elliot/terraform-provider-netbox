@@ -35,7 +35,9 @@ gh attestation verify terraform-provider-netbox_<version>_linux_amd64.zip \
 ## How the build and release pipeline is protected
 
 The measures follow [Open source security at Astral](https://astral.sh/blog/open-source-security-at-astral)
-and are checked in CI by [zizmor](https://docs.zizmor.sh) (`.github/workflows/zizmor.yml`).
+and are checked in CI by [zizmor](https://docs.zizmor.sh) (`.github/workflows/zizmor.yml`). The Go sources
+and the workflows are also scanned by [CodeQL](https://codeql.github.com/) (`.github/workflows/codeql.yml`) on
+every pull request, on `main` and weekly; results appear under Security → Code scanning.
 
 In the repository:
 
