@@ -1,20 +1,23 @@
 name: CodeQL
 
-# Code scanning for the Go sources (including the generated API client and
-# resources, which ship in the binary). The workflows themselves are scanned by
+# Code scanning for the Go sources: the hand-written packages and the generated
+# resources in internal/provider/gen. The workflows themselves are scanned by
 # codeql-actions.yml. Results appear under Security -> Code scanning.
 #
-# The Go extractor fully extracts every package in the module, so each run
-# processes the 1M-line generated client in netbox/ (about 40 minutes). Pull
-# requests and pushes therefore only run when Go sources or modules change; the
-# weekly run picks up new queries against unchanged code.
+# The generated API client in netbox/ (1M lines of openapi-generator output) is
+# not scanned. The Go extractor fully extracts every package under the checkout
+# whatever its module, and ignores paths-ignore, so the client alone took about
+# 40 minutes. It is moved out of the checkout before the build and treated as an
+# external dependency: only its types are extracted (about 10 minutes in all).
+# This also leaves out the hand-written netbox/client_extra.go, which shares the
+# package; moving those helpers out of netbox/ would bring them back in scope.
+#
+# Runs on every pull request so the CodeQL check always has a /language:go
+# analysis to compare with main (without one it reports "1 configuration not
+# found"). Pushes to main only run when Go sources or modules change; the weekly
+# run picks up new queries against unchanged code.
 on:
   pull_request:
-    paths:
-      - "**.go"
-      - "go.mod"
-      - "go.sum"
-      - ".github/workflows/codeql.yml"
   push:
     branches: [main]
     paths:
@@ -49,6 +52,15 @@ jobs:
         with:
           go-version-file: go.mod
           cache: false
+      - name: Move the generated client out of the scanned tree
+        # Replaces ./netbox with a copy outside the checkout, as a separate
+        # module, so the extractor only reads its types. The client imports only
+        # the standard library, so the new module needs no go.sum entries.
+        run: |
+          mod="$(go list -m)/netbox"
+          mv netbox "$RUNNER_TEMP/netbox"
+          printf 'module %s\n\ngo %s\n' "$mod" "$(go mod edit -json | jq -r .Go)" > "$RUNNER_TEMP/netbox/go.mod"
+          go mod edit -require="$mod@v0.0.0" -replace="$mod=$RUNNER_TEMP/netbox"
       - name: Restore Go cache
         # Written by the Build & lint job in test.yml on pushes to main. Saves
         # the compile inside the traced build; extraction is unaffected because

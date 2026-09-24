@@ -14,8 +14,9 @@ All notable changes to this project are documented in this file. The format foll
   verifies the signature after upload and can pin the expected key fingerprint (`RELEASE_KEY_FINGERPRINT`).
 - Faster CI: Go build and module caches are keyed per commit, restored incrementally and written only from
   `main` (the GoReleaser snapshot build drops from about 12 minutes to one or two when `netbox/` is
-  unchanged), and CodeQL analyses Go only when Go sources or modules change. The workflow analysis runs on
-  every pull request (about a minute) so the CodeQL summary check can compare against `main`.
+  unchanged). Both CodeQL analyses (Go and workflows) run on every pull request, so the CodeQL summary check
+  can always compare against `main`; the Go analysis no longer scans the generated client in `netbox/`, which
+  cuts it from about 40 minutes to about 10.
 
 ### Fixed
 
