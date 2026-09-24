@@ -288,8 +288,9 @@ func interfaceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"mac_address": schema.StringAttribute{
-			MarkdownDescription: "Mac Address.",
+			MarkdownDescription: "Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.",
 			Optional:            true,
+			Validators:          []validator.String{conv.MACAddress()},
 		},
 		"primary_mac_address_id": schema.Int64Attribute{
 			MarkdownDescription: "ID of the Mac Address (`netbox_mac_address`).",
@@ -309,8 +310,9 @@ func interfaceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"wwn": schema.StringAttribute{
-			MarkdownDescription: "Wwn.",
+			MarkdownDescription: "Wwn. Colon notation, e.g. `50:01:43:80:12:34:56:78`; NetBox stores it in upper case.",
 			Optional:            true,
+			Validators:          []validator.String{conv.WWN()},
 		},
 		"mgmt_only": schema.BoolAttribute{
 			MarkdownDescription: "This interface is used only for out-of-band management. Defaults to the NetBox server default when omitted.",
