@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"math"
 	"net/url"
-	"sort"
 	"strings"
 	"time"
 
@@ -496,13 +495,12 @@ func ApplyFilters(ctx context.Context, filters types.List, allowed []string, q u
 	var fs []Filter
 	diags.Append(filters.ElementsAs(ctx, &fs, false)...)
 	for _, f := range fs {
+		// Names are validated at plan time by FilterName; this catches values
+		// that were unknown then.
 		name := f.Name.ValueString()
-		if len(allowed) > 0 {
-			i := sort.SearchStrings(allowed, name)
-			if i >= len(allowed) || allowed[i] != name {
-				diags.AddError("Unknown filter", fmt.Sprintf("%q is not a supported filter. Supported filters: %s", name, strings.Join(allowed, ", ")))
-				continue
-			}
+		if !validFilter(allowed, name) {
+			diags.AddError("Unknown filter", unknownFilterDetail(name, allowed))
+			continue
 		}
 		q.Add(name, f.Value.ValueString())
 	}
