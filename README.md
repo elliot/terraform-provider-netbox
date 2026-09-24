@@ -1,21 +1,55 @@
-# Terraform Provider for NetBox 4.7
+# Terraform Provider for NetBox
 
-`terraform-provider-netbox` manages objects in a [NetBox](https://netboxlabs.com/oss/netbox/) **4.7**
+[![Tests](https://github.com/elliot/terraform-provider-netbox/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/elliot/terraform-provider-netbox/actions/workflows/test.yml)
+[![Acceptance tests](https://github.com/elliot/terraform-provider-netbox/actions/workflows/acceptance.yml/badge.svg?branch=main)](https://github.com/elliot/terraform-provider-netbox/actions/workflows/acceptance.yml)
+[![Client is reproducible](https://github.com/elliot/terraform-provider-netbox/actions/workflows/client-gen.yml/badge.svg?branch=main)](https://github.com/elliot/terraform-provider-netbox/actions/workflows/client-gen.yml)
+[![Latest release](https://img.shields.io/github/v/release/elliot/terraform-provider-netbox?include_prereleases&sort=semver)](https://github.com/elliot/terraform-provider-netbox/releases)
+[![NetBox](https://img.shields.io/badge/NetBox-4.x-blue)](https://github.com/netbox-community/netbox)
+[![Terraform](https://img.shields.io/badge/Terraform-%E2%89%A5%201.12-844FBA?logo=terraform)](https://developer.hashicorp.com/terraform)
+[![Go version](https://img.shields.io/github/go-mod/go-version/elliot/terraform-provider-netbox)](go.mod)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](LICENSE)
+
+`terraform-provider-netbox` manages objects in a [NetBox](https://netboxlabs.com/oss/netbox/) **4.x**
 instance through its REST API. It is built on the Terraform Plugin Framework (protocol 6) and is
-**generated from the NetBox 4.7.0 OpenAPI document**: every CRUD collection of the API is available
-as a resource, a single-object data source and a list data source (132 resources, 266 data sources,
-see [docs/RESOURCES.md](docs/RESOURCES.md)).
+**generated from the NetBox OpenAPI document**: every CRUD collection of the API is available as a
+resource, a single-object data source and a list data source (see [docs/RESOURCES.md](docs/RESOURCES.md)
+for the current list).
 
 > **Status: pre-release.** Names, attributes and behaviour may change until `v0.1.0`.
 
+### Supported NetBox versions
+
+The provider tracks the NetBox 4.x release line. Each provider release is generated from, and tested
+against, one pinned NetBox OpenAPI document; the pinned version lives in [`spec/VERSION`](spec/VERSION)
+and moving to a new NetBox release is mostly a matter of pinning the new spec and regenerating (see
+[Bumping the NetBox version](docs/DEVELOPMENT.md#bumping-the-netbox-version)).
+At start-up the provider reads `/api/status/` and warns (without failing) when the server's minor
+version differs from the one it was generated for; set `skip_version_check = true` to silence it.
+v2 API tokens require NetBox 4.5 or later.
+
+### Acknowledgements
+
+This project builds on the ideas and groundwork of
+[e-breuninger/terraform-provider-netbox](https://github.com/e-breuninger/terraform-provider-netbox).
+Many thanks to its maintainers and contributors for years of work that made NetBox usable from
+Terraform.
+
+That provider is hand-written on top of [fbreckle/go-netbox](https://github.com/fbreckle/go-netbox),
+and we kept running into newer NetBox features that the client did not (yet) support, which meant
+waiting on or patching two projects before a resource could be added. This provider takes a different
+approach: both the API client and the Terraform resources are **generated directly from the NetBox
+OpenAPI document**, so new NetBox releases can be picked up by regenerating rather than by hand-porting
+each endpoint. It is a separate provider with its own schema conventions, not a drop-in replacement.
+
 ## Highlights
 
-* **Complete 4.7 coverage** including 4.5–4.7 additions (owners, cooling, cable bundles, rack groups,
-  module bay types, virtual machine types, VLAN translation, virtual circuits, `port_mappings`).
+* **Full API coverage** generated from the spec, so recent additions (owners, cooling, cable bundles,
+  rack groups, module bay types, virtual machine types, VLAN translation, virtual circuits,
+  `port_mappings`, ...) are available as soon as the spec that introduces them is pinned.
 * **Client-side rate limiting, artificial delays and retries** shared by all resources of a provider
   instance: token bucket (`requests_per_second`/`request_burst`), fixed delay per request and per
   write, optional serialization, exponential backoff with jitter honouring `Retry-After`.
-* **v2 API tokens only** (`nbt_<key>.<secret>`, NetBox ≥ 4.5), sent as `Authorization: Bearer`.
+* **v2 API tokens only** (`nbt_<key>.<secret>`, NetBox 4.5+), sent as `Authorization: Bearer`.
 * **Resource identity and import** by NetBox ID for every resource.
 * **Generic data-source filters**: any query parameter of the NetBox API can be used
   (`filters = [{ name = "tenant_id", value = "3" }]`).
@@ -106,7 +140,7 @@ data "netbox_prefixes" "dc1" {
 | `request_timeout_ms` | `NETBOX_REQUEST_TIMEOUT_MS` | `60000` | Per-attempt timeout |
 | `allow_insecure_https` | `NETBOX_ALLOW_INSECURE_HTTPS` | `false` | Skip TLS verification |
 | `headers` | | | Extra request headers |
-| `skip_version_check` | `NETBOX_SKIP_VERSION_CHECK` | `false` | Skip the `/api/status/` version check (a non-4.7 server only produces a warning) |
+| `skip_version_check` | `NETBOX_SKIP_VERSION_CHECK` | `false` | Skip the `/api/status/` version check (a server on a different minor version only produces a warning) |
 | `user_agent` | `NETBOX_USER_AGENT` | `terraform-provider-netbox/<version>` | User-Agent header |
 
 ### Conventions
@@ -142,7 +176,7 @@ make client-gen       # regenerate the API client in netbox/ (openapi-generator 
 make demo-token       # provision a v2 token on https://demo.netbox.dev into .env.demo
 set -a; . ./.env.demo; set +a
 NETBOX_REQUESTS_PER_SECOND=5 make testacc ACC_SHARD='TestAccSite_basic|TestAccPrefix_basic'
-make docker-up        # or run NetBox 4.7 locally (docker/README.md)
+make docker-up        # or run the pinned NetBox version locally (docker/README.md)
 make sweep            # delete leftover tfacc-* objects
 ```
 
@@ -165,9 +199,10 @@ The full list, the roadmap and the sharp edges found during validation live in [
 
 ### Relationship to go-netbox
 
-`netbox/` is a drop-in-shaped regeneration of [go-netbox](https://github.com/netbox-community/go-netbox)
-for NetBox 4.7 (upstream stopped at 4.3). The generation pipeline in `tools/client-gen/` reuses go-netbox's
-openapi-generator configuration and adds spec fix-ups that make the client resilient to new NetBox choices.
+`netbox/` is a drop-in-shaped regeneration of [netbox-community/go-netbox](https://github.com/netbox-community/go-netbox)
+for the pinned NetBox 4.x spec (upstream releases stopped at 4.3). The generation pipeline in
+`tools/client-gen/` reuses go-netbox's openapi-generator configuration and adds spec fix-ups that make the
+client resilient to new NetBox choices.
 
 ## License
 
