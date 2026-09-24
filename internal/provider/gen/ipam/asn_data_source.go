@@ -113,7 +113,7 @@ func asnDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"site_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Site.",
+			MarkdownDescription: "IDs of the assigned Site (`netbox_site`).",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},

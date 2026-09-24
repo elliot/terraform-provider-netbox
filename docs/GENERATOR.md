@@ -63,6 +63,7 @@ make gen && git diff --exit-code            # what CI enforces
 | nullable string / FK | `Optional`; `null` is sent as JSON null |
 | nullable number, nullable choice, timestamp | `Optional+Computed`, `UseStateForUnknown`; never sent as null (NetBox derives or rejects blanks) |
 | ID set that is the reverse side of a required FK (`provider.accounts`) | `Computed` only |
+| many-to-many writable from both sides (`site.asn_ids` / `asn.site_ids`) | generation fails until one side has `read_only` (that side becomes `Computed` only) |
 | request-only nested list not echoed on read (`circuit.assignments`) | dropped |
 | non-nullable optional string that may be blank | `Optional+Computed`, default `""`, always sent |
 | non-nullable optional string with a pattern (colour) | `Optional+Computed`, `UseStateForUnknown`, sent when known |

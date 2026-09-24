@@ -18,8 +18,10 @@ resources:
   asns:
     lookups: [asn]
     attributes:
-      # Reverse side of netbox_site.asn_ids.
-      sites: { read_only: true }
+      # Reverse side of netbox_site.asn_ids. The read items are ASNSite, from
+      # which no target can be derived; name it so the symmetric-pair check
+      # (build.checkSymmetricPairs) covers this relation.
+      sites: { read_only: true, target: site }
   services:
     attributes:
       # deprecated in 4.7 in favour of port_mappings
