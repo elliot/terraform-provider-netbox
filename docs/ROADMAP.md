@@ -102,7 +102,7 @@ Virtualization, users, VPN, circuits
 - Never run `go run ./internal/gen` without `-only` while someone else is regenerating; a full run deletes and rewrites every generated file.
 - Generated examples are only rewritten when a `.generated` marker exists in the directory; every current example is hand-maintained.
 - `spec/required-fixes.json` feeds both the client generator and the provider generator; after changing it run `make client-gen` and `make gen` together or constructors will not match.
-- `make lint` and CI lint only the packages in `LINT_PKGS` (GNUmakefile): linting the generated client and resources exhausts the GitHub runner's memory. Append new hand-written packages to that list.
+- `make lint` and CI lint only the packages in `LINT_PKGS` (Makefile): linting the generated client and resources exhausts the GitHub runner's memory. Append new hand-written packages to that list.
 - Building release targets needs about 4 GB per target while the generated client compiles; `make dist DIST_PARALLELISM=1` on small machines. GitHub's 7 GB runners already run GoReleaser with `--parallelism 1` and `GOGC=50` for the same reason.
 - In sandboxes set `TF_ACC_TERRAFORM_PATH` to a local Terraform binary; otherwise the test harness contacts `checkpoint-api.hashicorp.com` and the whole test binary fails on timeout.
 - Terraform 1.16 CLI configuration wants `dev_overrides { ... }` as a block; the documented `dev_overrides = { ... }` form is rejected.

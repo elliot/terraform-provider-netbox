@@ -28,7 +28,7 @@ git diff --exit-code          # CI enforces generated code and docs are committe
 ```
 
 `make lint` only runs golangci-lint over the hand-written packages listed in `LINT_PKGS` in the
-`GNUmakefile`; linting the regenerated client (`netbox/`) and generated resources
+`Makefile`; linting the regenerated client (`netbox/`) and generated resources
 (`internal/provider/gen/`) alongside them exhausts the GitHub runner's memory. CI runs the unit-test
 matrix against Terraform 1.13, 1.14 and 1.16.
 
