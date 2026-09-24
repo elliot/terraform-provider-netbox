@@ -56,7 +56,7 @@ resource "netbox_site" "dc1" {
 
 - `created` (String) Created.
 - `id` (Number) The numeric ID of the object in NetBox.
-- `site_ids` (Set of Number) IDs of the assigned Site.
+- `site_ids` (Set of Number) IDs of the assigned Site (`netbox_site`).
 - `url` (String) Url.
 
 ## Import

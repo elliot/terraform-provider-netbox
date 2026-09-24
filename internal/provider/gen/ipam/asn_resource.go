@@ -147,7 +147,7 @@ func asnResourceAttributes() map[string]schema.Attribute {
 			Optional:            true,
 		},
 		"site_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Site.",
+			MarkdownDescription: "IDs of the assigned Site (`netbox_site`).",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},

@@ -56,6 +56,7 @@ resource "netbox_user" "jdoe" {
 ### Read-Only
 
 - `id` (Number) The numeric ID of the object in NetBox.
+- `permission_ids` (Set of Number) IDs of the permissions assigned directly to this user (`netbox_permission`). Managed from `netbox_permission.user_ids`; read-only here.
 - `url` (String) Url.
 
 ## Import
