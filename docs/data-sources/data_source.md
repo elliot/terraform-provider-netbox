@@ -51,7 +51,7 @@ output "data_source_id" {
 - `last_synced` (String) Last Synced.
 - `last_updated` (String) Last Updated.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
-- `parameters` (String) Parameters as a JSON document (`jsonencode({...})`).
+- `parameters` (String, Sensitive) Parameters as a JSON document (`jsonencode({...})`).
 - `source_url` (String) Source Url.
 - `status` (String) Status.
 - `sync_interval` (Number) Sync Interval. Valid values: `1`, `60`, `720`, `1440`, `10080`, `43200`. Defaults to the NetBox server default when omitted.

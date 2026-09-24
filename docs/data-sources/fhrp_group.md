@@ -39,7 +39,7 @@ output "fhrp_group_id" {
 
 ### Read-Only
 
-- `auth_key` (String) Auth Key. Defaults to an empty string.
+- `auth_key` (String, Sensitive) Auth Key. Defaults to an empty string.
 - `auth_type` (String) Auth Type. Valid values: `plaintext`, `md5`. Defaults to the NetBox server default when omitted.
 - `comments` (String) Comments. Defaults to an empty string.
 - `created` (String) Created.

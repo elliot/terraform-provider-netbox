@@ -170,6 +170,7 @@ func wirelessLinkResourceAttributes() map[string]schema.Attribute {
 		},
 		"auth_psk": schema.StringAttribute{
 			MarkdownDescription: "Auth Psk. Defaults to an empty string.",
+			Sensitive:           true,
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(64)},

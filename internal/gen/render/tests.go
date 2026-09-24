@@ -95,8 +95,10 @@ func testFile(r *model.Resource, version string) string {
 	if r.HasCustomFields {
 		ignore = append(ignore, "custom_fields")
 	}
+	// Write-only and create-only secrets (exposed + sensitive) are not
+	// returned on import; other sensitive values are, so they stay verified.
 	for _, a := range r.Attrs {
-		if a.WriteOnly || a.Sensitive {
+		if a.WriteOnly || (a.KeepPriorWhenNull && a.Sensitive) {
 			ignore = append(ignore, a.Name)
 		}
 	}

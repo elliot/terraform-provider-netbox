@@ -87,7 +87,7 @@ Extras and wireless
 - `choice_colors` takes colour names (`blue`, `gray`, ...), not hex.
 - `order_alphabetically = true` reorders `extra_choices` server-side; configure them sorted.
 - `journal_entry.created_by` is the token's user.
-- `auth_psk` on wireless LANs and links is returned in clear text by the API.
+- Secrets NetBox returns in clear text (`auth_psk`, `preshared_key`, `auth_key`, webhook `secret`, data-source `parameters`) are `Sensitive`: redacted in plans, but stored in state like every attribute. Webhook `additional_headers` is not marked; keep credentials out of it or protect the state.
 
 Virtualization, users, VPN, circuits
 - A VM's `disk` is derived from its virtual disks; concurrent disk creation can race, use `depends_on` or `-parallelism=1`.

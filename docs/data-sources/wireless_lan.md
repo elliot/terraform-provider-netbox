@@ -32,7 +32,7 @@ output "guest_vlan_id" {
 ### Read-Only
 
 - `auth_cipher` (String) Auth Cipher. Valid values: `auto`, `tkip`, `aes`. Defaults to the NetBox server default when omitted.
-- `auth_psk` (String) Auth Psk. Defaults to an empty string.
+- `auth_psk` (String, Sensitive) Auth Psk. Defaults to an empty string.
 - `auth_type` (String) Auth Type. Valid values: `open`, `wep`, `wpa-personal`, `wpa-enterprise`. Defaults to the NetBox server default when omitted.
 - `comments` (String) Comments. Defaults to an empty string.
 - `created` (String) Created.

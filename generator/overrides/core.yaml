@@ -1,6 +1,8 @@
 resources:
   data-sources:
     attributes:
+      # Backend settings: git username/password, S3 access keys.
+      parameters: { sensitive: true }
       # The request schema types this as a free string because backends are
       # pluggable; NetBox ships these three.
       type:

@@ -95,6 +95,7 @@ func fhrpGroupDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"auth_key": dsschema.StringAttribute{
 			MarkdownDescription: "Auth Key. Defaults to an empty string.",
+			Sensitive:           true,
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

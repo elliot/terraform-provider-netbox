@@ -109,6 +109,7 @@ func dataSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		"parameters": dsschema.StringAttribute{
 			MarkdownDescription: "Parameters as a JSON document (`jsonencode({...})`).",
 			CustomType:          jsontypes.NormalizedType{},
+			Sensitive:           true,
 			Computed:            true,
 		},
 		"ignore_rules": dsschema.StringAttribute{

@@ -27,6 +27,10 @@ All notable changes to this project are documented in this file. The format foll
 - Hardened CI and release workflows (no `pull_request_target`, least-privilege tokens, no cache in release
   builds, exact tool pins, zizmor in CI) and a 7-day cooldown on dependency updates.
 - CodeQL code scanning for the Go sources and the GitHub Actions workflows.
+- Secret attributes are marked `Sensitive` (redacted in plans and CLI output): `netbox_wireless_lan.auth_psk`,
+  `netbox_wireless_link.auth_psk`, `netbox_ike_policy.preshared_key`, `netbox_fhrp_group.auth_key`,
+  `netbox_webhook.secret` and `netbox_data_source.parameters` (backend credentials), on the resources and
+  their data sources. Outputs that expose these values now need `sensitive = true`.
 
 ## [0.1.0] - 2026-09-16
 

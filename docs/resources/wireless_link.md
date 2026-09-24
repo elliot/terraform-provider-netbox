@@ -52,7 +52,7 @@ resource "netbox_wireless_link" "backhaul" {
 ### Optional
 
 - `auth_cipher` (String) Auth Cipher. Valid values: `auto`, `tkip`, `aes`. Defaults to the NetBox server default when omitted.
-- `auth_psk` (String) Auth Psk. Defaults to an empty string.
+- `auth_psk` (String, Sensitive) Auth Psk. Defaults to an empty string.
 - `auth_type` (String) Auth Type. Valid values: `open`, `wep`, `wpa-personal`, `wpa-enterprise`. Defaults to the NetBox server default when omitted.
 - `comments` (String) Comments. Defaults to an empty string.
 - `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
