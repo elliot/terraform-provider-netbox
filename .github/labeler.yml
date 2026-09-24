@@ -1,0 +1,138 @@
+# Configuration for actions/labeler (.github/workflows/labeler.yml).
+# Labels are applied to pull requests from the files they change and, for the
+# type labels, from the conventional-commit prefix of the head branch.
+# See https://github.com/actions/labeler#match-object for the syntax.
+
+# --- Change type (from the branch name, e.g. feat/..., fix/...) ----------
+
+enhancement:
+  - head-branch: ["^feat[/-]"]
+
+bug:
+  - head-branch: ["^fix[/-]"]
+
+# --- Component --------------------------------------------------------------
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - docs/**
+          - templates/**
+          - examples/**
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**
+          - .golangci.yml
+          - .goreleaser.yml
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - go.mod
+          - go.sum
+          - .github/renovate.json5
+
+provider:
+  - changed-files:
+      - any-glob-to-any-file:
+          - main.go
+          - internal/provider/**
+          - internal/client/**
+          - internal/conv/**
+          - internal/customfields/**
+
+generator:
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/gen/**
+          - generator/**
+
+api-client:
+  - changed-files:
+      - any-glob-to-any-file:
+          - netbox/**
+          - tools/client-gen/**
+
+spec:
+  - changed-files:
+      - any-glob-to-any-file:
+          - spec/**
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*_test.go"
+          - internal/acctest/**
+
+tooling:
+  - changed-files:
+      - any-glob-to-any-file:
+          - Makefile
+          - scripts/**
+          - docker/**
+          - tools/mirror-index/**
+
+# --- NetBox app (area/<app>) --------------------------------------------
+
+"area/circuits":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/circuits/**
+          - "generator/overrides/*circuits*.yaml"
+
+"area/core":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/core/**
+          - "generator/overrides/*core*.yaml"
+
+"area/dcim":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/dcim/**
+          - "generator/overrides/*dcim*.yaml"
+
+"area/extras":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/extras/**
+          - "generator/overrides/*extras*.yaml"
+
+"area/ipam":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/ipam/**
+          - "generator/overrides/*ipam*.yaml"
+
+"area/tenancy":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/tenancy/**
+          - "generator/overrides/*tenancy*.yaml"
+
+"area/users":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/users/**
+          - "generator/overrides/*users*.yaml"
+
+"area/virtualization":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/virtualization/**
+          - "generator/overrides/*virtualization*.yaml"
+
+"area/vpn":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/vpn/**
+          - "generator/overrides/*vpn*.yaml"
+
+"area/wireless":
+  - changed-files:
+      - any-glob-to-any-file:
+          - internal/provider/gen/wireless/**
+          - "generator/overrides/*wireless*.yaml"

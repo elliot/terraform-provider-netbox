@@ -1,7 +1,7 @@
 # Roadmap, todos and sharp edges
 
-Status as of the `v0.1.0` candidate on branch `claude/compassionate-hamilton-drdiis` (PR #1). Items that have
-been actioned are removed from this file; `CHANGELOG.md` is the record of what shipped.
+Status after the `v0.1.0` release. Items that have been actioned are removed from this file; `CHANGELOG.md`
+is the record of what shipped.
 
 ## Where things stand
 
@@ -10,20 +10,19 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 | Resources / data sources | 126 generated resources, 266 data sources, 7 hand-written resources; see [RESOURCES.md](RESOURCES.md) |
 | Acceptance | 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. The docker-compose workflow (12 shards, one NetBox 4.7 each) is green on Actions; it runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (written before the last generator fixes; see the banner there) |
-| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum); actions pinned to SHAs, Renovate monthly |
-| Release | GoReleaser (unsigned by default) + network mirror on GitHub Pages + `scripts/install.sh`; `CHANGELOG.md` cut for 0.1.0; no tag pushed yet, see [INSTALL.md](INSTALL.md) |
+| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), zizmor workflow audit, CodeQL (Go and Actions, weekly and per PR), PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate monthly with a 7-day cooldown |
+| Release | `v0.1.0` released: GoReleaser + network mirror on GitHub Pages + `scripts/install.sh`, see [INSTALL.md](INSTALL.md). From the next release: `release` environment, build provenance attestations, GPG signing when the secrets are set (the 0.1.0 checksums are unsigned because of a workflow bug, now fixed) |
 | Registry | namespace `elliot` reserved, address `elliot/netbox` final; listing not yet published |
 
-## Next steps to `v0.1.0`
+## Next steps
 
-1. Enable GitHub Pages (Settings → Pages → Source "GitHub Actions") so the release workflow can publish the network mirror.
-2. Tag `v0.1.0`, confirm the release assets, the mirror at `https://elliot.github.io/terraform-provider-netbox/` and `scripts/install.sh` against the real release.
-3. Registry listing: add the RSA (or DSA) GPG public key to the registry account, add the `GPG_PRIVATE_KEY` / `PASSPHRASE` secrets (the release workflow then signs automatically), publish the repository once through the registry UI and verify the docs in the registry preview tool.
+1. Repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): protect the `release` environment (required reviewer, `v*` tags only), rulesets for `main` and `v*` tags, immutable releases, the "require full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability reporting.
+2. Registry listing: add the RSA (or DSA) GPG public key to the registry account, add the `GPG_PRIVATE_KEY` / `PASSPHRASE` secrets to the `release` environment (the release workflow then signs automatically), publish the repository once through the registry UI and verify the docs in the registry preview tool.
+3. On the next tag, confirm the provenance attestations (`gh attestation verify`) and, with the secrets set, `SHA256SUMS.sig`.
 
 ## Milestones
 
-### v0.1 (this PR)
-Everything above. Behaviour that is deliberately conservative: reverse sides of relations are read-only; nullable numbers and choices track the server value; `custom_fields` tracks only configured keys.
+Behaviour that is deliberately conservative since v0.1: reverse sides of relations are read-only; nullable numbers and choices track the server value; `custom_fields` tracks only configured keys.
 
 ### v0.2: generator polish
 - Symmetric many-to-many pairs (`user.permissions` / `permission.user_ids`) are skip-only; decide the owning side per pair or emit the reverse side as computed (the `read_only` override used for `rear_port.front_ports` is the mechanism).
@@ -56,6 +55,7 @@ Everything above. Behaviour that is deliberately conservative: reverse sides of 
 - [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
 - [ ] `docs/validation/*.md`: refresh after the next full run so they stop describing fixed issues as workarounds.
 - [ ] Review Renovate's first dependency dashboard after the PR merges (`.github/renovate.json5`).
+- [ ] `tools/client-gen/generate.sh`: openapi-generator is pinned at 7.11.0 (latest 7.25.0). Bump `OAG_VERSION` / `OAG_SHA256` (and the copies in `client-gen.yml`) in a dedicated PR, since it regenerates all of `netbox/`; Renovate's custom manager will propose it, but the checksum has to be updated by hand.
 
 ## Sharp edges for users
 
@@ -102,7 +102,7 @@ Virtualization, users, VPN, circuits
 - Never run `go run ./internal/gen` without `-only` while someone else is regenerating; a full run deletes and rewrites every generated file.
 - Generated examples are only rewritten when a `.generated` marker exists in the directory; every current example is hand-maintained.
 - `spec/required-fixes.json` feeds both the client generator and the provider generator; after changing it run `make client-gen` and `make gen` together or constructors will not match.
-- `make lint` and CI lint only the packages in `LINT_PKGS` (GNUmakefile): linting the generated client and resources exhausts the GitHub runner's memory. Append new hand-written packages to that list.
+- `make lint` and CI lint only the packages in `LINT_PKGS` (Makefile): linting the generated client and resources exhausts the GitHub runner's memory. Append new hand-written packages to that list.
 - Building release targets needs about 4 GB per target while the generated client compiles; `make dist DIST_PARALLELISM=1` on small machines. GitHub's 7 GB runners already run GoReleaser with `--parallelism 1` and `GOGC=50` for the same reason.
 - In sandboxes set `TF_ACC_TERRAFORM_PATH` to a local Terraform binary; otherwise the test harness contacts `checkpoint-api.hashicorp.com` and the whole test binary fails on timeout.
 - Terraform 1.16 CLI configuration wants `dev_overrides { ... }` as a block; the documented `dev_overrides = { ... }` form is rejected.

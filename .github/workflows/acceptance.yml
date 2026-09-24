@@ -19,8 +19,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled]
 
-permissions:
-  contents: read
+permissions: {}
 
 # Twelve NetBox stacks per run, so never let re-pushes to the same branch pile up.
 concurrency:
@@ -37,6 +36,8 @@ jobs:
     # Scheduled and manual runs always go ahead; PRs need the `run-acceptance` label.
     if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'run-acceptance')
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # check out the repository
     timeout-minutes: 150
     strategy:
       fail-fast: false
@@ -57,6 +58,8 @@ jobs:
           - ./internal/provider/manual/
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod

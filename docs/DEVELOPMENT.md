@@ -28,7 +28,7 @@ git diff --exit-code          # CI enforces generated code and docs are committe
 ```
 
 `make lint` only runs golangci-lint over the hand-written packages listed in `LINT_PKGS` in the
-`GNUmakefile`; linting the regenerated client (`netbox/`) and generated resources
+`Makefile`; linting the regenerated client (`netbox/`) and generated resources
 (`internal/provider/gen/`) alongside them exhausts the GitHub runner's memory. CI runs the unit-test
 matrix against Terraform 1.13, 1.14 and 1.16.
 
@@ -71,14 +71,20 @@ pull requests labelled `run-acceptance`.
 
 Releases are built by GoReleaser from `v*` tags (`.github/workflows/release.yml`):
 
-1. `git tag v0.1.0 && git push origin v0.1.0`.
-2. The workflow builds `linux`/`darwin`/`freebsd`/`windows` × `amd64`/`arm64` zips, `SHA256SUMS` and the
-   registry manifest, publishes the GitHub Release, then runs `tools/mirror-index` and deploys the
-   provider network mirror to GitHub Pages (one-time: Settings → Pages → Source "GitHub Actions"). Earlier
-   versions are carried over from the live mirror so they stay installable.
-3. Signing is optional. With `GPG_PRIVATE_KEY`/`PASSPHRASE` secrets the checksum file is signed; without
-   them GoReleaser runs with `--skip=sign`. Only the public Terraform Registry needs the signature (plus a
-   public repository and the `terraform-registry-manifest.json` already present).
+1. `git tag v0.2.0 && git push origin v0.2.0`.
+2. The build job runs in the `release` deployment environment; approve the deployment when it has a
+   required reviewer.
+3. The workflow builds `linux`/`darwin`/`freebsd`/`windows` × `amd64`/`arm64` zips, `SHA256SUMS` and the
+   registry manifest, publishes the GitHub Release, attests build provenance for every asset, then runs
+   `tools/mirror-index` and deploys the provider network mirror to GitHub Pages. Earlier versions are
+   carried over from the live mirror so they stay installable.
+4. Signing is optional. With `GPG_PRIVATE_KEY`/`PASSPHRASE` secrets in the `release` environment the
+   checksum file is signed; without them GoReleaser runs with `--skip=sign`. Only the public Terraform
+   Registry needs the signature (plus a public repository and the `terraform-registry-manifest.json`
+   already present).
+
+The repository settings that protect this pipeline (environment reviewers, tag rulesets, immutable
+releases, SHA-pinning policy) are listed in [SECURITY.md](../SECURITY.md).
 
 Before tagging, `make dist mirror mirror-check` reproduces the release build locally and installs it through
 both the network mirror and `scripts/install.sh`; the `package` job in `test.yml` does the same on every pull

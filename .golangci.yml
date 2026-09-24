@@ -36,7 +36,7 @@ linters:
     paths:
       # The regenerated go-netbox style client and the generated resources are
       # not hand-maintained. `make lint` and CI also restrict the package list
-      # (LINT_PKGS in the GNUmakefile) so these are never analysed.
+      # (LINT_PKGS in the Makefile) so these are never analysed.
       - netbox/
       - internal/provider/gen/
     rules:
