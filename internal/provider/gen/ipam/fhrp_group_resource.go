@@ -137,6 +137,7 @@ func fhrpGroupResourceAttributes() map[string]schema.Attribute {
 		},
 		"auth_key": schema.StringAttribute{
 			MarkdownDescription: "Auth Key. Defaults to an empty string.",
+			Sensitive:           true,
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(255)},

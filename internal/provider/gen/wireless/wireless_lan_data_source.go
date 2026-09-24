@@ -131,6 +131,7 @@ func wirelessLanDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"auth_psk": dsschema.StringAttribute{
 			MarkdownDescription: "Auth Psk. Defaults to an empty string.",
+			Sensitive:           true,
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{

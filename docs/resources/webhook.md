@@ -51,7 +51,7 @@ resource "netbox_webhook" "cmdb" {
 - `http_content_type` (String) The complete list of official content types is available <a href="https://www.iana.org/assignments/media-types/media-types.xhtml">here</a>. Defaults to the NetBox server default when omitted.
 - `http_method` (String) Http Method. Valid values: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`. Defaults to the NetBox server default when omitted.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
-- `secret` (String) When provided, the request will include a <code>X-Hook-Signature</code> header containing a HMAC hex digest of the payload body using the secret as the key. The secret is not transmitted in the request. Defaults to an empty string.
+- `secret` (String, Sensitive) When provided, the request will include a <code>X-Hook-Signature</code> header containing a HMAC hex digest of the payload body using the secret as the key. The secret is not transmitted in the request. Defaults to an empty string.
 - `ssl_verification` (Boolean) Enable SSL certificate verification. Disable with caution!. Defaults to the NetBox server default when omitted.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `timeout` (Number) The maximum time (in seconds) to wait for a response before failing the request. Leave blank to use the system default (60 seconds). Defaults to the NetBox server default when omitted.

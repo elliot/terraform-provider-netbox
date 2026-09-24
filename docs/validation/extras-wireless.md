@@ -81,8 +81,8 @@ logging host 10.10.0.3 port 514
   (`payload_url = "{{.Name}}"`) is rejected. `secret` and `additional_headers`
   are returned by the API (import verify passes).
 * **`wireless_lan.auth_psk` / `wireless_link.auth_psk`** are returned in clear
-  text by the API (not write-only); they are plain, non-sensitive strings in the
-  schema.
+  text by the API (not write-only); the provider marks them `Sensitive` (import
+  verify still compares them).
 * **`wireless_link`** requires both interfaces to be wireless types
   (`ieee802.11*`); `rf_role` (`ap`/`station`) is optional but realistic.
   `distance` is a float and round-trips at `1.5`.

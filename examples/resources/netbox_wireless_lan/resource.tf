@@ -18,3 +18,8 @@ resource "netbox_wireless_lan" "guest" {
   auth_cipher = "aes"
   auth_psk    = var.guest_psk
 }
+
+variable "guest_psk" {
+  type      = string
+  sensitive = true
+}

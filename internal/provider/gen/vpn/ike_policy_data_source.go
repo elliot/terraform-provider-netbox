@@ -98,6 +98,7 @@ func ikePolicyDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"preshared_key": dsschema.StringAttribute{
 			MarkdownDescription: "Preshared Key. Defaults to an empty string.",
+			Sensitive:           true,
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{

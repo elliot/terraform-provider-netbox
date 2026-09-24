@@ -5,6 +5,8 @@
 resources:
   # ---------------------------------------------------------------- extras
   webhooks:
+    attributes:
+      secret: { sensitive: true }
     serial_test: true
     test:
       basic: |
@@ -286,6 +288,8 @@ resources:
           tags        = [netbox_tag.test.slug]
         }
   wireless-lans:
+    attributes:
+      auth_psk: { sensitive: true }
     test:
       basic: |
         resource "netbox_wireless_lan" "test" {
@@ -323,6 +327,8 @@ resources:
           tags        = [netbox_tag.test.slug]
         }
   wireless-links:
+    attributes:
+      auth_psk: { sensitive: true }
     test:
       basic: |
         resource "netbox_manufacturer" "test" {

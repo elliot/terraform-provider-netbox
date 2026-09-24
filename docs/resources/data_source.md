@@ -49,7 +49,7 @@ resource "netbox_data_source" "local" {
 - `enabled` (Boolean) Enabled. Defaults to the NetBox server default when omitted.
 - `ignore_rules` (String) Patterns (one per line) matching files or paths to ignore when syncing. Defaults to an empty string.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
-- `parameters` (String) Parameters as a JSON document (`jsonencode({...})`).
+- `parameters` (String, Sensitive) Parameters as a JSON document (`jsonencode({...})`).
 - `sync_interval` (Number) Sync Interval. Valid values: `1`, `60`, `720`, `1440`, `10080`, `43200`. Defaults to the NetBox server default when omitted.
 
 ### Read-Only

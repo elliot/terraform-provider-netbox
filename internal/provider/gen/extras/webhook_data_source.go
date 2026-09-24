@@ -112,6 +112,7 @@ func webhookDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"secret": dsschema.StringAttribute{
 			MarkdownDescription: "When provided, the request will include a <code>X-Hook-Signature</code> header containing a HMAC hex digest of the payload body using the secret as the key. The secret is not transmitted in the request. Defaults to an empty string.",
+			Sensitive:           true,
 			Computed:            true,
 		},
 		"ssl_verification": dsschema.BoolAttribute{

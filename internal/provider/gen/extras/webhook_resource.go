@@ -157,6 +157,7 @@ func webhookResourceAttributes() map[string]schema.Attribute {
 		},
 		"secret": schema.StringAttribute{
 			MarkdownDescription: "When provided, the request will include a <code>X-Hook-Signature</code> header containing a HMAC hex digest of the payload body using the secret as the key. The secret is not transmitted in the request. Defaults to an empty string.",
+			Sensitive:           true,
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(255)},

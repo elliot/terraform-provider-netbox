@@ -48,7 +48,7 @@ output "ike_policy_id" {
 - `last_updated` (String) Last Updated.
 - `mode` (String) Mode. Valid values: `aggressive`, `main`. Defaults to the NetBox server default when omitted.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
-- `preshared_key` (String) Preshared Key. Defaults to an empty string.
+- `preshared_key` (String, Sensitive) Preshared Key. Defaults to an empty string.
 - `proposal_ids` (Set of Number) IDs of the assigned Proposal (`netbox_ike_proposal`). Defaults to an empty set.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.

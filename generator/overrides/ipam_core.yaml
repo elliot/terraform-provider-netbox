@@ -362,6 +362,8 @@ resources:
           description = "{{.Name}} updated"
         }
   fhrp-groups:
+    attributes:
+      auth_key: { sensitive: true }
     test:
       basic: |
         resource "netbox_fhrp_group" "test" {
