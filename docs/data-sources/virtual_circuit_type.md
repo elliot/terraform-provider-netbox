@@ -47,5 +47,5 @@ data "netbox_virtual_circuit_type" "l2vpn" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.

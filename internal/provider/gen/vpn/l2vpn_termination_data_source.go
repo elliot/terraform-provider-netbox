@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
@@ -149,7 +150,7 @@ func (d *L2vpnTerminationDataSource) Schema(_ context.Context, _ datasource.Sche
 		MarkdownDescription: "Additional query filters as name/value pairs, e.g. `{ name = \"tenant_id\", value = \"12\" }`. Any query parameter of `/api/vpn/l2vpn-terminations/` is accepted.",
 		Optional:            true,
 		NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(l2vpnTerminationFilterNames)}},
 			"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 		}},
 	}
@@ -258,7 +259,7 @@ func (d *L2vpnTerminationListDataSource) Schema(_ context.Context, _ datasource.
 				MarkdownDescription: "Additional query filters as name/value pairs, e.g. `{ name = \"tenant_id\", value = \"12\" }`. Any query parameter of `/api/vpn/l2vpn-terminations/` is accepted.",
 				Optional:            true,
 				NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-					"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+					"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(l2vpnTerminationFilterNames)}},
 					"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 				}},
 			},
