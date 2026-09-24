@@ -63,7 +63,7 @@ func dataSourceFile(r *model.Resource, version string) string {
 		MarkdownDescription: ` + filtersDesc + `,
 		Optional: true,
 		NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(` + lg + `FilterNames)}},
 			"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 		}},
 	},

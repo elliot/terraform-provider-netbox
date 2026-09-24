@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
@@ -268,7 +269,7 @@ func (d *SiteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 		MarkdownDescription: "Additional query filters as name/value pairs, e.g. `{ name = \"tenant_id\", value = \"12\" }`. Any query parameter of `/api/dcim/sites/` is accepted.",
 		Optional:            true,
 		NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(siteFilterNames)}},
 			"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 		}},
 	}
@@ -381,7 +382,7 @@ func (d *SiteListDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 				MarkdownDescription: "Additional query filters as name/value pairs, e.g. `{ name = \"tenant_id\", value = \"12\" }`. Any query parameter of `/api/dcim/sites/` is accepted.",
 				Optional:            true,
 				NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-					"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+					"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(siteFilterNames)}},
 					"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 				}},
 			},
