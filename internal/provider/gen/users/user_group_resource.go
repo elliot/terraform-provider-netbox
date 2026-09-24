@@ -28,10 +28,11 @@ func init() { provider.RegisterResource(NewUserGroupResource) }
 
 // UserGroupModel is the Terraform state of netbox_user_group.
 type UserGroupModel struct {
-	Id          types.Int64  `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Url         types.String `tfsdk:"url"`
+	Id            types.Int64  `tfsdk:"id"`
+	Name          types.String `tfsdk:"name"`
+	Description   types.String `tfsdk:"description"`
+	PermissionIds types.Set    `tfsdk:"permission_ids"`
+	Url           types.String `tfsdk:"url"`
 }
 
 var (
@@ -101,6 +102,11 @@ func userGroupResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(200)},
 			Default:             stringdefault.StaticString(""),
+		},
+		"permission_ids": schema.SetAttribute{
+			MarkdownDescription: "IDs of the permissions assigned to this group (`netbox_permission`). Managed from `netbox_permission.group_ids`; read-only here.",
+			ElementType:         types.Int64Type,
+			Computed:            true,
 		},
 		"url": schema.StringAttribute{
 			MarkdownDescription: "Url.",
@@ -250,5 +256,6 @@ func userGroupFromAPI(ctx context.Context, obj *netbox.Group, prior *UserGroupMo
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *UserGroupModel) types.String { return m.Name }), false)
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *UserGroupModel) types.String { return m.Description }), false)
+	out.PermissionIds = conv.BriefIDs(obj.GetPermissions())
 	out.Url = conv.String(obj.GetUrlOk())
 }

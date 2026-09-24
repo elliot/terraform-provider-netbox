@@ -25,7 +25,6 @@ file; `CHANGELOG.md` is the record of what shipped.
 Behaviour that is deliberately conservative since v0.1: reverse sides of relations are read-only; nullable numbers and choices track the server value; `custom_fields` tracks only configured keys.
 
 ### v0.2: generator polish
-- Symmetric many-to-many pairs (`user.permissions` / `permission.user_ids`) are skip-only; decide the owning side per pair or emit the reverse side as computed (the `read_only` override used for `rear_port.front_ports` is the mechanism).
 - Reverse-side computed lists (`asn.site_ids`, `rear_port.front_ports`) are unknown during updates of the owning resource; a state-copying plan modifier would remove that line from plans but risks an inconsistent-result error when the other side changes in the same apply.
 - Re-verify `module_bay.installed_module` (skipped after a NetBox 500 that the "no null on create" fix may have removed) and retire redundant overrides listed below.
 - Validate `filters[*].name` in data sources against the endpoint parameter list at plan time (NetBox ignores unknown filters and returns everything).
@@ -122,8 +121,8 @@ Attributes hidden or forced by overrides (revisit on every spec bump):
 | provider | accounts | skip | reverse side of provider_account.provider (generic rule now makes it read-only) |
 | rear_port, rear_port_template | front_ports | read_only | reverse side of front_port.rear_ports; NetBox accepts writes from both sides, the front port owns the mapping |
 | module_bay | installed_module | skip | NetBox 500 on any write, re-verify |
-| asn | sites | read_only | reverse side of site.asn_ids |
-| user, user_group | permissions | skip | reverse side of permission.user_ids / group_ids |
+| asn | sites | read_only, target | reverse side of site.asn_ids; the read items (`ASNSite`) name no target, so it is set explicitly for the symmetric-pair check |
+| user, user_group | permissions | read_only | reverse side of permission.user_ids / group_ids; exposed as computed `permission_ids` |
 | service, service_template | protocol, ports | skip | deprecated in 4.7 for port_mappings |
 | device_type | front_image, rear_image | skip | multipart upload |
 | data_source | type | choice enum | free string in the schema, three shipped backends |

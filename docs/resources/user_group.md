@@ -40,6 +40,7 @@ resource "netbox_permission" "network_ops_read" {
 ### Read-Only
 
 - `id` (Number) The numeric ID of the object in NetBox.
+- `permission_ids` (Set of Number) IDs of the permissions assigned to this group (`netbox_permission`). Managed from `netbox_permission.group_ids`; read-only here.
 - `url` (String) Url.
 
 ## Import

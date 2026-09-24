@@ -202,9 +202,10 @@ resources:
 
   groups:
     attributes:
-      # Reverse side of ObjectPermission.groups; see users.permissions.
+      # Reverse side of netbox_permission.group_ids; see users.permissions.
       permissions:
-        skip: true
+        read_only: true
+        description: "IDs of the permissions assigned to this group (`netbox_permission`). Managed from `netbox_permission.group_ids`; read-only here."
 
   owners:
     test:
@@ -296,11 +297,12 @@ resources:
 
   users:
     attributes:
-      # Reverse side of ObjectPermission.users: managing it here conflicts
-      # with netbox_permission.user_ids (perpetual diff). Assign permissions
-      # from netbox_permission instead.
+      # Reverse side of netbox_permission.user_ids: writing both sides of the
+      # many-to-many relation produces perpetual diffs, so the permission owns
+      # the assignment and the user only reports it.
       permissions:
-        skip: true
+        read_only: true
+        description: "IDs of the permissions assigned directly to this user (`netbox_permission`). Managed from `netbox_permission.user_ids`; read-only here."
     test:
       basic: |
         resource "netbox_user" "test" {
@@ -322,3 +324,4 @@ resources:
         }
       checks:
         is_active: "true"
+        permission_ids.#: "0"

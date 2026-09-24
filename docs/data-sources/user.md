@@ -50,6 +50,7 @@ output "user_id" {
 - `last_login` (String) Last Login. Defaults to the NetBox server default when omitted.
 - `last_name` (String) Last Name. Defaults to an empty string.
 - `password` (String, Sensitive) Password. Write-only: NetBox does not return this value.
+- `permission_ids` (Set of Number) IDs of the permissions assigned directly to this user (`netbox_permission`). Managed from `netbox_permission.user_ids`; read-only here.
 - `url` (String) Url.
 
 <a id="nestedatt--filters"></a>
