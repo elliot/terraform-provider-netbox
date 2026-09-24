@@ -12,10 +12,14 @@ Reads a single NetBox power feed (`/api/dcim/power-feeds/`) by `id`, `name` or f
 ## Example Usage
 
 ```terraform
+data "netbox_power_panel" "pp_a" {
+  name = "PP-A"
+}
+
 # Power feed names are unique per power panel.
 data "netbox_power_feed" "a01_a" {
   filters = [
-    { name = "power_panel", value = "PP-A" },
+    { name = "power_panel_id", value = data.netbox_power_panel.pp_a.id },
     { name = "name", value = "A01-A" },
   ]
 }
@@ -69,5 +73,5 @@ output "feed_voltage" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.

@@ -3,7 +3,7 @@ data "netbox_cable_terminations" "all" {}
 
 data "netbox_cable_terminations" "filtered" {
   filters = [
-    { name = "q", value = "example" },
+    { name = "cable_end", value = "A" },
   ]
   limit = 10
 }

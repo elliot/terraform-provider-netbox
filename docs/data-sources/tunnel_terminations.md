@@ -41,7 +41,7 @@ output "gre_branch01_termination_roles" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.
 
 

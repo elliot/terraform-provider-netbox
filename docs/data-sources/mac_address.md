@@ -55,5 +55,5 @@ data "netbox_mac_address" "sw01_eth0" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.
