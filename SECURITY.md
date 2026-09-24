@@ -38,7 +38,9 @@ without the key and re-verifies the signature after upload.
 The measures follow [Open source security at Astral](https://astral.sh/blog/open-source-security-at-astral)
 and are checked in CI by [zizmor](https://docs.zizmor.sh) (`.github/workflows/zizmor.yml`). The Go sources
 and the workflows are also scanned by [CodeQL](https://codeql.github.com/) (`.github/workflows/codeql.yml` and
-`codeql-actions.yml`) on pull requests and pushes to `main` that change them, and weekly; results appear under Security → Code scanning.
+`codeql-actions.yml`) on every pull request, on pushes to `main` that change them, and weekly; results appear under
+Security → Code scanning. The Go scan leaves out the generated API client in `netbox/`, including the hand-written
+`netbox/client_extra.go` in the same package.
 
 In the repository:
 

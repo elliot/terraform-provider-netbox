@@ -1,13 +1,14 @@
 name: CodeQL (workflows)
 
 # Code scanning for the GitHub Actions workflows. Kept apart from codeql.yml so
-# a workflow change does not trigger the 40-minute Go analysis and a Go change
-# does not rescan unchanged workflows. Results appear under Security -> Code
-# scanning.
+# each language uploads its own analysis and the actions scan does not wait for
+# the Go build. Results appear under Security -> Code scanning.
+#
+# Runs on every pull request (no build, about a minute): without a
+# /language:actions analysis on the PR, the CodeQL summary check cannot compare
+# against main and reports "1 configuration not found" as neutral.
 on:
   pull_request:
-    paths:
-      - ".github/**"
   push:
     branches: [main]
     paths:
