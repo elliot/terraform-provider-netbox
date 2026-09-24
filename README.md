@@ -204,6 +204,11 @@ for the pinned NetBox 4.x spec (upstream releases stopped at 4.3). The generatio
 `tools/client-gen/` reuses go-netbox's openapi-generator configuration and adds spec fix-ups that make the
 client resilient to new NetBox choices.
 
+## Security
+
+Report vulnerabilities privately; see [SECURITY.md](SECURITY.md), which also explains how to verify a
+release's build provenance.
+
 ## License
 
 [Mozilla Public License 2.0](LICENSE).

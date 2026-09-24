@@ -4,7 +4,7 @@
 # The build job runs in the `release` deployment environment. Keep release
 # secrets there (not at repository level) so no other workflow can read them,
 # and protect the environment with a required reviewer and a v* tag rule
-# (docs/SECURITY.md).
+# (SECURITY.md).
 #
 # Optional `release` environment secrets:
 #   GPG_PRIVATE_KEY, PASSPHRASE   sign the checksum file (needed only by the public
