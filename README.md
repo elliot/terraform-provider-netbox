@@ -164,7 +164,7 @@ data "netbox_prefixes" "dc1" {
 
 ## Development
 
-Prerequisites: Go 1.25+, Terraform ≥ 1.12 (the tests download one if missing), Java 17+ and Python 3 only
+Prerequisites: Go 1.26+, Terraform ≥ 1.12 (the tests download one if missing), Java 17+ and Python 3 only
 for regenerating the API client.
 
 ```sh
