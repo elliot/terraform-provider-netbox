@@ -66,6 +66,14 @@ docs-check:
 demo-token:
 	./scripts/demo-token.sh
 
+# Installs the published release from registry.terraform.io (never a local
+# build) and runs examples/scenarios/registry-demo against NETBOX_SERVER_URL,
+# provisioning a demo.netbox.dev token when none is set. VERSION=x.y.z pins a
+# release, KEEP=1 skips destroy.
+.PHONY: registry-smoke
+registry-smoke:
+	./scripts/registry-smoke.sh
+
 .PHONY: docker-up
 docker-up:
 	docker compose -f docker/docker-compose.yml up -d --wait

@@ -177,6 +177,7 @@ make client-gen       # regenerate the API client in netbox/ (openapi-generator 
 make demo-token       # provision a v2 token on https://demo.netbox.dev into .env.demo
 set -a; . ./.env.demo; set +a
 NETBOX_REQUESTS_PER_SECOND=5 make testacc ACC_SHARD='TestAccSite_basic|TestAccPrefix_basic'
+make registry-smoke   # published registry release end to end against the demo
 make docker-up        # or run the pinned NetBox version locally (docker/README.md)
 make sweep            # delete leftover tfacc-* objects
 ```

@@ -50,6 +50,26 @@ binary fails while the harness looks for one. To run a scenario with a locally b
 configuration with a `dev_overrides { "elliot/netbox" = "/path/to/dir" }` block (Terraform 1.16 rejects the
 attribute form). `make sweep` deletes every `tfacc-*` object on the configured server.
 
+## Registry smoke test
+
+After a release is published, check that what users will actually download works:
+
+```sh
+make registry-smoke                       # latest ~> 0.1 release against demo.netbox.dev
+VERSION=0.1.1 make registry-smoke         # a specific release
+EXPECTED_KEY_ID=CAA7EF848084A7F1 make registry-smoke   # also pin the signing key
+```
+
+`scripts/registry-smoke.sh` copies `examples/scenarios/registry-demo` to a temporary directory and runs it
+with a CLI configuration that only allows direct registry installs, so `dev_overrides` and anything under
+`~/.terraform.d/plugins` (from `make install-local` or `scripts/install.sh`) cannot stand in for the
+published build. It fails unless `terraform init` installs `elliot/netbox` from the registry with a verified
+signature, the scenario applies with every `check` block passing, and the plans after apply, after an
+import round-trip and after an in-place update are all empty. Everything is destroyed at the end, also on
+failure. Names carry a random `tfacc-registry-*` prefix and the prefix is a random /24 of `198.18.0.0/15`, so
+parallel runs do not collide. It uses `NETBOX_SERVER_URL` / `NETBOX_API_TOKEN` when set, then `.env.demo`,
+and runs `make demo-token` otherwise.
+
 ## Bumping the NetBox version
 
 1. Fetch the new document: `curl -sS 'https://<netbox>/api/schema/?format=json' > spec/netbox-<v>.openapi.json`

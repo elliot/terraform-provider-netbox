@@ -6,6 +6,12 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+### Added
+
+- `make registry-smoke` (`scripts/registry-smoke.sh`, `examples/scenarios/registry-demo`): installs the
+  published release from the Terraform Registry, checks its signature and runs apply, empty plan, import,
+  in-place update and destroy against https://demo.netbox.dev.
+
 ### Changed
 
 - Building from source requires Go 1.26; terraform-plugin-framework 1.19.0, terraform-plugin-go 0.31.0 and
