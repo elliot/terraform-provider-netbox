@@ -6,7 +6,20 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
-_Nothing yet._
+### Changed
+
+- Building from source requires Go 1.26; terraform-plugin-framework 1.19.0, terraform-plugin-go 0.31.0 and
+  all other Go dependencies updated.
+
+### Fixed
+
+- The release workflow skipped GPG signing of `SHA256SUMS` even when the signing secrets were configured.
+
+### Security
+
+- Release assets carry Sigstore build provenance attestations (`gh attestation verify`, see `SECURITY.md`).
+- Hardened CI and release workflows (no `pull_request_target`, least-privilege tokens, no cache in release
+  builds, exact tool pins, zizmor in CI) and a 7-day cooldown on dependency updates.
 
 ## [0.1.0] - 2026-09-16
 
