@@ -27,7 +27,6 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 ### v0.2: generator polish
 - Reverse-side computed lists (`asn.site_ids`, `rear_port.front_ports`) are unknown during updates of the owning resource; a state-copying plan modifier would remove that line from plans but risks an inconsistent-result error when the other side changes in the same apply.
 - Re-verify `module_bay.installed_module` (skipped after a NetBox 500 that the "no null on create" fix may have removed) and retire redundant overrides listed below.
-- Allow clearing JSON attributes (`local_context_data`, `data`, `parameters`) by sending an explicit null through `PatchRaw`.
 - Description polish: rack dimensions copied from the rack type, `extra_choices` as `[value, label]` pairs, `sync_interval` in minutes, list data source item shapes.
 - Per-field float precision in overrides for every decimal field (only sites carry `precision` today; the default is 6).
 

@@ -5,6 +5,7 @@ package core
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -258,7 +259,18 @@ func (r *DataSourceResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.CoreAPI.CoreDataSourcesPartialUpdate(ctx, id).PatchedWritableDataSourceRequest(*body).Execute()
+	var nulls []string
+	if plan.Parameters.IsNull() && !state.Parameters.IsNull() {
+		nulls = append(nulls, "parameters")
+	}
+	var obj *netbox.DataSource
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.DataSource)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/core/data-sources/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.CoreAPI.CoreDataSourcesPartialUpdate(ctx, id).PatchedWritableDataSourceRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_data_source", netbox.WrapError(err, res).Error())
 		return

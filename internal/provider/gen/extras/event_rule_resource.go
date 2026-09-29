@@ -5,6 +5,7 @@ package extras
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -266,7 +267,18 @@ func (r *EventRuleResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.ExtrasAPI.ExtrasEventRulesPartialUpdate(ctx, id).PatchedWritableEventRuleRequest(*body).Execute()
+	var nulls []string
+	if plan.Conditions.IsNull() && !state.Conditions.IsNull() {
+		nulls = append(nulls, "conditions")
+	}
+	var obj *netbox.EventRule
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.EventRule)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/extras/event-rules/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.ExtrasAPI.ExtrasEventRulesPartialUpdate(ctx, id).PatchedWritableEventRuleRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_event_rule", netbox.WrapError(err, res).Error())
 		return

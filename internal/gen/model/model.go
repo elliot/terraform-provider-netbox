@@ -138,6 +138,13 @@ const (
 	FormatWWN = "wwn" // EUI-64, aa:bb:cc:dd:ee:ff:00:11
 )
 
+// ClearableJSON reports whether the attribute is an untyped JSON value that
+// the user can clear (NetBox accepts null for it). Clearing needs an explicit
+// null the generated request models cannot send.
+func (a Attr) ClearableJSON() bool {
+	return a.Kind == KindJSON && a.Nullable && !a.ReadOnly && !a.Required
+}
+
 // Filter is a list-endpoint query parameter usable by data sources.
 type Filter struct {
 	Name        string
