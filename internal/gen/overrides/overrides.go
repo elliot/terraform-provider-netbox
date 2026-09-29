@@ -49,8 +49,11 @@ type Attribute struct {
 	// Expose includes a read-only API property (id/url excluded) as a Computed
 	// resource attribute; the prior state is kept when the API returns null
 	// (write-once values such as token secrets).
-	Expose      bool     `yaml:"expose"`
-	Optional    *bool    `yaml:"optional"`
+	Expose   bool  `yaml:"expose"`
+	Optional *bool `yaml:"optional"`
+	// Default makes an integer or FK attribute Optional+Computed with a static
+	// default value (a required property becomes optional).
+	Default     *int64   `yaml:"default"`
 	Precision   int      `yaml:"precision"`
 	OrderedList bool     `yaml:"ordered_list"`
 	Description string   `yaml:"description"`

@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
@@ -101,8 +102,10 @@ func ownerResourceAttributes() map[string]schema.Attribute {
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100)},
 		},
 		"group_id": schema.Int64Attribute{
-			MarkdownDescription: "ID of the Owner Group (`netbox_owner_group`).",
-			Required:            true,
+			MarkdownDescription: "ID of the Owner Group (`netbox_owner_group`). Group `1` means no group. Defaults to `1`.",
+			Optional:            true,
+			Computed:            true,
+			Default:             int64default.StaticInt64(1),
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -266,9 +269,7 @@ func ownerToPatch(ctx context.Context, plan, state *OwnerModel, diags *diag.Diag
 		}
 	}
 	if !plan.GroupId.Equal(state.GroupId) {
-		if plan.GroupId.IsNull() {
-			body.SetGroupNil()
-		} else if !plan.GroupId.IsUnknown() {
+		if conv.Known(plan.GroupId) {
 			body.SetGroup(conv.Int32(plan.GroupId))
 		}
 	}
