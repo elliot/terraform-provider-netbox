@@ -5,6 +5,7 @@ package extras
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
@@ -373,7 +374,24 @@ func (r *CustomFieldResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.ExtrasAPI.ExtrasCustomFieldsPartialUpdate(ctx, id).PatchedWritableCustomFieldRequest(*body).Execute()
+	var nulls []string
+	if plan.Default.IsNull() && !state.Default.IsNull() {
+		nulls = append(nulls, "default")
+	}
+	if plan.RelatedObjectFilter.IsNull() && !state.RelatedObjectFilter.IsNull() {
+		nulls = append(nulls, "related_object_filter")
+	}
+	if plan.ValidationSchema.IsNull() && !state.ValidationSchema.IsNull() {
+		nulls = append(nulls, "validation_schema")
+	}
+	var obj *netbox.CustomField
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.CustomField)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/extras/custom-fields/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.ExtrasAPI.ExtrasCustomFieldsPartialUpdate(ctx, id).PatchedWritableCustomFieldRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_custom_field", netbox.WrapError(err, res).Error())
 		return

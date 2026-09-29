@@ -65,6 +65,7 @@ make gen && git diff --exit-code            # what CI enforces
 | ID set that is the reverse side of a required FK (`provider.accounts`) | `Computed` only |
 | many-to-many writable from both sides (`site.asn_ids` / `asn.site_ids`) | generation fails until one side has `read_only` (that side becomes `Computed` only) |
 | request-only nested list not echoed on read (`circuit.assignments`) | dropped |
+| nullable untyped JSON (`local_context_data`, `constraints`) | `Optional`; removing it sends an explicit `null` (the generated client drops nil JSON, so that update goes out as a raw PATCH via `conv.PatchWithNulls`) |
 | non-nullable optional string that may be blank | `Optional+Computed`, default `""`, always sent |
 | non-nullable optional string with a pattern (colour) | `Optional+Computed`, `UseStateForUnknown`, sent when known |
 | choice / boolean / non-nullable number | `Optional+Computed`, `UseStateForUnknown`, sent when known |
