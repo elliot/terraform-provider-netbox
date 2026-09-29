@@ -60,7 +60,7 @@ func ownerDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"group_id": dsschema.Int64Attribute{
-			MarkdownDescription: "ID of the Owner Group (`netbox_owner_group`).",
+			MarkdownDescription: "ID of the Owner Group (`netbox_owner_group`). Group `1` means no group. Defaults to `1`.",
 			Computed:            true,
 		},
 		"description": dsschema.StringAttribute{

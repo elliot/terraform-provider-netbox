@@ -3,6 +3,12 @@ resources:
     lookups: [username]
     attributes:
       password: { sensitive: true }
+  owners:
+    attributes:
+      # NetBox requires a group on every owner; group 1 stands for "no group".
+      group:
+        default: 1
+        description: "ID of the Owner Group (`netbox_owner_group`). Group `1` means no group."
   tokens:
     attributes:
       # The secret is returned once, on create; keep it in state afterwards.
