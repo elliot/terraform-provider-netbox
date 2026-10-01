@@ -43,6 +43,7 @@ output "user_group_id" {
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
+- `permission_ids` (Set of Number) IDs of the permissions assigned to this group (`netbox_permission`). Managed from `netbox_permission.group_ids`; read-only here.
 - `url` (String) Url.
 - `user_count` (Number) User Count.
 
@@ -51,5 +52,5 @@ output "user_group_id" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.

@@ -5,6 +5,7 @@ package dcim
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -395,7 +396,18 @@ func (r *DeviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.DcimAPI.DcimDevicesPartialUpdate(ctx, id).PatchedWritableDeviceRequest(*body).Execute()
+	var nulls []string
+	if plan.LocalContextData.IsNull() && !state.LocalContextData.IsNull() {
+		nulls = append(nulls, "local_context_data")
+	}
+	var obj *netbox.Device
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.Device)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/dcim/devices/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.DcimAPI.DcimDevicesPartialUpdate(ctx, id).PatchedWritableDeviceRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_device", netbox.WrapError(err, res).Error())
 		return

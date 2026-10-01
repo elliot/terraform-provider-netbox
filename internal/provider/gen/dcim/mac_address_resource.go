@@ -101,8 +101,9 @@ func macAddressResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
 		},
 		"mac_address": schema.StringAttribute{
-			MarkdownDescription: "Mac Address.",
+			MarkdownDescription: "Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.",
 			Required:            true,
+			Validators:          []validator.String{conv.MACAddress()},
 		},
 		"assigned_object_type": schema.StringAttribute{
 			MarkdownDescription: "Assigned Object Type.",

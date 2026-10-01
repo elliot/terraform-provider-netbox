@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
@@ -213,7 +214,7 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"mac_address": dsschema.StringAttribute{
-			MarkdownDescription: "Mac Address.",
+			MarkdownDescription: "Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.",
 			Computed:            true,
 		},
 		"primary_mac_address_id": dsschema.Int64Attribute{
@@ -229,7 +230,7 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"wwn": dsschema.StringAttribute{
-			MarkdownDescription: "Wwn.",
+			MarkdownDescription: "Wwn. Colon notation, e.g. `50:01:43:80:12:34:56:78`; NetBox stores it in upper case.",
 			Computed:            true,
 		},
 		"mgmt_only": dsschema.BoolAttribute{
@@ -433,7 +434,7 @@ func (d *InterfaceDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 		MarkdownDescription: "Additional query filters as name/value pairs, e.g. `{ name = \"tenant_id\", value = \"12\" }`. Any query parameter of `/api/dcim/interfaces/` is accepted.",
 		Optional:            true,
 		NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(interfaceFilterNames)}},
 			"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 		}},
 	}
@@ -543,7 +544,7 @@ func (d *InterfaceListDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				MarkdownDescription: "Additional query filters as name/value pairs, e.g. `{ name = \"tenant_id\", value = \"12\" }`. Any query parameter of `/api/dcim/interfaces/` is accepted.",
 				Optional:            true,
 				NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-					"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+					"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(interfaceFilterNames)}},
 					"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 				}},
 			},

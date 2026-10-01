@@ -17,7 +17,7 @@ data "netbox_cable_terminations" "all" {}
 
 data "netbox_cable_terminations" "filtered" {
   filters = [
-    { name = "q", value = "example" },
+    { name = "cable_end", value = "A" },
   ]
   limit = 10
 }
@@ -44,7 +44,7 @@ output "cable_terminations_ids" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.
 
 

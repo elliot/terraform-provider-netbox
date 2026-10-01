@@ -13,7 +13,7 @@ import (
 )
 
 const macAddressTestConfigBasic = `resource "netbox_mac_address" "test" {
-  mac_address = "02:00:5E:10:20:30"
+  mac_address = "02:00:5e:10:20:30"
   description = "{{.Name}}"
 }
 `

@@ -15,11 +15,19 @@ Reads a single NetBox module (`/api/dcim/modules/`) by `id` or filters.
 data "netbox_device" "sw01" {
   name = "dc1-access-sw01"
 }
+
+data "netbox_module_bay" "nm1" {
+  filters = [
+    { name = "device_id", value = data.netbox_device.sw01.id },
+    { name = "name", value = "Network Module 1" },
+  ]
+}
+
 # Modules have no name; look them up by device and bay.
 data "netbox_module" "nm1" {
   filters = [
     { name = "device_id", value = data.netbox_device.sw01.id },
-    { name = "module_bay", value = "Network Module 1" },
+    { name = "module_bay_id", value = data.netbox_module_bay.nm1.id },
   ]
 }
 ```
@@ -59,5 +67,5 @@ data "netbox_module" "nm1" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.

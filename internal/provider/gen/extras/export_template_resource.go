@@ -5,6 +5,7 @@ package extras
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -249,7 +250,18 @@ func (r *ExportTemplateResource) Update(ctx context.Context, req resource.Update
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.ExtrasAPI.ExtrasExportTemplatesPartialUpdate(ctx, id).PatchedExportTemplateRequest(*body).Execute()
+	var nulls []string
+	if plan.EnvironmentParams.IsNull() && !state.EnvironmentParams.IsNull() {
+		nulls = append(nulls, "environment_params")
+	}
+	var obj *netbox.ExportTemplate
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.ExportTemplate)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/extras/export-templates/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.ExtrasAPI.ExtrasExportTemplatesPartialUpdate(ctx, id).PatchedExportTemplateRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_export_template", netbox.WrapError(err, res).Error())
 		return

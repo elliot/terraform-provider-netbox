@@ -43,7 +43,7 @@ output "asns_ids" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.
 
 
@@ -66,7 +66,7 @@ Read-Only:
 - `rir_id` (Number) ID of the Rir (`netbox_rir`).
 - `role_id` (Number) ID of the Ipam Role (`netbox_ipam_role`).
 - `site_count` (Number) Site Count.
-- `site_ids` (Set of Number) IDs of the assigned Site.
+- `site_ids` (Set of Number) IDs of the assigned Site (`netbox_site`).
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `tenant_id` (Number) ID of the Tenant (`netbox_tenant`).
 - `url` (String) Url.

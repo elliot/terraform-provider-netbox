@@ -79,7 +79,7 @@ resource "netbox_ip_address" "web01" {
 - `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `description` (String) Description. Defaults to an empty string.
 - `enabled` (Boolean) Enabled. Defaults to the NetBox server default when omitted.
-- `mac_address` (String) Mac Address.
+- `mac_address` (String) Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.
 - `mode` (String) IEEE 802.1Q tagging strategy. Valid values: `access`, `tagged`, `tagged-all`, `q-in-q`. Defaults to the NetBox server default when omitted.
 - `mtu` (Number) Mtu. Defaults to the NetBox server default when omitted.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).

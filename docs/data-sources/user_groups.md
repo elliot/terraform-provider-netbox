@@ -45,7 +45,7 @@ output "user_groups_ids" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.
 
 
@@ -59,5 +59,6 @@ Read-Only:
 - `display_url` (String) Display Url.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `name` (String) Name.
+- `permission_ids` (Set of Number) IDs of the permissions assigned to this group (`netbox_permission`). Managed from `netbox_permission.group_ids`; read-only here.
 - `url` (String) Url.
 - `user_count` (Number) User Count.

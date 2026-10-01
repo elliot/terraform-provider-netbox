@@ -133,6 +133,9 @@ func Build(doc *openapi.Document, ov map[string]*overrides.Resource) ([]*model.R
 			}
 		}
 	}
+	if err := checkSymmetricPairs(resources, byName); err != nil {
+		return nil, nil, err
+	}
 	sort.Slice(resources, func(i, j int) bool {
 		if resources[i].App != resources[j].App {
 			return resources[i].App < resources[j].App
@@ -140,6 +143,39 @@ func Build(doc *openapi.Document, ov map[string]*overrides.Resource) ([]*model.R
 		return resources[i].Name < resources[j].Name
 	})
 	return resources, b.Warnings, nil
+}
+
+// checkSymmetricPairs rejects many-to-many relations that are writable from
+// both sides (site.asn_ids / asn.site_ids): NetBox accepts writes on either
+// side, so two resources would fight over the same rows and plan perpetual
+// diffs. One side must own the relation; the other is marked read_only (or
+// skipped) in the overrides.
+func checkSymmetricPairs(resources []*model.Resource, byName map[string]*model.Resource) error {
+	var errs []string
+	for _, r := range resources {
+		if r.Skip {
+			continue
+		}
+		for _, a := range r.Attrs {
+			if a.Kind != model.KindFKList || a.ReadOnly || a.Target == "" || a.Target == r.Name {
+				continue
+			}
+			t := byName[a.Target]
+			if t == nil || t.Skip || t.Name < r.Name {
+				continue // report each pair once, from the alphabetically first side
+			}
+			for _, ta := range t.Attrs {
+				if ta.Kind == model.KindFKList && !ta.ReadOnly && ta.Target == r.Name {
+					errs = append(errs, fmt.Sprintf("netbox_%s.%s and netbox_%s.%s are both writable sides of one many-to-many relation: set read_only on the side that should not own it",
+						r.Name, a.Name, t.Name, ta.Name))
+				}
+			}
+		}
+	}
+	if len(errs) > 0 {
+		return fmt.Errorf("%s", strings.Join(errs, "\n"))
+	}
+	return nil
 }
 
 // lookupOverride returns the override for "app/segment", falling back to
@@ -321,7 +357,11 @@ func (b *Builder) buildResource(r *model.Resource) error {
 		case model.KindCustomFields:
 			r.HasCustomFields = true
 		}
-		collectTargets(a, depSet)
+		if !a.ReadOnly {
+			// A read-only reverse side (user.permission_ids) is not a
+			// dependency; counting it would make sweeper ordering cyclic.
+			collectTargets(a, depSet)
+		}
 	}
 	delete(depSet, r.Name)
 	for d := range depSet {
@@ -508,8 +548,8 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		b.warn("%s.%s: request-only nested list not echoed by the read serializer; skipped", r.Name, pname)
 		return nil, nil
 	}
-	if kind == model.KindString && (pname == "mac_address" || pname == "wwn") {
-		a.FoldCase = true
+	if kind == model.KindString && (rs.Format == model.FormatMAC || rs.Format == model.FormatWWN) {
+		a.Format = rs.Format
 	}
 
 	// Terraform naming.
@@ -584,6 +624,15 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		if ao.Precision > 0 {
 			a.Precision = ao.Precision
 		}
+		if ao.Format != "" {
+			if ao.Format != model.FormatMAC && ao.Format != model.FormatWWN {
+				return nil, fmt.Errorf("%s: unknown format %q (want %s or %s)", pname, ao.Format, model.FormatMAC, model.FormatWWN)
+			}
+			if a.Kind != model.KindString {
+				return nil, fmt.Errorf("%s: format %q needs a string attribute, not %s", pname, ao.Format, a.Kind)
+			}
+			a.Format = ao.Format
+		}
 		a.OrderedList = ao.OrderedList
 		if ao.Description != "" {
 			a.Description = ao.Description
@@ -597,6 +646,12 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 	}
 	if a.Description == "" {
 		a.Description = defaultDescription(a)
+	}
+	switch a.Format {
+	case model.FormatMAC:
+		a.Description += " Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case."
+	case model.FormatWWN:
+		a.Description += " Colon notation, e.g. `50:01:43:80:12:34:56:78`; NetBox stores it in upper case."
 	}
 	return a, nil
 }

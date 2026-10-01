@@ -63,7 +63,9 @@ make gen && git diff --exit-code            # what CI enforces
 | nullable string / FK | `Optional`; `null` is sent as JSON null |
 | nullable number, nullable choice, timestamp | `Optional+Computed`, `UseStateForUnknown`; never sent as null (NetBox derives or rejects blanks) |
 | ID set that is the reverse side of a required FK (`provider.accounts`) | `Computed` only |
+| many-to-many writable from both sides (`site.asn_ids` / `asn.site_ids`) | generation fails until one side has `read_only` (that side becomes `Computed` only) |
 | request-only nested list not echoed on read (`circuit.assignments`) | dropped |
+| nullable untyped JSON (`local_context_data`, `constraints`) | `Optional`; removing it sends an explicit `null` (the generated client drops nil JSON, so that update goes out as a raw PATCH via `conv.PatchWithNulls`) |
 | non-nullable optional string that may be blank | `Optional+Computed`, default `""`, always sent |
 | non-nullable optional string with a pattern (colour) | `Optional+Computed`, `UseStateForUnknown`, sent when known |
 | choice / boolean / non-nullable number | `Optional+Computed`, `UseStateForUnknown`, sent when known |
@@ -75,8 +77,11 @@ make gen && git diff --exit-code            # what CI enforces
 Update always uses PATCH built from the full plan; unknown or null values of
 computed attributes are omitted so NetBox keeps its defaults. On read, strings
 keep the configured value when NetBox only trimmed whitespace (or changed the
-case of a MAC address / WWN), and floats keep it when equal at the field's
-precision, so normalisation never produces a diff.
+case of an attribute with `format: mac` / `wwn`), and floats keep it when equal
+at the field's precision, so normalisation never produces a diff. The `format`
+comes from the spec when NetBox declares one, otherwise from the overrides
+(4.7 declares none); it also adds a colon-notation validator, because NetBox
+rewrites dashed or dotted MAC addresses and the result would not match.
 
 ## Overrides reference
 
@@ -114,6 +119,7 @@ resources:
         optional: true         # make a required property optional
         default: 1             # static default for an integer/FK attribute (makes it Optional+Computed)
         precision: 6           # decimals NetBox stores; drives float semantic equality (default 6)
+        format: mac            # mac or wwn: colon-notation validator, letter case ignored on read
         ordered_list: true     # List instead of Set
         description: "..."
         enum: [a, b]           # replace the allowed values

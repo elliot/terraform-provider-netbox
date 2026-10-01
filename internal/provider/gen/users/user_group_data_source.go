@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
@@ -25,13 +26,14 @@ func init() {
 
 // UserGroupDataModel is the state of data.netbox_user_group and of items of data.netbox_user_groups.
 type UserGroupDataModel struct {
-	Id          types.Int64  `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Url         types.String `tfsdk:"url"`
-	DisplayUrl  types.String `tfsdk:"display_url"`
-	Display     types.String `tfsdk:"display"`
-	UserCount   types.Int64  `tfsdk:"user_count"`
+	Id            types.Int64  `tfsdk:"id"`
+	Name          types.String `tfsdk:"name"`
+	Description   types.String `tfsdk:"description"`
+	PermissionIds types.Set    `tfsdk:"permission_ids"`
+	Url           types.String `tfsdk:"url"`
+	DisplayUrl    types.String `tfsdk:"display_url"`
+	Display       types.String `tfsdk:"display"`
+	UserCount     types.Int64  `tfsdk:"user_count"`
 }
 
 // userGroupFilterNames lists the query parameters accepted by /api/users/groups/ (sorted).
@@ -59,6 +61,11 @@ func userGroupDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		},
 		"description": dsschema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
+			Computed:            true,
+		},
+		"permission_ids": dsschema.SetAttribute{
+			MarkdownDescription: "IDs of the permissions assigned to this group (`netbox_permission`). Managed from `netbox_permission.group_ids`; read-only here.",
+			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 		"url": dsschema.StringAttribute{
@@ -122,7 +129,7 @@ func (d *UserGroupDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 		MarkdownDescription: "Additional query filters as name/value pairs, e.g. `{ name = \"tenant_id\", value = \"12\" }`. Any query parameter of `/api/users/groups/` is accepted.",
 		Optional:            true,
 		NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+			"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(userGroupFilterNames)}},
 			"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 		}},
 	}
@@ -232,7 +239,7 @@ func (d *UserGroupListDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				MarkdownDescription: "Additional query filters as name/value pairs, e.g. `{ name = \"tenant_id\", value = \"12\" }`. Any query parameter of `/api/users/groups/` is accepted.",
 				Optional:            true,
 				NestedObject: dsschema.NestedAttributeObject{Attributes: map[string]dsschema.Attribute{
-					"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name."},
+					"name":  dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter name; validated against the parameters of the endpoint.", Validators: []validator.String{conv.FilterName(userGroupFilterNames)}},
 					"value": dsschema.StringAttribute{Required: true, MarkdownDescription: "Query parameter value."},
 				}},
 			},
@@ -321,6 +328,7 @@ func userGroupDataFromAPI(ctx context.Context, obj *netbox.Group, out *UserGroup
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Name = conv.String(obj.GetNameOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
+	out.PermissionIds = conv.BriefIDs(obj.GetPermissions())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())

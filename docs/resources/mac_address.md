@@ -63,7 +63,7 @@ resource "netbox_mac_address" "eth0" {
 
 ### Required
 
-- `mac_address` (String) Mac Address.
+- `mac_address` (String) Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.
 
 ### Optional
 

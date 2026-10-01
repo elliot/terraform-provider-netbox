@@ -12,10 +12,14 @@ Reads a single NetBox cooling feed (`/api/dcim/cooling-feeds/`) by `id`, `name` 
 ## Example Usage
 
 ```terraform
+data "netbox_cooling_source" "ch01" {
+  name = "CH-01"
+}
+
 # Cooling feed names are unique per cooling source.
 data "netbox_cooling_feed" "a01_loop" {
   filters = [
-    { name = "cooling_source", value = "CH-01" },
+    { name = "cooling_source_id", value = data.netbox_cooling_source.ch01.id },
     { name = "name", value = "CH-01/A01" },
   ]
 }
@@ -55,5 +59,5 @@ data "netbox_cooling_feed" "a01_loop" {
 
 Required:
 
-- `name` (String) Query parameter name.
+- `name` (String) Query parameter name; validated against the parameters of the endpoint.
 - `value` (String) Query parameter value.

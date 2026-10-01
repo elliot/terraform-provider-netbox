@@ -5,6 +5,7 @@ package virtualization
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -333,7 +334,18 @@ func (r *VirtualMachineResource) Update(ctx context.Context, req resource.Update
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.VirtualizationAPI.VirtualizationVirtualMachinesPartialUpdate(ctx, id).PatchedWritableVirtualMachineRequest(*body).Execute()
+	var nulls []string
+	if plan.LocalContextData.IsNull() && !state.LocalContextData.IsNull() {
+		nulls = append(nulls, "local_context_data")
+	}
+	var obj *netbox.VirtualMachine
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.VirtualMachine)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/virtualization/virtual-machines/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.VirtualizationAPI.VirtualizationVirtualMachinesPartialUpdate(ctx, id).PatchedWritableVirtualMachineRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_virtual_machine", netbox.WrapError(err, res).Error())
 		return

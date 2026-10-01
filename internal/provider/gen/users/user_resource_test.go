@@ -50,6 +50,7 @@ func TestAccUser_basic(t *testing.T) {
 			Check: resource.ComposeAggregateTestCheckFunc(
 				resource.TestCheckResourceAttrSet("netbox_user.test", "id"),
 				resource.TestCheckResourceAttr("netbox_user.test", "is_active", "true"),
+				resource.TestCheckResourceAttr("netbox_user.test", "permission_ids.#", "0"),
 			),
 		},
 		{
