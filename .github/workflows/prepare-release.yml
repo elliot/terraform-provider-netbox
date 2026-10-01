@@ -1,0 +1,84 @@
+name: Prepare release
+
+# Drafts the next release: adds the version's CHANGELOG.md section
+# (scripts/prepare-release.sh: git-cliff drafts the entries from the commits
+# since the last tag) on a new release/vX.Y.Z branch, and links a pre-filled
+# pull request in the job summary. Edit the wording in that pull request, then
+# squash-merge it with its "chore(release): vX.Y.Z" title; the Release workflow
+# tags the merge commit and publishes the release.
+#
+# The pull request is opened by a person on purpose: "Allow GitHub Actions to
+# create and approve pull requests" stays off (SECURITY.md), and pull requests
+# opened with GITHUB_TOKEN would not start the required checks.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version, e.g. 0.2.0 (empty: worked out from the commits)"
+        required: false
+        default: ""
+
+permissions: {}
+
+concurrency:
+  group: prepare-release
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Draft release
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # push the release/vX.Y.Z branch
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # git-cliff needs the tags and the commits since the last one
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Update CHANGELOG.md
+        id: prepare
+        env:
+          VERSION: ${{ inputs.version }}
+        run: ./scripts/prepare-release.sh "$VERSION"
+      - name: Push release branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
+          VERSION: ${{ steps.prepare.outputs.version }}
+        run: |
+          branch="release/v$VERSION"
+          # Credentials only for these two commands, never stored in the checkout.
+          auth=(-c "http.extraheader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)")
+          if git "${auth[@]}" ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo "::error::branch $branch already exists; edit its pull request or delete the branch and re-run"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -m "chore(release): v$VERSION" -- CHANGELOG.md
+          git "${auth[@]}" push origin "HEAD:refs/heads/$branch"
+
+          title="chore(release): v$VERSION"
+          {
+            echo "## Release v$VERSION"
+            echo
+            echo "Branch \`$branch\` adds the [$VERSION] section to CHANGELOG.md."
+            echo
+            echo "**[Open the release pull request]($SERVER_URL/$REPOSITORY/compare/main...$branch?quick_pull=1&title=$(jq -rn --arg t "$title" '$t|@uri'))**"
+            echo
+            echo "Before merging, reword the entries for users, drop duplicates and internal changes, and add"
+            echo "upgrade notes for anything breaking. Keep the title \`$title\`: squash-merging it tags the"
+            echo "merge commit and starts the Release workflow."
+            echo
+            echo "### Draft notes"
+            echo
+            go run ./tools/changelog notes -version "$VERSION"
+          } >>"$GITHUB_STEP_SUMMARY"

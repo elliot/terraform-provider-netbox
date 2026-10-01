@@ -8,14 +8,26 @@ All notable changes to this project are documented in this file. The format foll
 
 ### Changed
 
-- Building from source requires Go 1.26; terraform-plugin-framework 1.19.0, terraform-plugin-go 0.31.0 and
-  all other Go dependencies updated.
-- `SHA256SUMS` is always GPG-signed: the release job fails without the key in the `release` environment,
-  verifies the signature after upload and can pin the expected key fingerprint (`RELEASE_KEY_FINGERPRINT`).
 - Faster CI: Go build and module caches are keyed per commit, restored incrementally and written only from
   `main` (the GoReleaser snapshot build drops from about 12 minutes to one or two when `netbox/` is
   unchanged), and CodeQL analyses Go only when Go sources or modules change and the workflows only when
   `.github/` changes.
+
+### Security
+
+- Secret attributes are marked `Sensitive` (redacted in plans and CLI output): `netbox_wireless_lan.auth_psk`,
+  `netbox_wireless_link.auth_psk`, `netbox_ike_policy.preshared_key`, `netbox_fhrp_group.auth_key`,
+  `netbox_webhook.secret` and `netbox_data_source.parameters` (backend credentials), on the resources and
+  their data sources. Outputs that expose these values now need `sensitive = true`.
+
+## [0.1.1] - 2026-09-24
+
+### Changed
+
+- Building from source requires Go 1.26; terraform-plugin-framework 1.19.0, terraform-plugin-go 0.31.0 and
+  all other Go dependencies updated.
+- `SHA256SUMS` is always GPG-signed: the release job fails without the key in the `release` environment,
+  verifies the signature after upload and can pin the expected key fingerprint (`RELEASE_KEY_FINGERPRINT`).
 
 ### Fixed
 
@@ -27,10 +39,6 @@ All notable changes to this project are documented in this file. The format foll
 - Hardened CI and release workflows (no `pull_request_target`, least-privilege tokens, no cache in release
   builds, exact tool pins, zizmor in CI) and a 7-day cooldown on dependency updates.
 - CodeQL code scanning for the Go sources and the GitHub Actions workflows.
-- Secret attributes are marked `Sensitive` (redacted in plans and CLI output): `netbox_wireless_lan.auth_psk`,
-  `netbox_wireless_link.auth_psk`, `netbox_ike_policy.preshared_key`, `netbox_fhrp_group.auth_key`,
-  `netbox_webhook.secret` and `netbox_data_source.parameters` (backend credentials), on the resources and
-  their data sources. Outputs that expose these values now need `sensitive = true`.
 
 ## [0.1.0] - 2026-09-16
 
@@ -86,5 +94,6 @@ All notable changes to this project are documented in this file. The format foll
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/elliot/terraform-provider-netbox/releases/tag/v0.1.0
