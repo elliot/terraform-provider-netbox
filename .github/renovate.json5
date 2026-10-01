@@ -67,6 +67,17 @@
       ],
     },
     {
+      // Tool versions pinned in the Makefile and scripts, annotated on the line above:
+      //   # renovate: datasource=pypi depName=git-cliff
+      //   GIT_CLIFF_VERSION="${GIT_CLIFF_VERSION:-2.14.2}"     (scripts/*.sh)
+      //   GORELEASER_VERSION ?= v2.18.2                        (Makefile)
+      customType: "regex",
+      managerFilePatterns: ["^Makefile$", "^scripts/[^/]+\\.sh$"],
+      matchStrings: [
+        '# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n[A-Z_]+ *\\??=[ "]*(?:\\$\\{[A-Z_]+:-)?(?<currentValue>[^}"\\s]+)',
+      ],
+    },
+    {
       customType: "regex",
       managerFilePatterns: ["^tools/client-gen/generate\\.sh$"],
       matchStrings: [

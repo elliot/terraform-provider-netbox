@@ -139,7 +139,7 @@ jobs:
       - name: go test (TF_ACC unset)
         env:
           TF_ACC: ""
-        run: go test ./internal/... -count=1 -v -cover -timeout 15m
+        run: go test ./internal/... ./tools/... -count=1 -v -cover -timeout 15m
       - name: Save Go cache
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.terraform == '1.14.*'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

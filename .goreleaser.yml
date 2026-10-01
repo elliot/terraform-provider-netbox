@@ -1,8 +1,11 @@
 # Visit https://goreleaser.com for documentation on how to customize this
 # behavior.
 #
-# Release process: push a v* tag; .github/workflows/release.yml runs GoReleaser
-# and signs the checksum file (the Terraform Registry requires the signature).
+# Release process (docs/DEVELOPMENT.md#releasing): merge the release pull request
+# from prepare-release.yml, or push a v* tag; .github/workflows/release.yml runs
+# GoReleaser with the version's CHANGELOG.md section as the release notes
+# (--release-notes) and signs the checksum file (the Terraform Registry requires
+# the signature).
 # The release is also served through the network mirror, scripts/install.sh or
 # a filesystem mirror. See docs/INSTALL.md.
 #
@@ -65,6 +68,12 @@ release:
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
   # Drafts let a human review the notes before publishing.
   draft: false
+  footer: |
+    ---
+    Install: [docs/INSTALL.md](https://github.com/elliot/terraform-provider-netbox/blob/{{ .Tag }}/docs/INSTALL.md).
+    Verify the assets: [SECURITY.md](https://github.com/elliot/terraform-provider-netbox/blob/{{ .Tag }}/SECURITY.md#verifying-a-release).
+    All releases: [CHANGELOG.md](https://github.com/elliot/terraform-provider-netbox/blob/{{ .Tag }}/CHANGELOG.md).
 
+# Notes come from CHANGELOG.md (--release-notes), not from the commit list.
 changelog:
   disable: true
