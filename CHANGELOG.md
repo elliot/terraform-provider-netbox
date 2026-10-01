@@ -6,16 +6,51 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-01
+
+### Added
+
+- `netbox_user` and `netbox_user_group` expose the permissions assigned to them as a computed `permission_ids`
+  set. `netbox_permission.user_ids` / `group_ids` still own the assignment.
+- `netbox_owner.group_id` defaults to `1` (NetBox's "no group"), so owners can be created without one.
+
+### Changed
+
+- Data source `filters[*].name` values are checked against the endpoint's query parameters at plan time, so
+  `terraform validate` rejects a typo instead of NetBox ignoring the parameter and returning every object. The
+  error suggests the closest valid names. Configurations with unknown filter names now fail.
+- MAC addresses (`netbox_mac_address`, `netbox_interface`, `netbox_vm_interface`) and WWNs (`netbox_interface`)
+  must be written in colon notation. Dashed, dotted and bare-hex spellings previously failed after apply with
+  an inconsistent-result error and are now rejected at plan time; letter case is still free.
+- Faster CI: Go build and module caches are keyed per commit, restored incrementally and written only from
+  `main` (the GoReleaser snapshot build drops from about 12 minutes to one or two when `netbox/` is
+  unchanged). Both CodeQL scans run on every pull request; the Go scan skips the generated `netbox/` client.
+
+### Fixed
+
+- Removing a nullable JSON attribute (`local_context_data`, `constraints`, `netbox_custom_field.default`, ...)
+  from the configuration now clears it in NetBox instead of failing with "Provider produced inconsistent
+  result". Affects `netbox_device`, `netbox_virtual_machine`, `netbox_permission`, `netbox_data_source`,
+  `netbox_module_type`, `netbox_module_type_profile`, `netbox_config_context_profile`,
+  `netbox_config_template`, `netbox_export_template`, `netbox_custom_field` and `netbox_event_rule`.
+- Five data source examples used filter names that do not exist (`cooling_source`, `module_bay`,
+  `power_panel`, `rack`, `q` on cable terminations); they now look up the parent and filter by its ID.
+
+### Security
+
+- Secret attributes are marked `Sensitive` (redacted in plans and CLI output): `netbox_wireless_lan.auth_psk`,
+  `netbox_wireless_link.auth_psk`, `netbox_ike_policy.preshared_key`, `netbox_fhrp_group.auth_key`,
+  `netbox_webhook.secret` and `netbox_data_source.parameters` (backend credentials), on the resources and
+  their data sources. Outputs that expose these values now need `sensitive = true`.
+
+## [0.1.1] - 2026-09-24
+
 ### Changed
 
 - Building from source requires Go 1.26; terraform-plugin-framework 1.19.0, terraform-plugin-go 0.31.0 and
   all other Go dependencies updated.
 - `SHA256SUMS` is always GPG-signed: the release job fails without the key in the `release` environment,
   verifies the signature after upload and can pin the expected key fingerprint (`RELEASE_KEY_FINGERPRINT`).
-- Faster CI: Go build and module caches are keyed per commit, restored incrementally and written only from
-  `main` (the GoReleaser snapshot build drops from about 12 minutes to one or two when `netbox/` is
-  unchanged), and CodeQL analyses Go only when Go sources or modules change and the workflows only when
-  `.github/` changes.
 
 ### Fixed
 
@@ -27,12 +62,8 @@ All notable changes to this project are documented in this file. The format foll
 - Hardened CI and release workflows (no `pull_request_target`, least-privilege tokens, no cache in release
   builds, exact tool pins, zizmor in CI) and a 7-day cooldown on dependency updates.
 - CodeQL code scanning for the Go sources and the GitHub Actions workflows.
-- Secret attributes are marked `Sensitive` (redacted in plans and CLI output): `netbox_wireless_lan.auth_psk`,
-  `netbox_wireless_link.auth_psk`, `netbox_ike_policy.preshared_key`, `netbox_fhrp_group.auth_key`,
-  `netbox_webhook.secret` and `netbox_data_source.parameters` (backend credentials), on the resources and
-  their data sources. Outputs that expose these values now need `sensitive = true`.
 
-## [0.1.0] - 2026-09-16
+## [0.1.0] - 2026-09-24
 
 ### Added
 
@@ -86,5 +117,7 @@ All notable changes to this project are documented in this file. The format foll
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.1...v0.2.0
+[0.1.1]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/elliot/terraform-provider-netbox/releases/tag/v0.1.0
