@@ -53,8 +53,11 @@ type Attribute struct {
 	Optional *bool `yaml:"optional"`
 	// Default makes an integer or FK attribute Optional+Computed with a static
 	// default value (a required property becomes optional).
-	Default     *int64   `yaml:"default"`
-	Precision   int      `yaml:"precision"`
+	Default   *int64 `yaml:"default"`
+	Precision int    `yaml:"precision"`
+	// Format names a value format NetBox normalises (mac, wwn): the attribute
+	// gets a format validator and keeps the configured letter case on read.
+	Format      string   `yaml:"format"`
 	OrderedList bool     `yaml:"ordered_list"`
 	Description string   `yaml:"description"`
 	Enum        []string `yaml:"enum"`
