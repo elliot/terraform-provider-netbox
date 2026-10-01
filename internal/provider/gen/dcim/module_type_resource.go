@@ -5,6 +5,7 @@ package dcim
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -301,7 +302,18 @@ func (r *ModuleTypeResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.DcimAPI.DcimModuleTypesPartialUpdate(ctx, id).PatchedWritableModuleTypeRequest(*body).Execute()
+	var nulls []string
+	if plan.Attributes.IsNull() && !state.Attributes.IsNull() {
+		nulls = append(nulls, "attributes")
+	}
+	var obj *netbox.ModuleType
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.ModuleType)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/dcim/module-types/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.DcimAPI.DcimModuleTypesPartialUpdate(ctx, id).PatchedWritableModuleTypeRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_module_type", netbox.WrapError(err, res).Error())
 		return

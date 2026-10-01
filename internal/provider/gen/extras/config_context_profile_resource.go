@@ -5,6 +5,7 @@ package extras
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
@@ -223,7 +224,18 @@ func (r *ConfigContextProfileResource) Update(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.ExtrasAPI.ExtrasConfigContextProfilesPartialUpdate(ctx, id).PatchedConfigContextProfileRequest(*body).Execute()
+	var nulls []string
+	if plan.Schema.IsNull() && !state.Schema.IsNull() {
+		nulls = append(nulls, "schema")
+	}
+	var obj *netbox.ConfigContextProfile
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.ConfigContextProfile)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/extras/config-context-profiles/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.ExtrasAPI.ExtrasConfigContextProfilesPartialUpdate(ctx, id).PatchedConfigContextProfileRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_config_context_profile", netbox.WrapError(err, res).Error())
 		return

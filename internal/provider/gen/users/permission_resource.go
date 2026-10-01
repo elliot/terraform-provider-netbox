@@ -5,6 +5,7 @@ package users
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -226,7 +227,18 @@ func (r *PermissionResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	obj, res, err := r.client.UsersAPI.UsersPermissionsPartialUpdate(ctx, id).PatchedObjectPermissionRequest(*body).Execute()
+	var nulls []string
+	if plan.Constraints.IsNull() && !state.Constraints.IsNull() {
+		nulls = append(nulls, "constraints")
+	}
+	var obj *netbox.ObjectPermission
+	var res *http.Response
+	if len(nulls) > 0 {
+		obj = new(netbox.ObjectPermission)
+		err = conv.PatchWithNulls(ctx, r.client, fmt.Sprintf("/api/users/permissions/%d/", id), body, nulls, obj)
+	} else {
+		obj, res, err = r.client.UsersAPI.UsersPermissionsPartialUpdate(ctx, id).PatchedObjectPermissionRequest(*body).Execute()
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating netbox_permission", netbox.WrapError(err, res).Error())
 		return

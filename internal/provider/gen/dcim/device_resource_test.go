@@ -30,10 +30,11 @@ resource "netbox_site" "test" {
   slug = "{{.Name}}"
 }
 resource "netbox_device" "test" {
-  name           = "{{.Name}}"
-  device_type_id = netbox_device_type.test.id
-  role_id        = netbox_device_role.test.id
-  site_id        = netbox_site.test.id
+  name               = "{{.Name}}"
+  device_type_id     = netbox_device_type.test.id
+  role_id            = netbox_device_role.test.id
+  site_id            = netbox_site.test.id
+  local_context_data = jsonencode({ key = "value" })
 }
 `
 
@@ -67,7 +68,6 @@ resource "netbox_device" "test" {
   status         = "planned"
   serial         = "SN123"
   description    = "updated"
-  local_context_data = jsonencode({ key = "value" })
 }
 `
 
