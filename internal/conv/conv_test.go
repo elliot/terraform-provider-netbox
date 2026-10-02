@@ -32,6 +32,15 @@ func TestJSONFromAPIWithPrior(t *testing.T) {
 	if JSONFromAPIWithPrior(map[string]any{}, jsontypes.NewNormalizedValue(`{}`)).IsNull() {
 		t.Fatal("configured empty object must round-trip")
 	}
+	if !JSONFromAPIWithPrior("", jsontypes.NewNormalizedNull()).IsNull() {
+		t.Fatal("empty string with null prior must stay null")
+	}
+	if JSONFromAPIWithPrior("", jsontypes.NewNormalizedValue(`""`)).IsNull() {
+		t.Fatal("configured empty string must round-trip")
+	}
+	if JSONFromAPIWithPrior("foo", jsontypes.NewNormalizedNull()).ValueString() != `"foo"` {
+		t.Fatal("non-empty string must be exposed as JSON")
+	}
 }
 
 func TestChoiceMapping(t *testing.T) {

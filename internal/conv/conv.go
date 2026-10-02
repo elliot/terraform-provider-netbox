@@ -412,12 +412,18 @@ func JSONFromAPI(v any) jsontypes.Normalized {
 
 // JSONFromAPIWithPrior is JSONFromAPI for optional JSON attributes: when the
 // attribute was not configured (prior null) and NetBox returns an empty
-// object/array or null, the attribute stays null so plans remain stable.
+// object/array/string or null, the attribute stays null so plans remain stable.
+// The empty string matters for objects written by other tools: they store ""
+// where NetBox itself would leave the column NULL.
 func JSONFromAPIWithPrior(v any, prior jsontypes.Normalized) jsontypes.Normalized {
 	if prior.IsNull() || prior.IsUnknown() {
 		switch t := v.(type) {
 		case nil:
 			return jsontypes.NewNormalizedNull()
+		case string:
+			if t == "" {
+				return jsontypes.NewNormalizedNull()
+			}
 		case map[string]any:
 			if len(t) == 0 {
 				return jsontypes.NewNormalizedNull()
