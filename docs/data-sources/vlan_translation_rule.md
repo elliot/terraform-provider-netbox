@@ -39,11 +39,16 @@ output "vlan_translation_rule_id" {
 
 ### Read-Only
 
+- `created` (String) Created.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
+- `display_url` (String) Display Url.
+- `last_updated` (String) Last Updated.
 - `local_vid` (Number) Numeric VLAN ID (1-4094).
 - `policy_id` (Number) ID of the Vlan Translation Policy (`netbox_vlan_translation_policy`).
 - `remote_vid` (Number) Numeric VLAN ID (1-4094).
+- `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.
 
 <a id="nestedatt--filters"></a>

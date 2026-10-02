@@ -81,7 +81,7 @@ data "netbox_interface" "filtered" {
 - `tagged_vlan_ids` (Set of Number) IDs of the assigned Tagged Vlan (`netbox_vlan`). Defaults to an empty set.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `tx_power` (Number) Tx Power. Defaults to the NetBox server default when omitted.
-- `type` (String) Type. One of 228 valid NetBox choices (see the NetBox documentation).
+- `type` (String) Type. One of 231 valid NetBox choices (see the NetBox documentation).
 - `untagged_vlan_id` (Number) ID of the Vlan (`netbox_vlan`).
 - `url` (String) Url.
 - `vdc_ids` (Set of Number) IDs of the assigned Vdc (`netbox_virtual_device_context`). Defaults to an empty set.

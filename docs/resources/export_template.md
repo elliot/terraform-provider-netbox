@@ -43,6 +43,7 @@ resource "netbox_export_template" "sites_csv" {
 ### Optional
 
 - `as_attachment` (Boolean) Download file as attachment. Defaults to the NetBox server default when omitted.
+- `auto_sync_enabled` (Boolean) Enable automatic synchronization of data when the data file is updated. Defaults to the NetBox server default when omitted.
 - `data_source_id` (Number) ID of the Data Source (`netbox_data_source`).
 - `description` (String) Description. Defaults to an empty string.
 - `environment_params` (String) Any <a href="https://jinja.palletsprojects.com/en/stable/api/#jinja2.Environment">additional parameters</a> to pass when constructing the Jinja environment.

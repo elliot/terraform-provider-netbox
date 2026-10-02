@@ -81,7 +81,7 @@ resource "netbox_interface" "te1_1_1" {
 
 - `device_id` (Number) ID of the Device (`netbox_device`).
 - `name` (String) Name.
-- `type` (String) Type. One of 228 valid NetBox choices (see the NetBox documentation).
+- `type` (String) Type. One of 231 valid NetBox choices (see the NetBox documentation).
 
 ### Optional
 

@@ -53,10 +53,15 @@ Required:
 Read-Only:
 
 - `comments` (String) Comments. Defaults to an empty string.
+- `created` (String) Created.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
+- `display_url` (String) Display Url.
 - `id` (Number) The numeric ID of the object in NetBox.
+- `last_updated` (String) Last Updated.
 - `name` (String) Name.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `rule_ids` (Set of Number) Rules. References `netbox_vlan_translation_rule`.
+- `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.
