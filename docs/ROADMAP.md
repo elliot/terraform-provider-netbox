@@ -1,6 +1,6 @@
 # Roadmap, todos and sharp edges
 
-Status as of `v0.1.0` (released 2026-09-24 from `main`). Items that have been actioned are removed from this
+Status as of `v0.2.0` (released 2026-10-01 from `main`). Items that have been actioned are removed from this
 file; `CHANGELOG.md` is the record of what shipped.
 
 ## Where things stand
@@ -11,13 +11,13 @@ file; `CHANGELOG.md` is the record of what shipped.
 | Acceptance | 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. The docker-compose workflow (12 shards, one NetBox 4.7 each) is green on Actions; it runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (written before the last generator fixes; see the banner there) |
 | CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), zizmor workflow audit, CodeQL (Go without the generated `netbox/` client, and Actions; weekly and on every PR), incremental Go build caches written from `main`, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate monthly with a 7-day cooldown |
-| Release | `v0.1.0` published 2026-09-24 (unsigned): GitHub Release with eight platform zips, network mirror live at `https://elliot.github.io/terraform-provider-netbox/`, `scripts/install.sh` and `terraform init` through the mirror verified against the published assets; see [INSTALL.md](INSTALL.md). From the next release: `release` environment, build provenance attestations, mandatory GPG signing with post-upload verification (the 0.1.0 checksums are unsigned because of a workflow bug, now fixed) |
+| Release | `v0.2.0` released 2026-10-01; `v0.1.0` and `v0.1.1` published 2026-09-24 (the 0.1.0 checksums are unsigned because of a workflow bug fixed in 0.1.1). GitHub Releases with eight platform zips, network mirror live at `https://elliot.github.io/terraform-provider-netbox/`, `scripts/install.sh` and `terraform init` through the mirror verified against the published assets; see [INSTALL.md](INSTALL.md). Releases build in the `release` environment with build provenance attestations and mandatory GPG signing with post-upload verification |
 | Registry | namespace `elliot` reserved, address `elliot/netbox` final; listing not yet published |
 
 ## Next steps
 
 1. Repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): protect the `release` environment (required reviewer, `v*` tags only), rulesets for `main` and `v*` tags, immutable releases, the "require full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability reporting.
-2. Registry listing: the RSA release key exists. Add `GPG_PRIVATE_KEY` / `PASSPHRASE` to the `release` environment (the job refuses to run without them) and optionally the `RELEASE_KEY_FINGERPRINT` repository variable, register the public key under the `elliot` namespace, cut the first signed tag (or sign `v0.1.0` retroactively), publish the repository once through the registry UI and verify the docs in the registry preview tool.
+2. Registry listing: releases are signed since `v0.1.1` (`SHA256SUMS.sig`). Optionally set the `RELEASE_KEY_FINGERPRINT` repository variable, register the public key under the `elliot` namespace, publish the repository once through the registry UI and verify the docs in the registry preview tool.
 3. On the next tag, confirm the provenance attestations (`gh attestation verify`) and `SHA256SUMS.sig`.
 
 ## Milestones
