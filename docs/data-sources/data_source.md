@@ -55,6 +55,7 @@ output "data_source_id" {
 - `source_url` (String) Source Url.
 - `status` (String) Status.
 - `sync_interval` (Number) Sync Interval. Valid values: `1`, `60`, `720`, `1440`, `10080`, `43200`. Defaults to the NetBox server default when omitted.
+- `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `type` (String) Type. Valid values: `local`, `git`, `amazon-s3`.
 - `url` (String) Url.
 

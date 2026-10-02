@@ -13,7 +13,7 @@ globalProperty:
 additionalProperties:
   disallowAdditionalPropertiesIfNotPresent: "false"
   generateInterfaces: "true"
-  packageVersion: "4.7.0"
+  packageVersion: "4.7.2"
   enumClassPrefix: "true"
   useDefaultValuesForRequiredVars: "true"
   withGoMod: "false"

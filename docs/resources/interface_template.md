@@ -60,7 +60,7 @@ resource "netbox_interface_template" "uplinks" {
 ### Required
 
 - `name` (String) {module} is accepted as a substitution for the module bay position when attached to a module type.
-- `type` (String) Type. One of 228 valid NetBox choices (see the NetBox documentation).
+- `type` (String) Type. One of 231 valid NetBox choices (see the NetBox documentation).
 
 ### Optional
 

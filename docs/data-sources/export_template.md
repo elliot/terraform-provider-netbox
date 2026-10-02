@@ -33,6 +33,7 @@ output "sites_csv_mime_type" {
 ### Read-Only
 
 - `as_attachment` (Boolean) Download file as attachment. Defaults to the NetBox server default when omitted.
+- `auto_sync_enabled` (Boolean) Enable automatic synchronization of data when the data file is updated. Defaults to the NetBox server default when omitted.
 - `created` (String) Created.
 - `data_file_id` (Number) Data File. References `netbox_data_file`.
 - `data_path` (String) Path to remote file (relative to data source root).

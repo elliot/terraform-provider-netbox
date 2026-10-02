@@ -35,10 +35,13 @@ resource "netbox_vlan_translation_rule" "customer_a_100" {
 
 ### Optional
 
+- `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `description` (String) Description. Defaults to an empty string.
+- `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 
 ### Read-Only
 
+- `created` (String) Created.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `url` (String) Url.
 

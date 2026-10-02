@@ -51,6 +51,7 @@ resource "netbox_data_source" "local" {
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `parameters` (String, Sensitive) Parameters as a JSON document (`jsonencode({...})`).
 - `sync_interval` (Number) Sync Interval. Valid values: `1`, `60`, `720`, `1440`, `10080`, `43200`. Defaults to the NetBox server default when omitted.
+- `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 
 ### Read-Only
 

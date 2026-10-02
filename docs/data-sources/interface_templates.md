@@ -70,5 +70,5 @@ Read-Only:
 - `poe_mode` (String) Poe Mode. Valid values: `pd`, `pse`. Defaults to the NetBox server default when omitted.
 - `poe_type` (String) Poe Type. Valid values: `type1-ieee802.3af`, `type2-ieee802.3at`, `type3-ieee802.3bt`, `type4-ieee802.3bt`, `passive-24v-2pair`, `passive-24v-4pair`, `passive-48v-2pair`, `passive-48v-4pair`. Defaults to the NetBox server default when omitted.
 - `rf_role` (String) Rf Role. Valid values: `ap`, `station`. Defaults to the NetBox server default when omitted.
-- `type` (String) Type. One of 228 valid NetBox choices (see the NetBox documentation).
+- `type` (String) Type. One of 231 valid NetBox choices (see the NetBox documentation).
 - `url` (String) Url.
