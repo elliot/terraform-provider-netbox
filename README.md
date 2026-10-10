@@ -26,7 +26,7 @@ and moving to a new NetBox release is mostly a matter of pinning the new spec an
 [Bumping the NetBox version](docs/DEVELOPMENT.md#bumping-the-netbox-version)).
 At start-up the provider reads `/api/status/` and warns (without failing) when the server's minor
 version differs from the one it was generated for; set `skip_version_check = true` to silence it.
-v2 API tokens require NetBox 4.5 or later.
+v2 API tokens require NetBox 4.5 or later; legacy v1 tokens still work, with a deprecation warning.
 
 ### Acknowledgements
 
@@ -50,7 +50,8 @@ each endpoint. It is a separate provider with its own schema conventions, not a 
 * **Client-side rate limiting, artificial delays and retries** shared by all resources of a provider
   instance: token bucket (`requests_per_second`/`request_burst`), fixed delay per request and per
   write, optional serialization, exponential backoff with jitter honouring `Retry-After`.
-* **v2 API tokens only** (`nbt_<key>.<secret>`, NetBox 4.5+), sent as `Authorization: Bearer`.
+* **v2 API tokens** (`nbt_<key>.<secret>`, NetBox 4.5+), sent as `Authorization: Bearer`; legacy v1 tokens are
+  accepted with a deprecation warning (NetBox removes them in 5.0).
 * **Resource identity and import** by NetBox ID for every resource.
 * **Generic data-source filters**: any query parameter of the NetBox API can be used
   (`filters = [{ name = "tenant_id", value = "3" }]`).
@@ -130,7 +131,7 @@ data "netbox_prefixes" "dc1" {
 | Attribute | Env var | Default | Description |
 |---|---|---|---|
 | `server_url` | `NETBOX_SERVER_URL` | | Base URL (a trailing `/api` is ignored) |
-| `api_token` | `NETBOX_API_TOKEN` | | v2 token `nbt_<key>.<secret>` |
+| `api_token` | `NETBOX_API_TOKEN` | | v2 token `nbt_<key>.<secret>` (a v1 token works, deprecated) |
 | `requests_per_second` | `NETBOX_REQUESTS_PER_SECOND` | `0` (off) | Shared token-bucket rate limit |
 | `request_burst` | `NETBOX_REQUEST_BURST` | `10` | Token-bucket burst |
 | `request_delay_ms` | `NETBOX_REQUEST_DELAY_MS` | `0` | Fixed artificial delay before every request |
@@ -189,7 +190,7 @@ The generator, the overrides format and the testing workflow are described in
 ### Known limitations
 
 * Bulk endpoints, ETag/`If-Match`, `add_tags`/`remove_tags`, background jobs, custom scripts, plugins, GraphQL
-  and v1 tokens are out of scope.
+  are out of scope.
 * Reverse sides of relations are read-only (`netbox_asn.site_ids`, provider accounts, user permissions); manage
   them from the owning side. `netbox_circuit.assignments` is not exposed (use `netbox_circuit_group_assignment`).
 * Attributes with a server default are `Optional+Computed`; removing them keeps the current value.

@@ -54,7 +54,7 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 ## Sharp edges for users
 
 General
-- Only v2 tokens (`nbt_<key>.<secret>`) work; v1 tokens are rejected at configure time.
+- Use v2 tokens (`nbt_<key>.<secret>`). Legacy 40-character v1 tokens work but warn on every run; NetBox removes them in 5.0.
 - Attributes with a server default are `Optional+Computed`: removing them from the configuration keeps the current value rather than resetting it. Set them explicitly to change them.
 - NetBox trims whitespace from text fields and upper-cases MAC addresses and WWNs; the provider keeps your configured value when the difference is only that. MAC addresses and WWNs must be written in colon notation (`aa:bb:cc:dd:ee:ff`): NetBox rewrites other notations, so the provider rejects them at plan time.
 - Reverse sides of relations are read-only: attach ASNs from `netbox_site.asn_ids`, permissions from `netbox_permission`, provider accounts by creating `netbox_provider_account`.

@@ -12,9 +12,12 @@ Every CRUD collection of the NetBox 4.7 API is available as a resource (`netbox_
 
 ## Authentication
 
-Only NetBox v2 API tokens (`nbt_<key>.<secret>`, NetBox 4.5+) are supported. Create one under
-*Admin → API Tokens* or with `POST /api/users/tokens/provision/`. The token is sent as
-`Authorization: Bearer nbt_<key>.<secret>`.
+Use a NetBox v2 API token (`nbt_<key>.<secret>`, NetBox 4.5+). Create one under *Admin → API Tokens* or with
+`POST /api/users/tokens/provision/` and `"version": 2`. The token is sent as `Authorization: Bearer nbt_<key>.<secret>`.
+
+Legacy 40-character v1 tokens are also accepted and sent as `Authorization: Token <token>`, but every run then shows a
+deprecation warning: NetBox deprecated v1 tokens in 4.6 and removes them in 5.0. The provider tells the two apart by the
+`nbt_` prefix; set only the token itself, without a `Bearer ` or `Token ` scheme.
 
 ## Rate limiting, retries and delays
 

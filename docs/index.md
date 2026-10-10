@@ -12,9 +12,12 @@ Every CRUD collection of the NetBox 4.7 API is available as a resource (`netbox_
 
 ## Authentication
 
-Only NetBox v2 API tokens (`nbt_<key>.<secret>`, NetBox 4.5+) are supported. Create one under
-*Admin → API Tokens* or with `POST /api/users/tokens/provision/`. The token is sent as
-`Authorization: Bearer nbt_<key>.<secret>`.
+Use a NetBox v2 API token (`nbt_<key>.<secret>`, NetBox 4.5+). Create one under *Admin → API Tokens* or with
+`POST /api/users/tokens/provision/` and `"version": 2`. The token is sent as `Authorization: Bearer nbt_<key>.<secret>`.
+
+Legacy 40-character v1 tokens are also accepted and sent as `Authorization: Token <token>`, but every run then shows a
+deprecation warning: NetBox deprecated v1 tokens in 4.6 and removes them in 5.0. The provider tells the two apart by the
+`nbt_` prefix; set only the token itself, without a `Bearer ` or `Token ` scheme.
 
 ## Rate limiting, retries and delays
 
@@ -39,7 +42,7 @@ terraform {
 # Credentials can also come from NETBOX_SERVER_URL and NETBOX_API_TOKEN.
 provider "netbox" {
   server_url = "https://netbox.example.com"
-  api_token  = var.netbox_token # a v2 token: nbt_<key>.<secret>
+  api_token  = var.netbox_token # a v2 token: nbt_<key>.<secret> (v1 tokens are deprecated)
 
   # Client-side pacing shared by every resource (all optional).
   requests_per_second = 10    # token bucket, 0 disables
@@ -77,7 +80,7 @@ variable "netbox_token" {
 ### Optional
 
 - `allow_insecure_https` (Boolean) Skip TLS certificate verification. Default `false`. Env: `NETBOX_ALLOW_INSECURE_HTTPS`.
-- `api_token` (String, Sensitive) NetBox **v2** API token in the form `nbt_<key>.<secret>`, sent as `Authorization: Bearer ...`. Legacy v1 tokens are not supported. Env: `NETBOX_API_TOKEN`.
+- `api_token` (String, Sensitive) NetBox API token. A v2 token (`nbt_<key>.<secret>`, NetBox 4.5+) is sent as `Authorization: Bearer ...`; a legacy 40-character v1 token is sent as `Authorization: Token ...` and produces a deprecation warning (NetBox deprecated v1 tokens in 4.6 and removes them in 5.0). Env: `NETBOX_API_TOKEN`.
 - `headers` (Map of String) Extra HTTP headers sent with every request (for example for a reverse proxy). `Authorization` cannot be overridden.
 - `max_retries` (Number) Number of retries after the first attempt for network errors, `429` and `5xx` responses (except `501`). Default `4`. Env: `NETBOX_MAX_RETRIES`.
 - `request_burst` (Number) Burst capacity of the rate limiter. Only used when `requests_per_second` > 0. Default `10`. Env: `NETBOX_REQUEST_BURST`.
