@@ -44,7 +44,7 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 
 ## Todos (file-anchored)
 
-- [ ] `generator/overrides`: remove `circuits.assignments` and `providers.accounts` skips (both now handled generically; `accounts` should become read-only, not skipped), remove `racks.*`, `virtual-machines.disk` and `tokens.pepper_id` `computed: true` (default now), keep `journal-entries.created_by` but define it in one file only.
+- [ ] `generator/overrides`: remove the `circuits.assignments` skip (dropping it regenerates a nested `assignments` attribute, so it is not redundant yet) and the `providers.accounts` skip (needs acceptance tests; `accounts` should become read-only, not skipped).
 - [ ] `generator/overrides/dcim_a.yaml`: drop the `ignore_changes = [site_ids]` in the ASN fixture (`asn.site_ids` is read-only now) and re-run `TestAccAsn_basic`.
 - [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
 - [ ] `docs/validation/*.md`: refresh after the next full run so they stop describing fixed issues as workarounds.
@@ -122,7 +122,6 @@ Attributes hidden or forced by overrides (revisit on every spec bump):
 | device_type | front_image, rear_image | skip | multipart upload |
 | data_source | type | choice enum | free string in the schema, three shipped backends |
 | devices, virtual_machines | primary_ip4, primary_ip6 | computed | managed by the primary-IP resources |
-| racks | outer_*, mounting_depth, weight, max_weight | computed | copied from the rack type (default now) |
 | tokens | token, key | expose | write-once secret |
 | journal_entry | created_by | computed | set by the server |
 

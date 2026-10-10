@@ -46,10 +46,7 @@ resources:
 
   virtual-machines:
     attributes:
-      # NetBox derives the VM disk size from its virtual disks once any exist;
-      # track the server value instead of fighting it.
       disk:
-        computed: true
         description: "Total disk size in MB. Managed by NetBox once virtual disks are attached."
     test:
       basic: |
@@ -266,10 +263,6 @@ resources:
         enabled: "true"
 
   tokens:
-    attributes:
-      # NetBox fills pepper_id (v2 tokens) server-side; track its value.
-      pepper_id:
-        computed: true
     test:
       basic: |
         resource "netbox_user" "test" {
