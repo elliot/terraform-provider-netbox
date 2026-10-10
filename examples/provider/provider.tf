@@ -10,7 +10,7 @@ terraform {
 # Credentials can also come from NETBOX_SERVER_URL and NETBOX_API_TOKEN.
 provider "netbox" {
   server_url = "https://netbox.example.com"
-  api_token  = var.netbox_token # a v2 token: nbt_<key>.<secret>
+  api_token  = var.netbox_token # a v2 token: nbt_<key>.<secret> (v1 tokens are deprecated)
 
   # Client-side pacing shared by every resource (all optional).
   requests_per_second = 10    # token bucket, 0 disables

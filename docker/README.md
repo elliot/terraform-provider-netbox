@@ -12,10 +12,10 @@ until the `/login/` health check passes.
 
 ## Getting a v2 API token
 
-The provider only accepts **v2 tokens** (`nbt_<key>.<secret>`, sent as
-`Authorization: Bearer ...`). The `SUPERUSER_API_TOKEN` created by the
-container entrypoint is a legacy v1 token and will be rejected. v2 tokens
-require at least one pepper: the compose file sets a test-only
+Use a **v2 token** (`nbt_<key>.<secret>`, sent as `Authorization: Bearer ...`).
+The `SUPERUSER_API_TOKEN` created by the container entrypoint is a legacy v1
+token: the provider accepts it (sent as `Authorization: Token ...`) but warns on
+every run, and NetBox removes v1 tokens in 5.0. v2 tokens require at least one pepper: the compose file sets a test-only
 `API_TOKEN_PEPPER_1` (override it with the environment variable of the same
 name); without it NetBox answers the provisioning call with a 500.
 

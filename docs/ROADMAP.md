@@ -44,7 +44,9 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 
 ## Todos (file-anchored)
 
-- [ ] `generator/overrides`: remove `circuits.assignments` and `providers.accounts` skips (both now handled generically; `accounts` should become read-only, not skipped), remove `racks.*`, `virtual-machines.disk` and `tokens.pepper_id` `computed: true` (default now), keep `journal-entries.created_by` but define it in one file only.
+- [ ] `generator/overrides`: remove the `circuits.assignments` skip (dropping it regenerates a nested `assignments` attribute, so it is not redundant yet) and the `providers.accounts` skip (needs acceptance tests; `accounts` should become read-only, not skipped).
+- [ ] `generator/overrides/dcim_a.yaml`: drop the `ignore_changes = [site_ids]` in the ASN fixture (`asn.site_ids` is read-only now) and re-run `TestAccAsn_basic`.
+- [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
 - [ ] `docs/validation/*.md`: refresh after the next full run so they stop describing fixed issues as workarounds.
 - [ ] Review Renovate's first dependency dashboard after the PR merges (`.github/renovate.json5`).
 - [ ] `tools/client-gen/generate.sh`: openapi-generator is pinned at 7.11.0 (latest 7.25.0). Bump `OAG_VERSION` / `OAG_SHA256` (and the copies in `client-gen.yml`) in a dedicated PR, since it regenerates all of `netbox/`; Renovate's custom manager will propose it, but the checksum has to be updated by hand.
@@ -52,7 +54,7 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 ## Sharp edges for users
 
 General
-- Only v2 tokens (`nbt_<key>.<secret>`) work; v1 tokens are rejected at configure time.
+- Use v2 tokens (`nbt_<key>.<secret>`). Legacy 40-character v1 tokens work but warn on every run; NetBox removes them in 5.0.
 - Attributes with a server default are `Optional+Computed`: removing them from the configuration keeps the current value rather than resetting it. Set them explicitly to change them.
 - NetBox trims whitespace from text fields and upper-cases MAC addresses and WWNs; the provider keeps your configured value when the difference is only that. MAC addresses and WWNs must be written in colon notation (`aa:bb:cc:dd:ee:ff`): NetBox rewrites other notations, so the provider rejects them at plan time.
 - Reverse sides of relations are read-only: attach ASNs from `netbox_site.asn_ids`, permissions from `netbox_permission`, provider accounts by creating `netbox_provider_account`.
@@ -120,7 +122,6 @@ Attributes hidden or forced by overrides (revisit on every spec bump):
 | device_type | front_image, rear_image | skip | multipart upload |
 | data_source | type | choice enum | free string in the schema, three shipped backends |
 | devices, virtual_machines | primary_ip4, primary_ip6 | computed | managed by the primary-IP resources |
-| racks | outer_*, mounting_depth, weight, max_weight | computed | copied from the rack type (default now) |
 | tokens | token, key | expose | write-once secret |
 | journal_entry | created_by | computed | set by the server |
 

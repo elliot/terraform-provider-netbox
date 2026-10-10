@@ -242,17 +242,6 @@ resources:
         u_height: "42"
 
   racks:
-    # NetBox copies the physical attributes of the rack type (form factor,
-    # width, height, outer dimensions, weight, mounting depth) onto the rack
-    # whenever rack_type is set, so the nullable ones must be Optional+Computed
-    # or Terraform reports an inconsistent result after apply.
-    attributes:
-      outer_width: { computed: true }
-      outer_height: { computed: true }
-      outer_depth: { computed: true }
-      mounting_depth: { computed: true }
-      weight: { computed: true }
-      max_weight: { computed: true }
     test:
       basic: |
         resource "netbox_site" "test" {

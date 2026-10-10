@@ -17,6 +17,3 @@ resources:
   table-configs:
     skip: true
     skip_reason: per-user UI state
-  journal-entries:
-    attributes:
-      created_by: { kind: fk, target: user }

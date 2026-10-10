@@ -3,7 +3,7 @@
 // The transport chain (outer to inner) is:
 //
 //	retry (go-retryablehttp) -> pacing (serialize / fixed delay / token bucket)
-//	-> per-attempt timeout -> headers (Bearer token, Accept, User-Agent)
+//	-> per-attempt timeout -> headers (Authorization, Accept, User-Agent)
 //	-> logging (tflog, token redacted) -> base TLS transport
 //
 // Every wait in the chain honours the request context, so a cancelled
@@ -24,7 +24,8 @@ type Config struct {
 	// path prefix). A trailing slash or "/api" suffix is tolerated.
 	ServerURL string
 	// Token is a NetBox v2 API token ("nbt_<key>.<secret>"), sent as
-	// "Authorization: Bearer <token>".
+	// "Authorization: Bearer <token>", or a deprecated 40-character v1 token,
+	// sent as "Authorization: Token <token>" (see ParseTokenVersion).
 	Token string
 
 	// RequestsPerSecond is the sustained request rate allowed by the shared
@@ -97,6 +98,9 @@ func (c Config) Validate() error {
 	}
 	if c.Token == "" {
 		return errors.New("API token must not be empty")
+	}
+	if _, err := ParseTokenVersion(c.Token); err != nil {
+		return fmt.Errorf("invalid API token: %w", err)
 	}
 	if c.RequestsPerSecond < 0 {
 		return errors.New("requests per second must not be negative")

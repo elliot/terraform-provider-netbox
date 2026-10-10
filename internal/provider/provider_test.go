@@ -91,14 +91,18 @@ func (d *testProbeDataSource) Read(ctx context.Context, _ datasource.ReadRequest
 // fake NetBox
 // ---------------------------------------------------------------------------
 
-const testToken = "nbt_x.y"
+const (
+	testToken   = "nbt_x.y"
+	testV1Token = "0123456789abcdef0123456789abcdef01234567"
+)
 
-// newFakeNetBox serves /api/status/ and enforces the Bearer token.
+// newFakeNetBox serves /api/status/ and accepts testToken as a v2 Bearer token
+// or testV1Token as a v1 token, like NetBox 4.7.
 func newFakeNetBox(t *testing.T, version string) *httptest.Server {
 	t.Helper()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		if r.Header.Get("Authorization") != "Bearer "+testToken {
+		if auth := r.Header.Get("Authorization"); auth != "Bearer "+testToken && auth != "Token "+testV1Token {
 			w.WriteHeader(http.StatusForbidden)
 			_, _ = w.Write([]byte(`{"detail":"Invalid token."}`))
 			return
@@ -251,8 +255,8 @@ func TestResolveSettings(t *testing.T) {
 		assertDiagContains(t, diags, "Missing NetBox API token")
 	})
 
-	t.Run("v1 token rejected", func(t *testing.T) {
-		for _, tok := range []string{"Token abc", "0123456789abcdef0123456789abcdef01234567", "nbt_nodot", "nbt_.x", "nbt_x."} {
+	t.Run("malformed token rejected", func(t *testing.T) {
+		for _, tok := range []string{"Token " + testV1Token, "Bearer " + testToken, "abc", testV1Token + "8", "nbt_nodot", "nbt_.x", "nbt_x."} {
 			m := providerModel{
 				ServerURL: types.StringValue("https://x"),
 				APIToken:  types.StringValue(tok),
@@ -260,6 +264,35 @@ func TestResolveSettings(t *testing.T) {
 			}
 			_, diags := resolveSettings(ctx, m, "dev", env(nil))
 			assertDiagContains(t, diags, "Unsupported NetBox API token format")
+		}
+	})
+
+	t.Run("v2 token has no warning", func(t *testing.T) {
+		m := providerModel{
+			ServerURL: types.StringValue("https://x"),
+			APIToken:  types.StringValue(testToken),
+			Headers:   types.MapNull(types.StringType),
+		}
+		_, diags := resolveSettings(ctx, m, "dev", env(nil))
+		if len(diags) != 0 {
+			t.Fatalf("unexpected diagnostics: %v", diags)
+		}
+	})
+
+	t.Run("v1 token accepted with deprecation warning", func(t *testing.T) {
+		m := providerModel{
+			ServerURL: types.StringValue("https://x"),
+			Headers:   types.MapNull(types.StringType),
+		}
+		s, diags := resolveSettings(ctx, m, "dev", env(map[string]string{EnvAPIToken: " " + testV1Token + "\n"}))
+		if diags.HasError() {
+			t.Fatalf("unexpected errors: %v", diags)
+		}
+		if s.client.Token != testV1Token {
+			t.Errorf("Token = %q, want surrounding whitespace trimmed", s.client.Token)
+		}
+		if diags.WarningsCount() != 1 || !strings.Contains(diags.Warnings()[0].Summary(), "Deprecated NetBox v1 API token") {
+			t.Fatalf("want one deprecation warning, got %v", diags)
 		}
 	})
 
@@ -355,6 +388,14 @@ func TestCheckServer(t *testing.T) {
 		var diags diag.Diagnostics
 		v := checkServer(ctx, newClient(t, srv, testToken), srv.URL, &diags)
 		if v != "4.6.0" || diags.HasError() || diags.WarningsCount() != 1 {
+			t.Fatalf("version = %q diags = %v", v, diags)
+		}
+	})
+	t.Run("v1 token ok", func(t *testing.T) {
+		srv := newFakeNetBox(t, "4.7.3")
+		var diags diag.Diagnostics
+		v := checkServer(ctx, newClient(t, srv, testV1Token), srv.URL, &diags)
+		if v != "4.7.3" || len(diags) != 0 {
 			t.Fatalf("version = %q diags = %v", v, diags)
 		}
 	})
@@ -465,7 +506,28 @@ func TestUnitProviderConfigure_SkipVersionCheck(t *testing.T) {
 	})
 }
 
-func TestUnitProviderConfigure_V1TokenRejected(t *testing.T) {
+// TestUnitProviderConfigure_V1Token checks that a legacy v1 token configures
+// the provider (with a deprecation warning, which does not fail the step) and
+// is sent with the "Token" scheme: the fake server rejects anything else.
+func TestUnitProviderConfigure_V1Token(t *testing.T) {
+	clearNetBoxEnv(t)
+	srv := newFakeNetBox(t, "4.7.0")
+
+	resource.UnitTest(t, resource.TestCase{
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{{
+			Config: fmt.Sprintf(`
+provider "netbox" {
+  server_url = %q
+  api_token  = %q
+}
+`, srv.URL, testV1Token) + probeConfig,
+			Check: resource.TestCheckResourceAttr("data.netbox_test_probe.t", "netbox_version", "4.7.0"),
+		}},
+	})
+}
+
+func TestUnitProviderConfigure_MalformedTokenRejected(t *testing.T) {
 	clearNetBoxEnv(t)
 	srv := newFakeNetBox(t, "4.7.0")
 
