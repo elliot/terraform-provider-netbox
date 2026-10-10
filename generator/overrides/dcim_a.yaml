@@ -80,8 +80,6 @@ resources:
           asn         = 4200000001
           rir_id      = netbox_rir.test.id
           description = "{{.Name}}"
-          # netbox_asn.site_ids mirrors netbox_site.asn_ids; the site owns the link here.
-          lifecycle { ignore_changes = [site_ids] }
         }
         resource "netbox_tag" "test" {
           name = "{{.Name}}"

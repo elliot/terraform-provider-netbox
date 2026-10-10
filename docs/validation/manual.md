@@ -38,8 +38,8 @@ First run (before the fixture fix described below):
 FAIL	github.com/elliot/terraform-provider-netbox/internal/provider/manual	80.264s
 ```
 
-Re-run of the two primary-IP tests after adding `lifecycle { ignore_changes = [primary_ip4_id, primary_ip6_id] }`
-to the parent fixtures:
+Re-run of the two primary-IP tests (originally with `lifecycle { ignore_changes = [primary_ip4_id, primary_ip6_id] }`
+on the parent fixtures; the block has since been removed and the tests pass without it on NetBox 4.7.2):
 
 ```
 --- PASS: TestAccVirtualMachinePrimaryIp_basic (62.58s)
@@ -107,32 +107,16 @@ ok  	github.com/elliot/terraform-provider-netbox/internal/provider/manual	83.540
 
 ## Interaction with the generated `netbox_device` / `netbox_virtual_machine`
 
-The generated parent resources expose `primary_ip4_id` / `primary_ip6_id` as
-plain `Optional` FKs: a null plan value is sent as JSON null on every PATCH and
-a non-null server value is reported as drift on refresh. Consequently, after
-`netbox_device_primary_ip` sets the primary address, the next refresh of the
-parent plans `- primary_ip4_id = 226 -> null` (the first-run failure above) and
-applying it would clear the assignment.
+Originally the generated parent resources exposed `primary_ip4_id` / `primary_ip6_id`
+as plain `Optional` FKs: after `netbox_device_primary_ip` set the primary address,
+the next refresh of the parent planned `- primary_ip4_id = 226 -> null` (the
+first-run failure above) and applying it would have cleared the assignment.
 
-Workaround used in the tests, examples and resource documentation:
-
-```hcl
-resource "netbox_device" "leaf1" {
-  # ...
-  lifecycle {
-    ignore_changes = [primary_ip4_id, primary_ip6_id]
-  }
-}
-```
-
-With `ignore_changes` the parent's plan carries the current value forward, so
-its own updates no longer clear the primary IP either.
-
-Recommendation for the generator (not done here, generated code is out of
-scope for this phase): mark `primary_ip4` / `primary_ip6` on `devices` and
-`virtualization/virtual-machines` as `Optional+Computed` with
-`UseStateForUnknown`, or skip them, so that `netbox_*_primary_ip` can be used
-without the lifecycle block.
+Resolved: `primary_ip4_id` / `primary_ip6_id` are `Optional+Computed` with
+`UseStateForUnknown` on the generated parents, so the parent's plan carries the
+current value forward and `netbox_*_primary_ip` works without a `lifecycle`
+block (confirmed by `TestAccDevicePrimaryIp_basic` and
+`TestAccVirtualMachinePrimaryIp_basic` without `ignore_changes`).
 
 ## Fixture isolation on the shared demo
 

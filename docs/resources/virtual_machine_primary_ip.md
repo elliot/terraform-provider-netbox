@@ -5,7 +5,6 @@ subcategory: ""
 description: |-
   Sets the primary IPv4 or IPv6 address of a virtual machine (PATCH /api/virtualization/virtual-machines/{id}/ with primary_ip4 / primary_ip6). Use it instead of primary_ip4_id / primary_ip6_id on netbox_virtual_machine when the IP address is assigned to an interface of the same virtual machine, which would otherwise create a dependency cycle (virtual machine -> interface -> IP address -> virtual machine).
   NetBox requires the address to be assigned to an interface of the virtual machine. The resource ID is the virtual machine ID; terraform import netbox_virtual_machine_primary_ip.example <virtual_machine_id> picks the primary IPv4 when set, otherwise the primary IPv6. Destroying the resource clears the primary address on the virtual machine.
-  The netbox_virtual_machine resource also tracks primary_ip4_id / primary_ip6_id, so add lifecycle { ignore_changes = [primary_ip4_id, primary_ip6_id] } to the netbox_virtual_machine managing the parent; otherwise its next refresh reports the assignment made here as drift and its next update clears it (which this resource would then detect and repair).
 ---
 
 # netbox_virtual_machine_primary_ip (Resource)
@@ -13,8 +12,6 @@ description: |-
 Sets the primary IPv4 or IPv6 address of a virtual machine (`PATCH /api/virtualization/virtual-machines/{id}/` with `primary_ip4` / `primary_ip6`). Use it instead of `primary_ip4_id` / `primary_ip6_id` on `netbox_virtual_machine` when the IP address is assigned to an interface of the same virtual machine, which would otherwise create a dependency cycle (virtual machine -> interface -> IP address -> virtual machine).
 
 NetBox requires the address to be assigned to an interface of the virtual machine. The resource ID is the virtual machine ID; `terraform import netbox_virtual_machine_primary_ip.example <virtual_machine_id>` picks the primary IPv4 when set, otherwise the primary IPv6. Destroying the resource clears the primary address on the virtual machine.
-
-The `netbox_virtual_machine` resource also tracks `primary_ip4_id` / `primary_ip6_id`, so add `lifecycle { ignore_changes = [primary_ip4_id, primary_ip6_id] }` to the `netbox_virtual_machine` managing the parent; otherwise its next refresh reports the assignment made here as drift and its next update clears it (which this resource would then detect and repair).
 
 ## Example Usage
 
@@ -36,11 +33,6 @@ resource "netbox_virtual_machine" "app01" {
   cluster_id = netbox_cluster.dc1.id
   vcpus      = 4
   memory     = 8192
-  # The primary address depends on the interface, which depends on this VM,
-  # so it is assigned by netbox_virtual_machine_primary_ip below and ignored here.
-  lifecycle {
-    ignore_changes = [primary_ip4_id, primary_ip6_id]
-  }
 }
 
 resource "netbox_vm_interface" "app01_eth0" {

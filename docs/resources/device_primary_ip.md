@@ -5,7 +5,6 @@ subcategory: ""
 description: |-
   Sets the primary IPv4 or IPv6 address of a device (PATCH /api/dcim/devices/{id}/ with primary_ip4 / primary_ip6). Use it instead of primary_ip4_id / primary_ip6_id on netbox_device when the IP address is assigned to an interface of the same device, which would otherwise create a dependency cycle (device -> interface -> IP address -> device).
   NetBox requires the address to be assigned to an interface of the device. The resource ID is the device ID; terraform import netbox_device_primary_ip.example <device_id> picks the primary IPv4 when set, otherwise the primary IPv6. Destroying the resource clears the primary address on the device.
-  The netbox_device resource also tracks primary_ip4_id / primary_ip6_id, so add lifecycle { ignore_changes = [primary_ip4_id, primary_ip6_id] } to the netbox_device managing the parent; otherwise its next refresh reports the assignment made here as drift and its next update clears it (which this resource would then detect and repair).
 ---
 
 # netbox_device_primary_ip (Resource)
@@ -13,8 +12,6 @@ description: |-
 Sets the primary IPv4 or IPv6 address of a device (`PATCH /api/dcim/devices/{id}/` with `primary_ip4` / `primary_ip6`). Use it instead of `primary_ip4_id` / `primary_ip6_id` on `netbox_device` when the IP address is assigned to an interface of the same device, which would otherwise create a dependency cycle (device -> interface -> IP address -> device).
 
 NetBox requires the address to be assigned to an interface of the device. The resource ID is the device ID; `terraform import netbox_device_primary_ip.example <device_id>` picks the primary IPv4 when set, otherwise the primary IPv6. Destroying the resource clears the primary address on the device.
-
-The `netbox_device` resource also tracks `primary_ip4_id` / `primary_ip6_id`, so add `lifecycle { ignore_changes = [primary_ip4_id, primary_ip6_id] }` to the `netbox_device` managing the parent; otherwise its next refresh reports the assignment made here as drift and its next update clears it (which this resource would then detect and repair).
 
 ## Example Usage
 
@@ -47,11 +44,6 @@ resource "netbox_device" "leaf1" {
   device_type_id = netbox_device_type.dcs_7050.id
   role_id        = netbox_device_role.leaf.id
   site_id        = netbox_site.dc1.id
-  # The primary address depends on the interface, which depends on this
-  # device, so it is assigned by netbox_device_primary_ip below and ignored here.
-  lifecycle {
-    ignore_changes = [primary_ip4_id, primary_ip6_id]
-  }
 }
 
 resource "netbox_interface" "leaf1_mgmt" {
