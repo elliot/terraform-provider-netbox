@@ -42,3 +42,29 @@ func TestFormatValidators(t *testing.T) {
 		})
 	}
 }
+
+func TestMaxDecimals(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		value types.Float64
+		ok    bool
+	}{
+		{"null", types.Float64Null(), true},
+		{"unknown", types.Float64Unknown(), true},
+		{"integer", types.Float64Value(52), true},
+		{"one decimal", types.Float64Value(-33.9), true},
+		{"six decimals", types.Float64Value(52.520008), true},
+		{"six decimals negative", types.Float64Value(-122.419416), true},
+		{"seven decimals", types.Float64Value(52.5200081), false},
+		{"many decimals", types.Float64Value(13.404954123456), false},
+		{"tiny", types.Float64Value(0.0000001), false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var resp validator.Float64Response
+			MaxDecimals(6).ValidateFloat64(context.Background(), validator.Float64Request{Path: path.Root("x"), ConfigValue: tc.value}, &resp)
+			if got := !resp.Diagnostics.HasError(); got != tc.ok {
+				t.Fatalf("valid = %v, want %v (%v)", got, tc.ok, resp.Diagnostics)
+			}
+		})
+	}
+}

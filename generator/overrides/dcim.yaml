@@ -45,10 +45,6 @@ resources:
     attributes:
       front_image: { skip: true }
       rear_image: { skip: true }
-  sites:
-    attributes:
-      latitude: { precision: 6 }
-      longitude: { precision: 6 }
   devices:
     attributes:
       # Usually managed through netbox_device_primary_ip (breaks the

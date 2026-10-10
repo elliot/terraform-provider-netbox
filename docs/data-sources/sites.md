@@ -66,8 +66,8 @@ Read-Only:
 - `group_id` (Number) ID of the Site Group (`netbox_site_group`).
 - `id` (Number) The numeric ID of the object in NetBox.
 - `last_updated` (String) Last Updated.
-- `latitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.
-- `longitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.
+- `latitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.
+- `longitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.
 - `name` (String) Full name of the site.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `physical_address` (String) Physical location of the building. Defaults to an empty string.

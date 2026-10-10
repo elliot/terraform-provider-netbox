@@ -143,11 +143,11 @@ func siteDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"latitude": dsschema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"longitude": dsschema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"owner_id": dsschema.Int64Attribute{

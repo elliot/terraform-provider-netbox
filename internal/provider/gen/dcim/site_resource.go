@@ -179,15 +179,17 @@ func siteResourceAttributes() map[string]schema.Attribute {
 			Default:             stringdefault.StaticString(""),
 		},
 		"latitude": schema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
 			Computed:            true,
+			Validators:          []validator.Float64{conv.MaxDecimals(6)},
 			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"longitude": schema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
 			Computed:            true,
+			Validators:          []validator.Float64{conv.MaxDecimals(6)},
 			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"owner_id": schema.Int64Attribute{

@@ -257,6 +257,11 @@ func schemaAttr(r *model.Resource, a model.Attr, pkg string, dataSource bool, lo
 		case model.FormatWWN:
 			vals = append(vals, "conv.WWN()")
 		}
+	case model.KindFloat:
+		if a.Precision > 0 {
+			vtype = "Float64"
+			vals = append(vals, fmt.Sprintf("conv.MaxDecimals(%d)", a.Precision))
+		}
 	case model.KindChoice:
 		vtype = "String"
 		if len(a.Enum) > 0 {
