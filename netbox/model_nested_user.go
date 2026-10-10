@@ -27,7 +27,7 @@ type NestedUser struct {
 	DisplayUrl *string `json:"display_url,omitempty"`
 	Display    *string `json:"display,omitempty"`
 	// Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-	Username             *string `json:"username,omitempty" validate:"regexp=^[\\\\w.@+-]+$"`
+	Username             *string `json:"username,omitempty" validate:"regexp=^[\\w.@+-]+$"`
 	AdditionalProperties map[string]interface{}
 }
 

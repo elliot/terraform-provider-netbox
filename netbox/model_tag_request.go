@@ -23,7 +23,7 @@ var _ MappedNullable = &TagRequest{}
 // TagRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type TagRequest struct {
 	Name                 string   `json:"name"`
-	Slug                 string   `json:"slug" validate:"regexp=^[-\\\\w]+$"`
+	Slug                 string   `json:"slug" validate:"regexp=^[-\\w]+$"`
 	Color                *string  `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
 	Description          *string  `json:"description,omitempty"`
 	Weight               *int32   `json:"weight,omitempty"`

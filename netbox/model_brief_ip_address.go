@@ -30,7 +30,7 @@ type BriefIPAddress struct {
 	NatInside  NullableNestedIPAddress `json:"nat_inside,omitempty"`
 	NatOutside []NestedIPAddress       `json:"nat_outside,omitempty"`
 	// Hostname or FQDN (not case-sensitive)
-	DnsName              *string `json:"dns_name,omitempty" validate:"regexp=^([0-9A-Za-z_-]+|\\\\*)(\\\\.[0-9A-Za-z_-]+)*\\\\.?$"`
+	DnsName              *string `json:"dns_name,omitempty" validate:"regexp=^([0-9A-Za-z_-]+|\\*)(\\.[0-9A-Za-z_-]+)*\\.?$"`
 	Description          *string `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
 }

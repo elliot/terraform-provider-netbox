@@ -24,7 +24,7 @@ var _ MappedNullable = &BulkTagRequest{}
 type BulkTagRequest struct {
 	Id                   int32    `json:"id"`
 	Name                 string   `json:"name"`
-	Slug                 string   `json:"slug" validate:"regexp=^[-\\\\w]+$"`
+	Slug                 string   `json:"slug" validate:"regexp=^[-\\w]+$"`
 	Color                *string  `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
 	Description          *string  `json:"description,omitempty"`
 	Weight               *int32   `json:"weight,omitempty"`
