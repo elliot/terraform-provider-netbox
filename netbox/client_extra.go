@@ -22,15 +22,19 @@ const DefaultPageSize int32 = 250
 // NewClient returns an APIClient for the NetBox instance at serverURL
 // (scheme://host[:port][/prefix], without the /api suffix). Authentication and
 // user agent headers are expected to be injected by httpClient's transport; if
-// token is non-empty a v2 "Authorization: Bearer" header is set as a default
-// header instead.
+// token is non-empty it is set as a default Authorization header instead:
+// "Bearer <token>" for v2 tokens (nbt_<key>.<secret>), "Token <token>" for
+// legacy v1 tokens.
 func NewClient(serverURL string, httpClient *http.Client, token string) *APIClient {
 	cfg := NewConfiguration()
 	cfg.Servers = ServerConfigurations{{URL: strings.TrimSuffix(strings.TrimSuffix(serverURL, "/"), "/api")}}
 	cfg.HTTPClient = httpClient
 	cfg.Debug = false // never enable: dumps the Authorization header to the global logger
-	if token != "" {
+	switch {
+	case strings.HasPrefix(token, "nbt_"):
 		cfg.AddDefaultHeader("Authorization", "Bearer "+token)
+	case token != "":
+		cfg.AddDefaultHeader("Authorization", "Token "+token)
 	}
 	cfg.AddDefaultHeader("Accept-Language", "en-US")
 	return NewAPIClient(cfg)

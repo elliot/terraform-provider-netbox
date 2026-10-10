@@ -485,6 +485,8 @@ func TestConfigValidate(t *testing.T) {
 		func(c *Config) { c.ServerURL = "ftp://x" },
 		func(c *Config) { c.ServerURL = "https://" },
 		func(c *Config) { c.Token = "" },
+		func(c *Config) { c.Token = "nbt_nodot" },
+		func(c *Config) { c.Token = "Token abc" },
 		func(c *Config) { c.RequestsPerSecond = -1 },
 		func(c *Config) { c.RequestsPerSecond = 1; c.Burst = 0 },
 		func(c *Config) { c.RequestDelay = -time.Second },

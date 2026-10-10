@@ -116,8 +116,10 @@ func (p *netboxProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 			"api_token": schema.StringAttribute{
 				Optional:  true,
 				Sensitive: true,
-				MarkdownDescription: "NetBox **v2** API token in the form `nbt_<key>.<secret>`, sent as " +
-					"`Authorization: Bearer ...`. Legacy v1 tokens are not supported. Env: `" + EnvAPIToken + "`.",
+				MarkdownDescription: "NetBox API token. A v2 token (`nbt_<key>.<secret>`, NetBox 4.5+) is sent as " +
+					"`Authorization: Bearer ...`; a legacy 40-character v1 token is sent as `Authorization: Token ...` " +
+					"and produces a deprecation warning (NetBox deprecated v1 tokens in 4.6 and removes them in 5.0). " +
+					"Env: `" + EnvAPIToken + "`.",
 			},
 			"requests_per_second": schema.Float64Attribute{
 				Optional:   true,
@@ -309,18 +311,25 @@ func resolveSettings(ctx context.Context, m providerModel, version string, geten
 	}
 
 	s.client.Token = strings.TrimSpace(r.str(m.APIToken, EnvAPIToken))
-	switch {
-	case s.client.Token == "":
+	if s.client.Token == "" {
 		diags.AddAttributeError(path.Root("api_token"),
 			"Missing NetBox API token",
 			"Set api_token in the provider configuration or the "+EnvAPIToken+" environment variable.")
-	case !isV2Token(s.client.Token):
-		diags.AddAttributeError(path.Root("api_token"),
-			"Unsupported NetBox API token format",
-			"This provider supports only NetBox v2 API tokens, which look like nbt_<key>.<secret> and are sent "+
-				"as \"Authorization: Bearer ...\". Legacy v1 tokens (\"Authorization: Token ...\") are not supported. "+
-				"Create a v2 token in the NetBox UI (Admin > API Tokens) or with POST /api/users/tokens/provision/ "+
-				"using \"version\": 2; the secret is shown only once.")
+	} else {
+		switch v, err := client.ParseTokenVersion(s.client.Token); {
+		case err != nil:
+			diags.AddAttributeError(path.Root("api_token"),
+				"Unsupported NetBox API token format",
+				"The API token is not a NetBox v2 or v1 token: "+err.Error()+". "+
+					"Create a v2 token in the NetBox UI (Admin > API Tokens) or with POST /api/users/tokens/provision/ "+
+					"using \"version\": 2; the secret is shown only once.")
+		case v == client.TokenV1:
+			diags.AddAttributeWarning(path.Root("api_token"),
+				"Deprecated NetBox v1 API token",
+				"The API token is a legacy v1 token, sent as \"Authorization: Token ...\". NetBox deprecated v1 tokens "+
+					"in 4.6 and removes them in 5.0. Replace it with a v2 token (nbt_<key>.<secret>), created in the "+
+					"NetBox UI (Admin > API Tokens) or with POST /api/users/tokens/provision/ using \"version\": 2.")
+		}
 	}
 
 	s.client.RequestsPerSecond = r.f64(m.RequestsPerSecond, EnvRequestsPerSecond, s.client.RequestsPerSecond)
@@ -353,16 +362,6 @@ func resolveSettings(ctx context.Context, m providerModel, version string, geten
 		diags.AddError("Invalid NetBox provider configuration", err.Error())
 	}
 	return s, diags
-}
-
-// isV2Token reports whether tok looks like a NetBox v2 token (nbt_<key>.<secret>).
-func isV2Token(tok string) bool {
-	if !strings.HasPrefix(tok, "nbt_") {
-		return false
-	}
-	rest := strings.TrimPrefix(tok, "nbt_")
-	key, secret, ok := strings.Cut(rest, ".")
-	return ok && key != "" && secret != ""
 }
 
 // envFor maps an attribute name to its environment variable.
@@ -482,7 +481,7 @@ func checkServer(ctx context.Context, hc *http.Client, serverURL string, diags *
 		apiErr := client.ParseAPIError(resp, body)
 		diags.AddAttributeError(path.Root("api_token"),
 			"NetBox rejected the API token",
-			fmt.Sprintf("GET %s returned %d %s: %s. Check that api_token (or %s) is a valid, enabled v2 token "+
+			fmt.Sprintf("GET %s returned %d %s: %s. Check that api_token (or %s) is a valid, enabled token "+
 				"for this server and that its IP allow-list (if any) includes this host.",
 				statusURL, resp.StatusCode, http.StatusText(resp.StatusCode), apiErr.Detail, EnvAPIToken))
 		return ""

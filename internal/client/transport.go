@@ -378,7 +378,7 @@ func (h *headerTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 		}
 		r.Header.Set(k, v)
 	}
-	r.Header.Set("Authorization", "Bearer "+h.token)
+	r.Header.Set("Authorization", AuthorizationHeader(h.token))
 	return h.next.RoundTrip(r)
 }
 

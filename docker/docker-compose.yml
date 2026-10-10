@@ -29,15 +29,15 @@ x-netbox: &netbox
     REDIS_CACHE_DATABASE: "1"
     REDIS_CACHE_SSL: "false"
     SECRET_KEY: "r(m)9nLGnz$(_q3N-2Nw4ZWr9bHfQx7FBnqoeEwZvuvHX7HTF1i0BUXe1tfacc-only"
-    # v2 API tokens (the only kind the provider accepts) need at least one
+    # v2 API tokens (what the provider and CI use) need at least one
     # pepper; without it /api/users/tokens/provision/ returns 500. Test-only value.
     API_TOKEN_PEPPER_1: ${API_TOKEN_PEPPER_1:-tfacc-pepper-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV}
     SKIP_SUPERUSER: "false"
     SUPERUSER_NAME: ${SUPERUSER_NAME:-admin}
     SUPERUSER_EMAIL: ${SUPERUSER_EMAIL:-admin@example.com}
     SUPERUSER_PASSWORD: ${SUPERUSER_PASSWORD:-admin}
-    # Legacy (v1) token created by the entrypoint. The provider does NOT
-    # accept it; provision a v2 token as described in docker/README.md.
+    # Legacy (v1) token created by the entrypoint. The provider accepts it with
+    # a deprecation warning; provision a v2 token as described in docker/README.md.
     SUPERUSER_API_TOKEN: ${SUPERUSER_API_TOKEN:-0123456789abcdef0123456789abcdef01234567}
     # Keep the demo-like throttle off so acceptance tests are not rate-limited
     # by the server; the provider's own limiter is what is under test.

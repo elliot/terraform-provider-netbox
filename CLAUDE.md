@@ -31,7 +31,7 @@ OpenAPI document in `spec/` (version in `spec/VERSION`); see @docs/GENERATOR.md 
 
 ## Acceptance tests
 
-- Need `TF_ACC=1`, `NETBOX_SERVER_URL`, `NETBOX_API_TOKEN` (v2 only: `nbt_<key>.<secret>`). Run only the
+- Need `TF_ACC=1`, `NETBOX_SERVER_URL`, `NETBOX_API_TOKEN` (v2 `nbt_<key>.<secret>`; a v1 token works but warns). Run only the
   affected tests: `TF_ACC=1 go test ./internal/provider/gen/<app>/ -run 'TestAcc<Resource>_basic' -v`.
 - Target: demo.netbox.dev when it runs the pinned NetBox version (`make demo-token`, then
   `set -a; . ./.env.demo; set +a`, and `NETBOX_REQUESTS_PER_SECOND=5`); for an older version use the local
