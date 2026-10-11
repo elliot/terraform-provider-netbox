@@ -6,6 +6,29 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-11
+
+### Added
+
+- `netbox_provider` (and its data sources) exposes the provider's accounts as a computed `account_ids` set
+  ([#31](https://github.com/elliot/terraform-provider-netbox/pull/31)).
+
+### Changed
+
+- Legacy NetBox v1 API tokens (40 characters) are accepted again, with a deprecation warning on every plan;
+  NetBox 5.0 removes them, so switch to a v2 token (`nbt_<key>.<secret>`). Malformed tokens now fail with the
+  specific reason ([#22](https://github.com/elliot/terraform-provider-netbox/pull/22)).
+- `latitude` and `longitude` on `netbox_site` and `netbox_device` reject more than six decimal places at plan
+  time. NetBox stores six and silently rounded finer values, which then differed from the configuration;
+  configurations with seven or more decimals now fail validation
+  ([#23](https://github.com/elliot/terraform-provider-netbox/pull/23)).
+
+### Fixed
+
+- Several `netbox_custom_field_value` resources on the same object no longer lose values when applied in
+  parallel: NetBox kept only one of overlapping updates, so a field could silently disappear or show up as an
+  inconsistent result after apply ([#33](https://github.com/elliot/terraform-provider-netbox/pull/33)).
+
 ## [0.3.0] - 2026-10-02
 
 ### Added
@@ -131,7 +154,8 @@ All notable changes to this project are documented in this file. The format foll
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.0...v0.1.1
