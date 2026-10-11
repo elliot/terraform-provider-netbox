@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write # push the release/vX.Y.Z branch
+      contents: write # create the release/vX.Y.Z branch and its commit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -46,25 +46,30 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: ./scripts/prepare-release.sh "$VERSION"
-      - name: Push release branch
+      - name: Create release branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: ${{ github.repository }}
           SERVER_URL: ${{ github.server_url }}
+          BASE_SHA: ${{ github.sha }}
           VERSION: ${{ steps.prepare.outputs.version }}
         run: |
           branch="release/v$VERSION"
-          # Credentials only for these two commands, never stored in the checkout.
-          auth=(-c "http.extraheader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)")
-          if git "${auth[@]}" ls-remote --exit-code --heads origin "$branch" >/dev/null; then
-            echo "::error::branch $branch already exists; edit its pull request or delete the branch and re-run"
+          # Branch and commit through the API rather than `git push`: GitHub signs
+          # commits made with GITHUB_TOKEN this way, and `main` requires signed
+          # commits, so a locally made (unsigned) commit would block the merge.
+          if ! gh api "repos/$REPOSITORY/git/refs" -f ref="refs/heads/$branch" -f sha="$BASE_SHA" >/dev/null; then
+            echo "::error::could not create branch $branch (does it exist already? edit its pull request or delete the branch and re-run)"
             exit 1
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -c "$branch"
-          git commit -m "chore(release): v$VERSION" -- CHANGELOG.md
-          git "${auth[@]}" push origin "HEAD:refs/heads/$branch"
+          content="$RUNNER_TEMP/changelog.b64"
+          base64 -w0 CHANGELOG.md >"$content"
+          gh api -X PUT "repos/$REPOSITORY/contents/CHANGELOG.md" \
+            -f message="chore(release): v$VERSION" \
+            -f branch="$branch" \
+            -f sha="$(git rev-parse "$BASE_SHA:CHANGELOG.md")" \
+            -F content=@"$content" \
+            --jq '"committed \(.commit.sha) (verified: \(.commit.verification.verified))"'
 
           title="chore(release): v$VERSION"
           {
