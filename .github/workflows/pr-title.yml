@@ -1,0 +1,34 @@
+name: PR title
+
+# Pull requests are squash-merged, so the title becomes the commit subject that
+# git-cliff turns into a CHANGELOG.md entry (cliff.toml). It must be a
+# Conventional Commit subject: type(optional-scope)!: description.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  conventional:
+    name: Conventional Commit title
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          re='^(feat|fix|perf|revert|refactor|docs|test|build|ci|chore|style)(\([a-z0-9._/-]+\))?!?: [^ ].*$'
+          if [[ "$TITLE" =~ $re ]]; then
+            echo "ok: $TITLE"
+            exit 0
+          fi
+          echo "::error::PR title must be a Conventional Commit subject, e.g. 'feat(ipam): add netbox_vlan_translation_policy' or 'fix: ...'"
+          echo "Types: feat, fix, perf, revert (listed in CHANGELOG.md); refactor, docs, test, build, ci, chore, style (not listed)."
+          echo "'!' after the type or scope marks a breaking change. Got: $TITLE"
+          exit 1

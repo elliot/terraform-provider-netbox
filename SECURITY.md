@@ -47,13 +47,17 @@ In the repository:
 * No `pull_request_target` or `workflow_run` triggers; pull requests from forks never receive a write token
   or secrets.
 * Every action is pinned to a full commit SHA, and zizmor's impostor-commit audit checks each SHA belongs to
-  its upstream repository. Tools installed by actions (GoReleaser, golangci-lint, zizmor) are pinned to exact
-  versions, and the openapi-generator jar is pinned by SHA-256.
+  its upstream repository. Tools installed by actions or scripts (GoReleaser, golangci-lint, zizmor,
+  git-cliff) are pinned to exact versions, and the openapi-generator jar is pinned by SHA-256.
 * Workflows start from `permissions: {}` and each job requests only the scopes it uses; checkouts do not
   persist the token.
 * CI Go caches are written only by pushes to `main`; pull requests restore them but never save. Release
   builds run without the Actions cache, inside the `release` deployment environment that holds
   the signing secrets, and publish provenance attestations.
+* Release tags are created by the Release workflow only for a `chore(release): vX.Y.Z` commit that reached
+  `main` through a pull request; it then dispatches the build on the tag, so the `release` environment stays
+  limited to `v*` tags. Release notes come from the reviewed `CHANGELOG.md`, never straight from commit
+  messages.
 * Renovate proposes dependency updates only after a 7-day cooldown; security fixes bypass it.
 
 In the GitHub settings (maintainer checklist):

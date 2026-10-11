@@ -1,5 +1,15 @@
-# Builds a GitHub Release from every v* tag and refreshes the provider network
-# mirror on GitHub Pages (docs/INSTALL.md).
+# Builds a GitHub Release from a v* tag and refreshes the provider network
+# mirror on GitHub Pages (docs/INSTALL.md). The release notes are the version's
+# CHANGELOG.md section; the build fails when that section is missing.
+#
+# Runs for
+#   * a pushed v* tag;
+#   * "Run workflow" on a v* tag (re-runs a release);
+#   * the merged release pull request ("chore(release): vX.Y.Z", opened by
+#     prepare-release.yml): the `tag` job tags the merge commit and dispatches
+#     this workflow on the new tag, so the build always runs from a tag ref and
+#     the `release` environment can stay limited to v* tags. (A tag created
+#     with GITHUB_TOKEN starts no workflow; a workflow_dispatch does.)
 #
 # `release` environment secrets:  GPG_PRIVATE_KEY, PASSPHRASE  (sign SHA256SUMS)
 # Repository variables (optional): RELEASE_KEY_FINGERPRINT     expected signing key
@@ -11,6 +21,12 @@ on:
   push:
     tags:
       - "v*"
+    # Path filters do not apply to tag pushes.
+    branches:
+      - main
+    paths:
+      - CHANGELOG.md
+  workflow_dispatch:
 
 permissions: {}
 
@@ -19,8 +35,53 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  tag:
+    name: Tag merged release pull request
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # create the tag
+      actions: write # dispatch this workflow on the tag
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          # Only the squash-merged release pull request ("chore(release): v0.2.0 (#12)")
+          # releases; other pushes that touch CHANGELOG.md stop here.
+          subject="${MESSAGE%%$'\n'*}"
+          re='^chore\(release\): v([0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?)( \(#[0-9]+\))?$'
+          if ! [[ "$subject" =~ $re ]]; then
+            echo "not a release commit: $subject"
+            exit 0
+          fi
+          version="${BASH_REMATCH[1]}"
+          tag="v$version"
+          if ! grep -q "^## \[${version//./\\.}\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no [$version] section"
+            exit 1
+          fi
+          if gh api "repos/$REPOSITORY/git/ref/tags/$tag" >/dev/null 2>&1; then
+            echo "::error::tag $tag already exists"
+            exit 1
+          fi
+          # Annotated tag through the API, so no credentials touch the checkout.
+          tag_sha="$(gh api "repos/$REPOSITORY/git/tags" -f tag="$tag" -f message="$tag" \
+            -f object="$SHA" -f type=commit --jq .sha)"
+          gh api "repos/$REPOSITORY/git/refs" -f ref="refs/tags/$tag" -f sha="$tag_sha" >/dev/null
+          echo "created $tag on $SHA"
+          gh workflow run release.yml --repo "$REPOSITORY" --ref "$tag"
+          echo "Tagged $tag; the release build runs in a new Release workflow run on that tag." >>"$GITHUB_STEP_SUMMARY"
+
   goreleaser:
     name: Build and publish release
+    if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -49,6 +110,10 @@ jobs:
         with:
           go-version-file: go.mod
           cache: false
+      - name: Release notes from CHANGELOG.md
+        env:
+          TAG: ${{ github.ref_name }}
+        run: go run ./tools/changelog notes -version "$TAG" >"$RUNNER_TEMP/release-notes.md"
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
@@ -70,7 +135,7 @@ jobs:
         with:
           distribution: goreleaser
           version: v2.18.2 # renovate: datasource=github-releases depName=goreleaser/goreleaser
-          args: release --clean --parallelism 1
+          args: release --clean --parallelism 1 --release-notes ${{ runner.temp }}/release-notes.md
         env:
           GOGC: "50"
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}

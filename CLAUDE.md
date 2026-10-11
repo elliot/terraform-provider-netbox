@@ -56,7 +56,8 @@ OpenAPI document in `spec/` (version in `spec/VERSION`); see @docs/GENERATOR.md 
 
 - Branches `feat/...`, `fix/...`, `chore/...` (the labeller maps `feat/`/`fix/` to labels); Conventional
   Commits; PRs are squash-merged, so the PR title must be a conventional-commit subject.
-- Do not edit `CHANGELOG.md`; it is written when cutting a release. Remove finished items from
-  `docs/ROADMAP.md` as they land.
+- Do not edit `CHANGELOG.md`; the Prepare release workflow drafts each release's section from the PR titles
+  (`cliff.toml`) and it is edited in the release PR (docs/DEVELOPMENT.md, *Releasing*). Remove finished
+  items from `docs/ROADMAP.md` as they land.
 - Workflows: pin actions to full commit SHAs with a `# vX.Y.Z` comment, start from `permissions: {}`, set
   `persist-credentials: false`, never use `pull_request_target`; zizmor and CodeQL run in CI (see SECURITY.md).
