@@ -28,6 +28,36 @@ At start-up the provider reads `/api/status/` and warns (without failing) when t
 version differs from the one it was generated for; set `skip_version_check = true` to silence it.
 v2 API tokens require NetBox 4.5 or later; legacy v1 tokens still work, with a deprecation warning.
 
+#### Older NetBox releases
+
+Only the pinned version (4.7.x) is fully supported. Older 4.x releases were checked once against the
+provider's acceptance suite (2026-10-11, official `netboxcommunity/netbox` images, provider generated from the
+4.7.2 spec). This is a snapshot, not something CI repeats: the nightly acceptance run covers the pinned version only.
+
+| NetBox | Acceptance tests passed | What fails |
+|---|---|---|
+| 4.7.x (pinned) | 138 of 139 | One custom-field-value test; a fix (#33) landed on `main` after the run |
+| 4.6.10 | 128 of 140 | Everything that is new in 4.7 (see below) |
+| 4.5.10 | 122 of 140 | The 4.7 additions, plus the 4.6 additions |
+| 4.4.10 | 108 of 140 | Not recommended: v2 tokens do not exist, and many resources return 404 or fail after apply |
+
+What an older server lacks shows up in two ways, so check this list before using a newer resource or attribute:
+
+* **Missing endpoint (`404 Not Found` on create).** Resources that need 4.7: the `netbox_cooling_*` family
+  (source, feed, intake, outflow and their templates) and `netbox_module_bay_type`. Resources that need 4.6:
+  `netbox_cable_bundle`, `netbox_virtual_machine_type` and `netbox_rack_group`.
+* **Attribute NetBox silently drops (`Provider produced inconsistent result after apply`).** An older server
+  ignores fields it does not know, so the value you set comes back null. Attributes that need 4.7:
+  `cooling_capability` on `netbox_rack` and `netbox_rack_type`, `cooling_capacity` on `netbox_rack_type`, and
+  `timeout` on `netbox_webhook`. `choice_colors` on `netbox_custom_field_choice_set` needs 4.6.
+* **`ports` is required before 4.7.** NetBox 4.5 and 4.6 reject `netbox_service` and
+  `netbox_service_template` without `ports` (`400 ports: This field is required`); set it explicitly.
+
+Apart from the cases above, the suite passed on 4.5 and 4.6 (sites, devices, interfaces, IPAM, circuits,
+tenancy, VPN, wireless, users, virtualization). Releases before 4.5 cannot use v2 tokens, and 4.4 was only run
+with a legacy v1 token. No provider release targets an older NetBox, so on an older server expect the gaps listed
+here and treat the version-check warning as meaningful.
+
 ### Acknowledgements
 
 This project builds on the ideas and groundwork of
