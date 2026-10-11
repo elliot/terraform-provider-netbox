@@ -47,7 +47,8 @@ LINT_PKGS ?= . ./internal/acctest/... ./internal/client/... ./internal/conv/... 
 # golangci-lint is pinned here (CI reads this value through `make lint-version`) and
 # installed with the repo's own Go toolchain into a local, gitignored bin dir. A
 # golangci-lint built with an older Go than go.mod's refuses to load the config.
-GOLANGCI_LINT_VERSION ?= v2.13.2 # renovate: datasource=github-releases depName=golangci/golangci-lint
+# renovate: datasource=github-releases depName=golangci/golangci-lint
+GOLANGCI_LINT_VERSION ?= v2.13.2
 LOCAL_BIN             ?= $(CURDIR)/.bin
 GOLANGCI_LINT         ?= $(LOCAL_BIN)/golangci-lint-$(GOLANGCI_LINT_VERSION)
 
@@ -69,7 +70,7 @@ lint: $(GOLANGCI_LINT)
 
 .PHONY: test
 test: build-client
-	go test ./internal/... -count=1 -timeout 15m $(TESTARGS)
+	go test ./internal/... ./tools/... -count=1 -timeout 15m $(TESTARGS)
 
 .PHONY: testacc
 testacc:
@@ -113,7 +114,9 @@ sweep:
 	go test ./internal/provider -sweep=all -v -timeout 30m $(SWEEPARGS)
 
 # --- packaging / distribution (docs/INSTALL.md) -----------------------------
-GORELEASER    ?= $(shell command -v goreleaser 2>/dev/null || echo "go run github.com/goreleaser/goreleaser/v2@v2.12.5")
+# renovate: datasource=github-releases depName=goreleaser/goreleaser
+GORELEASER_VERSION ?= v2.18.2
+GORELEASER    ?= $(shell command -v goreleaser 2>/dev/null || echo "go run github.com/goreleaser/goreleaser/v2@$(GORELEASER_VERSION)")
 TF_PLUGIN_DIR ?= $(HOME)/.terraform.d/plugins
 DEV_VERSION   ?= 0.0.0-dev
 HOST_OS       := $(shell go env GOOS)
@@ -127,6 +130,21 @@ DIST_PARALLELISM ?= 2
 .PHONY: dist
 dist:
 	$(GORELEASER) release --snapshot --clean --skip=sign,publish --parallelism $(DIST_PARALLELISM)
+
+# --- releases (docs/DEVELOPMENT.md#releasing) --------------------------------
+# Adds the next version's section to CHANGELOG.md from the commits since the
+# last tag; VERSION=0.2.0 overrides the version git-cliff works out. The
+# Prepare release workflow does the same on a release/vX.Y.Z branch.
+VERSION ?=
+.PHONY: changelog
+changelog:
+	./scripts/prepare-release.sh $(VERSION)
+
+# Prints the GitHub Release notes for VERSION (its CHANGELOG.md section).
+.PHONY: release-notes
+release-notes:
+	@test -n "$(VERSION)" || { echo "usage: make release-notes VERSION=0.2.0" >&2; exit 1; }
+	@go run ./tools/changelog notes -version $(VERSION)
 
 # Network-mirror tree (index.json, <version>.json, zips) under dist/mirror.
 # Pass MIRROR_ARGS='-base-url https://.../' to point at hosted zips instead.
