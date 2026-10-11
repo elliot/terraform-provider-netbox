@@ -27,6 +27,18 @@ make gen && make docs         # regenerate everything after changing spec/, over
 git diff --exit-code          # CI enforces generated code and docs are committed
 ```
 
+The generated client (`netbox/`) compiles as a single package and needs about 5.9 GB at Go's default
+`GOGC=100` on a cold cache. The `Makefile` therefore exports `GOGC=25` (about 4.2 GB peak, same wall
+time) and `build`, `test`, `docs` and `docs-check` first run `make build-client`, which compiles
+`netbox/` on its own so it is not built next to other packages. Override with `make test GOGC=100`.
+On machines with under 8 GB, or when other builds run at the same time, also pass `GOFLAGS=-p=1`.
+
+`make lint` installs the golangci-lint version pinned by `GOLANGCI_LINT_VERSION` in the `Makefile`
+into `.bin/` (gitignored) with `go install`, using the repo's Go toolchain, and runs that copy
+instead of whatever is on `PATH`. This matters because a golangci-lint built with an older Go than
+`go.mod` targets fails at config load. Run `make lint-install` to install it without linting. CI
+reads the same pin through `make lint-version`, and Renovate bumps it via the annotation on that line.
+
 `make lint` only runs golangci-lint over the hand-written packages listed in `LINT_PKGS` in the
 `Makefile`; linting the regenerated client (`netbox/`) and generated resources
 (`internal/provider/gen/`) alongside them exhausts the GitHub runner's memory. CI runs the unit-test

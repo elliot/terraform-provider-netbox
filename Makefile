@@ -11,10 +11,24 @@ GOFLAGS       ?=
 TEST_TIMEOUT  ?= 120m
 ACC_SHARD     ?= TestAcc
 
+# The generated client (netbox/, ~1,100 files) compiles as one package and the Go
+# compiler needs ~5.9 GB for it at the default GOGC=100 (measured, cold cache).
+# GOGC=25 cuts that to ~4 GB at no wall-time cost, and build-client below compiles
+# it once, alone, so other packages are not compiled next to it. Override with
+# e.g. `make test GOGC=100`; on small machines also pass GOFLAGS=-p=1.
+export GOGC ?= 25
+
 default: build
 
+# Compile the generated client on its own first; the result lands in the build
+# cache, so the build/test/docs steps below never recompile it concurrently with
+# other packages.
+.PHONY: build-client
+build-client:
+	go build $(GOFLAGS) ./netbox/
+
 .PHONY: build
-build:
+build: build-client
 	go build -v $(GOFLAGS) -o $(BINARY) .
 
 .PHONY: install
@@ -30,12 +44,32 @@ fmt:
 # and linting them exhausts CI runner memory without finding anything.
 LINT_PKGS ?= . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
 
+# golangci-lint is pinned here (CI reads this value through `make lint-version`) and
+# installed with the repo's own Go toolchain into a local, gitignored bin dir. A
+# golangci-lint built with an older Go than go.mod's refuses to load the config.
+# renovate: datasource=github-releases depName=golangci/golangci-lint
+GOLANGCI_LINT_VERSION ?= v2.13.2
+LOCAL_BIN             ?= $(CURDIR)/.bin
+GOLANGCI_LINT         ?= $(LOCAL_BIN)/golangci-lint-$(GOLANGCI_LINT_VERSION)
+
+.PHONY: lint-version
+lint-version:
+	@echo $(GOLANGCI_LINT_VERSION)
+
+.PHONY: lint-install
+lint-install: $(GOLANGCI_LINT)
+
+$(GOLANGCI_LINT):
+	GOBIN=$(LOCAL_BIN)/tmp go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
+	mv $(LOCAL_BIN)/tmp/golangci-lint $@
+	rmdir $(LOCAL_BIN)/tmp
+
 .PHONY: lint
-lint:
-	golangci-lint run $(LINT_PKGS)
+lint: $(GOLANGCI_LINT)
+	$(GOLANGCI_LINT) run $(LINT_PKGS)
 
 .PHONY: test
-test:
+test: build-client
 	go test ./internal/... ./tools/... -count=1 -timeout 15m $(TESTARGS)
 
 .PHONY: testacc
@@ -55,11 +89,11 @@ client-gen:
 	./tools/client-gen/generate.sh
 
 .PHONY: docs
-docs:
+docs: build-client
 	go tool tfplugindocs generate --provider-name $(PROVIDER_NAME) --rendered-provider-name NetBox
 
 .PHONY: docs-check
-docs-check:
+docs-check: build-client
 	go tool tfplugindocs validate --provider-name $(PROVIDER_NAME)
 
 .PHONY: demo-token
