@@ -1,0 +1,323 @@
+# Watches for NetBox releases and reports whether the provider needs one.
+#
+# Daily: when NetBox publishes a release newer than spec/VERSION and its
+# netboxcommunity/netbox image exists, the run
+#   1. extracts the release's OpenAPI document from the image
+#      (scripts/netbox-spec.sh) and diffs the generated provider surface
+#      against the pinned one (tools/netbox-diff: breaking vs additive);
+#   2. tries the bump: client-gen, gen, docs, build and unit tests;
+#   3. runs the acceptance tests of the latest provider release against the new
+#      image (acceptance.yml), i.e. what users have installed today;
+#   4. runs smoke tests against demo.netbox.dev once it runs the release
+#      (retried daily while the issue carries the demo-pending label);
+#   5. opens one "NetBox vX.Y.Z released" issue with the verdict (release
+#      required / recommended / not needed), assigned to the repository owner.
+# It never opens pull requests: "Allow GitHub Actions to create and approve pull
+# requests" stays off (SECURITY.md); the bump goes through /bump-netbox.
+#
+# Logic: scripts/netbox-watch.sh (detect, report). Dry-run on the pinned
+# release with Run workflow, version = the contents of spec/VERSION.
+name: NetBox watch
+
+on:
+  schedule:
+    # Daily at 05:41 UTC, after the nightly acceptance run.
+    - cron: "41 5 * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "NetBox version to analyse, e.g. 4.7.3 (empty: the latest release)"
+        required: false
+        default: ""
+      force:
+        description: "Analyse again even when an issue for the version exists"
+        type: boolean
+        required: false
+        default: false
+
+permissions: {}
+
+# Not ${{ github.workflow }}: the called acceptance workflow evaluates its own
+# concurrency group with this workflow's name and must not collide with it.
+concurrency:
+  group: netbox-watch
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    name: Detect release
+    # Issues describe main; a manual run from another branch would analyse its spec.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # check out spec/VERSION; read this repository's latest release
+      issues: read # find the issue for the version
+    outputs:
+      mode: ${{ steps.detect.outputs.mode }}
+      version: ${{ steps.detect.outputs.version }}
+      pinned: ${{ steps.detect.outputs.pinned }}
+      release_tag: ${{ steps.detect.outputs.release_tag }}
+      issue: ${{ steps.detect.outputs.issue }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Detect
+        id: detect
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          VERSION: ${{ inputs.version }}
+          FORCE: ${{ inputs.force }}
+        run: ./scripts/netbox-watch.sh detect
+
+  analyse:
+    name: Diff and trial bump
+    needs: detect
+    if: needs.detect.outputs.mode == 'analyse'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read # check out the repository
+    outputs:
+      trial: ${{ steps.trial.outcome }}
+    env:
+      VERSION: ${{ needs.detect.outputs.version }}
+      PINNED: ${{ needs.detect.outputs.pinned }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Restore Go cache
+        # Written by the Build & lint job in test.yml on pushes to main.
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-${{ runner.os }}-build-${{ hashFiles('go.sum') }}-${{ github.sha }}
+          restore-keys: |
+            go-${{ runner.os }}-build-${{ hashFiles('go.sum') }}-
+            go-${{ runner.os }}-build-
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Jar cache key
+        id: oag
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's/^OAG_VERSION="\([^"]*\)"$/\1/p' tools/client-gen/generate.sh)
+          sha=$(sed -n 's/^OAG_SHA256="\([^"]*\)"$/\1/p' tools/client-gen/generate.sh)
+          echo "key=openapi-generator-$version-$sha" >> "$GITHUB_OUTPUT"
+      - name: Restore the openapi-generator jar
+        # Written by client-gen.yml; the jar is verified against OAG_SHA256 anyway.
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .cache/
+          key: ${{ steps.oag.outputs.key }}
+
+      - name: Extract the OpenAPI document
+        run: ./scripts/netbox-spec.sh "$VERSION"
+
+      - name: Diff the provider surface
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          go run ./tools/netbox-diff \
+            -old "spec/netbox-$PINNED.openapi.json" -new "spec/netbox-$VERSION.openapi.json" \
+            -markdown out/surface.md -json out/verdict.json
+          cat out/surface.md >> "$GITHUB_STEP_SUMMARY"
+          cp "spec/netbox-$VERSION.openapi.json" out/
+
+      - name: Trial bump
+        id: trial
+        # The outcome goes into the report; a failure here is information, not
+        # a reason to skip the rest.
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          echo "$VERSION" > spec/VERSION
+          if [ "$VERSION" != "$PINNED" ]; then
+            git rm -q "spec/netbox-$PINNED.openapi.json"
+          fi
+          sed -i "s/^\(  packageVersion: \)\"[^\"]*\"/\1\"$VERSION\"/" tools/client-gen/config.yaml
+          make client-gen
+          make gen
+          make docs
+          go build ./...
+          make test
+
+      - name: Summarise the trial bump
+        if: always()
+        env:
+          OUTCOME: ${{ steps.trial.outcome }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          git add -A -- . ':!out'
+          {
+            echo "### Trial bump"
+            echo
+            echo "Outcome: $OUTCOME. $(git diff --cached --shortstat)."
+            echo
+            echo "Generated resource files with more than the version stamp changed:"
+            echo
+            echo '```'
+            git diff --cached --numstat -- internal/provider/gen | awk '$1 + $2 > 2 { print $3 }' | head -n 60
+            echo '```'
+          } > out/trial.md
+          cat out/trial.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: netbox-spec-${{ env.VERSION }}
+          path: out/
+          retention-days: 30
+
+  compat:
+    name: Latest release on the new NetBox
+    needs: detect
+    if: needs.detect.outputs.mode == 'analyse' && needs.detect.outputs.release_tag != ''
+    permissions:
+      contents: read # check out the release tag
+    uses: $/.github/workflows/acceptance.yml
+    with:
+      ref: ${{ needs.detect.outputs.release_tag }}
+      netbox_image_tag: v${{ needs.detect.outputs.version }}
+
+  demo:
+    name: demo.netbox.dev smoke tests
+    needs: detect
+    if: needs.detect.outputs.mode == 'analyse' || needs.detect.outputs.mode == 'demo'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read # check out the repository
+    outputs:
+      status: ${{ steps.status.outputs.status }}
+      version: ${{ steps.token.outputs.version }}
+    env:
+      VERSION: ${{ needs.detect.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Restore Go cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-${{ runner.os }}-build-${{ hashFiles('go.sum') }}-${{ github.sha }}
+          restore-keys: |
+            go-${{ runner.os }}-build-${{ hashFiles('go.sum') }}-
+            go-${{ runner.os }}-build-
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: "1.14.*"
+          terraform_wrapper: false
+
+      - name: Provision a demo token
+        id: token
+        # A throw-away account on the public demo (reset daily).
+        run: |
+          set -euo pipefail
+          ./scripts/demo-token.sh >/dev/null
+          set -a; . ./.env.demo; set +a
+          echo "::add-mask::$NETBOX_API_TOKEN"
+          echo "::add-mask::$DEMO_PASSWORD"
+          version=$(curl -sS -f "$NETBOX_SERVER_URL/api/status/" \
+            -H "Authorization: Bearer $NETBOX_API_TOKEN" -H 'Accept: application/json' | jq -r '."netbox-version"')
+          echo "version=${version%%-*}" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke tests
+        id: smoke
+        if: steps.token.outputs.version == env.VERSION
+        continue-on-error: true
+        env:
+          TF_ACC: "1"
+          # Be polite to the shared demo.
+          NETBOX_REQUESTS_PER_SECOND: "5"
+        run: |
+          set -euo pipefail
+          set -a; . ./.env.demo; set +a
+          status=0
+          while read -r pkg tests; do
+            go test "./internal/provider/gen/$pkg/" -run "^TestAcc($tests)_basic\$" -count=1 -v -timeout 30m -parallel 2 || status=1
+          done <<'EOF'
+          dcim Site|Device|Interface
+          ipam Prefix|IpAddress|Vlan
+          extras Tag|CustomField
+          tenancy Tenant
+          virtualization VirtualMachine
+          circuits Circuit
+          vpn Tunnel
+          wireless WirelessLan
+          core DataSource
+          EOF
+          exit "$status"
+
+      - name: Result
+        id: status
+        if: always()
+        env:
+          DEMO_VERSION: ${{ steps.token.outputs.version }}
+          SMOKE: ${{ steps.smoke.outcome }}
+        run: |
+          if [ -z "$DEMO_VERSION" ]; then status=error
+          elif [ "$DEMO_VERSION" != "$VERSION" ]; then status=pending
+          elif [ "$SMOKE" = "success" ]; then status=passed
+          else status=failed
+          fi
+          echo "demo.netbox.dev runs NetBox ${DEMO_VERSION:-?}: $status" >> "$GITHUB_STEP_SUMMARY"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+  report:
+    name: Report
+    needs: [detect, analyse, compat, demo]
+    if: always() && (needs.detect.outputs.mode == 'analyse' || needs.detect.outputs.mode == 'demo')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read # check out the repository and its tags
+      issues: write # create or update the release issue and its labels
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # list the commits since the latest release tag
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        if: needs.detect.outputs.mode == 'analyse'
+        continue-on-error: true
+        with:
+          name: netbox-spec-${{ needs.detect.outputs.version }}
+          path: out/
+      - name: Create or update the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ASSIGNEE: ${{ github.repository_owner }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MODE: ${{ needs.detect.outputs.mode }}
+          VERSION: ${{ needs.detect.outputs.version }}
+          PINNED: ${{ needs.detect.outputs.pinned }}
+          RELEASE_TAG: ${{ needs.detect.outputs.release_tag }}
+          ISSUE: ${{ needs.detect.outputs.issue }}
+          ANALYSE_DIR: out
+          ANALYSE_RESULT: ${{ needs.analyse.result }}
+          TRIAL_OUTCOME: ${{ needs.analyse.outputs.trial }}
+          COMPAT_RESULT: ${{ needs.compat.result }}
+          DEMO_STATUS: ${{ needs.demo.outputs.status }}
+          DEMO_VERSION: ${{ needs.demo.outputs.version }}
+        run: ./scripts/netbox-watch.sh report
