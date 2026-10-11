@@ -6,6 +6,20 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-02
+
+### Added
+
+- Support for NetBox 4.7.2: the pinned OpenAPI document, API client, resources and docs are regenerated from
+  it. All additions are backwards compatible:
+  - `netbox_vlan_translation_policy` and `netbox_vlan_translation_rule`: `tags`, `custom_fields` and
+    `created` (NetBox 4.7.1).
+  - `netbox_data_source`: `tags` (NetBox 4.7.1).
+  - `netbox_interface` and `netbox_interface_template`: `type` accepts `infiniband-hdr-2x`,
+    `infiniband-ndr-2x` and `infiniband-xdr-2x` (NetBox 4.7.1).
+  - `netbox_export_template`: `auto_sync_enabled` (NetBox 4.7.2).
+  - `netbox_vlans`: `related_to_site` and `related_to_site__n` filters (NetBox 4.7.2).
+
 ## [0.2.0] - 2026-10-01
 
 ### Added
@@ -117,7 +131,8 @@ All notable changes to this project are documented in this file. The format foll
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/elliot/terraform-provider-netbox/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/elliot/terraform-provider-netbox/releases/tag/v0.1.0
