@@ -35,6 +35,7 @@ type ProviderModel struct {
 	Id           types.Int64       `tfsdk:"id"`
 	Name         types.String      `tfsdk:"name"`
 	Slug         types.String      `tfsdk:"slug"`
+	AccountIds   types.Set         `tfsdk:"account_ids"`
 	Description  types.String      `tfsdk:"description"`
 	OwnerId      types.Int64       `tfsdk:"owner_id"`
 	Comments     types.String      `tfsdk:"comments"`
@@ -110,6 +111,11 @@ func providerResourceAttributes() map[string]schema.Attribute {
 			MarkdownDescription: "Slug.",
 			Required:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(100), stringvalidator.RegexMatches(regexp.MustCompile("^[-a-zA-Z0-9_]+$"), "must match ^[-a-zA-Z0-9_]+$")},
+		},
+		"account_ids": schema.SetAttribute{
+			MarkdownDescription: "IDs of the assigned Account (`netbox_provider_account`). Managed from `netbox_provider_account`; read-only here.",
+			ElementType:         types.Int64Type,
+			Computed:            true,
 		},
 		"description": schema.StringAttribute{
 			MarkdownDescription: "Description. Defaults to an empty string.",
@@ -353,6 +359,7 @@ func providerFromAPI(ctx context.Context, obj *netbox.Provider, prior *ProviderM
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Name }), false)
 	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Slug }), false)
+	out.AccountIds = conv.BriefIDs(obj.GetAccounts())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ProviderModel) types.String { return m.Comments }), false)
