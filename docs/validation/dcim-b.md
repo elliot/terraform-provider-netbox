@@ -41,7 +41,7 @@ Fixtures and per-resource tuning live in `generator/overrides/dcim_b.yaml`
 | `netbox_virtual_chassis` | `TestAccVirtualChassis_basic` | PASS | `master_id` not exercised, see B5 |
 | `netbox_virtual_device_context` | `TestAccVirtualDeviceContext_basic` | PASS | tenant, identifier and status update |
 
-24 resources: 24 PASS, 0 SKIP. Three schema adjustments were needed
+24 resources: 24 PASS, 0 SKIP. Latest full run: Actions run 92 (`acceptance.yml`, `workflow_dispatch` on `main` at `d57b8a0`, 2026-10-11, NetBox `v4.7` image from docker-compose, 12 shards). The `dcim` shard passed 52/52 tests (this report plus dcim-a). Earlier run: demo.netbox.dev 4.7.0. Three schema adjustments were needed
 (`generator/overrides/dcim_b.yaml`): `rear-ports`/`rear-port-templates`
 `front_ports: { skip: true }` and `module-bays` `installed_module: { skip: true }`.
 

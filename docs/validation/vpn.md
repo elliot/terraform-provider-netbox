@@ -24,7 +24,7 @@ with `ImportStateVerify` -> empty plan.
 | `netbox_l2vpn` | `TestAccL2vpn_basic` | PASS | Explicit fixture adds `identifier`, `status`, `type` change and import/export route targets on update. |
 | `netbox_l2vpn_termination` | `TestAccL2vpnTermination_basic` | PASS | Was skipped; VLAN termination, re-pointed to a second VLAN plus a tag on update. |
 
-10 PASS / 0 SKIP / 0 FAIL (`go test ./internal/provider/gen/vpn/ -run 'TestAcc.*_basic$' -parallel 3`, 200 s, 2026-09-15).
+10 PASS / 0 SKIP / 0 FAIL in the latest full run (Actions run 92 (`acceptance.yml`, `workflow_dispatch` on `main` at `d57b8a0`, 2026-10-11, NetBox `v4.7` image from docker-compose, 12 shards)). Earlier run (`go test ./internal/provider/gen/vpn/ -run 'TestAcc.*_basic$' -parallel 3`, 200 s, 2026-09-15).
 
 Scenario `examples/scenarios/vpn/main.tf` (crypto stack, tunnel group, IPsec
 tunnel with hub/spoke terminations on device interfaces with outside IPs, VXLAN

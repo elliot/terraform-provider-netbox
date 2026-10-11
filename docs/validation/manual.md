@@ -47,7 +47,9 @@ on the parent fixtures; the block has since been removed and the tests pass with
 ok  	github.com/elliot/terraform-provider-netbox/internal/provider/manual	118.124s
 ```
 
-Final full run (all seven tests):
+Latest full run (Actions run 92 (`acceptance.yml`, `workflow_dispatch` on `main` at `d57b8a0`, 2026-10-11, NetBox `v4.7` image from docker-compose, 12 shards)): the `manual` package now holds 11 `TestAcc*` tests (the custom-field tests were added after this report); 10 PASS, 1 FAIL. Both primary-IP tests and all four allocation tests pass. The failure is `TestAccCustomFieldValue_basic` (step 1: the refresh plan after apply was not empty, it plans to create `netbox_custom_field_value.owner` again); it is a provider bug outside this report's resources and is not addressed here.
+
+Earlier run (all seven original tests, demo.netbox.dev 4.7.2):
 
 ```
 --- PASS: TestAccAvailableAsn_basic (18.40s)

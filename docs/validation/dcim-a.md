@@ -21,7 +21,7 @@ go test ./internal/provider/gen/dcim/ -count=1 -v -timeout 60m -parallel 4 \
 
 ## Results
 
-28 resources, 28 PASS, 0 skipped (full run 2026-09-15, ~6 min wall clock).
+28 resources, 28 PASS, 0 skipped. Latest full run: Actions run 92 (`acceptance.yml`, `workflow_dispatch` on `main` at `d57b8a0`, 2026-10-11, NetBox `v4.7` image from docker-compose, 12 shards). The `dcim` shard passed 52/52 tests (this report plus dcim-b). Earlier run: 2026-09-15 on demo.netbox.dev (4.7.0).
 
 | Resource | Result | Attributes exercised beyond the required ones |
 |---|---|---|
@@ -114,7 +114,7 @@ a block; the documented `dev_overrides = { ... }` attribute form is rejected
 * **`netbox_asn.site_ids` mirrors `netbox_site.asn_ids`.** The ASN side is
   `Computed` only now, so assigning an ASN to a site through the site shows no
   drift on the ASN and no `ignore_changes` is needed (verified against NetBox
-  4.7.2 with `TestAccSite_basic` and `TestAccAsn_basic`).
+  4.7.2 with `TestAccSite_basic` and `TestAccAsn_basic`, and again in Actions run 92).
 * **Power feed defaults are deployment settings.** `voltage`, `amperage` and
   `max_utilization` default to `POWERFEED_DEFAULT_VOLTAGE/AMPERAGE/MAX_UTILIZATION`
   (the demo returns 220 V / 16 A, not the upstream 120 V / 20 A). Set them

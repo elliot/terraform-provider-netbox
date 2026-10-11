@@ -27,7 +27,7 @@ list with an `id` filter) -> import with `ImportStateVerify` -> empty plan.
 | `netbox_wireless_lan_group` | `TestAccWirelessLanGroup_basic` | PASS | nested via `parent_id` |
 | `netbox_wireless_link` | `TestAccWirelessLink_basic` | PASS | two `ieee802.11ax` interfaces with `rf_role` on two devices; `distance` float |
 
-15 PASS, 0 SKIP.
+15 PASS, 0 SKIP. Latest full run: Actions run 92 (`acceptance.yml`, `workflow_dispatch` on `main` at `d57b8a0`, 2026-10-11, NetBox `v4.7` image from docker-compose, 12 shards): `extras` 12/12 and `wireless` 3/3 passed. Earlier run: 2026-09-15 on demo.netbox.dev.
 
 Scenario `examples/scenarios/extras/main.tf` (18 resources): `terraform apply`
 -> `terraform plan` (no changes) -> `terraform destroy` succeeded on the demo.
