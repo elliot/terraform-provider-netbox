@@ -43,7 +43,11 @@ verify_jar() {
 if [[ ! -f "$JAR" ]]; then
   mkdir -p "$(dirname "$JAR")"
   echo ">> downloading openapi-generator-cli ${OAG_VERSION}"
-  curl -sSL -o "$JAR" "https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${OAG_VERSION}/openapi-generator-cli-${OAG_VERSION}.jar"
+  # Download next to the cache and move into place only when curl succeeds, so a
+  # failed or cut-off transfer never leaves a partial jar behind.
+  curl -sSL --fail --retry 4 --retry-all-errors --retry-delay 2 -o "$JAR.part" \
+    "https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${OAG_VERSION}/openapi-generator-cli-${OAG_VERSION}.jar"
+  mv "$JAR.part" "$JAR"
 fi
 
 echo ">> verifying ${JAR}"
