@@ -111,10 +111,10 @@ a block; the documented `dev_overrides = { ... }` attribute form is rejected
 * **MAC addresses are normalised to upper case** (`02:00:5e:...` is stored as
   `02:00:5E:...`). Write MACs upper-case in configuration; lower-case input
   fails with an inconsistent-result error (see generator issue 1).
-* **`netbox_asn.site_ids` mirrors `netbox_site.asn_ids`.** Assigning an ASN to
-  a site through the site makes the ASN resource in the same configuration
-  show a perpetual `site_ids` change. Manage the link from one side only; the
-  site fixture uses `lifecycle { ignore_changes = [site_ids] }` on the ASN.
+* **`netbox_asn.site_ids` mirrors `netbox_site.asn_ids`.** The ASN side is
+  `Computed` only now, so assigning an ASN to a site through the site shows no
+  drift on the ASN and no `ignore_changes` is needed (verified against NetBox
+  4.7.2 with `TestAccSite_basic` and `TestAccAsn_basic`).
 * **Power feed defaults are deployment settings.** `voltage`, `amperage` and
   `max_utilization` default to `POWERFEED_DEFAULT_VOLTAGE/AMPERAGE/MAX_UTILIZATION`
   (the demo returns 220 V / 16 A, not the upstream 120 V / 20 A). Set them
@@ -162,8 +162,8 @@ a block; the documented `dev_overrides = { ... }` attribute form is rejected
    symmetric relations). Proposed fix: mark the reverse side (`site_ids` on
    ASN, which NetBox exposes writable but which is the same relation) as
    computed-only or data-source-only via a `reverse_of` override, or at least
-   default it to Optional+Computed without "always send". Worked around in
-   the site fixture with `ignore_changes`.
+   default it to Optional+Computed without "always send". Fixed: `asn.site_ids`
+   is read-only, and the site fixture no longer needs `ignore_changes`.
 4. **Nullable numbers that the server fills in need `computed: true`**
    (rack dimensions copied from the rack type, see behaviours). Not a code
    bug -- the `computed: true` override handles it -- but the generated
