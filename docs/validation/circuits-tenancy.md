@@ -29,7 +29,7 @@ attribute tuning live in `generator/overrides/circuits_tenancy.yaml`.
 | `netbox_tenant` | `TestAccTenant_basic` | PASS | update adds group, tag, comments |
 | `netbox_tenant_group` | `TestAccTenantGroup_basic` | PASS | update nests under a parent |
 
-17 / 17 pass, 0 skipped.
+17 / 17 pass, 0 skipped. Latest full run: Actions run 92 (`acceptance.yml`, `workflow_dispatch` on `main` at `d57b8a0`, 2026-10-11, NetBox `v4.7` image from docker-compose, 12 shards): `circuits` 11/11 and `tenancy` 6/6 passed. Earlier run: 2026-09-15 on demo.netbox.dev.
 
 ### Scenario
 

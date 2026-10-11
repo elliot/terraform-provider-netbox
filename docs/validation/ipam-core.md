@@ -34,7 +34,7 @@ import with `ImportStateVerify` -> empty plan.
 | netbox_vrf | TestAccVrf_basic | PASS | rd, tenant, `enforce_unique`, import/export route targets |
 | netbox_data_source (core) | TestAccDataSource_basic | PASS | `sync_interval`, `ignore_rules`, JSON `parameters` |
 
-19 PASS, 0 SKIP, 0 generator-blocked.
+19 PASS, 0 SKIP, 0 generator-blocked. Latest full run: Actions run 92 (`acceptance.yml`, `workflow_dispatch` on `main` at `d57b8a0`, 2026-10-11, NetBox `v4.7` image from docker-compose, 12 shards): `ipam` 18/18 and `core` 1/1 passed (including `TestAccAsn_basic` without the former `ignore_changes` workaround). Earlier run: 2026-09-15 on demo.netbox.dev.
 
 Full-shard run: `go test ./internal/provider/gen/ipam/ ./internal/provider/gen/core/ -run 'TestAcc(Aggregate|Asn|AsnRange|FhrpGroup|FhrpGroupAssignment|IpAddress|IpRange|IpamRole|Prefix|Rir|RouteTarget|Service|ServiceTemplate|Vlan|VlanGroup|VlanTranslationPolicy|VlanTranslationRule|Vrf|DataSource)_basic' -parallel 4`.
 

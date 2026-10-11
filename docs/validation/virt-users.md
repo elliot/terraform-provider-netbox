@@ -27,7 +27,7 @@ https://demo.netbox.dev with `NETBOX_REQUESTS_PER_SECOND=2`.
 | `netbox_user` | `TestAccUser_basic` | PASS | update: names, email, `is_active=false`, `group_ids`; import ignores `password` |
 | `netbox_user_group` | `TestAccUserGroup_basic` | PASS | auto fixture |
 
-13 PASS, 0 SKIP.
+13 PASS, 0 SKIP. Latest full run: Actions run 92 (`acceptance.yml`, `workflow_dispatch` on `main` at `d57b8a0`, 2026-10-11, NetBox `v4.7` image from docker-compose, 12 shards): `virtualization` 7/7 and `users` 6/6 passed. Earlier run: demo.netbox.dev 4.7.0.
 
 Scenario `examples/scenarios/virtualization/main.tf` (cluster type/group,
 site-scoped cluster, VM type, VM with two interfaces and two virtual disks, an
