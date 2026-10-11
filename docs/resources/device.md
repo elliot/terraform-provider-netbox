@@ -71,10 +71,10 @@ resource "netbox_device" "sw01" {
 - `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `description` (String) Description. Defaults to an empty string.
 - `face` (String) Face. Valid values: `front`, `rear`. Defaults to the NetBox server default when omitted.
-- `latitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.
+- `latitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.
 - `local_context_data` (String) Local config context data takes precedence over source contexts in the final rendered config context.
 - `location_id` (Number) ID of the Location (`netbox_location`).
-- `longitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.
+- `longitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.
 - `name` (String) Name.
 - `oob_ip_id` (Number) ID of the Ip Address (`netbox_ip_address`).
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).

@@ -206,15 +206,17 @@ func deviceResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"latitude": schema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
 			Computed:            true,
+			Validators:          []validator.Float64{conv.MaxDecimals(6)},
 			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"longitude": schema.Float64Attribute{
-			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
 			Computed:            true,
+			Validators:          []validator.Float64{conv.MaxDecimals(6)},
 			PlanModifiers:       []planmodifier.Float64{float64planmodifier.UseStateForUnknown()},
 		},
 		"status": schema.StringAttribute{
@@ -740,8 +742,8 @@ func deviceFromAPI(ctx context.Context, obj *netbox.Device, prior *DeviceModel, 
 	out.RackId = conv.BriefID(obj.GetRackOk())
 	out.Position = conv.Float64Keep(conv.Float64From(obj.GetPositionOk()), conv.PriorFloat(prior, func(m *DeviceModel) types.Float64 { return m.Position }), 0)
 	out.Face = conv.Choice(obj.GetFaceOk())
-	out.Latitude = conv.Float64Keep(conv.Float64From(obj.GetLatitudeOk()), conv.PriorFloat(prior, func(m *DeviceModel) types.Float64 { return m.Latitude }), 0)
-	out.Longitude = conv.Float64Keep(conv.Float64From(obj.GetLongitudeOk()), conv.PriorFloat(prior, func(m *DeviceModel) types.Float64 { return m.Longitude }), 0)
+	out.Latitude = conv.Float64Keep(conv.Float64From(obj.GetLatitudeOk()), conv.PriorFloat(prior, func(m *DeviceModel) types.Float64 { return m.Latitude }), 6)
+	out.Longitude = conv.Float64Keep(conv.Float64From(obj.GetLongitudeOk()), conv.PriorFloat(prior, func(m *DeviceModel) types.Float64 { return m.Longitude }), 6)
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.Airflow = conv.Choice(obj.GetAirflowOk())
 	out.CoolingMethod = conv.Choice(obj.GetCoolingMethodOk())

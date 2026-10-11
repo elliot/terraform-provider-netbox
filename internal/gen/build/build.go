@@ -644,8 +644,19 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 			markReadOnly(a)
 		}
 	}
+	// NetBox stores GPS coordinates as xx.yyyyyy decimals; reject finer input
+	// instead of letting the server round it into a diff.
+	if a.Kind == model.KindFloat && a.Precision == 0 && geoCoordinates[pname] {
+		a.Precision = geoCoordinatePrecision
+	}
 	if a.Description == "" {
 		a.Description = defaultDescription(a)
+	}
+	if a.Kind == model.KindFloat && a.Precision > 0 && !a.ReadOnly {
+		if !strings.HasSuffix(a.Description, ".") {
+			a.Description += "."
+		}
+		a.Description += fmt.Sprintf(" At most %d decimal places.", a.Precision)
 	}
 	switch a.Format {
 	case model.FormatMAC:
@@ -655,6 +666,12 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 	}
 	return a, nil
 }
+
+// geoCoordinates are the API properties holding GPS coordinates, which NetBox
+// stores with geoCoordinatePrecision decimals.
+var geoCoordinates = map[string]bool{"latitude": true, "longitude": true}
+
+const geoCoordinatePrecision = 6
 
 // markReadOnly turns an attribute (and, for nested lists, every item
 // attribute) into a computed-only one that is never sent to the API.

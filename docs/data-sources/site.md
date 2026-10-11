@@ -53,8 +53,8 @@ output "site_id" {
 - `facility` (String) Local facility ID or description. Defaults to an empty string.
 - `group_id` (Number) ID of the Site Group (`netbox_site_group`).
 - `last_updated` (String) Last Updated.
-- `latitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.
-- `longitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). Defaults to the NetBox server default when omitted.
+- `latitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.
+- `longitude` (Number) GPS coordinate in decimal format (xx.yyyyyy). At most 6 decimal places. Defaults to the NetBox server default when omitted.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `physical_address` (String) Physical location of the building. Defaults to an empty string.
 - `prefix_count` (Number) Prefix Count.

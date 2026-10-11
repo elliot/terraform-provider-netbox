@@ -119,6 +119,7 @@ resources:
         optional: true         # make a required property optional
         default: 1             # static default for an integer/FK attribute (makes it Optional+Computed)
         precision: 6           # decimals NetBox stores; drives float semantic equality (default 6)
+                               #   and adds a conv.MaxDecimals validator. latitude/longitude get 6 automatically
         format: mac            # mac or wwn: colon-notation validator, letter case ignored on read
         ordered_list: true     # List instead of Set
         description: "..."
