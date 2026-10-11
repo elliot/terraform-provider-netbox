@@ -30,9 +30,28 @@ fmt:
 # and linting them exhausts CI runner memory without finding anything.
 LINT_PKGS ?= . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
 
+# golangci-lint is pinned here (CI reads this value through `make lint-version`) and
+# installed with the repo's own Go toolchain into a local, gitignored bin dir. A
+# golangci-lint built with an older Go than go.mod's refuses to load the config.
+GOLANGCI_LINT_VERSION ?= v2.13.2 # renovate: datasource=github-releases depName=golangci/golangci-lint
+LOCAL_BIN             ?= $(CURDIR)/.bin
+GOLANGCI_LINT         ?= $(LOCAL_BIN)/golangci-lint-$(GOLANGCI_LINT_VERSION)
+
+.PHONY: lint-version
+lint-version:
+	@echo $(GOLANGCI_LINT_VERSION)
+
+.PHONY: lint-install
+lint-install: $(GOLANGCI_LINT)
+
+$(GOLANGCI_LINT):
+	GOBIN=$(LOCAL_BIN)/tmp go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION)
+	mv $(LOCAL_BIN)/tmp/golangci-lint $@
+	rmdir $(LOCAL_BIN)/tmp
+
 .PHONY: lint
-lint:
-	golangci-lint run $(LINT_PKGS)
+lint: $(GOLANGCI_LINT)
+	$(GOLANGCI_LINT) run $(LINT_PKGS)
 
 .PHONY: test
 test:

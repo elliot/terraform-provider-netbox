@@ -67,6 +67,15 @@
       ],
     },
     {
+      // Same annotation style for tool pins in the Makefile:
+      //   GOLANGCI_LINT_VERSION ?= v2.13.2 # renovate: datasource=github-releases depName=golangci/golangci-lint
+      customType: "regex",
+      managerFilePatterns: ["^Makefile$"],
+      matchStrings: [
+        '[A-Z_]+_VERSION\\s*\\?=\\s*(?<currentValue>\\S+)\\s+# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)',
+      ],
+    },
+    {
       customType: "regex",
       managerFilePatterns: ["^tools/client-gen/generate\\.sh$"],
       matchStrings: [

@@ -27,6 +27,12 @@ make gen && make docs         # regenerate everything after changing spec/, over
 git diff --exit-code          # CI enforces generated code and docs are committed
 ```
 
+`make lint` installs the golangci-lint version pinned by `GOLANGCI_LINT_VERSION` in the `Makefile`
+into `.bin/` (gitignored) with `go install`, using the repo's Go toolchain, and runs that copy
+instead of whatever is on `PATH`. This matters because a golangci-lint built with an older Go than
+`go.mod` targets fails at config load. Run `make lint-install` to install it without linting. CI
+reads the same pin through `make lint-version`, and Renovate bumps it via the annotation on that line.
+
 `make lint` only runs golangci-lint over the hand-written packages listed in `LINT_PKGS` in the
 `Makefile`; linting the regenerated client (`netbox/`) and generated resources
 (`internal/provider/gen/`) alongside them exhausts the GitHub runner's memory. CI runs the unit-test
