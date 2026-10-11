@@ -16,7 +16,7 @@ file; `CHANGELOG.md` is the record of what shipped.
 
 ## Next steps
 
-1. Repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): protect the `release` environment (required reviewer, `v*` tags only), rulesets for `main` and `v*` tags, immutable releases, the "require full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability reporting.
+1. Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability reporting. (The protected `release` environment, the `main` and `v*` rulesets and immutable releases are done.)
 2. Registry listing: releases are signed since `v0.1.1` (`SHA256SUMS.sig`). Optionally set the `RELEASE_KEY_FINGERPRINT` repository variable, register the public key under the `elliot` namespace, publish the repository once through the registry UI and verify the docs in the registry preview tool.
 3. On the next tag, confirm the provenance attestations (`gh attestation verify`) and `SHA256SUMS.sig`.
 
