@@ -33,6 +33,7 @@ output "lumen_circuit_count" {
 
 ### Read-Only
 
+- `account_ids` (Set of Number) IDs of the assigned Account (`netbox_provider_account`). Managed from `netbox_provider_account`; read-only here.
 - `asn_ids` (Set of Number) IDs of the assigned Asn (`netbox_asn`). Defaults to an empty set.
 - `circuit_count` (Number) Circuit Count.
 - `comments` (String) Comments. Defaults to an empty string.

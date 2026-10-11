@@ -16,19 +16,26 @@ const providerTestConfigBasic = `resource "netbox_tag" "test" {
   name = "{{.Name}}-tag"
   slug = "{{.Name}}-tag"
 }
-
 resource "netbox_provider" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
   description = "created by acceptance test"
-  tags = [netbox_tag.test.slug]
+  tags        = [netbox_tag.test.slug]
+}
+resource "netbox_provider_account" "acct" {
+  provider_id = netbox_provider.test.id
+  account     = "{{.Name}}"
 }
 `
 
 const providerTestConfigUpdate = `resource "netbox_provider" "test" {
-  name = "{{.Name}}"
-  slug = "{{.Name}}"
+  name        = "{{.Name}}"
+  slug        = "{{.Name}}"
   description = "updated by acceptance test"
+}
+resource "netbox_provider_account" "acct" {
+  provider_id = netbox_provider.test.id
+  account     = "{{.Name}}"
 }
 `
 

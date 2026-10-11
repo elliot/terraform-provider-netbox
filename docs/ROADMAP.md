@@ -44,7 +44,7 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 
 ## Todos (file-anchored)
 
-- [ ] `generator/overrides`: remove the `circuits.assignments` skip (dropping it regenerates a nested `assignments` attribute, so it is not redundant yet) and the `providers.accounts` skip (needs acceptance tests; `accounts` should become read-only, not skipped).
+- [ ] `generator/overrides`: remove the `circuits.assignments` skip (dropping it regenerates a nested `assignments` attribute, so it is not redundant yet).
 - [ ] `generator/overrides/dcim_a.yaml`: drop the `ignore_changes = [site_ids]` in the ASN fixture (`asn.site_ids` is read-only now) and re-run `TestAccAsn_basic`.
 - [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
 - [ ] Review Renovate's first dependency dashboard after the PR merges (`.github/renovate.json5`).
@@ -111,7 +111,6 @@ Attributes hidden or forced by overrides (revisit on every spec bump):
 | Resource | Attribute | Override | Why |
 |---|---|---|---|
 | circuit | assignments | skip | not echoed by the read serializer (now dropped generically) |
-| provider | accounts | skip | reverse side of provider_account.provider (generic rule now makes it read-only) |
 | rear_port, rear_port_template | front_ports | read_only | reverse side of front_port.rear_ports; NetBox accepts writes from both sides, the front port owns the mapping |
 | module_bay | installed_module | skip | NetBox 500 on any write, re-verify |
 | asn | sites | read_only, target | reverse side of site.asn_ids; the read items (`ASNSite`) name no target, so it is set explicitly for the symmetric-pair check |

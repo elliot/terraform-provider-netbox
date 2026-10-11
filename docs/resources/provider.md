@@ -39,6 +39,7 @@ resource "netbox_provider" "example" {
 
 ### Read-Only
 
+- `account_ids` (Set of Number) IDs of the assigned Account (`netbox_provider_account`). Managed from `netbox_provider_account`; read-only here.
 - `created` (String) Created.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `url` (String) Url.
