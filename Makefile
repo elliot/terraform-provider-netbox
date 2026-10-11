@@ -11,10 +11,24 @@ GOFLAGS       ?=
 TEST_TIMEOUT  ?= 120m
 ACC_SHARD     ?= TestAcc
 
+# The generated client (netbox/, ~1,100 files) compiles as one package and the Go
+# compiler needs ~5.9 GB for it at the default GOGC=100 (measured, cold cache).
+# GOGC=25 cuts that to ~4 GB at no wall-time cost, and build-client below compiles
+# it once, alone, so other packages are not compiled next to it. Override with
+# e.g. `make test GOGC=100`; on small machines also pass GOFLAGS=-p=1.
+export GOGC ?= 25
+
 default: build
 
+# Compile the generated client on its own first; the result lands in the build
+# cache, so the build/test/docs steps below never recompile it concurrently with
+# other packages.
+.PHONY: build-client
+build-client:
+	go build $(GOFLAGS) ./netbox/
+
 .PHONY: build
-build:
+build: build-client
 	go build -v $(GOFLAGS) -o $(BINARY) .
 
 .PHONY: install
@@ -54,7 +68,7 @@ lint: $(GOLANGCI_LINT)
 	$(GOLANGCI_LINT) run $(LINT_PKGS)
 
 .PHONY: test
-test:
+test: build-client
 	go test ./internal/... -count=1 -timeout 15m $(TESTARGS)
 
 .PHONY: testacc
@@ -74,11 +88,11 @@ client-gen:
 	./tools/client-gen/generate.sh
 
 .PHONY: docs
-docs:
+docs: build-client
 	go tool tfplugindocs generate --provider-name $(PROVIDER_NAME) --rendered-provider-name NetBox
 
 .PHONY: docs-check
-docs-check:
+docs-check: build-client
 	go tool tfplugindocs validate --provider-name $(PROVIDER_NAME)
 
 .PHONY: demo-token
