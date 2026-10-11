@@ -124,7 +124,10 @@ func (r *CustomFieldValueResource) write(ctx context.Context, m *CustomFieldValu
 	var out struct {
 		CustomFields map[string]any `json:"custom_fields"`
 	}
-	if err := r.client.PatchRaw(ctx, p, map[string]any{"custom_fields": map[string]any{m.Name.ValueString(): value}}, &out); err != nil {
+	unlock := objectLocks.lock(p)
+	err := r.client.PatchRaw(ctx, p, map[string]any{"custom_fields": map[string]any{m.Name.ValueString(): value}}, &out)
+	unlock()
+	if err != nil {
 		diags.AddError("Error setting custom field", err.Error())
 		return
 	}
