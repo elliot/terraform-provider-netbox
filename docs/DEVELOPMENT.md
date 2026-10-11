@@ -69,21 +69,40 @@ pull requests labelled `run-acceptance`.
 
 ## Releasing
 
-Releases are built by GoReleaser from `v*` tags (`.github/workflows/release.yml`):
+Pull request titles are Conventional Commit subjects (checked by `.github/workflows/pr-title.yml`), and
+each squash-merged title becomes a draft changelog entry: `feat` under *Added*, `fix` under *Fixed*,
+`fix(deps)`, `perf` and `revert` under *Changed*, any `(security)` scope under *Security*, and a `!` (or a
+`BREAKING CHANGE:` footer) under *Breaking changes*. `docs`, `ci`, `test`, `build`, `chore`, `refactor` and
+`style` are left out. The mapping lives in `cliff.toml`.
 
-1. `git tag v0.2.0 && git push origin v0.2.0`.
-2. The build job runs in the `release` deployment environment; approve the deployment when it has a
-   required reviewer.
-3. The workflow builds `linux`/`darwin`/`freebsd`/`windows` × `amd64`/`arm64` zips, `SHA256SUMS` and the
+1. Run **Actions → Prepare release → Run workflow** on `main`. Leave *version* empty to let
+   [git-cliff](https://git-cliff.org) work it out (pre-1.0: a feature or breaking change bumps the minor
+   version, otherwise the patch), or enter one. The workflow runs `scripts/prepare-release.sh`, which turns
+   `[Unreleased]` into a `## [X.Y.Z] - <date>` section that merges any hand-written entries with the drafted
+   ones, then pushes it to a `release/vX.Y.Z` branch.
+2. Open the pull request from the link in the job summary, titled `chore(release): vX.Y.Z`. Edit
+   `CHANGELOG.md` there: reword the entries for users, drop duplicates and internal changes, and add upgrade
+   notes for anything breaking.
+3. Squash-merge it. The Release workflow sees the `chore(release): vX.Y.Z` commit on `main`, creates the
+   annotated `vX.Y.Z` tag on it and dispatches itself on that tag.
+4. The build job runs in the `release` deployment environment; approve the deployment when it has a
+   required reviewer. The version's `CHANGELOG.md` section becomes the GitHub Release notes, and the
+   build fails before anything is published if that section is missing.
+5. The workflow builds `linux`/`darwin`/`freebsd`/`windows` × `amd64`/`arm64` zips, `SHA256SUMS` and the
    registry manifest, publishes the GitHub Release, attests build provenance for every asset, then runs
    `tools/mirror-index` and deploys the provider network mirror to GitHub Pages. Earlier versions are
    carried over from the live mirror so they stay installable.
-4. `SHA256SUMS` is signed with the key stored as `GPG_PRIVATE_KEY` / `PASSPHRASE` environment secrets;
+6. `SHA256SUMS` is signed with the key stored as `GPG_PRIVATE_KEY` / `PASSPHRASE` environment secrets;
    the job fails before building if they are missing. After the upload the workflow re-verifies the
    signature and, when the `RELEASE_KEY_FINGERPRINT` repository variable is set, checks that the imported
    key is the expected one. The public Terraform Registry verifies that signature (and needs a public
    repository plus the `terraform-registry-manifest.json` already present); the same public key must be
    registered under the `elliot` namespace.
+
+`make changelog` (optionally `VERSION=0.2.0`) does step 1 locally without pushing anything, and
+`make release-notes VERSION=0.2.0` prints the notes a release would get. Pushing a `v*` tag by hand still
+releases, provided `CHANGELOG.md` on that tag has its section; to re-run a release, run the Release
+workflow on the tag.
 
 The repository settings that protect this pipeline (environment reviewers, tag rulesets, immutable
 releases, SHA-pinning policy) are listed in [SECURITY.md](../SECURITY.md).
