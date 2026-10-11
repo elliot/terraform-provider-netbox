@@ -4,7 +4,7 @@
 #   make client-gen              # uses spec/netbox-<VERSION>.openapi.json
 #   OPENAPI_GENERATOR_JAR=...    # optional: path to openapi-generator-cli jar
 #
-# Requirements: java 17+, python3, gofmt. The openapi-generator jar (7.11.0, the
+# Requirements: java 17+, python3, gofmt. The openapi-generator jar (7.26.0, the
 # version go-netbox uses) is downloaded from Maven Central into .cache/ if absent
 # and is checked against the pinned OAG_SHA256 below before every run.
 set -euo pipefail
@@ -12,14 +12,14 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
 
-OAG_VERSION="7.11.0"
+OAG_VERSION="7.26.0"
 # SHA-256 of openapi-generator-cli-${OAG_VERSION}.jar on Maven Central. Central
 # publishes only .sha1/.md5 next to this artifact (there is no .jar.sha256), so
 # this digest was taken from the jar whose published checksums match:
 #   sha1 9261333ecbfd8738956b09be0beff611b47fbaff
 #   md5  4931bca886d30823b3ba2c7f36607925
 # Update both OAG_VERSION and OAG_SHA256 together when bumping the generator.
-OAG_SHA256="113c25df5a781d5a1fc2b883f12fe8f263db285ab12e15854d5b15306e1bf7fc"
+OAG_SHA256="1760050094997b9cc790cc1350be095f15da8c08a996b184d3eadc4ccda5e35e"
 NETBOX_VERSION="$(cat spec/VERSION)"
 SPEC="spec/netbox-${NETBOX_VERSION}.openapi.json"
 CACHE="${ROOT}/.cache"

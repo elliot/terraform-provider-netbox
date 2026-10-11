@@ -23,7 +23,7 @@ var _ MappedNullable = &PatchedUserRequest{}
 // PatchedUserRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedUserRequest struct {
 	// Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-	Username  *string `json:"username,omitempty" validate:"regexp=^[\\\\w.@+-]+$"`
+	Username  *string `json:"username,omitempty" validate:"regexp=^[\\w.@+-]+$"`
 	Password  *string `json:"password,omitempty"`
 	FirstName *string `json:"first_name,omitempty"`
 	LastName  *string `json:"last_name,omitempty"`

@@ -174,7 +174,7 @@ make build            # compile the provider
 make test             # unit tests
 make gen              # regenerate resources/data sources/tests/examples/doc templates from the spec
 make docs             # render docs/ with tfplugindocs
-make client-gen       # regenerate the API client in netbox/ (openapi-generator 7.11.0)
+make client-gen       # regenerate the API client in netbox/ (openapi-generator 7.26.0)
 make demo-token       # provision a v2 token on https://demo.netbox.dev into .env.demo
 set -a; . ./.env.demo; set +a
 NETBOX_REQUESTS_PER_SECOND=5 make testacc ACC_SHARD='TestAccSite_basic|TestAccPrefix_basic'

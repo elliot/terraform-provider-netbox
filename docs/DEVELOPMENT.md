@@ -54,7 +54,7 @@ attribute form). `make sweep` deletes every `tfacc-*` object on the configured s
 
 1. Fetch the new document: `curl -sS 'https://<netbox>/api/schema/?format=json' > spec/netbox-<v>.openapi.json`
    and update `spec/VERSION`.
-2. `make client-gen` (needs Java 17+, downloads openapi-generator 7.11.0 into `.cache/`).
+2. `make client-gen` (needs Java 17+, downloads openapi-generator 7.26.0 into `.cache/`).
 3. `make gen && make docs`, then `go build ./... && go test ./internal/...`.
 4. Review `go run ./internal/gen -list` for new collections and `docs/RESOURCES.md` for name changes;
    add overrides for new FK targets or fixtures as needed.

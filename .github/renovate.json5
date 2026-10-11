@@ -53,7 +53,7 @@
 
   // --- Custom regex manager: openapi-generator jar pin -----------------
   // tools/client-gen/generate.sh pins the openapi-generator-cli jar via a
-  // plain shell variable: OAG_VERSION="7.11.0". There's no manifest for
+  // plain shell variable: OAG_VERSION="7.26.0". There's no manifest for
   // this dependency, so we teach Renovate to read/write that line using
   // Maven Central (the jar's actual distribution point) as the datasource.
   customManagers: [

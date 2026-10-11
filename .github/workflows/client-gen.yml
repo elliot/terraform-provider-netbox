@@ -28,8 +28,8 @@ concurrency:
 env:
   # Keep in sync with OAG_VERSION / OAG_SHA256 in tools/client-gen/generate.sh;
   # they key the jar cache so a bump downloads and re-verifies the new jar.
-  OAG_VERSION: "7.11.0"
-  OAG_SHA256: "113c25df5a781d5a1fc2b883f12fe8f263db285ab12e15854d5b15306e1bf7fc"
+  OAG_VERSION: "7.26.0"
+  OAG_SHA256: "1760050094997b9cc790cc1350be095f15da8c08a996b184d3eadc4ccda5e35e"
 
 jobs:
   client-gen:

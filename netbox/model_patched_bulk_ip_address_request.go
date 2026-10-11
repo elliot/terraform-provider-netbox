@@ -34,7 +34,7 @@ type PatchedBulkIPAddressRequest struct {
 	AssignedObjectId   NullableInt64                  `json:"assigned_object_id,omitempty"`
 	NatInside          NullableNestedIPAddressRequest `json:"nat_inside,omitempty"`
 	// Hostname or FQDN (not case-sensitive)
-	DnsName              *string                `json:"dns_name,omitempty" validate:"regexp=^([0-9A-Za-z_-]+|\\\\*)(\\\\.[0-9A-Za-z_-]+)*\\\\.?$"`
+	DnsName              *string                `json:"dns_name,omitempty" validate:"regexp=^([0-9A-Za-z_-]+|\\*)(\\.[0-9A-Za-z_-]+)*\\.?$"`
 	Description          *string                `json:"description,omitempty"`
 	Owner                NullableInt32          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`

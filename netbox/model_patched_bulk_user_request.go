@@ -25,7 +25,7 @@ var _ MappedNullable = &PatchedBulkUserRequest{}
 type PatchedBulkUserRequest struct {
 	Id int32 `json:"id"`
 	// Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-	Username  *string `json:"username,omitempty" validate:"regexp=^[\\\\w.@+-]+$"`
+	Username  *string `json:"username,omitempty" validate:"regexp=^[\\w.@+-]+$"`
 	Password  *string `json:"password,omitempty"`
 	FirstName *string `json:"first_name,omitempty"`
 	LastName  *string `json:"last_name,omitempty"`
