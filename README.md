@@ -16,7 +16,7 @@ instance through its REST API. It is built on the Terraform Plugin Framework (pr
 resource, a single-object data source and a list data source (see [docs/RESOURCES.md](docs/RESOURCES.md)
 for the current list).
 
-> **Status: pre-release.** Names, attributes and behaviour may change until `v0.1.0`.
+> **Status: pre-1.0.** Names, attributes and behaviour may still change between minor releases; see the [changelog](CHANGELOG.md).
 
 ### Supported NetBox versions
 
