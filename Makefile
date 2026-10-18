@@ -115,7 +115,7 @@ sweep:
 
 # --- packaging / distribution (docs/INSTALL.md) -----------------------------
 # renovate: datasource=github-releases depName=goreleaser/goreleaser
-GORELEASER_VERSION ?= v2.18.2
+GORELEASER_VERSION ?= v2.18.3
 GORELEASER    ?= $(shell command -v goreleaser 2>/dev/null || echo "go run github.com/goreleaser/goreleaser/v2@$(GORELEASER_VERSION)")
 TF_PLUGIN_DIR ?= $(HOME)/.terraform.d/plugins
 DEV_VERSION   ?= 0.0.0-dev

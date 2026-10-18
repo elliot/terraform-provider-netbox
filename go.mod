@@ -1,6 +1,6 @@
 module github.com/elliot/terraform-provider-netbox
 
-go 1.26.8
+go 1.26.9
 
 tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 
