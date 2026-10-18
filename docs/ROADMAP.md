@@ -1,6 +1,6 @@
 # Roadmap, todos and sharp edges
 
-Status as of `v0.2.0` (released 2026-10-01 from `main`). Items that have been actioned are removed from this
+Status as of `v0.4.0` (released 2026-10-11 from `main`). Items that have been actioned are removed from this
 file; `CHANGELOG.md` is the record of what shipped.
 
 ## Where things stand
@@ -8,17 +8,17 @@ file; `CHANGELOG.md` is the record of what shipped.
 | Area | State |
 |---|---|
 | Resources / data sources | 126 generated resources, 266 data sources, 7 hand-written resources; see [RESOURCES.md](RESOURCES.md) |
-| Acceptance | Actions run 92 (docker-compose, 12 shards, one NetBox 4.7 each; `workflow_dispatch` on `main`, 2026-10-11): 138/139 pass; `TestAccCustomFieldValue_basic` fails (refresh plan not empty after apply). Earlier: 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. Spec pinned at 4.7.2 since 2026-10-02. The workflow runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
+| Acceptance | Actions run 92 (docker-compose, 12 shards, one NetBox 4.7 each; `workflow_dispatch` on `main`, 2026-10-11): 138/139 pass; `TestAccCustomFieldValue_basic` fails (refresh plan not empty after apply); fix #33 (v0.4.0) landed afterwards and has not been re-run yet. Earlier: 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. Spec pinned at 4.7.2 since 2026-10-02. The workflow runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (counts refreshed from run 92; narrative predates the last generator fixes, see the banner there) |
 | CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), zizmor workflow audit, CodeQL (Go without the generated `netbox/` client, and Actions; weekly and on every PR), incremental Go build caches written from `main`, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate monthly with a 7-day cooldown |
-| Release | `v0.2.0` released 2026-10-01; `v0.1.0` and `v0.1.1` published 2026-09-24 (the 0.1.0 checksums are unsigned because of a workflow bug fixed in 0.1.1). GitHub Releases with eight platform zips, network mirror live at `https://elliot.github.io/terraform-provider-netbox/`, `scripts/install.sh` and `terraform init` through the mirror verified against the published assets; see [INSTALL.md](INSTALL.md). Releases build in the `release` environment with build provenance attestations and mandatory GPG signing with post-upload verification |
+| Release | `v0.4.0` released 2026-10-11 (after `v0.3.0`, 2026-10-02, and `v0.2.0`, 2026-10-01); `v0.1.0` and `v0.1.1` published 2026-09-24 (the 0.1.0 checksums are unsigned because of a workflow bug fixed in 0.1.1). GitHub Releases with eight platform zips, network mirror live at `https://elliot.github.io/terraform-provider-netbox/`, `scripts/install.sh` and `terraform init` through the mirror verified against the published assets; see [INSTALL.md](INSTALL.md). Releases build in the `release` environment with build provenance attestations and mandatory GPG signing with post-upload verification |
 | Registry | namespace `elliot` reserved, address `elliot/netbox` final; listing not yet published |
 
 ## Next steps
 
 1. Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability reporting. (The protected `release` environment, the `main` and `v*` rulesets and immutable releases are done.)
 2. Registry listing: releases are signed since `v0.1.1` (`SHA256SUMS.sig`). Optionally set the `RELEASE_KEY_FINGERPRINT` repository variable, register the public key under the `elliot` namespace, publish the repository once through the registry UI and verify the docs in the registry preview tool.
-3. On the next tag, confirm the provenance attestations (`gh attestation verify`) and `SHA256SUMS.sig`.
+3. For `v0.4.0` (and every later tag), confirm the provenance attestations (`gh attestation verify`) and `SHA256SUMS.sig`.
 
 ## Milestones
 
@@ -45,8 +45,6 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 ## Todos (file-anchored)
 
 - [ ] `generator/overrides`: remove the `circuits.assignments` skip (dropping it regenerates a nested `assignments` attribute, so it is not redundant yet).
-- [ ] `generator/overrides/dcim_a.yaml`: drop the `ignore_changes = [site_ids]` in the ASN fixture (`asn.site_ids` is read-only now) and re-run `TestAccAsn_basic`.
-- [ ] `internal/provider/manual/primary_ip_resource.go` and the two primary-IP examples: drop the `ignore_changes = [primary_ip4_id, primary_ip6_id]` guidance after confirming the device / VM attributes (now `Optional+Computed`) no longer plan a removal.
 - [ ] Review Renovate's first dependency dashboard after the PR merges (`.github/renovate.json5`).
 
 ## Sharp edges for users
