@@ -11,6 +11,30 @@ on:
         description: "Terraform version"
         required: false
         default: "1.14.*"
+      netbox_image_tag:
+        description: "netboxcommunity/netbox image tag, e.g. v4.7.2 (empty: the docker-compose.yml default)"
+        required: false
+        default: ""
+  # Called by netbox-watch.yml to test a release tag against a new NetBox image.
+  workflow_call:
+    inputs:
+      shard:
+        type: string
+        required: false
+        default: ""
+      terraform:
+        type: string
+        required: false
+        default: "1.14.*"
+      netbox_image_tag:
+        type: string
+        required: false
+        default: ""
+      ref:
+        description: "Git ref to check out and test (empty: the calling commit)"
+        type: string
+        required: false
+        default: ""
   schedule:
     # Nightly at 03:17 UTC.
     - cron: "17 3 * * *"
@@ -59,6 +83,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
@@ -77,11 +102,13 @@ jobs:
             go-${{ runner.os }}-build-
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
-          terraform_version: ${{ github.event.inputs.terraform || '1.14.*' }}
+          terraform_version: ${{ inputs.terraform || '1.14.*' }}
           terraform_wrapper: false
 
-      - name: Start NetBox 4.7
+      - name: Start NetBox
         env:
+          # Empty selects the default tag in docker/docker-compose.yml.
+          NETBOX_IMAGE_TAG: ${{ inputs.netbox_image_tag }}
           SUPERUSER_NAME: ${{ env.NETBOX_SUPERUSER_NAME }}
           SUPERUSER_PASSWORD: ${{ env.NETBOX_SUPERUSER_PASSWORD }}
         run: docker compose -f docker/docker-compose.yml up -d --wait --wait-timeout 600
@@ -99,13 +126,26 @@ jobs:
           echo "::add-mask::$token"
           echo "token=$token" >> "$GITHUB_OUTPUT"
 
+      - name: Report the NetBox version
+        # Floating image tags (v4.7) move with every patch release; record which
+        # release this run actually tested.
+        env:
+          NETBOX_API_TOKEN: ${{ steps.token.outputs.token }}
+          ACC_SHARD: ${{ inputs.shard || matrix.shard }}
+        run: |
+          set -euo pipefail
+          version=$(curl -sS -f http://localhost:8000/api/status/ \
+            -H "Authorization: Bearer $NETBOX_API_TOKEN" -H 'Accept: application/json' | jq -r '."netbox-version"')
+          echo "::notice title=NetBox version::$ACC_SHARD ran against NetBox $version"
+          echo "NetBox \`$version\` for \`$ACC_SHARD\`" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Run acceptance tests
         env:
           TF_ACC: "1"
           NETBOX_SERVER_URL: http://localhost:8000
           NETBOX_API_TOKEN: ${{ steps.token.outputs.token }}
           NETBOX_REQUESTS_PER_SECOND: "10"
-          ACC_SHARD: ${{ github.event.inputs.shard || matrix.shard }}
+          ACC_SHARD: ${{ inputs.shard || matrix.shard }}
         run: go test "$ACC_SHARD" -v -count=1 -run TestAcc -timeout 120m -parallel 4
 
       - name: NetBox logs (on failure)

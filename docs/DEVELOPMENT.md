@@ -64,20 +64,50 @@ attribute form). `make sweep` deletes every `tfacc-*` object on the configured s
 
 ## Bumping the NetBox version
 
-1. Fetch the new document: `curl -sS 'https://<netbox>/api/schema/?format=json' > spec/netbox-<v>.openapi.json`
-   and update `spec/VERSION`.
-2. `make client-gen` (needs Java 17+, downloads openapi-generator 7.26.0 into `.cache/`).
-3. `make gen && make docs`, then `go build ./... && go test ./internal/...`.
-4. Review `go run ./internal/gen -list` for new collections and `docs/RESOURCES.md` for name changes;
+1. Extract the new document with `scripts/netbox-spec.sh <v>` (writes `spec/netbox-<v>.openapi.json`; needs
+   Docker, about five minutes), `git rm` the old one, update `spec/VERSION` and `packageVersion` in
+   `tools/client-gen/config.yaml`. The script migrates an empty database and runs `manage.py spectacular`
+   in the `netboxcommunity/netbox:v<v>` image; the result is identical to `GET /api/schema/?format=json` on
+   that release, without plugins (the demo runs one) or a token.
+2. `go run ./tools/netbox-diff -old spec/netbox-<old>.openapi.json -new spec/netbox-<v>.openapi.json` lists
+   what the release changes in the provider (breaking or additive). Both documents must sit next to
+   `required-fixes.json`; the tool refuses otherwise, because the generator silently skips missing fixes.
+3. `make client-gen` (needs Java 17+, downloads openapi-generator 7.26.0 into `.cache/`).
+4. `make gen && make docs`, then `go build ./... && make test`.
+5. Review `go run ./internal/gen -list` for new collections and `docs/RESOURCES.md` for name changes;
    add overrides for new FK targets or fixtures as needed.
-5. Update the version check in `internal/provider/provider.go` if the supported major.minor changes.
+6. Update the version check in `internal/provider/provider.go` if the supported major.minor changes.
 
 The generator jar is pinned by SHA-256 (`OAG_SHA256` next to `OAG_VERSION` in
 `tools/client-gen/generate.sh`), which is verified before every run and must be updated together with
 `OAG_VERSION`; `.github/workflows/client-gen.yml` regenerates the client on any change to `spec/`,
 `tools/client-gen/` or `netbox/` and fails on drift, so commit the regenerated `netbox/` with the bump.
-Acceptance tests (`.github/workflows/acceptance.yml`) run nightly, on demand via *Run workflow*, and on
-pull requests labelled `run-acceptance`.
+Acceptance tests (`.github/workflows/acceptance.yml`) run nightly, on demand via *Run workflow* (optionally
+against another `netbox_image_tag`), and on pull requests labelled `run-acceptance`; every shard records the
+NetBox version it tested in the run summary.
+
+### NetBox release watch
+
+`.github/workflows/netbox-watch.yml` runs daily (logic in `scripts/netbox-watch.sh`). When NetBox publishes a
+release newer than `spec/VERSION` and its image exists, it extracts the document, runs `tools/netbox-diff`,
+tries the bump (client-gen, gen, docs, build, unit tests), runs the latest provider release's acceptance
+tests against the new image, and runs smoke tests on demo.netbox.dev once the demo runs that release. It
+then opens one `NetBox vX.Y.Z released` issue (label `netbox-release`, assigned to the repository owner) with
+a verdict:
+
+| Verdict | When |
+|---|---|
+| Release required (fix) | the latest release fails acceptance tests against the new NetBox |
+| Release required | a new major.minor (the provider warns outside `SupportedNetBoxMajorMinor`) |
+| Release required (breaking) | an attribute, value, filter or resource disappears or changes type, or becomes required or read-only |
+| Release recommended | additive changes only: the released provider cannot use them |
+| No release needed | the generated surface is unchanged |
+
+The issue also lists the feat/fix commits already on `main` since the latest tag. While the demo still runs
+an older release the issue carries `demo-pending` and the smoke tests are retried daily; the result is added
+as a comment. The run's `netbox-spec-<v>` artifact holds the extracted document for the bump. The workflow
+never opens pull requests (SECURITY.md). Run it by hand with *version* set to the pinned release to dry-run
+it; *force* analyses a version again even when its issue exists.
 
 ## Releasing
 
