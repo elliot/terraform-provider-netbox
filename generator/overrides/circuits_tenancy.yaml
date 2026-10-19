@@ -6,11 +6,11 @@ resources:
   circuits:
     description: "Manages a NetBox circuit (`/api/circuits/circuits/`): a physical or virtual connection delivered by a provider, identified by its provider-assigned circuit ID (`cid`). Group membership is managed with `netbox_circuit_group_assignment`."
     attributes:
-      # `assignments` appears in WritableCircuitRequest but NetBox 4.7 rejects
-      # any value ("Related object not found using the provided attributes")
-      # and omits the key from the read serializer, so the generated nested
-      # list can neither be written nor refreshed. Use
-      # netbox_circuit_group_assignment instead.
+      # Group membership is owned by netbox_circuit_group_assignment. NetBox
+      # 4.7.2 rejected writes and omitted the key on read; 4.7.3 fixed both
+      # (the data sources expose `assignment_ids`), but managing it from the
+      # circuit too would give the relation two owners. Revisit as a
+      # read-only computed `assignment_ids` (see docs/ROADMAP.md).
       assignments: { skip: true }
     test:
       basic: |

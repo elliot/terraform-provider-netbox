@@ -40,6 +40,7 @@ output "ams_dia_status" {
 
 ### Read-Only
 
+- `assignment_ids` (Set of Number) Assignments.
 - `cid` (String) Unique circuit ID.
 - `comments` (String) Comments. Defaults to an empty string.
 - `commit_rate` (Number) Committed rate. Defaults to the NetBox server default when omitted.

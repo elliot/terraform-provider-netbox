@@ -56,6 +56,14 @@ OpenAPI document in `spec/` (version in `spec/VERSION`); see @docs/GENERATOR.md 
 
 - Branches `feat/...`, `fix/...`, `chore/...` (the labeller maps `feat/`/`fix/` to labels); Conventional
   Commits; PRs are squash-merged, so the PR title must be a conventional-commit subject.
+- `main` requires signed commits, and a PR containing an unsigned commit cannot merge. Sign every commit
+  (`commit.gpgsign = true`, or `git commit -S`) and check before pushing that each new commit has a
+  `gpgsig` header (`git cat-file -p <sha>`; with SSH signing `git log --format=%G?` prints `N` unless
+  `gpg.ssh.allowedSignersFile` is set, so it is not a reliable check). Rebasing or
+  amending rewrites commits, so it drops their signatures unless signing is on for the rewrite
+  (`git rebase --gpg-sign`); to bring a PR branch up to date, prefer merging `main` into it. Automation
+  that commits without a key goes through the GitHub API, which signs the commit (as
+  `.github/workflows/prepare-release.yml` does).
 - Do not edit `CHANGELOG.md`; the Prepare release workflow drafts each release's section from the PR titles
   (`cliff.toml`) and it is edited in the release PR (docs/DEVELOPMENT.md, *Releasing*). Remove finished
   items from `docs/ROADMAP.md` as they land.
