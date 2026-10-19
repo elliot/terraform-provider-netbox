@@ -8,9 +8,14 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [0.4.1] - 2026-10-19
 
-### Changed
+### Security
 
-- `deps`: Build with Go 1.26.9 for standard library security fixes ([#40](https://github.com/elliot/terraform-provider-netbox/pull/40))
+- Release binaries are built with Go 1.26.9, which fixes standard library vulnerabilities reachable from the
+  provider's HTTP client: an HTTP/1 connection desync after a rejected `CONNECT` through a proxy
+  (GO-2026-6605), HTTP/2 framing headers accepted when malformed (GO-2026-6610) and MIME header parsing that
+  ignored its memory limit (GO-2026-6608), plus fixes in `crypto/tls`. Exploiting them needs a malicious or
+  compromised NetBox server or proxy; upgrading from 0.4.0 is recommended. No configuration changes
+  ([#40](https://github.com/elliot/terraform-provider-netbox/pull/40)).
 
 ## [0.4.0] - 2026-10-11
 
