@@ -32,6 +32,7 @@ output "assignment_priority" {
 ### Read-Only
 
 - `created` (String) Created.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
 - `group_id` (Number) ID of the Circuit Group (`netbox_circuit_group`).
