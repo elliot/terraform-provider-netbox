@@ -26,9 +26,20 @@ type Options struct {
 	Partial bool
 }
 
+// headerVersion reduces the spec's info.version ("4.7.2 (4.7)") to major.minor
+// with a wildcard patch ("4.7.x") for the generated-file header, so a patch
+// release does not rewrite every generated file.
+func headerVersion(netboxVersion string) string {
+	v := strings.Fields(netboxVersion)[0]
+	if parts := strings.Split(v, "."); len(parts) >= 2 {
+		return parts[0] + "." + parts[1] + ".x"
+	}
+	return v
+}
+
 // All renders every resource.
 func All(resources []*model.Resource, netboxVersion string, opts Options) error {
-	version := strings.Fields(netboxVersion)[0]
+	version := headerVersion(netboxVersion)
 	apps := map[string][]*model.Resource{}
 	for _, r := range resources {
 		if r.Skip {

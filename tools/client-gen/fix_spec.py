@@ -31,6 +31,8 @@ Transformations (in order):
      are made non-nullable (openapi-generator issue #18006).
   7. ``VLANGroup.vid_ranges`` / ``IntegerRange`` are typed as ``[[int,int]]``.
   8. Non-2xx responses are dropped (they are ``oneOf`` unions of throw-away types).
+  9. ``info.version`` (``4.7.2 (4.7)``) becomes ``4.7.x``: openapi-generator
+     writes it into every file, so a patch release would otherwise rewrite them all.
 
 Usage: fix_spec.py <input.json> <output.json>
 """
@@ -272,6 +274,12 @@ def drop_unused_plain_request_twins(schemas, paths):
     return 0
 
 
+def wildcard_patch_version(info):
+    version = info.get("version", "").split()
+    if version:
+        info["version"] = ".".join(version[0].split(".")[:2]) + ".x"
+
+
 def main(src, dst):
     with open(src) as f:
         doc = json.load(f)
@@ -287,7 +295,9 @@ def main(src, dst):
     stats["request_required"] = fix_request_required(schemas, load_required_fixes(src))
     stats["binary_ranges"] = fix_binary_and_ranges(schemas)
     stats["enums"] = strip_enums(doc)
-    doc.setdefault("info", {})["x-fix-spec"] = stats
+    info = doc.setdefault("info", {})
+    wildcard_patch_version(info)
+    info["x-fix-spec"] = stats
     with open(dst, "w") as f:
         json.dump(doc, f, indent=1, sort_keys=False)
     print(json.dumps(stats))
