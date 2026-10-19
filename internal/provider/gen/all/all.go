@@ -9,7 +9,6 @@ import (
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/dcim"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/extras"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/ipam"
-	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/objecttypes"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/tenancy"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/users"
 	_ "github.com/elliot/terraform-provider-netbox/internal/provider/gen/virtualization"
