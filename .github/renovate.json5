@@ -11,12 +11,15 @@
     // `# vX.Y.Z` trailing comment, matching how this repo's workflows under
     // .github/workflows/ are pinned.
     "helpers:pinGitHubActionDigests",
-    // Monthly cadence: Renovate's preset expands to "before 4am on the first
-    // day of the month" (evaluated in the timezone below). Security fixes
-    // bypass the schedule, see osvVulnerabilityAlerts at the bottom.
-    "schedule:monthly",
   ],
 
+  // Weekly cadence: update branches and PRs are only created or refreshed on
+  // Mondays (in the timezone below). The whole day rather than the
+  // `schedule:weekly` preset's "before 4am": the hosted Mend app runs every
+  // few hours at times of its own choosing and can miss a 4-hour window. The
+  // dependency dashboard is refreshed on every run regardless. Security fixes
+  // bypass the schedule, see osvVulnerabilityAlerts at the bottom.
+  schedule: ["* * * * 1"],
   timezone: "Europe/London",
 
   // --- Cooldown ---------------------------------------------------------
@@ -146,6 +149,6 @@
     minimumReleaseAge: null,
   },
   // Let OSV-sourced vulnerability fixes raise PRs immediately, ignoring
-  // the monthly `schedule` above.
+  // the weekly `schedule` above.
   osvVulnerabilityAlerts: true,
 }
