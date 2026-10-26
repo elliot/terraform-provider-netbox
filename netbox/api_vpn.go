@@ -1908,7 +1908,7 @@ type ApiVpnIkePoliciesListRequest struct {
 	ApiService         VpnAPI
 	brief              *bool
 	created            *[]time.Time
-	createdEmpty       *[]time.Time
+	createdEmpty       *bool
 	createdGt          *[]time.Time
 	createdGte         *[]time.Time
 	createdLt          *[]time.Time
@@ -1941,7 +1941,7 @@ type ApiVpnIkePoliciesListRequest struct {
 	ikeProposalId      *[]int32
 	ikeProposalIdN     *[]int32
 	lastUpdated        *[]time.Time
-	lastUpdatedEmpty   *[]time.Time
+	lastUpdatedEmpty   *bool
 	lastUpdatedGt      *[]time.Time
 	lastUpdatedGte     *[]time.Time
 	lastUpdatedLt      *[]time.Time
@@ -2032,7 +2032,7 @@ func (r ApiVpnIkePoliciesListRequest) Created(created []time.Time) ApiVpnIkePoli
 	return r
 }
 
-func (r ApiVpnIkePoliciesListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnIkePoliciesListRequest {
+func (r ApiVpnIkePoliciesListRequest) CreatedEmpty(createdEmpty bool) ApiVpnIkePoliciesListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -2198,7 +2198,7 @@ func (r ApiVpnIkePoliciesListRequest) LastUpdated(lastUpdated []time.Time) ApiVp
 	return r
 }
 
-func (r ApiVpnIkePoliciesListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnIkePoliciesListRequest {
+func (r ApiVpnIkePoliciesListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnIkePoliciesListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -2658,15 +2658,7 @@ func (a *VpnAPIService) VpnIkePoliciesListExecute(r ApiVpnIkePoliciesListRequest
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -2989,15 +2981,7 @@ func (a *VpnAPIService) VpnIkePoliciesListExecute(r ApiVpnIkePoliciesListRequest
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -4766,7 +4750,7 @@ type ApiVpnIkeProposalsListRequest struct {
 	authenticationMethodRegex     *[]string
 	brief                         *bool
 	created                       *[]time.Time
-	createdEmpty                  *[]time.Time
+	createdEmpty                  *bool
 	createdGt                     *[]time.Time
 	createdGte                    *[]time.Time
 	createdLt                     *[]time.Time
@@ -4824,7 +4808,7 @@ type ApiVpnIkeProposalsListRequest struct {
 	ikePolicyId                   *[]int32
 	ikePolicyIdN                  *[]int32
 	lastUpdated                   *[]time.Time
-	lastUpdatedEmpty              *[]time.Time
+	lastUpdatedEmpty              *bool
 	lastUpdatedGt                 *[]time.Time
 	lastUpdatedGte                *[]time.Time
 	lastUpdatedLt                 *[]time.Time
@@ -5015,7 +4999,7 @@ func (r ApiVpnIkeProposalsListRequest) Created(created []time.Time) ApiVpnIkePro
 	return r
 }
 
-func (r ApiVpnIkeProposalsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnIkeProposalsListRequest {
+func (r ApiVpnIkeProposalsListRequest) CreatedEmpty(createdEmpty bool) ApiVpnIkeProposalsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -5322,7 +5306,7 @@ func (r ApiVpnIkeProposalsListRequest) LastUpdated(lastUpdated []time.Time) ApiV
 	return r
 }
 
-func (r ApiVpnIkeProposalsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnIkeProposalsListRequest {
+func (r ApiVpnIkeProposalsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnIkeProposalsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -5902,15 +5886,7 @@ func (a *VpnAPIService) VpnIkeProposalsListExecute(r ApiVpnIkeProposalsListReque
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -6500,15 +6476,7 @@ func (a *VpnAPIService) VpnIkeProposalsListExecute(r ApiVpnIkeProposalsListReque
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -8017,7 +7985,7 @@ type ApiVpnIpsecPoliciesListRequest struct {
 	ApiService        VpnAPI
 	brief             *bool
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -8050,7 +8018,7 @@ type ApiVpnIpsecPoliciesListRequest struct {
 	ipsecProposalId   *[]int32
 	ipsecProposalIdN  *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -8116,7 +8084,7 @@ func (r ApiVpnIpsecPoliciesListRequest) Created(created []time.Time) ApiVpnIpsec
 	return r
 }
 
-func (r ApiVpnIpsecPoliciesListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnIpsecPoliciesListRequest {
+func (r ApiVpnIpsecPoliciesListRequest) CreatedEmpty(createdEmpty bool) ApiVpnIpsecPoliciesListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -8282,7 +8250,7 @@ func (r ApiVpnIpsecPoliciesListRequest) LastUpdated(lastUpdated []time.Time) Api
 	return r
 }
 
-func (r ApiVpnIpsecPoliciesListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnIpsecPoliciesListRequest {
+func (r ApiVpnIpsecPoliciesListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnIpsecPoliciesListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -8629,15 +8597,7 @@ func (a *VpnAPIService) VpnIpsecPoliciesListExecute(r ApiVpnIpsecPoliciesListReq
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -8960,15 +8920,7 @@ func (a *VpnAPIService) VpnIpsecPoliciesListExecute(r ApiVpnIpsecPoliciesListReq
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -10540,7 +10492,7 @@ type ApiVpnIpsecProfilesListRequest struct {
 	ApiService        VpnAPI
 	brief             *bool
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -10577,7 +10529,7 @@ type ApiVpnIpsecProfilesListRequest struct {
 	ipsecPolicyId     *[]int32
 	ipsecPolicyIdN    *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -10644,7 +10596,7 @@ func (r ApiVpnIpsecProfilesListRequest) Created(created []time.Time) ApiVpnIpsec
 	return r
 }
 
-func (r ApiVpnIpsecProfilesListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnIpsecProfilesListRequest {
+func (r ApiVpnIpsecProfilesListRequest) CreatedEmpty(createdEmpty bool) ApiVpnIpsecProfilesListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -10838,7 +10790,7 @@ func (r ApiVpnIpsecProfilesListRequest) LastUpdated(lastUpdated []time.Time) Api
 	return r
 }
 
-func (r ApiVpnIpsecProfilesListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnIpsecProfilesListRequest {
+func (r ApiVpnIpsecProfilesListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnIpsecProfilesListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -11178,15 +11130,7 @@ func (a *VpnAPIService) VpnIpsecProfilesListExecute(r ApiVpnIpsecProfilesListReq
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -11553,15 +11497,7 @@ func (a *VpnAPIService) VpnIpsecProfilesListExecute(r ApiVpnIpsecProfilesListReq
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -13149,7 +13085,7 @@ type ApiVpnIpsecProposalsListRequest struct {
 	authenticationAlgorithmRegex  *[]*string
 	brief                         *bool
 	created                       *[]time.Time
-	createdEmpty                  *[]time.Time
+	createdEmpty                  *bool
 	createdGt                     *[]time.Time
 	createdGte                    *[]time.Time
 	createdLt                     *[]time.Time
@@ -13195,7 +13131,7 @@ type ApiVpnIpsecProposalsListRequest struct {
 	ipsecPolicyId                 *[]int32
 	ipsecPolicyIdN                *[]int32
 	lastUpdated                   *[]time.Time
-	lastUpdatedEmpty              *[]time.Time
+	lastUpdatedEmpty              *bool
 	lastUpdatedGt                 *[]time.Time
 	lastUpdatedGte                *[]time.Time
 	lastUpdatedLt                 *[]time.Time
@@ -13328,7 +13264,7 @@ func (r ApiVpnIpsecProposalsListRequest) Created(created []time.Time) ApiVpnIpse
 	return r
 }
 
-func (r ApiVpnIpsecProposalsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnIpsecProposalsListRequest {
+func (r ApiVpnIpsecProposalsListRequest) CreatedEmpty(createdEmpty bool) ApiVpnIpsecProposalsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -13563,7 +13499,7 @@ func (r ApiVpnIpsecProposalsListRequest) LastUpdated(lastUpdated []time.Time) Ap
 	return r
 }
 
-func (r ApiVpnIpsecProposalsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnIpsecProposalsListRequest {
+func (r ApiVpnIpsecProposalsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnIpsecProposalsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -14043,15 +13979,7 @@ func (a *VpnAPIService) VpnIpsecProposalsListExecute(r ApiVpnIpsecProposalsListR
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -14509,15 +14437,7 @@ func (a *VpnAPIService) VpnIpsecProposalsListExecute(r ApiVpnIpsecProposalsListR
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -16106,7 +16026,7 @@ type ApiVpnL2vpnTerminationsListRequest struct {
 	assignedObjectTypeIdN *[]int32
 	brief                 *bool
 	created               *[]time.Time
-	createdEmpty          *[]time.Time
+	createdEmpty          *bool
 	createdGt             *[]time.Time
 	createdGte            *[]time.Time
 	createdLt             *[]time.Time
@@ -16134,7 +16054,7 @@ type ApiVpnL2vpnTerminationsListRequest struct {
 	l2vpnId               *[]int32
 	l2vpnIdN              *[]int32
 	lastUpdated           *[]time.Time
-	lastUpdatedEmpty      *[]time.Time
+	lastUpdatedEmpty      *bool
 	lastUpdatedGt         *[]time.Time
 	lastUpdatedGte        *[]time.Time
 	lastUpdatedLt         *[]time.Time
@@ -16167,7 +16087,7 @@ type ApiVpnL2vpnTerminationsListRequest struct {
 	vlanId                *[]int32
 	vlanIdN               *[]int32
 	vlanVid               *int32
-	vlanVidEmpty          *int32
+	vlanVidEmpty          *bool
 	vlanVidGt             *int32
 	vlanVidGte            *int32
 	vlanVidLt             *int32
@@ -16245,7 +16165,7 @@ func (r ApiVpnL2vpnTerminationsListRequest) Created(created []time.Time) ApiVpnL
 	return r
 }
 
-func (r ApiVpnL2vpnTerminationsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnL2vpnTerminationsListRequest {
+func (r ApiVpnL2vpnTerminationsListRequest) CreatedEmpty(createdEmpty bool) ApiVpnL2vpnTerminationsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -16398,7 +16318,7 @@ func (r ApiVpnL2vpnTerminationsListRequest) LastUpdated(lastUpdated []time.Time)
 	return r
 }
 
-func (r ApiVpnL2vpnTerminationsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnL2vpnTerminationsListRequest {
+func (r ApiVpnL2vpnTerminationsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnL2vpnTerminationsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -16579,7 +16499,7 @@ func (r ApiVpnL2vpnTerminationsListRequest) VlanVid(vlanVid int32) ApiVpnL2vpnTe
 }
 
 // VLAN number (1-4094)
-func (r ApiVpnL2vpnTerminationsListRequest) VlanVidEmpty(vlanVidEmpty int32) ApiVpnL2vpnTerminationsListRequest {
+func (r ApiVpnL2vpnTerminationsListRequest) VlanVidEmpty(vlanVidEmpty bool) ApiVpnL2vpnTerminationsListRequest {
 	r.vlanVidEmpty = &vlanVidEmpty
 	return r
 }
@@ -16807,15 +16727,7 @@ func (a *VpnAPIService) VpnL2vpnTerminationsListExecute(r ApiVpnL2vpnTermination
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -17091,15 +17003,7 @@ func (a *VpnAPIService) VpnL2vpnTerminationsListExecute(r ApiVpnL2vpnTermination
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -18519,7 +18423,7 @@ type ApiVpnL2vpnsListRequest struct {
 	contactRole       *[]int32
 	contactRoleN      *[]int32
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -18563,7 +18467,7 @@ type ApiVpnL2vpnsListRequest struct {
 	importTargetId    *[]int32
 	importTargetIdN   *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -18698,7 +18602,7 @@ func (r ApiVpnL2vpnsListRequest) Created(created []time.Time) ApiVpnL2vpnsListRe
 	return r
 }
 
-func (r ApiVpnL2vpnsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnL2vpnsListRequest {
+func (r ApiVpnL2vpnsListRequest) CreatedEmpty(createdEmpty bool) ApiVpnL2vpnsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -18927,7 +18831,7 @@ func (r ApiVpnL2vpnsListRequest) LastUpdated(lastUpdated []time.Time) ApiVpnL2vp
 	return r
 }
 
-func (r ApiVpnL2vpnsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnL2vpnsListRequest {
+func (r ApiVpnL2vpnsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnL2vpnsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -19507,15 +19411,7 @@ func (a *VpnAPIService) VpnL2vpnsListExecute(r ApiVpnL2vpnsListRequest) (*Pagina
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -19951,15 +19847,7 @@ func (a *VpnAPIService) VpnL2vpnsListExecute(r ApiVpnL2vpnsListRequest) (*Pagina
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -21898,7 +21786,7 @@ type ApiVpnTunnelGroupsListRequest struct {
 	contactRole       *[]int32
 	contactRoleN      *[]int32
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -21927,7 +21815,7 @@ type ApiVpnTunnelGroupsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -22028,7 +21916,7 @@ func (r ApiVpnTunnelGroupsListRequest) Created(created []time.Time) ApiVpnTunnel
 	return r
 }
 
-func (r ApiVpnTunnelGroupsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnTunnelGroupsListRequest {
+func (r ApiVpnTunnelGroupsListRequest) CreatedEmpty(createdEmpty bool) ApiVpnTunnelGroupsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -22174,7 +22062,7 @@ func (r ApiVpnTunnelGroupsListRequest) LastUpdated(lastUpdated []time.Time) ApiV
 	return r
 }
 
-func (r ApiVpnTunnelGroupsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnTunnelGroupsListRequest {
+func (r ApiVpnTunnelGroupsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnTunnelGroupsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -22580,15 +22468,7 @@ func (a *VpnAPIService) VpnTunnelGroupsListExecute(r ApiVpnTunnelGroupsListReque
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -22867,15 +22747,7 @@ func (a *VpnAPIService) VpnTunnelGroupsListExecute(r ApiVpnTunnelGroupsListReque
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -24450,7 +24322,7 @@ type ApiVpnTunnelTerminationsListRequest struct {
 	ApiService         VpnAPI
 	brief              *bool
 	created            *[]time.Time
-	createdEmpty       *[]time.Time
+	createdEmpty       *bool
 	createdGt          *[]time.Time
 	createdGte         *[]time.Time
 	createdLt          *[]time.Time
@@ -24470,7 +24342,7 @@ type ApiVpnTunnelTerminationsListRequest struct {
 	interfaceId        *[]int32
 	interfaceIdN       *[]int32
 	lastUpdated        *[]time.Time
-	lastUpdatedEmpty   *[]time.Time
+	lastUpdatedEmpty   *bool
 	lastUpdatedGt      *[]time.Time
 	lastUpdatedGte     *[]time.Time
 	lastUpdatedLt      *[]time.Time
@@ -24535,7 +24407,7 @@ func (r ApiVpnTunnelTerminationsListRequest) Created(created []time.Time) ApiVpn
 	return r
 }
 
-func (r ApiVpnTunnelTerminationsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnTunnelTerminationsListRequest {
+func (r ApiVpnTunnelTerminationsListRequest) CreatedEmpty(createdEmpty bool) ApiVpnTunnelTerminationsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -24640,7 +24512,7 @@ func (r ApiVpnTunnelTerminationsListRequest) LastUpdated(lastUpdated []time.Time
 	return r
 }
 
-func (r ApiVpnTunnelTerminationsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnTunnelTerminationsListRequest {
+func (r ApiVpnTunnelTerminationsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnTunnelTerminationsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -24972,15 +24844,7 @@ func (a *VpnAPIService) VpnTunnelTerminationsListExecute(r ApiVpnTunnelTerminati
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -25168,15 +25032,7 @@ func (a *VpnAPIService) VpnTunnelTerminationsListExecute(r ApiVpnTunnelTerminati
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -26735,7 +26591,7 @@ type ApiVpnTunnelsListRequest struct {
 	contactRole         *[]int32
 	contactRoleN        *[]int32
 	created             *[]time.Time
-	createdEmpty        *[]time.Time
+	createdEmpty        *bool
 	createdGt           *[]time.Time
 	createdGte          *[]time.Time
 	createdLt           *[]time.Time
@@ -26785,7 +26641,7 @@ type ApiVpnTunnelsListRequest struct {
 	ipsecProfileId      *[]*int32
 	ipsecProfileIdN     *[]*int32
 	lastUpdated         *[]time.Time
-	lastUpdatedEmpty    *[]time.Time
+	lastUpdatedEmpty    *bool
 	lastUpdatedGt       *[]time.Time
 	lastUpdatedGte      *[]time.Time
 	lastUpdatedLt       *[]time.Time
@@ -26901,7 +26757,7 @@ func (r ApiVpnTunnelsListRequest) Created(created []time.Time) ApiVpnTunnelsList
 	return r
 }
 
-func (r ApiVpnTunnelsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiVpnTunnelsListRequest {
+func (r ApiVpnTunnelsListRequest) CreatedEmpty(createdEmpty bool) ApiVpnTunnelsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -27160,7 +27016,7 @@ func (r ApiVpnTunnelsListRequest) LastUpdated(lastUpdated []time.Time) ApiVpnTun
 	return r
 }
 
-func (r ApiVpnTunnelsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiVpnTunnelsListRequest {
+func (r ApiVpnTunnelsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiVpnTunnelsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -27645,15 +27501,7 @@ func (a *VpnAPIService) VpnTunnelsListExecute(r ApiVpnTunnelsListRequest) (*Pagi
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -28155,15 +28003,7 @@ func (a *VpnAPIService) VpnTunnelsListExecute(r ApiVpnTunnelsListRequest) (*Pagi
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt

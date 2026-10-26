@@ -53,6 +53,7 @@ type CircuitDataModel struct {
 	TerminationAId    types.Int64          `tfsdk:"termination_a_id"`
 	TerminationZId    types.Int64          `tfsdk:"termination_z_id"`
 	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
+	AssignmentIds     types.Set            `tfsdk:"assignment_ids"`
 }
 
 // circuitFilterNames lists the query parameters accepted by /api/circuits/circuits/ (sorted).
@@ -188,6 +189,11 @@ func circuitDataAttributes(lookup bool) map[string]dsschema.Attribute {
 		"last_updated": dsschema.StringAttribute{
 			MarkdownDescription: "Last Updated.",
 			CustomType:          timetypes.RFC3339Type{},
+			Computed:            true,
+		},
+		"assignment_ids": dsschema.SetAttribute{
+			MarkdownDescription: "Assignments.",
+			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
 	}
@@ -447,4 +453,5 @@ func circuitDataFromAPI(ctx context.Context, obj *netbox.Circuit, out *CircuitDa
 	out.TerminationAId = conv.BriefID(obj.GetTerminationAOk())
 	out.TerminationZId = conv.BriefID(obj.GetTerminationZOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
+	out.AssignmentIds = conv.BriefIDs(obj.GetAssignments())
 }

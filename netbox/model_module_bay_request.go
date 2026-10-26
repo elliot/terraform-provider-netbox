@@ -32,7 +32,6 @@ type ModuleBayRequest struct {
 	Enabled              *bool                  `json:"enabled,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	ModuleBayTypes       []int32                `json:"module_bay_types,omitempty"`
-	InstalledModule      NullableInt32          `json:"installed_module,omitempty"`
 	Owner                NullableInt32          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -311,49 +310,6 @@ func (o *ModuleBayRequest) SetModuleBayTypes(v []int32) {
 	o.ModuleBayTypes = v
 }
 
-// GetInstalledModule returns the InstalledModule field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ModuleBayRequest) GetInstalledModule() int32 {
-	if o == nil || IsNil(o.InstalledModule.Get()) {
-		var ret int32
-		return ret
-	}
-	return *o.InstalledModule.Get()
-}
-
-// GetInstalledModuleOk returns a tuple with the InstalledModule field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ModuleBayRequest) GetInstalledModuleOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.InstalledModule.Get(), o.InstalledModule.IsSet()
-}
-
-// HasInstalledModule returns a boolean if a field has been set.
-func (o *ModuleBayRequest) HasInstalledModule() bool {
-	if o != nil && o.InstalledModule.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetInstalledModule gets a reference to the given NullableInt32 and assigns it to the InstalledModule field.
-func (o *ModuleBayRequest) SetInstalledModule(v int32) {
-	o.InstalledModule.Set(&v)
-}
-
-// SetInstalledModuleNil sets the value for InstalledModule to be an explicit nil
-func (o *ModuleBayRequest) SetInstalledModuleNil() {
-	o.InstalledModule.Set(nil)
-}
-
-// UnsetInstalledModule ensures that no value is present for InstalledModule, not even an explicit nil
-func (o *ModuleBayRequest) UnsetInstalledModule() {
-	o.InstalledModule.Unset()
-}
-
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ModuleBayRequest) GetOwner() int32 {
 	if o == nil || IsNil(o.Owner.Get()) {
@@ -491,9 +447,6 @@ func (o ModuleBayRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ModuleBayTypes) {
 		toSerialize["module_bay_types"] = o.ModuleBayTypes
 	}
-	if o.InstalledModule.IsSet() {
-		toSerialize["installed_module"] = o.InstalledModule.Get()
-	}
 	if o.Owner.IsSet() {
 		toSerialize["owner"] = o.Owner.Get()
 	}
@@ -571,7 +524,6 @@ func (o *ModuleBayRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "enabled")
 		delete(additionalProperties, "description")
 		delete(additionalProperties, "module_bay_types")
-		delete(additionalProperties, "installed_module")
 		delete(additionalProperties, "owner")
 		delete(additionalProperties, "tags")
 		delete(additionalProperties, "custom_fields")

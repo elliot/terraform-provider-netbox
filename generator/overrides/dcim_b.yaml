@@ -697,6 +697,10 @@ resources:
         }
 
   module-bays:
+    # Installation is owned by netbox_module.module_bay_id. NetBox 4.7.2
+    # failed on any write of installed_module; 4.7.3 fixed it and the data
+    # sources expose `installed_module_id`. Revisit as a read-only computed
+    # attribute on the resource (see docs/ROADMAP.md).
     attributes: { installed_module: { skip: true } }
     test:
       basic: |

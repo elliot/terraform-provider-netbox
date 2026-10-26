@@ -8,9 +8,9 @@ file; `CHANGELOG.md` is the record of what shipped.
 | Area | State |
 |---|---|
 | Resources / data sources | 126 generated resources, 266 data sources, 7 hand-written resources; see [RESOURCES.md](RESOURCES.md) |
-| Acceptance | Actions run 92 (docker-compose, 12 shards, one NetBox 4.7 each; `workflow_dispatch` on `main`, 2026-10-11): 138/139 pass; `TestAccCustomFieldValue_basic` fails (refresh plan not empty after apply); fix #33 (v0.4.0) landed afterwards and has not been re-run yet. Earlier: 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. Spec pinned at 4.7.2 since 2026-10-02. The workflow runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
+| Acceptance | Actions run 92 (docker-compose, 12 shards, one NetBox 4.7 each; `workflow_dispatch` on `main`, 2026-10-11): 138/139 pass; `TestAccCustomFieldValue_basic` fails (refresh plan not empty after apply); fix #33 (v0.4.0) landed afterwards and has not been re-run yet. Earlier: 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. Spec pinned at 4.7.3 since 2026-10-19. The workflow runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (counts refreshed from run 92; narrative predates the last generator fixes, see the banner there) |
-| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), daily NetBox release watch (spec diff, trial bump, latest release on the new image, demo smoke tests, verdict issue; `netbox-watch.yml`), zizmor workflow audit, CodeQL (Go without the generated `netbox/` client, and Actions; weekly and on every PR), incremental Go build caches written from `main`, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate monthly with a 7-day cooldown |
+| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.13 / 1.14 / 1.16, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), daily NetBox release watch (spec diff, trial bump, latest release on the new image, demo smoke tests, verdict issue; `netbox-watch.yml`), zizmor workflow audit, CodeQL (Go without the generated `netbox/` client, and Actions; weekly and on every PR), incremental Go build caches written from `main`, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate weekly (Mondays) with a 7-day cooldown |
 | Release | `v0.4.0` released 2026-10-11 (after `v0.3.0`, 2026-10-02, and `v0.2.0`, 2026-10-01); `v0.1.0` and `v0.1.1` published 2026-09-24 (the 0.1.0 checksums are unsigned because of a workflow bug fixed in 0.1.1). GitHub Releases with eight platform zips, network mirror live at `https://elliot.github.io/terraform-provider-netbox/`, `scripts/install.sh` and `terraform init` through the mirror verified against the published assets; see [INSTALL.md](INSTALL.md). Releases build in the `release` environment with build provenance attestations and mandatory GPG signing with post-upload verification |
 | Registry | namespace `elliot` reserved, address `elliot/netbox` final; listing not yet published |
 
@@ -26,7 +26,7 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 
 ### v0.2: generator polish
 - Reverse-side computed lists (`asn.site_ids`, `rear_port.front_ports`) are unknown during updates of the owning resource; a state-copying plan modifier would remove that line from plans but risks an inconsistent-result error when the other side changes in the same apply.
-- Re-verify `module_bay.installed_module` (skipped after a NetBox 500 that the "no null on create" fix may have removed) and retire redundant overrides listed below.
+- Expose `module_bay.installed_module_id` and `circuit.assignment_ids` as read-only computed attributes on the resources (NetBox 4.7.3 fixed the write error and returns both on read; the data sources already have them). They stay skipped on the resources until then, because `netbox_module.module_bay_id` and `netbox_circuit_group_assignment` own those relations.
 - Description polish: rack dimensions copied from the rack type, `extra_choices` as `[value, label]` pairs, `sync_interval` in minutes, list data source item shapes.
 - Per-field float precision in overrides for every decimal field (only `latitude`/`longitude` carry a precision today, applied by the generator; other floats fall back to 6 on read and have no decimals validator).
 
@@ -44,8 +44,7 @@ Behaviour that is deliberately conservative since v0.1: reverse sides of relatio
 
 ## Todos (file-anchored)
 
-- [ ] `generator/overrides`: remove the `circuits.assignments` skip (dropping it regenerates a nested `assignments` attribute, so it is not redundant yet).
-- [ ] Review Renovate's first dependency dashboard after the PR merges (`.github/renovate.json5`).
+- [ ] Renovate has not processed the repository yet (no dependency dashboard issue or `renovate/*` branches, although `.github/renovate.json5` validates): check that the Mend Renovate app's repository access includes this repository (GitHub Settings → Applications) and its status on developer.mend.io, then review the first dashboard.
 
 ## Sharp edges for users
 
@@ -84,7 +83,7 @@ Virtualization, users, VPN, circuits
 - Token secrets are returned once; `netbox_token.token` is kept from state afterwards.
 - `owner` requires an owner group although the schema says nullable.
 - IKE: `mode` is required for IKEv1 and forbidden for IKEv2; nullable choice fields cannot be cleared through the API.
-- `circuit.assignments` is not writable in 4.7; use `netbox_circuit_group_assignment`.
+- `netbox_circuit` does not manage group membership; use `netbox_circuit_group_assignment` (the data sources expose `assignment_ids`).
 - Allocated IPs, prefixes and ASNs do not remember their parent after import.
 
 ## Sharp edges for contributors
@@ -108,9 +107,9 @@ Attributes hidden or forced by overrides (revisit on every spec bump):
 
 | Resource | Attribute | Override | Why |
 |---|---|---|---|
-| circuit | assignments | skip | not echoed by the read serializer (now dropped generically) |
+| circuit | assignments | skip | owned by netbox_circuit_group_assignment; 4.7.3 returns it on read, so it can become a computed `assignment_ids` |
 | rear_port, rear_port_template | front_ports | read_only | reverse side of front_port.rear_ports; NetBox accepts writes from both sides, the front port owns the mapping |
-| module_bay | installed_module | skip | NetBox 500 on any write, re-verify |
+| module_bay | installed_module | skip | owned by netbox_module.module_bay_id; the 4.7.2 write error is fixed in 4.7.3, so it can become a computed `installed_module_id` |
 | asn | sites | read_only, target | reverse side of site.asn_ids; the read items (`ASNSite`) name no target, so it is set explicitly for the symmetric-pair check |
 | user, user_group | permissions | read_only | reverse side of permission.user_ids / group_ids; exposed as computed `permission_ids` |
 | service, service_template | protocol, ports | skip | deprecated in 4.7 for port_mappings |
@@ -122,4 +121,4 @@ Attributes hidden or forced by overrides (revisit on every spec bump):
 
 Whole collections skipped: image attachments (multipart), notifications, subscriptions, bookmarks, saved filters, table configs (per-user UI state).
 
-Spec gaps NetBox should fix or we should patch in `spec/`: `Token.allowed_ips` missing; allocation request schemas under-describe accepted fields; `add_tags`/`remove_tags`, ETag headers and `?background=true` are absent.
+Spec gaps NetBox should fix or we should patch in `spec/`: `Token.allowed_ips` missing; allocation request schemas under-describe accepted fields (4.7.3 documents the available-prefixes request; available IPs, VLANs and ASNs still do not); `add_tags`/`remove_tags`, ETag headers and `?background=true` are absent.

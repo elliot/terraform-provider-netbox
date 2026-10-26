@@ -27,8 +27,9 @@ type BulkCircuitGroupAssignmentRequest struct {
 	MemberType string `json:"member_type"`
 	MemberId   int64  `json:"member_id"`
 	// * `primary` - Primary * `secondary` - Secondary * `tertiary` - Tertiary * `inactive` - Inactive
-	Priority             *string            `json:"priority,omitempty"`
-	Tags                 []NestedTagRequest `json:"tags,omitempty"`
+	Priority             *string                `json:"priority,omitempty"`
+	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
+	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -215,6 +216,38 @@ func (o *BulkCircuitGroupAssignmentRequest) SetTags(v []NestedTagRequest) {
 	o.Tags = v
 }
 
+// GetCustomFields returns the CustomFields field value if set, zero value otherwise.
+func (o *BulkCircuitGroupAssignmentRequest) GetCustomFields() map[string]interface{} {
+	if o == nil || IsNil(o.CustomFields) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.CustomFields
+}
+
+// GetCustomFieldsOk returns a tuple with the CustomFields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BulkCircuitGroupAssignmentRequest) GetCustomFieldsOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.CustomFields) {
+		return map[string]interface{}{}, false
+	}
+	return o.CustomFields, true
+}
+
+// HasCustomFields returns a boolean if a field has been set.
+func (o *BulkCircuitGroupAssignmentRequest) HasCustomFields() bool {
+	if o != nil && !IsNil(o.CustomFields) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomFields gets a reference to the given map[string]interface{} and assigns it to the CustomFields field.
+func (o *BulkCircuitGroupAssignmentRequest) SetCustomFields(v map[string]interface{}) {
+	o.CustomFields = v
+}
+
 func (o BulkCircuitGroupAssignmentRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -234,6 +267,9 @@ func (o BulkCircuitGroupAssignmentRequest) ToMap() (map[string]interface{}, erro
 	}
 	if !IsNil(o.Tags) {
 		toSerialize["tags"] = o.Tags
+	}
+	if !IsNil(o.CustomFields) {
+		toSerialize["custom_fields"] = o.CustomFields
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -303,6 +339,7 @@ func (o *BulkCircuitGroupAssignmentRequest) UnmarshalJSON(data []byte) (err erro
 		delete(additionalProperties, "member_id")
 		delete(additionalProperties, "priority")
 		delete(additionalProperties, "tags")
+		delete(additionalProperties, "custom_fields")
 		o.AdditionalProperties = additionalProperties
 	}
 

@@ -2068,7 +2068,7 @@ type ApiCircuitsCircuitGroupAssignmentsListRequest struct {
 	circuit           *[]string
 	circuitId         *[]int32
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -2088,7 +2088,7 @@ type ApiCircuitsCircuitGroupAssignmentsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -2159,7 +2159,7 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) Created(created []time.Ti
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -2264,7 +2264,7 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) LastUpdated(lastUpdated [
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -2590,15 +2590,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsListExecute(r ApiCir
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -2786,15 +2778,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsListExecute(r ApiCir
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -4287,7 +4271,7 @@ type ApiCircuitsCircuitGroupsListRequest struct {
 	ApiService        CircuitsAPI
 	brief             *bool
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -4316,7 +4300,7 @@ type ApiCircuitsCircuitGroupsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -4391,7 +4375,7 @@ func (r ApiCircuitsCircuitGroupsListRequest) Created(created []time.Time) ApiCir
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsCircuitGroupsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -4537,7 +4521,7 @@ func (r ApiCircuitsCircuitGroupsListRequest) LastUpdated(lastUpdated []time.Time
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsCircuitGroupsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -4921,15 +4905,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupsListExecute(r ApiCircuitsCircu
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -5208,15 +5184,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupsListExecute(r ApiCircuitsCircu
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -6904,7 +6872,7 @@ type ApiCircuitsCircuitTerminationsListRequest struct {
 	circuitId           *[]int32
 	circuitIdN          *[]int32
 	created             *[]time.Time
-	createdEmpty        *[]time.Time
+	createdEmpty        *bool
 	createdGt           *[]time.Time
 	createdGte          *[]time.Time
 	createdLt           *[]time.Time
@@ -6933,7 +6901,7 @@ type ApiCircuitsCircuitTerminationsListRequest struct {
 	idLte               *[]int32
 	idN                 *[]int32
 	lastUpdated         *[]time.Time
-	lastUpdatedEmpty    *[]time.Time
+	lastUpdatedEmpty    *bool
 	lastUpdatedGt       *[]time.Time
 	lastUpdatedGte      *[]time.Time
 	lastUpdatedLt       *[]time.Time
@@ -7183,7 +7151,7 @@ func (r ApiCircuitsCircuitTerminationsListRequest) Created(created []time.Time) 
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsCircuitTerminationsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -7329,7 +7297,7 @@ func (r ApiCircuitsCircuitTerminationsListRequest) LastUpdated(lastUpdated []tim
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsCircuitTerminationsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -8168,15 +8136,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTerminationsListExecute(r ApiCircuit
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -8455,15 +8415,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTerminationsListExecute(r ApiCircuit
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -10707,7 +10659,7 @@ type ApiCircuitsCircuitTypesListRequest struct {
 	colorNisw         *[]string
 	colorRegex        *[]string
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -10736,7 +10688,7 @@ type ApiCircuitsCircuitTypesListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -10868,7 +10820,7 @@ func (r ApiCircuitsCircuitTypesListRequest) Created(created []time.Time) ApiCirc
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsCircuitTypesListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -11014,7 +10966,7 @@ func (r ApiCircuitsCircuitTypesListRequest) LastUpdated(lastUpdated []time.Time)
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsCircuitTypesListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -11489,15 +11441,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTypesListExecute(r ApiCircuitsCircui
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -11776,15 +11720,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTypesListExecute(r ApiCircuitsCircui
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -13385,7 +13321,7 @@ type ApiCircuitsCircuitsListRequest struct {
 	contactRole          *[]int32
 	contactRoleN         *[]int32
 	created              *[]time.Time
-	createdEmpty         *[]time.Time
+	createdEmpty         *bool
 	createdGt            *[]time.Time
 	createdGte           *[]time.Time
 	createdLt            *[]time.Time
@@ -13441,7 +13377,7 @@ type ApiCircuitsCircuitsListRequest struct {
 	installDateLte       *[]string
 	installDateN         *[]string
 	lastUpdated          *[]time.Time
-	lastUpdatedEmpty     *[]time.Time
+	lastUpdatedEmpty     *bool
 	lastUpdatedGt        *[]time.Time
 	lastUpdatedGte       *[]time.Time
 	lastUpdatedLt        *[]time.Time
@@ -13676,7 +13612,7 @@ func (r ApiCircuitsCircuitsListRequest) Created(created []time.Time) ApiCircuits
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsCircuitsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -13959,7 +13895,7 @@ func (r ApiCircuitsCircuitsListRequest) LastUpdated(lastUpdated []time.Time) Api
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsCircuitsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -14767,15 +14703,7 @@ func (a *CircuitsAPIService) CircuitsCircuitsListExecute(r ApiCircuitsCircuitsLi
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -15311,15 +15239,7 @@ func (a *CircuitsAPIService) CircuitsCircuitsListExecute(r ApiCircuitsCircuitsLi
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -17287,7 +17207,7 @@ type ApiCircuitsProviderAccountsListRequest struct {
 	contactRole       *[]int32
 	contactRoleN      *[]int32
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -17316,7 +17236,7 @@ type ApiCircuitsProviderAccountsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -17473,7 +17393,7 @@ func (r ApiCircuitsProviderAccountsListRequest) Created(created []time.Time) Api
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsProviderAccountsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -17619,7 +17539,7 @@ func (r ApiCircuitsProviderAccountsListRequest) LastUpdated(lastUpdated []time.T
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsProviderAccountsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -18119,15 +18039,7 @@ func (a *CircuitsAPIService) CircuitsProviderAccountsListExecute(r ApiCircuitsPr
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -18406,15 +18318,7 @@ func (a *CircuitsAPIService) CircuitsProviderAccountsListExecute(r ApiCircuitsPr
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -19898,7 +19802,7 @@ type ApiCircuitsProviderNetworksListRequest struct {
 	ApiService        CircuitsAPI
 	brief             *bool
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -19927,7 +19831,7 @@ type ApiCircuitsProviderNetworksListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -19998,7 +19902,7 @@ func (r ApiCircuitsProviderNetworksListRequest) Created(created []time.Time) Api
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsProviderNetworksListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -20144,7 +20048,7 @@ func (r ApiCircuitsProviderNetworksListRequest) LastUpdated(lastUpdated []time.T
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsProviderNetworksListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -20508,15 +20412,7 @@ func (a *CircuitsAPIService) CircuitsProviderNetworksListExecute(r ApiCircuitsPr
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -20795,15 +20691,7 @@ func (a *CircuitsAPIService) CircuitsProviderNetworksListExecute(r ApiCircuitsPr
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -22432,7 +22320,7 @@ type ApiCircuitsProvidersListRequest struct {
 	contactRole       *[]int32
 	contactRoleN      *[]int32
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -22461,7 +22349,7 @@ type ApiCircuitsProvidersListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -22598,7 +22486,7 @@ func (r ApiCircuitsProvidersListRequest) Created(created []time.Time) ApiCircuit
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsProvidersListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -22744,7 +22632,7 @@ func (r ApiCircuitsProvidersListRequest) LastUpdated(lastUpdated []time.Time) Ap
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsProvidersListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -23258,15 +23146,7 @@ func (a *CircuitsAPIService) CircuitsProvidersListExecute(r ApiCircuitsProviders
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -23545,15 +23425,7 @@ func (a *CircuitsAPIService) CircuitsProvidersListExecute(r ApiCircuitsProviders
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -25260,7 +25132,7 @@ type ApiCircuitsVirtualCircuitTerminationsListRequest struct {
 	ApiService         CircuitsAPI
 	brief              *bool
 	created            *[]time.Time
-	createdEmpty       *[]time.Time
+	createdEmpty       *bool
 	createdGt          *[]time.Time
 	createdGte         *[]time.Time
 	createdLt          *[]time.Time
@@ -25291,7 +25163,7 @@ type ApiCircuitsVirtualCircuitTerminationsListRequest struct {
 	interfaceId        *[]int32
 	interfaceIdN       *[]int32
 	lastUpdated        *[]time.Time
-	lastUpdatedEmpty   *[]time.Time
+	lastUpdatedEmpty   *bool
 	lastUpdatedGt      *[]time.Time
 	lastUpdatedGte     *[]time.Time
 	lastUpdatedLt      *[]time.Time
@@ -25349,7 +25221,7 @@ func (r ApiCircuitsVirtualCircuitTerminationsListRequest) Created(created []time
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -25507,7 +25379,7 @@ func (r ApiCircuitsVirtualCircuitTerminationsListRequest) LastUpdated(lastUpdate
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -25806,15 +25678,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsListExecute(r Api
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -26115,15 +25979,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsListExecute(r Api
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -27768,7 +27624,7 @@ type ApiCircuitsVirtualCircuitTypesListRequest struct {
 	colorNisw         *[]string
 	colorRegex        *[]string
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -27797,7 +27653,7 @@ type ApiCircuitsVirtualCircuitTypesListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -27929,7 +27785,7 @@ func (r ApiCircuitsVirtualCircuitTypesListRequest) Created(created []time.Time) 
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -28075,7 +27931,7 @@ func (r ApiCircuitsVirtualCircuitTypesListRequest) LastUpdated(lastUpdated []tim
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -28550,15 +28406,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesListExecute(r ApiCircuit
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -28837,15 +28685,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesListExecute(r ApiCircuit
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -30433,7 +30273,7 @@ type ApiCircuitsVirtualCircuitsListRequest struct {
 	cidNisw            *[]string
 	cidRegex           *[]string
 	created            *[]time.Time
-	createdEmpty       *[]time.Time
+	createdEmpty       *bool
 	createdGt          *[]time.Time
 	createdGte         *[]time.Time
 	createdLt          *[]time.Time
@@ -30462,7 +30302,7 @@ type ApiCircuitsVirtualCircuitsListRequest struct {
 	idLte              *[]int32
 	idN                *[]int32
 	lastUpdated        *[]time.Time
-	lastUpdatedEmpty   *[]time.Time
+	lastUpdatedEmpty   *bool
 	lastUpdatedGt      *[]time.Time
 	lastUpdatedGte     *[]time.Time
 	lastUpdatedLt      *[]time.Time
@@ -30603,7 +30443,7 @@ func (r ApiCircuitsVirtualCircuitsListRequest) Created(created []time.Time) ApiC
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) CreatedEmpty(createdEmpty bool) ApiCircuitsVirtualCircuitsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -30749,7 +30589,7 @@ func (r ApiCircuitsVirtualCircuitsListRequest) LastUpdated(lastUpdated []time.Ti
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCircuitsVirtualCircuitsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -31287,15 +31127,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitsListExecute(r ApiCircuitsVir
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -31574,15 +31406,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitsListExecute(r ApiCircuitsVir
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt

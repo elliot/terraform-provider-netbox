@@ -317,13 +317,14 @@ type CoreAPI interface {
 	CoreDataSourcesRetrieveExecute(r ApiCoreDataSourcesRetrieveRequest) (*DataSource, *http.Response, error)
 
 	/*
-		CoreDataSourcesSyncCreate Method for CoreDataSourcesSyncCreate
+			CoreDataSourcesSyncCreate Method for CoreDataSourcesSyncCreate
 
-		Enqueue a job to synchronize the DataSource.
+			Enqueue a job to synchronize the DataSource. The brief representation of the DataSource is returned if the
+		user does not have permission to view it.
 
-		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-		@param id A unique integer value identifying this data source.
-		@return ApiCoreDataSourcesSyncCreateRequest
+			@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+			@param id A unique integer value identifying this data source.
+			@return ApiCoreDataSourcesSyncCreateRequest
 	*/
 	CoreDataSourcesSyncCreate(ctx context.Context, id int32) ApiCoreDataSourcesSyncCreateRequest
 
@@ -1836,7 +1837,7 @@ type ApiCoreDataFilesListRequest struct {
 	ApiService        CoreAPI
 	brief             *bool
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -1865,7 +1866,7 @@ type ApiCoreDataFilesListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -1916,7 +1917,7 @@ func (r ApiCoreDataFilesListRequest) Created(created []time.Time) ApiCoreDataFil
 	return r
 }
 
-func (r ApiCoreDataFilesListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) CreatedEmpty(createdEmpty bool) ApiCoreDataFilesListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -2062,7 +2063,7 @@ func (r ApiCoreDataFilesListRequest) LastUpdated(lastUpdated []time.Time) ApiCor
 	return r
 }
 
-func (r ApiCoreDataFilesListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCoreDataFilesListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -2317,15 +2318,7 @@ func (a *CoreAPIService) CoreDataFilesListExecute(r ApiCoreDataFilesListRequest)
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -2604,15 +2597,7 @@ func (a *CoreAPIService) CoreDataFilesListExecute(r ApiCoreDataFilesListRequest)
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -3756,7 +3741,7 @@ type ApiCoreDataSourcesListRequest struct {
 	ApiService         CoreAPI
 	brief              *bool
 	created            *[]time.Time
-	createdEmpty       *[]time.Time
+	createdEmpty       *bool
 	createdGt          *[]time.Time
 	createdGte         *[]time.Time
 	createdLt          *[]time.Time
@@ -3793,7 +3778,7 @@ type ApiCoreDataSourcesListRequest struct {
 	lastSyncedLte      *[]time.Time
 	lastSyncedN        *[]time.Time
 	lastUpdated        *[]time.Time
-	lastUpdatedEmpty   *[]time.Time
+	lastUpdatedEmpty   *bool
 	lastUpdatedGt      *[]time.Time
 	lastUpdatedGte     *[]time.Time
 	lastUpdatedLt      *[]time.Time
@@ -3898,7 +3883,7 @@ func (r ApiCoreDataSourcesListRequest) Created(created []time.Time) ApiCoreDataS
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) CreatedEmpty(createdEmpty []time.Time) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) CreatedEmpty(createdEmpty bool) ApiCoreDataSourcesListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -4084,7 +4069,7 @@ func (r ApiCoreDataSourcesListRequest) LastUpdated(lastUpdated []time.Time) ApiC
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiCoreDataSourcesListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -4614,15 +4599,7 @@ func (a *CoreAPIService) CoreDataSourcesListExecute(r ApiCoreDataSourcesListRequ
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -4973,15 +4950,7 @@ func (a *CoreAPIService) CoreDataSourcesListExecute(r ApiCoreDataSourcesListRequ
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -6231,15 +6200,9 @@ func (a *CoreAPIService) CoreDataSourcesRetrieveExecute(r ApiCoreDataSourcesRetr
 }
 
 type ApiCoreDataSourcesSyncCreateRequest struct {
-	ctx                       context.Context
-	ApiService                CoreAPI
-	id                        int32
-	writableDataSourceRequest *WritableDataSourceRequest
-}
-
-func (r ApiCoreDataSourcesSyncCreateRequest) WritableDataSourceRequest(writableDataSourceRequest WritableDataSourceRequest) ApiCoreDataSourcesSyncCreateRequest {
-	r.writableDataSourceRequest = &writableDataSourceRequest
-	return r
+	ctx        context.Context
+	ApiService CoreAPI
+	id         int32
 }
 
 func (r ApiCoreDataSourcesSyncCreateRequest) Execute() (*DataSource, *http.Response, error) {
@@ -6249,7 +6212,8 @@ func (r ApiCoreDataSourcesSyncCreateRequest) Execute() (*DataSource, *http.Respo
 /*
 CoreDataSourcesSyncCreate Method for CoreDataSourcesSyncCreate
 
-Enqueue a job to synchronize the DataSource.
+Enqueue a job to synchronize the DataSource. The brief representation of the DataSource is returned if the
+user does not have permission to view it.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param id A unique integer value identifying this data source.
@@ -6285,12 +6249,9 @@ func (a *CoreAPIService) CoreDataSourcesSyncCreateExecute(r ApiCoreDataSourcesSy
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.writableDataSourceRequest == nil {
-		return localVarReturnValue, nil, reportError("writableDataSourceRequest is required and must be specified")
-	}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json", "multipart/form-data"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -6306,8 +6267,6 @@ func (a *CoreAPIService) CoreDataSourcesSyncCreateExecute(r ApiCoreDataSourcesSy
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.writableDataSourceRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

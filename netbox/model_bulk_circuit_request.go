@@ -38,12 +38,11 @@ type BulkCircuitRequest struct {
 	Description *string         `json:"description,omitempty"`
 	Distance    NullableFloat64 `json:"distance,omitempty"`
 	// * `km` - Kilometers * `m` - Meters * `mi` - Miles * `ft` - Feet
-	DistanceUnit         NullableString                                 `json:"distance_unit,omitempty"`
-	Owner                NullableInt32                                  `json:"owner,omitempty"`
-	Comments             *string                                        `json:"comments,omitempty"`
-	Tags                 []NestedTagRequest                             `json:"tags,omitempty"`
-	CustomFields         map[string]interface{}                         `json:"custom_fields,omitempty"`
-	Assignments          []BriefCircuitGroupAssignmentSerializerRequest `json:"assignments,omitempty"`
+	DistanceUnit         NullableString         `json:"distance_unit,omitempty"`
+	Owner                NullableInt32          `json:"owner,omitempty"`
+	Comments             *string                `json:"comments,omitempty"`
+	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
+	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -670,38 +669,6 @@ func (o *BulkCircuitRequest) SetCustomFields(v map[string]interface{}) {
 	o.CustomFields = v
 }
 
-// GetAssignments returns the Assignments field value if set, zero value otherwise.
-func (o *BulkCircuitRequest) GetAssignments() []BriefCircuitGroupAssignmentSerializerRequest {
-	if o == nil || IsNil(o.Assignments) {
-		var ret []BriefCircuitGroupAssignmentSerializerRequest
-		return ret
-	}
-	return o.Assignments
-}
-
-// GetAssignmentsOk returns a tuple with the Assignments field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *BulkCircuitRequest) GetAssignmentsOk() ([]BriefCircuitGroupAssignmentSerializerRequest, bool) {
-	if o == nil || IsNil(o.Assignments) {
-		return nil, false
-	}
-	return o.Assignments, true
-}
-
-// HasAssignments returns a boolean if a field has been set.
-func (o *BulkCircuitRequest) HasAssignments() bool {
-	if o != nil && !IsNil(o.Assignments) {
-		return true
-	}
-
-	return false
-}
-
-// SetAssignments gets a reference to the given []BriefCircuitGroupAssignmentSerializerRequest and assigns it to the Assignments field.
-func (o *BulkCircuitRequest) SetAssignments(v []BriefCircuitGroupAssignmentSerializerRequest) {
-	o.Assignments = v
-}
-
 func (o BulkCircuitRequest) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -754,9 +721,6 @@ func (o BulkCircuitRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.CustomFields) {
 		toSerialize["custom_fields"] = o.CustomFields
-	}
-	if !IsNil(o.Assignments) {
-		toSerialize["assignments"] = o.Assignments
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -837,7 +801,6 @@ func (o *BulkCircuitRequest) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "comments")
 		delete(additionalProperties, "tags")
 		delete(additionalProperties, "custom_fields")
-		delete(additionalProperties, "assignments")
 		o.AdditionalProperties = additionalProperties
 	}
 

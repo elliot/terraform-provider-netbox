@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
+	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
@@ -27,17 +29,18 @@ func init() {
 
 // CircuitGroupAssignmentDataModel is the state of data.netbox_circuit_group_assignment and of items of data.netbox_circuit_group_assignments.
 type CircuitGroupAssignmentDataModel struct {
-	Id          types.Int64       `tfsdk:"id"`
-	GroupId     types.Int64       `tfsdk:"group_id"`
-	MemberType  types.String      `tfsdk:"member_type"`
-	MemberId    types.Int64       `tfsdk:"member_id"`
-	Priority    types.String      `tfsdk:"priority"`
-	Tags        types.Set         `tfsdk:"tags"`
-	Url         types.String      `tfsdk:"url"`
-	Created     timetypes.RFC3339 `tfsdk:"created"`
-	DisplayUrl  types.String      `tfsdk:"display_url"`
-	Display     types.String      `tfsdk:"display"`
-	LastUpdated timetypes.RFC3339 `tfsdk:"last_updated"`
+	Id           types.Int64          `tfsdk:"id"`
+	GroupId      types.Int64          `tfsdk:"group_id"`
+	MemberType   types.String         `tfsdk:"member_type"`
+	MemberId     types.Int64          `tfsdk:"member_id"`
+	Priority     types.String         `tfsdk:"priority"`
+	Tags         types.Set            `tfsdk:"tags"`
+	CustomFields jsontypes.Normalized `tfsdk:"custom_fields"`
+	Url          types.String         `tfsdk:"url"`
+	Created      timetypes.RFC3339    `tfsdk:"created"`
+	DisplayUrl   types.String         `tfsdk:"display_url"`
+	Display      types.String         `tfsdk:"display"`
+	LastUpdated  timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
 // circuitGroupAssignmentFilterNames lists the query parameters accepted by /api/circuits/circuit-group-assignments/ (sorted).
@@ -81,6 +84,11 @@ func circuitGroupAssignmentDataAttributes(lookup bool) map[string]dsschema.Attri
 		"tags": dsschema.SetAttribute{
 			MarkdownDescription: "Slugs of the tags assigned to this object. Defaults to an empty set.",
 			ElementType:         types.StringType,
+			Computed:            true,
+		},
+		"custom_fields": dsschema.StringAttribute{
+			MarkdownDescription: "All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.",
+			CustomType:          jsontypes.NormalizedType{},
 			Computed:            true,
 		},
 		"url": dsschema.StringAttribute{
@@ -348,6 +356,7 @@ func circuitGroupAssignmentDataFromAPI(ctx context.Context, obj *netbox.CircuitG
 	out.MemberId = conv.Int64From64(obj.GetMemberIdOk())
 	out.Priority = conv.Choice(obj.GetPriorityOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
+	out.CustomFields = customfields.InferJSON(obj.GetCustomFields())
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())

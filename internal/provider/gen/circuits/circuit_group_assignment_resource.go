@@ -35,14 +35,15 @@ var circuitGroupAssignmentPriorityValues = []string{
 
 // CircuitGroupAssignmentModel is the Terraform state of netbox_circuit_group_assignment.
 type CircuitGroupAssignmentModel struct {
-	Id         types.Int64       `tfsdk:"id"`
-	GroupId    types.Int64       `tfsdk:"group_id"`
-	MemberType types.String      `tfsdk:"member_type"`
-	MemberId   types.Int64       `tfsdk:"member_id"`
-	Priority   types.String      `tfsdk:"priority"`
-	Tags       types.Set         `tfsdk:"tags"`
-	Url        types.String      `tfsdk:"url"`
-	Created    timetypes.RFC3339 `tfsdk:"created"`
+	Id           types.Int64       `tfsdk:"id"`
+	GroupId      types.Int64       `tfsdk:"group_id"`
+	MemberType   types.String      `tfsdk:"member_type"`
+	MemberId     types.Int64       `tfsdk:"member_id"`
+	Priority     types.String      `tfsdk:"priority"`
+	Tags         types.Set         `tfsdk:"tags"`
+	CustomFields types.Dynamic     `tfsdk:"custom_fields"`
+	Url          types.String      `tfsdk:"url"`
+	Created      timetypes.RFC3339 `tfsdk:"created"`
 }
 
 var (
@@ -127,6 +128,10 @@ func circuitGroupAssignmentResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
+		"custom_fields": schema.DynamicAttribute{
+			MarkdownDescription: "Custom field values as an object of field name to value, e.g. `{ cost_center = \"CC-42\", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.",
+			Optional:            true,
+		},
 		"url": schema.StringAttribute{
 			MarkdownDescription: "Url.",
 			Computed:            true,
@@ -147,7 +152,7 @@ func (r *CircuitGroupAssignmentResource) Create(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	body := circuitGroupAssignmentToCreate(ctx, &plan, &resp.Diagnostics)
+	body := circuitGroupAssignmentToCreate(ctx, &plan, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -208,7 +213,7 @@ func (r *CircuitGroupAssignmentResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
 	}
-	body := circuitGroupAssignmentToPatch(ctx, &plan, &state, &resp.Diagnostics)
+	body := circuitGroupAssignmentToPatch(ctx, &plan, &state, r.cf, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -251,7 +256,8 @@ func (r *CircuitGroupAssignmentResource) ImportState(ctx context.Context, req re
 }
 
 // circuitGroupAssignmentToCreate builds the WritableCircuitGroupAssignmentRequest request body from the plan.
-func circuitGroupAssignmentToCreate(ctx context.Context, plan *CircuitGroupAssignmentModel, diags *diag.Diagnostics) *netbox.WritableCircuitGroupAssignmentRequest {
+func circuitGroupAssignmentToCreate(ctx context.Context, plan *CircuitGroupAssignmentModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCircuitGroupAssignmentRequest {
+	const objectType = "circuits.circuitgroupassignment"
 	body := netbox.NewWritableCircuitGroupAssignmentRequest(conv.Int32(plan.GroupId), plan.MemberType.ValueString(), plan.MemberId.ValueInt64())
 	if conv.Known(plan.Priority) {
 		body.SetPriority(plan.Priority.ValueString())
@@ -259,11 +265,15 @@ func circuitGroupAssignmentToCreate(ctx context.Context, plan *CircuitGroupAssig
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
+	if conv.Known(plan.CustomFields) {
+		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
+	}
 	return body
 }
 
 // circuitGroupAssignmentToPatch builds the PatchedWritableCircuitGroupAssignmentRequest request body with every attribute whose planned value differs from state.
-func circuitGroupAssignmentToPatch(ctx context.Context, plan, state *CircuitGroupAssignmentModel, diags *diag.Diagnostics) *netbox.PatchedWritableCircuitGroupAssignmentRequest {
+func circuitGroupAssignmentToPatch(ctx context.Context, plan, state *CircuitGroupAssignmentModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PatchedWritableCircuitGroupAssignmentRequest {
+	const objectType = "circuits.circuitgroupassignment"
 	body := netbox.NewPatchedWritableCircuitGroupAssignmentRequest()
 	if !plan.GroupId.Equal(state.GroupId) {
 		if conv.Known(plan.GroupId) {
@@ -290,11 +300,20 @@ func circuitGroupAssignmentToPatch(ctx context.Context, plan, state *CircuitGrou
 			body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 		}
 	}
+	if !plan.CustomFields.Equal(state.CustomFields) {
+		if conv.Known(plan.CustomFields) {
+			body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
+		}
+	}
 	return body
 }
 
 // circuitGroupAssignmentFromAPI copies an API object into the model. prior carries the previous state or plan (may be nil).
 func circuitGroupAssignmentFromAPI(ctx context.Context, obj *netbox.CircuitGroupAssignment, prior *CircuitGroupAssignmentModel, out *CircuitGroupAssignmentModel, diags *diag.Diagnostics) {
+	priorCustomFields := types.DynamicNull()
+	if prior != nil {
+		priorCustomFields = prior.CustomFields
+	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.GroupId = conv.BriefID(obj.GetGroupOk())
@@ -302,6 +321,7 @@ func circuitGroupAssignmentFromAPI(ctx context.Context, obj *netbox.CircuitGroup
 	out.MemberId = conv.Int64From64(obj.GetMemberIdOk())
 	out.Priority = conv.Choice(obj.GetPriorityOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())
+	out.CustomFields = customfields.FromAPI(ctx, obj.GetCustomFields(), priorCustomFields, diags)
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
 }

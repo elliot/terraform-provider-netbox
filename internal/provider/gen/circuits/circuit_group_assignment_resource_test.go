@@ -95,9 +95,10 @@ func TestAccCircuitGroupAssignment_basic(t *testing.T) {
 			),
 		},
 		{
-			ResourceName:      "netbox_circuit_group_assignment.test",
-			ImportState:       true,
-			ImportStateVerify: true,
+			ResourceName:            "netbox_circuit_group_assignment.test",
+			ImportState:             true,
+			ImportStateVerify:       true,
+			ImportStateVerifyIgnore: []string{"custom_fields"},
 		},
 		{
 			Config: acctest.Render(t, circuitGroupAssignmentTestConfigUpdate, name),

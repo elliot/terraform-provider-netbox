@@ -41,6 +41,7 @@ data "netbox_module_bay" "example" {
 - `display` (String) Display.
 - `display_url` (String) Display Url.
 - `enabled` (Boolean) Enabled. Defaults to the NetBox server default when omitted.
+- `installed_module_id` (Number) Installed Module. References `netbox_module`.
 - `is_module_compatible` (Boolean) Is Module Compatible.
 - `label` (String) Physical label. Defaults to an empty string.
 - `last_updated` (String) Last Updated.

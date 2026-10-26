@@ -1398,7 +1398,7 @@ type ApiTenancyContactAssignmentsListRequest struct {
 	contactId         *[]int32
 	contactIdN        *[]int32
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -1418,7 +1418,7 @@ type ApiTenancyContactAssignmentsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -1491,7 +1491,7 @@ func (r ApiTenancyContactAssignmentsListRequest) Created(created []time.Time) Ap
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) CreatedEmpty(createdEmpty bool) ApiTenancyContactAssignmentsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -1592,7 +1592,7 @@ func (r ApiTenancyContactAssignmentsListRequest) LastUpdated(lastUpdated []time.
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiTenancyContactAssignmentsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -1922,15 +1922,7 @@ func (a *TenancyAPIService) TenancyContactAssignmentsListExecute(r ApiTenancyCon
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -2118,15 +2110,7 @@ func (a *TenancyAPIService) TenancyContactAssignmentsListExecute(r ApiTenancyCon
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -3609,7 +3593,7 @@ type ApiTenancyContactGroupsListRequest struct {
 	contactId         *[]int32
 	contactIdN        *[]int32
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -3638,7 +3622,7 @@ type ApiTenancyContactGroupsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -3741,7 +3725,7 @@ func (r ApiTenancyContactGroupsListRequest) Created(created []time.Time) ApiTena
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) CreatedEmpty(createdEmpty bool) ApiTenancyContactGroupsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -3887,7 +3871,7 @@ func (r ApiTenancyContactGroupsListRequest) LastUpdated(lastUpdated []time.Time)
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiTenancyContactGroupsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -4317,15 +4301,7 @@ func (a *TenancyAPIService) TenancyContactGroupsListExecute(r ApiTenancyContactG
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -4604,15 +4580,7 @@ func (a *TenancyAPIService) TenancyContactGroupsListExecute(r ApiTenancyContactG
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -6231,7 +6199,7 @@ type ApiTenancyContactRolesListRequest struct {
 	ApiService        TenancyAPI
 	brief             *bool
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -6260,7 +6228,7 @@ type ApiTenancyContactRolesListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -6327,7 +6295,7 @@ func (r ApiTenancyContactRolesListRequest) Created(created []time.Time) ApiTenan
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) CreatedEmpty(createdEmpty []time.Time) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) CreatedEmpty(createdEmpty bool) ApiTenancyContactRolesListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -6473,7 +6441,7 @@ func (r ApiTenancyContactRolesListRequest) LastUpdated(lastUpdated []time.Time) 
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiTenancyContactRolesListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -6813,15 +6781,7 @@ func (a *TenancyAPIService) TenancyContactRolesListExecute(r ApiTenancyContactRo
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -7100,15 +7060,7 @@ func (a *TenancyAPIService) TenancyContactRolesListExecute(r ApiTenancyContactRo
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -8696,7 +8648,7 @@ type ApiTenancyContactsListRequest struct {
 	addressRegex      *[]string
 	brief             *bool
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -8742,7 +8694,7 @@ type ApiTenancyContactsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -8900,7 +8852,7 @@ func (r ApiTenancyContactsListRequest) Created(created []time.Time) ApiTenancyCo
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) CreatedEmpty(createdEmpty bool) ApiTenancyContactsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -9131,7 +9083,7 @@ func (r ApiTenancyContactsListRequest) LastUpdated(lastUpdated []time.Time) ApiT
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiTenancyContactsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -9736,15 +9688,7 @@ func (a *TenancyAPIService) TenancyContactsListExecute(r ApiTenancyContactsListR
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -10202,15 +10146,7 @@ func (a *TenancyAPIService) TenancyContactsListExecute(r ApiTenancyContactsListR
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -12059,7 +11995,7 @@ type ApiTenancyTenantGroupsListRequest struct {
 	ancestorIdN       *[]string
 	brief             *bool
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -12088,7 +12024,7 @@ type ApiTenancyTenantGroupsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -12179,7 +12115,7 @@ func (r ApiTenancyTenantGroupsListRequest) Created(created []time.Time) ApiTenan
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) CreatedEmpty(createdEmpty bool) ApiTenancyTenantGroupsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -12325,7 +12261,7 @@ func (r ApiTenancyTenantGroupsListRequest) LastUpdated(lastUpdated []time.Time) 
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiTenancyTenantGroupsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -12733,15 +12669,7 @@ func (a *TenancyAPIService) TenancyTenantGroupsListExecute(r ApiTenancyTenantGro
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -13020,15 +12948,7 @@ func (a *TenancyAPIService) TenancyTenantGroupsListExecute(r ApiTenancyTenantGro
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
@@ -14653,7 +14573,7 @@ type ApiTenancyTenantsListRequest struct {
 	contactRole       *[]int32
 	contactRoleN      *[]int32
 	created           *[]time.Time
-	createdEmpty      *[]time.Time
+	createdEmpty      *bool
 	createdGt         *[]time.Time
 	createdGte        *[]time.Time
 	createdLt         *[]time.Time
@@ -14686,7 +14606,7 @@ type ApiTenancyTenantsListRequest struct {
 	idLte             *[]int32
 	idN               *[]int32
 	lastUpdated       *[]time.Time
-	lastUpdatedEmpty  *[]time.Time
+	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
 	lastUpdatedGte    *[]time.Time
 	lastUpdatedLt     *[]time.Time
@@ -14787,7 +14707,7 @@ func (r ApiTenancyTenantsListRequest) Created(created []time.Time) ApiTenancyTen
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) CreatedEmpty(createdEmpty []time.Time) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) CreatedEmpty(createdEmpty bool) ApiTenancyTenantsListRequest {
 	r.createdEmpty = &createdEmpty
 	return r
 }
@@ -14953,7 +14873,7 @@ func (r ApiTenancyTenantsListRequest) LastUpdated(lastUpdated []time.Time) ApiTe
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) LastUpdatedEmpty(lastUpdatedEmpty []time.Time) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) LastUpdatedEmpty(lastUpdatedEmpty bool) ApiTenancyTenantsListRequest {
 	r.lastUpdatedEmpty = &lastUpdatedEmpty
 	return r
 }
@@ -15359,15 +15279,7 @@ func (a *TenancyAPIService) TenancyTenantsListExecute(r ApiTenancyTenantsListReq
 		}
 	}
 	if r.createdEmpty != nil {
-		t := *r.createdEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "created__empty", r.createdEmpty, "form", "")
 	}
 	if r.createdGt != nil {
 		t := *r.createdGt
@@ -15690,15 +15602,7 @@ func (a *TenancyAPIService) TenancyTenantsListExecute(r ApiTenancyTenantsListReq
 		}
 	}
 	if r.lastUpdatedEmpty != nil {
-		t := *r.lastUpdatedEmpty
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", t, "form", "multi")
-		}
+		parameterAddToHeaderOrQuery(localVarQueryParams, "last_updated__empty", r.lastUpdatedEmpty, "form", "")
 	}
 	if r.lastUpdatedGt != nil {
 		t := *r.lastUpdatedGt
