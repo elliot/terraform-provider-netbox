@@ -6,6 +6,16 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-26
+
+### Added
+
+- Support NetBox 4.7.3 ([#43](https://github.com/elliot/terraform-provider-netbox/pull/43))
+
+### Changed
+
+- `deps`: Build with Go 1.26.10 for the eMudhra CA distrust fix ([#47](https://github.com/elliot/terraform-provider-netbox/pull/47))
+
 ## [0.4.1] - 2026-10-19
 
 ### Security
@@ -165,7 +175,8 @@ All notable changes to this project are documented in this file. The format foll
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.2.0...v0.3.0
