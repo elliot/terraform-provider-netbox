@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefSite{}
 
 // BriefSite Base serializer class for models inheriting from PrimaryModel.
 type BriefSite struct {
-	Id      int32   `json:"id"`
+	Id      int64   `json:"id"`
 	Url     *string `json:"url,omitempty"`
 	Display *string `json:"display,omitempty"`
 	// Full name of the site
@@ -38,7 +38,7 @@ type _BriefSite BriefSite
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefSite(id int32) *BriefSite {
+func NewBriefSite(id int64) *BriefSite {
 	this := BriefSite{}
 	this.Id = id
 	return &this
@@ -53,9 +53,9 @@ func NewBriefSiteWithDefaults() *BriefSite {
 }
 
 // GetId returns the Id field value
-func (o *BriefSite) GetId() int32 {
+func (o *BriefSite) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -64,7 +64,7 @@ func (o *BriefSite) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefSite) GetIdOk() (*int32, bool) {
+func (o *BriefSite) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -72,7 +72,7 @@ func (o *BriefSite) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefSite) SetId(v int32) {
+func (o *BriefSite) SetId(v int64) {
 	o.Id = v
 }
 

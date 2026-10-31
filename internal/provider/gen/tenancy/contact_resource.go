@@ -224,7 +224,7 @@ func (r *ContactResource) Read(ctx context.Context, req resource.ReadRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -255,7 +255,7 @@ func (r *ContactResource) Update(ctx context.Context, req resource.UpdateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -285,7 +285,7 @@ func (r *ContactResource) Delete(ctx context.Context, req resource.DeleteRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -307,7 +307,7 @@ func contactToCreate(ctx context.Context, plan *ContactModel, cf *customfields.C
 	const objectType = "tenancy.contact"
 	body := netbox.NewContactRequest(plan.Name.ValueString())
 	if conv.Known(plan.GroupIds) {
-		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+		body.SetGroups(conv.Int64s(ctx, plan.GroupIds, diags))
 	}
 	if !plan.Title.IsUnknown() {
 		body.SetTitle(plan.Title.ValueString())
@@ -328,7 +328,7 @@ func contactToCreate(ctx context.Context, plan *ContactModel, cf *customfields.C
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -348,7 +348,7 @@ func contactToPatch(ctx context.Context, plan, state *ContactModel, cf *customfi
 	body := netbox.NewPatchedContactRequest()
 	if !plan.GroupIds.Equal(state.GroupIds) {
 		if conv.Known(plan.GroupIds) {
-			body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+			body.SetGroups(conv.Int64s(ctx, plan.GroupIds, diags))
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -390,7 +390,7 @@ func contactToPatch(ctx context.Context, plan, state *ContactModel, cf *customfi
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

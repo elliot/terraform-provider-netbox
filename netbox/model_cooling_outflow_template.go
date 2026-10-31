@@ -23,7 +23,7 @@ var _ MappedNullable = &CoolingOutflowTemplate{}
 
 // CoolingOutflowTemplate Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type CoolingOutflowTemplate struct {
-	Id         int32                   `json:"id"`
+	Id         int64                   `json:"id"`
 	Url        *string                 `json:"url,omitempty"`
 	Display    *string                 `json:"display,omitempty"`
 	DeviceType NullableBriefDeviceType `json:"device_type,omitempty"`
@@ -48,7 +48,7 @@ type _CoolingOutflowTemplate CoolingOutflowTemplate
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCoolingOutflowTemplate(id int32) *CoolingOutflowTemplate {
+func NewCoolingOutflowTemplate(id int64) *CoolingOutflowTemplate {
 	this := CoolingOutflowTemplate{}
 	this.Id = id
 	return &this
@@ -63,9 +63,9 @@ func NewCoolingOutflowTemplateWithDefaults() *CoolingOutflowTemplate {
 }
 
 // GetId returns the Id field value
-func (o *CoolingOutflowTemplate) GetId() int32 {
+func (o *CoolingOutflowTemplate) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -74,7 +74,7 @@ func (o *CoolingOutflowTemplate) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *CoolingOutflowTemplate) GetIdOk() (*int32, bool) {
+func (o *CoolingOutflowTemplate) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -82,7 +82,7 @@ func (o *CoolingOutflowTemplate) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *CoolingOutflowTemplate) SetId(v int32) {
+func (o *CoolingOutflowTemplate) SetId(v int64) {
 	o.Id = v
 }
 

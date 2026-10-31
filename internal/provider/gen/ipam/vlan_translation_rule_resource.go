@@ -173,7 +173,7 @@ func (r *VlanTranslationRuleResource) Read(ctx context.Context, req resource.Rea
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -204,7 +204,7 @@ func (r *VlanTranslationRuleResource) Update(ctx context.Context, req resource.U
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -234,7 +234,7 @@ func (r *VlanTranslationRuleResource) Delete(ctx context.Context, req resource.D
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -254,7 +254,7 @@ func (r *VlanTranslationRuleResource) ImportState(ctx context.Context, req resou
 // vlanTranslationRuleToCreate builds the VLANTranslationRuleRequest request body from the plan.
 func vlanTranslationRuleToCreate(ctx context.Context, plan *VlanTranslationRuleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.VLANTranslationRuleRequest {
 	const objectType = "ipam.vlantranslationrule"
-	body := netbox.NewVLANTranslationRuleRequest(conv.Int32(plan.PolicyId), conv.Int32(plan.LocalVid), conv.Int32(plan.RemoteVid))
+	body := netbox.NewVLANTranslationRuleRequest(plan.PolicyId.ValueInt64(), conv.Int32(plan.LocalVid), conv.Int32(plan.RemoteVid))
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
@@ -273,7 +273,7 @@ func vlanTranslationRuleToPatch(ctx context.Context, plan, state *VlanTranslatio
 	body := netbox.NewPatchedVLANTranslationRuleRequest()
 	if !plan.PolicyId.Equal(state.PolicyId) {
 		if conv.Known(plan.PolicyId) {
-			body.SetPolicy(conv.Int32(plan.PolicyId))
+			body.SetPolicy(plan.PolicyId.ValueInt64())
 		}
 	}
 	if !plan.LocalVid.Equal(state.LocalVid) {
@@ -312,7 +312,7 @@ func vlanTranslationRuleFromAPI(ctx context.Context, obj *netbox.VLANTranslation
 	}
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.PolicyId = conv.Int64From32(obj.GetPolicyOk())
+	out.PolicyId = conv.Int64From64(obj.GetPolicyOk())
 	out.LocalVid = conv.Int64From32(obj.GetLocalVidOk())
 	out.RemoteVid = conv.Int64From32(obj.GetRemoteVidOk())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VlanTranslationRuleModel) types.String { return m.Description }), false)

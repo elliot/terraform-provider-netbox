@@ -251,7 +251,7 @@ func (r *VmInterfaceResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -282,7 +282,7 @@ func (r *VmInterfaceResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -312,7 +312,7 @@ func (r *VmInterfaceResource) Delete(ctx context.Context, req resource.DeleteReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -332,15 +332,15 @@ func (r *VmInterfaceResource) ImportState(ctx context.Context, req resource.Impo
 // vmInterfaceToCreate builds the WritableVMInterfaceRequest request body from the plan.
 func vmInterfaceToCreate(ctx context.Context, plan *VmInterfaceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVMInterfaceRequest {
 	const objectType = "virtualization.vminterface"
-	body := netbox.NewWritableVMInterfaceRequest(conv.Int32(plan.VirtualMachineId), plan.Name.ValueString())
+	body := netbox.NewWritableVMInterfaceRequest(plan.VirtualMachineId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.Enabled) {
 		body.SetEnabled(plan.Enabled.ValueBool())
 	}
 	if conv.Known(plan.ParentId) {
-		body.SetParent(conv.Int32(plan.ParentId))
+		body.SetParent(plan.ParentId.ValueInt64())
 	}
 	if conv.Known(plan.BridgeId) {
-		body.SetBridge(conv.Int32(plan.BridgeId))
+		body.SetBridge(plan.BridgeId.ValueInt64())
 	}
 	if conv.Known(plan.Mtu) {
 		body.SetMtu(conv.Int32(plan.Mtu))
@@ -349,7 +349,7 @@ func vmInterfaceToCreate(ctx context.Context, plan *VmInterfaceModel, cf *custom
 		body.SetMacAddress(plan.MacAddress.ValueString())
 	}
 	if conv.Known(plan.PrimaryMacAddressId) {
-		body.SetPrimaryMacAddress(conv.Int32(plan.PrimaryMacAddressId))
+		body.SetPrimaryMacAddress(plan.PrimaryMacAddressId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -358,22 +358,22 @@ func vmInterfaceToCreate(ctx context.Context, plan *VmInterfaceModel, cf *custom
 		body.SetMode(plan.Mode.ValueString())
 	}
 	if conv.Known(plan.UntaggedVlanId) {
-		body.SetUntaggedVlan(conv.Int32(plan.UntaggedVlanId))
+		body.SetUntaggedVlan(plan.UntaggedVlanId.ValueInt64())
 	}
 	if conv.Known(plan.TaggedVlanIds) {
-		body.SetTaggedVlans(conv.Int32s(ctx, plan.TaggedVlanIds, diags))
+		body.SetTaggedVlans(conv.Int64s(ctx, plan.TaggedVlanIds, diags))
 	}
 	if conv.Known(plan.QinqSvlanId) {
-		body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
+		body.SetQinqSvlan(plan.QinqSvlanId.ValueInt64())
 	}
 	if conv.Known(plan.VlanTranslationPolicyId) {
-		body.SetVlanTranslationPolicy(conv.Int32(plan.VlanTranslationPolicyId))
+		body.SetVlanTranslationPolicy(plan.VlanTranslationPolicyId.ValueInt64())
 	}
 	if conv.Known(plan.VrfId) {
-		body.SetVrf(conv.Int32(plan.VrfId))
+		body.SetVrf(plan.VrfId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -390,7 +390,7 @@ func vmInterfaceToPatch(ctx context.Context, plan, state *VmInterfaceModel, cf *
 	body := netbox.NewPatchedWritableVMInterfaceRequest()
 	if !plan.VirtualMachineId.Equal(state.VirtualMachineId) {
 		if conv.Known(plan.VirtualMachineId) {
-			body.SetVirtualMachine(conv.Int32(plan.VirtualMachineId))
+			body.SetVirtualMachine(plan.VirtualMachineId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -407,14 +407,14 @@ func vmInterfaceToPatch(ctx context.Context, plan, state *VmInterfaceModel, cf *
 		if plan.ParentId.IsNull() {
 			body.SetParentNil()
 		} else if !plan.ParentId.IsUnknown() {
-			body.SetParent(conv.Int32(plan.ParentId))
+			body.SetParent(plan.ParentId.ValueInt64())
 		}
 	}
 	if !plan.BridgeId.Equal(state.BridgeId) {
 		if plan.BridgeId.IsNull() {
 			body.SetBridgeNil()
 		} else if !plan.BridgeId.IsUnknown() {
-			body.SetBridge(conv.Int32(plan.BridgeId))
+			body.SetBridge(plan.BridgeId.ValueInt64())
 		}
 	}
 	if !plan.Mtu.Equal(state.Mtu) {
@@ -433,7 +433,7 @@ func vmInterfaceToPatch(ctx context.Context, plan, state *VmInterfaceModel, cf *
 		if plan.PrimaryMacAddressId.IsNull() {
 			body.SetPrimaryMacAddressNil()
 		} else if !plan.PrimaryMacAddressId.IsUnknown() {
-			body.SetPrimaryMacAddress(conv.Int32(plan.PrimaryMacAddressId))
+			body.SetPrimaryMacAddress(plan.PrimaryMacAddressId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -450,40 +450,40 @@ func vmInterfaceToPatch(ctx context.Context, plan, state *VmInterfaceModel, cf *
 		if plan.UntaggedVlanId.IsNull() {
 			body.SetUntaggedVlanNil()
 		} else if !plan.UntaggedVlanId.IsUnknown() {
-			body.SetUntaggedVlan(conv.Int32(plan.UntaggedVlanId))
+			body.SetUntaggedVlan(plan.UntaggedVlanId.ValueInt64())
 		}
 	}
 	if !plan.TaggedVlanIds.Equal(state.TaggedVlanIds) {
 		if conv.Known(plan.TaggedVlanIds) {
-			body.SetTaggedVlans(conv.Int32s(ctx, plan.TaggedVlanIds, diags))
+			body.SetTaggedVlans(conv.Int64s(ctx, plan.TaggedVlanIds, diags))
 		}
 	}
 	if !plan.QinqSvlanId.Equal(state.QinqSvlanId) {
 		if plan.QinqSvlanId.IsNull() {
 			body.SetQinqSvlanNil()
 		} else if !plan.QinqSvlanId.IsUnknown() {
-			body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
+			body.SetQinqSvlan(plan.QinqSvlanId.ValueInt64())
 		}
 	}
 	if !plan.VlanTranslationPolicyId.Equal(state.VlanTranslationPolicyId) {
 		if plan.VlanTranslationPolicyId.IsNull() {
 			body.SetVlanTranslationPolicyNil()
 		} else if !plan.VlanTranslationPolicyId.IsUnknown() {
-			body.SetVlanTranslationPolicy(conv.Int32(plan.VlanTranslationPolicyId))
+			body.SetVlanTranslationPolicy(plan.VlanTranslationPolicyId.ValueInt64())
 		}
 	}
 	if !plan.VrfId.Equal(state.VrfId) {
 		if plan.VrfId.IsNull() {
 			body.SetVrfNil()
 		} else if !plan.VrfId.IsUnknown() {
-			body.SetVrf(conv.Int32(plan.VrfId))
+			body.SetVrf(plan.VrfId.ValueInt64())
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

@@ -183,7 +183,7 @@ func (r *VirtualCircuitTerminationResource) Read(ctx context.Context, req resour
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -214,7 +214,7 @@ func (r *VirtualCircuitTerminationResource) Update(ctx context.Context, req reso
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -244,7 +244,7 @@ func (r *VirtualCircuitTerminationResource) Delete(ctx context.Context, req reso
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -264,7 +264,7 @@ func (r *VirtualCircuitTerminationResource) ImportState(ctx context.Context, req
 // virtualCircuitTerminationToCreate builds the WritableVirtualCircuitTerminationRequest request body from the plan.
 func virtualCircuitTerminationToCreate(ctx context.Context, plan *VirtualCircuitTerminationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVirtualCircuitTerminationRequest {
 	const objectType = "circuits.virtualcircuittermination"
-	body := netbox.NewWritableVirtualCircuitTerminationRequest(conv.Int32(plan.VirtualCircuitId), conv.Int32(plan.InterfaceId))
+	body := netbox.NewWritableVirtualCircuitTerminationRequest(plan.VirtualCircuitId.ValueInt64(), plan.InterfaceId.ValueInt64())
 	if conv.Known(plan.Role) {
 		body.SetRole(plan.Role.ValueString())
 	}
@@ -286,7 +286,7 @@ func virtualCircuitTerminationToPatch(ctx context.Context, plan, state *VirtualC
 	body := netbox.NewPatchedWritableVirtualCircuitTerminationRequest()
 	if !plan.VirtualCircuitId.Equal(state.VirtualCircuitId) {
 		if conv.Known(plan.VirtualCircuitId) {
-			body.SetVirtualCircuit(conv.Int32(plan.VirtualCircuitId))
+			body.SetVirtualCircuit(plan.VirtualCircuitId.ValueInt64())
 		}
 	}
 	if !plan.Role.Equal(state.Role) {
@@ -296,7 +296,7 @@ func virtualCircuitTerminationToPatch(ctx context.Context, plan, state *VirtualC
 	}
 	if !plan.InterfaceId.Equal(state.InterfaceId) {
 		if conv.Known(plan.InterfaceId) {
-			body.SetInterface(conv.Int32(plan.InterfaceId))
+			body.SetInterface(plan.InterfaceId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {

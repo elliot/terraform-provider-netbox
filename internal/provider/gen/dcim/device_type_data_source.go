@@ -353,7 +353,7 @@ func (d *DeviceTypeDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	}
 	var obj *netbox.DeviceType
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -544,17 +544,17 @@ func deviceTypeDataFromAPI(ctx context.Context, obj *netbox.DeviceType, out *Dev
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.DeviceCount = conv.Int64From32(obj.GetDeviceCountOk())
-	out.ConsolePortTemplateCount = conv.Int64From32(obj.GetConsolePortTemplateCountOk())
-	out.ConsoleServerPortTemplateCount = conv.Int64From32(obj.GetConsoleServerPortTemplateCountOk())
-	out.PowerPortTemplateCount = conv.Int64From32(obj.GetPowerPortTemplateCountOk())
-	out.PowerOutletTemplateCount = conv.Int64From32(obj.GetPowerOutletTemplateCountOk())
-	out.CoolingIntakeTemplateCount = conv.Int64From32(obj.GetCoolingIntakeTemplateCountOk())
-	out.CoolingOutflowTemplateCount = conv.Int64From32(obj.GetCoolingOutflowTemplateCountOk())
-	out.InterfaceTemplateCount = conv.Int64From32(obj.GetInterfaceTemplateCountOk())
-	out.FrontPortTemplateCount = conv.Int64From32(obj.GetFrontPortTemplateCountOk())
-	out.RearPortTemplateCount = conv.Int64From32(obj.GetRearPortTemplateCountOk())
-	out.DeviceBayTemplateCount = conv.Int64From32(obj.GetDeviceBayTemplateCountOk())
-	out.ModuleBayTemplateCount = conv.Int64From32(obj.GetModuleBayTemplateCountOk())
-	out.InventoryItemTemplateCount = conv.Int64From32(obj.GetInventoryItemTemplateCountOk())
+	out.DeviceCount = conv.Int64From64(obj.GetDeviceCountOk())
+	out.ConsolePortTemplateCount = conv.Int64From64(obj.GetConsolePortTemplateCountOk())
+	out.ConsoleServerPortTemplateCount = conv.Int64From64(obj.GetConsoleServerPortTemplateCountOk())
+	out.PowerPortTemplateCount = conv.Int64From64(obj.GetPowerPortTemplateCountOk())
+	out.PowerOutletTemplateCount = conv.Int64From64(obj.GetPowerOutletTemplateCountOk())
+	out.CoolingIntakeTemplateCount = conv.Int64From64(obj.GetCoolingIntakeTemplateCountOk())
+	out.CoolingOutflowTemplateCount = conv.Int64From64(obj.GetCoolingOutflowTemplateCountOk())
+	out.InterfaceTemplateCount = conv.Int64From64(obj.GetInterfaceTemplateCountOk())
+	out.FrontPortTemplateCount = conv.Int64From64(obj.GetFrontPortTemplateCountOk())
+	out.RearPortTemplateCount = conv.Int64From64(obj.GetRearPortTemplateCountOk())
+	out.DeviceBayTemplateCount = conv.Int64From64(obj.GetDeviceBayTemplateCountOk())
+	out.ModuleBayTemplateCount = conv.Int64From64(obj.GetModuleBayTemplateCountOk())
+	out.InventoryItemTemplateCount = conv.Int64From64(obj.GetInventoryItemTemplateCountOk())
 }

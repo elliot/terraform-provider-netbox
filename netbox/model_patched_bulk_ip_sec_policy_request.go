@@ -22,13 +22,13 @@ var _ MappedNullable = &PatchedBulkIPSecPolicyRequest{}
 
 // PatchedBulkIPSecPolicyRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkIPSecPolicyRequest struct {
-	Id          int32   `json:"id"`
+	Id          int64   `json:"id"`
 	Name        *string `json:"name,omitempty"`
 	Description *string `json:"description,omitempty"`
-	Proposals   []int32 `json:"proposals,omitempty"`
+	Proposals   []int64 `json:"proposals,omitempty"`
 	// * `1` - Group 1 * `2` - Group 2 * `5` - Group 5 * `14` - Group 14 * `15` - Group 15 * `16` - Group 16 * `17` - Group 17 * `18` - Group 18 * `19` - Group 19 * `20` - Group 20 * `21` - Group 21 * `22` - Group 22 * `23` - Group 23 * `24` - Group 24 * `25` - Group 25 * `26` - Group 26 * `27` - Group 27 * `28` - Group 28 * `29` - Group 29 * `30` - Group 30 * `31` - Group 31 * `32` - Group 32 * `33` - Group 33 * `34` - Group 34
 	PfsGroup             *int32                 `json:"pfs_group,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -41,7 +41,7 @@ type _PatchedBulkIPSecPolicyRequest PatchedBulkIPSecPolicyRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkIPSecPolicyRequest(id int32) *PatchedBulkIPSecPolicyRequest {
+func NewPatchedBulkIPSecPolicyRequest(id int64) *PatchedBulkIPSecPolicyRequest {
 	this := PatchedBulkIPSecPolicyRequest{}
 	this.Id = id
 	return &this
@@ -56,9 +56,9 @@ func NewPatchedBulkIPSecPolicyRequestWithDefaults() *PatchedBulkIPSecPolicyReque
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkIPSecPolicyRequest) GetId() int32 {
+func (o *PatchedBulkIPSecPolicyRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -67,7 +67,7 @@ func (o *PatchedBulkIPSecPolicyRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkIPSecPolicyRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkIPSecPolicyRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,7 +75,7 @@ func (o *PatchedBulkIPSecPolicyRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkIPSecPolicyRequest) SetId(v int32) {
+func (o *PatchedBulkIPSecPolicyRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -144,9 +144,9 @@ func (o *PatchedBulkIPSecPolicyRequest) SetDescription(v string) {
 }
 
 // GetProposals returns the Proposals field value if set, zero value otherwise.
-func (o *PatchedBulkIPSecPolicyRequest) GetProposals() []int32 {
+func (o *PatchedBulkIPSecPolicyRequest) GetProposals() []int64 {
 	if o == nil || IsNil(o.Proposals) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Proposals
@@ -154,7 +154,7 @@ func (o *PatchedBulkIPSecPolicyRequest) GetProposals() []int32 {
 
 // GetProposalsOk returns a tuple with the Proposals field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkIPSecPolicyRequest) GetProposalsOk() ([]int32, bool) {
+func (o *PatchedBulkIPSecPolicyRequest) GetProposalsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Proposals) {
 		return nil, false
 	}
@@ -170,8 +170,8 @@ func (o *PatchedBulkIPSecPolicyRequest) HasProposals() bool {
 	return false
 }
 
-// SetProposals gets a reference to the given []int32 and assigns it to the Proposals field.
-func (o *PatchedBulkIPSecPolicyRequest) SetProposals(v []int32) {
+// SetProposals gets a reference to the given []int64 and assigns it to the Proposals field.
+func (o *PatchedBulkIPSecPolicyRequest) SetProposals(v []int64) {
 	o.Proposals = v
 }
 
@@ -208,9 +208,9 @@ func (o *PatchedBulkIPSecPolicyRequest) SetPfsGroup(v int32) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkIPSecPolicyRequest) GetOwner() int32 {
+func (o *PatchedBulkIPSecPolicyRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -219,7 +219,7 @@ func (o *PatchedBulkIPSecPolicyRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkIPSecPolicyRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkIPSecPolicyRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -235,8 +235,8 @@ func (o *PatchedBulkIPSecPolicyRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkIPSecPolicyRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkIPSecPolicyRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

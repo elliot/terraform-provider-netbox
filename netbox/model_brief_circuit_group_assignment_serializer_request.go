@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefCircuitGroupAssignmentSerializerRequest{}
 
 // BriefCircuitGroupAssignmentSerializerRequest Base serializer for group assignments under CircuitSerializer.
 type BriefCircuitGroupAssignmentSerializerRequest struct {
-	Group int32 `json:"group"`
+	Group int64 `json:"group"`
 	// * `primary` - Primary * `secondary` - Secondary * `tertiary` - Tertiary * `inactive` - Inactive
 	Priority             *string `json:"priority,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -34,7 +34,7 @@ type _BriefCircuitGroupAssignmentSerializerRequest BriefCircuitGroupAssignmentSe
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefCircuitGroupAssignmentSerializerRequest(group int32) *BriefCircuitGroupAssignmentSerializerRequest {
+func NewBriefCircuitGroupAssignmentSerializerRequest(group int64) *BriefCircuitGroupAssignmentSerializerRequest {
 	this := BriefCircuitGroupAssignmentSerializerRequest{}
 	this.Group = group
 	return &this
@@ -49,9 +49,9 @@ func NewBriefCircuitGroupAssignmentSerializerRequestWithDefaults() *BriefCircuit
 }
 
 // GetGroup returns the Group field value
-func (o *BriefCircuitGroupAssignmentSerializerRequest) GetGroup() int32 {
+func (o *BriefCircuitGroupAssignmentSerializerRequest) GetGroup() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -60,7 +60,7 @@ func (o *BriefCircuitGroupAssignmentSerializerRequest) GetGroup() int32 {
 
 // GetGroupOk returns a tuple with the Group field value
 // and a boolean to check if the value has been set.
-func (o *BriefCircuitGroupAssignmentSerializerRequest) GetGroupOk() (*int32, bool) {
+func (o *BriefCircuitGroupAssignmentSerializerRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -68,7 +68,7 @@ func (o *BriefCircuitGroupAssignmentSerializerRequest) GetGroupOk() (*int32, boo
 }
 
 // SetGroup sets field value
-func (o *BriefCircuitGroupAssignmentSerializerRequest) SetGroup(v int32) {
+func (o *BriefCircuitGroupAssignmentSerializerRequest) SetGroup(v int64) {
 	o.Group = v
 }
 

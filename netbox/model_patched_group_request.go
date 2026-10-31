@@ -23,7 +23,7 @@ var _ MappedNullable = &PatchedGroupRequest{}
 type PatchedGroupRequest struct {
 	Name                 *string `json:"name,omitempty"`
 	Description          *string `json:"description,omitempty"`
-	Permissions          []int32 `json:"permissions,omitempty"`
+	Permissions          []int64 `json:"permissions,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -111,9 +111,9 @@ func (o *PatchedGroupRequest) SetDescription(v string) {
 }
 
 // GetPermissions returns the Permissions field value if set, zero value otherwise.
-func (o *PatchedGroupRequest) GetPermissions() []int32 {
+func (o *PatchedGroupRequest) GetPermissions() []int64 {
 	if o == nil || IsNil(o.Permissions) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Permissions
@@ -121,7 +121,7 @@ func (o *PatchedGroupRequest) GetPermissions() []int32 {
 
 // GetPermissionsOk returns a tuple with the Permissions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedGroupRequest) GetPermissionsOk() ([]int32, bool) {
+func (o *PatchedGroupRequest) GetPermissionsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Permissions) {
 		return nil, false
 	}
@@ -137,8 +137,8 @@ func (o *PatchedGroupRequest) HasPermissions() bool {
 	return false
 }
 
-// SetPermissions gets a reference to the given []int32 and assigns it to the Permissions field.
-func (o *PatchedGroupRequest) SetPermissions(v []int32) {
+// SetPermissions gets a reference to the given []int64 and assigns it to the Permissions field.
+func (o *PatchedGroupRequest) SetPermissions(v []int64) {
 	o.Permissions = v
 }
 

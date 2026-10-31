@@ -181,7 +181,7 @@ func (d *CableTerminationDataSource) Read(ctx context.Context, req datasource.Re
 	}
 	var obj *netbox.CableTermination
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -349,10 +349,10 @@ func cableTerminationDataFromAPI(ctx context.Context, obj *netbox.CableTerminati
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
-	out.Cable = conv.Int64From32(obj.GetCableOk())
+	out.Cable = conv.Int64From64(obj.GetCableOk())
 	out.CableEnd = conv.String(obj.GetCableEndOk())
 	out.TerminationType = conv.String(obj.GetTerminationTypeOk())
-	out.TerminationId = conv.Int64From32(obj.GetTerminationIdOk())
+	out.TerminationId = conv.Int64From64(obj.GetTerminationIdOk())
 	out.Termination = conv.JSONFromAPI(obj.GetTermination())
 	out.Connector = conv.Int64From32(obj.GetConnectorOk())
 	out.Positions = conv.Int64Set(obj.GetPositions())

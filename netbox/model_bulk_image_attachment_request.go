@@ -23,7 +23,7 @@ var _ MappedNullable = &BulkImageAttachmentRequest{}
 
 // BulkImageAttachmentRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkImageAttachmentRequest struct {
-	Id                   int32    `json:"id"`
+	Id                   int64    `json:"id"`
 	ObjectType           string   `json:"object_type"`
 	ObjectId             int64    `json:"object_id"`
 	Name                 *string  `json:"name,omitempty"`
@@ -38,7 +38,7 @@ type _BulkImageAttachmentRequest BulkImageAttachmentRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkImageAttachmentRequest(id int32, objectType string, objectId int64, image *os.File) *BulkImageAttachmentRequest {
+func NewBulkImageAttachmentRequest(id int64, objectType string, objectId int64, image *os.File) *BulkImageAttachmentRequest {
 	this := BulkImageAttachmentRequest{}
 	this.Id = id
 	this.ObjectType = objectType
@@ -56,9 +56,9 @@ func NewBulkImageAttachmentRequestWithDefaults() *BulkImageAttachmentRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkImageAttachmentRequest) GetId() int32 {
+func (o *BulkImageAttachmentRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -67,7 +67,7 @@ func (o *BulkImageAttachmentRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkImageAttachmentRequest) GetIdOk() (*int32, bool) {
+func (o *BulkImageAttachmentRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,7 +75,7 @@ func (o *BulkImageAttachmentRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkImageAttachmentRequest) SetId(v int32) {
+func (o *BulkImageAttachmentRequest) SetId(v int64) {
 	o.Id = v
 }
 

@@ -25,7 +25,7 @@ var _ MappedNullable = &TokenRequest{}
 type TokenRequest struct {
 	// * `1` - v1 * `2` - v2
 	Version     *int32       `json:"version,omitempty"`
-	User        int32        `json:"user"`
+	User        int64        `json:"user"`
 	Description *string      `json:"description,omitempty"`
 	Expires     NullableTime `json:"expires,omitempty"`
 	LastUsed    NullableTime `json:"last_used,omitempty"`
@@ -44,7 +44,7 @@ type _TokenRequest TokenRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTokenRequest(user int32) *TokenRequest {
+func NewTokenRequest(user int64) *TokenRequest {
 	this := TokenRequest{}
 	this.User = user
 	return &this
@@ -91,9 +91,9 @@ func (o *TokenRequest) SetVersion(v int32) {
 }
 
 // GetUser returns the User field value
-func (o *TokenRequest) GetUser() int32 {
+func (o *TokenRequest) GetUser() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -102,7 +102,7 @@ func (o *TokenRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value
 // and a boolean to check if the value has been set.
-func (o *TokenRequest) GetUserOk() (*int32, bool) {
+func (o *TokenRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -110,7 +110,7 @@ func (o *TokenRequest) GetUserOk() (*int32, bool) {
 }
 
 // SetUser sets field value
-func (o *TokenRequest) SetUser(v int32) {
+func (o *TokenRequest) SetUser(v int64) {
 	o.User = v
 }
 

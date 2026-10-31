@@ -22,15 +22,15 @@ var _ MappedNullable = &PatchedBulkRackReservationRequest{}
 
 // PatchedBulkRackReservationRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkRackReservationRequest struct {
-	Id    int32   `json:"id"`
-	Rack  *int32  `json:"rack,omitempty"`
+	Id    int64   `json:"id"`
+	Rack  *int64  `json:"rack,omitempty"`
 	Units []int32 `json:"units,omitempty"`
 	// * `pending` - Pending * `active` - Active * `stale` - Stale
 	Status               *string                `json:"status,omitempty"`
-	User                 *int32                 `json:"user,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	User                 *int64                 `json:"user,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -43,7 +43,7 @@ type _PatchedBulkRackReservationRequest PatchedBulkRackReservationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkRackReservationRequest(id int32) *PatchedBulkRackReservationRequest {
+func NewPatchedBulkRackReservationRequest(id int64) *PatchedBulkRackReservationRequest {
 	this := PatchedBulkRackReservationRequest{}
 	this.Id = id
 	return &this
@@ -58,9 +58,9 @@ func NewPatchedBulkRackReservationRequestWithDefaults() *PatchedBulkRackReservat
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkRackReservationRequest) GetId() int32 {
+func (o *PatchedBulkRackReservationRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -69,7 +69,7 @@ func (o *PatchedBulkRackReservationRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkRackReservationRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkRackReservationRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -77,14 +77,14 @@ func (o *PatchedBulkRackReservationRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkRackReservationRequest) SetId(v int32) {
+func (o *PatchedBulkRackReservationRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise.
-func (o *PatchedBulkRackReservationRequest) GetRack() int32 {
+func (o *PatchedBulkRackReservationRequest) GetRack() int64 {
 	if o == nil || IsNil(o.Rack) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rack
@@ -92,7 +92,7 @@ func (o *PatchedBulkRackReservationRequest) GetRack() int32 {
 
 // GetRackOk returns a tuple with the Rack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkRackReservationRequest) GetRackOk() (*int32, bool) {
+func (o *PatchedBulkRackReservationRequest) GetRackOk() (*int64, bool) {
 	if o == nil || IsNil(o.Rack) {
 		return nil, false
 	}
@@ -108,8 +108,8 @@ func (o *PatchedBulkRackReservationRequest) HasRack() bool {
 	return false
 }
 
-// SetRack gets a reference to the given int32 and assigns it to the Rack field.
-func (o *PatchedBulkRackReservationRequest) SetRack(v int32) {
+// SetRack gets a reference to the given int64 and assigns it to the Rack field.
+func (o *PatchedBulkRackReservationRequest) SetRack(v int64) {
 	o.Rack = &v
 }
 
@@ -178,9 +178,9 @@ func (o *PatchedBulkRackReservationRequest) SetStatus(v string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise.
-func (o *PatchedBulkRackReservationRequest) GetUser() int32 {
+func (o *PatchedBulkRackReservationRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User
@@ -188,7 +188,7 @@ func (o *PatchedBulkRackReservationRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkRackReservationRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedBulkRackReservationRequest) GetUserOk() (*int64, bool) {
 	if o == nil || IsNil(o.User) {
 		return nil, false
 	}
@@ -204,15 +204,15 @@ func (o *PatchedBulkRackReservationRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given int32 and assigns it to the User field.
-func (o *PatchedBulkRackReservationRequest) SetUser(v int32) {
+// SetUser gets a reference to the given int64 and assigns it to the User field.
+func (o *PatchedBulkRackReservationRequest) SetUser(v int64) {
 	o.User = &v
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkRackReservationRequest) GetTenant() int32 {
+func (o *PatchedBulkRackReservationRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -221,7 +221,7 @@ func (o *PatchedBulkRackReservationRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkRackReservationRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkRackReservationRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -237,8 +237,8 @@ func (o *PatchedBulkRackReservationRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkRackReservationRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkRackReservationRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -285,9 +285,9 @@ func (o *PatchedBulkRackReservationRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkRackReservationRequest) GetOwner() int32 {
+func (o *PatchedBulkRackReservationRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -296,7 +296,7 @@ func (o *PatchedBulkRackReservationRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkRackReservationRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkRackReservationRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -312,8 +312,8 @@ func (o *PatchedBulkRackReservationRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkRackReservationRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkRackReservationRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

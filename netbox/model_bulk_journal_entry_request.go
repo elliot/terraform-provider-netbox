@@ -22,10 +22,10 @@ var _ MappedNullable = &BulkJournalEntryRequest{}
 
 // BulkJournalEntryRequest Adds support for custom fields and tags.
 type BulkJournalEntryRequest struct {
-	Id                 int32         `json:"id"`
+	Id                 int64         `json:"id"`
 	AssignedObjectType string        `json:"assigned_object_type"`
 	AssignedObjectId   int64         `json:"assigned_object_id"`
-	CreatedBy          NullableInt32 `json:"created_by,omitempty"`
+	CreatedBy          NullableInt64 `json:"created_by,omitempty"`
 	// * `info` - Info * `success` - Success * `warning` - Warning * `danger` - Danger
 	Kind                 *string                `json:"kind,omitempty"`
 	Comments             string                 `json:"comments"`
@@ -40,7 +40,7 @@ type _BulkJournalEntryRequest BulkJournalEntryRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkJournalEntryRequest(id int32, assignedObjectType string, assignedObjectId int64, comments string) *BulkJournalEntryRequest {
+func NewBulkJournalEntryRequest(id int64, assignedObjectType string, assignedObjectId int64, comments string) *BulkJournalEntryRequest {
 	this := BulkJournalEntryRequest{}
 	this.Id = id
 	this.AssignedObjectType = assignedObjectType
@@ -58,9 +58,9 @@ func NewBulkJournalEntryRequestWithDefaults() *BulkJournalEntryRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkJournalEntryRequest) GetId() int32 {
+func (o *BulkJournalEntryRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -69,7 +69,7 @@ func (o *BulkJournalEntryRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkJournalEntryRequest) GetIdOk() (*int32, bool) {
+func (o *BulkJournalEntryRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -77,7 +77,7 @@ func (o *BulkJournalEntryRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkJournalEntryRequest) SetId(v int32) {
+func (o *BulkJournalEntryRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -130,9 +130,9 @@ func (o *BulkJournalEntryRequest) SetAssignedObjectId(v int64) {
 }
 
 // GetCreatedBy returns the CreatedBy field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkJournalEntryRequest) GetCreatedBy() int32 {
+func (o *BulkJournalEntryRequest) GetCreatedBy() int64 {
 	if o == nil || IsNil(o.CreatedBy.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CreatedBy.Get()
@@ -141,7 +141,7 @@ func (o *BulkJournalEntryRequest) GetCreatedBy() int32 {
 // GetCreatedByOk returns a tuple with the CreatedBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkJournalEntryRequest) GetCreatedByOk() (*int32, bool) {
+func (o *BulkJournalEntryRequest) GetCreatedByOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -157,8 +157,8 @@ func (o *BulkJournalEntryRequest) HasCreatedBy() bool {
 	return false
 }
 
-// SetCreatedBy gets a reference to the given NullableInt32 and assigns it to the CreatedBy field.
-func (o *BulkJournalEntryRequest) SetCreatedBy(v int32) {
+// SetCreatedBy gets a reference to the given NullableInt64 and assigns it to the CreatedBy field.
+func (o *BulkJournalEntryRequest) SetCreatedBy(v int64) {
 	o.CreatedBy.Set(&v)
 }
 

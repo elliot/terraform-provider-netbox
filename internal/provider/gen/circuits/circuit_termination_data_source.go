@@ -70,17 +70,18 @@ var circuitTerminationFilterNames = []string{
 	"port_speed__lte", "port_speed__n", "pp_info", "pp_info__empty", "pp_info__ic", "pp_info__ie",
 	"pp_info__iew", "pp_info__iregex", "pp_info__isw", "pp_info__n", "pp_info__nic", "pp_info__nie",
 	"pp_info__niew", "pp_info__nisw", "pp_info__regex", "provider", "provider__n", "provider_id",
-	"provider_id__n", "provider_network_id", "provider_network_id__n", "q", "region", "region__n",
-	"region_id", "region_id__n", "site", "site__n", "site_group", "site_group__n",
-	"site_group_id", "site_group_id__n", "site_id", "site_id__n", "tag", "tag__any",
-	"tag__n", "tag_id", "tag_id__any", "tag_id__n", "term_side", "term_side__empty",
-	"term_side__ic", "term_side__ie", "term_side__iew", "term_side__iregex", "term_side__isw", "term_side__n",
-	"term_side__nic", "term_side__nie", "term_side__niew", "term_side__nisw", "term_side__regex", "termination_id",
-	"termination_id__empty", "termination_id__gt", "termination_id__gte", "termination_id__lt", "termination_id__lte", "termination_id__n",
-	"termination_type", "termination_type__n", "updated_by_request", "upstream_speed", "upstream_speed__empty", "upstream_speed__gt",
-	"upstream_speed__gte", "upstream_speed__lt", "upstream_speed__lte", "upstream_speed__n", "xconnect_id", "xconnect_id__empty",
-	"xconnect_id__ic", "xconnect_id__ie", "xconnect_id__iew", "xconnect_id__iregex", "xconnect_id__isw", "xconnect_id__n",
-	"xconnect_id__nic", "xconnect_id__nie", "xconnect_id__niew", "xconnect_id__nisw", "xconnect_id__regex",
+	"provider_id__n", "provider_network", "provider_network__n", "provider_network_id", "provider_network_id__n", "q",
+	"region", "region__n", "region_id", "region_id__n", "site", "site__n",
+	"site_group", "site_group__n", "site_group_id", "site_group_id__n", "site_id", "site_id__n",
+	"tag", "tag__any", "tag__n", "tag_id", "tag_id__any", "tag_id__n",
+	"term_side", "term_side__empty", "term_side__ic", "term_side__ie", "term_side__iew", "term_side__iregex",
+	"term_side__isw", "term_side__n", "term_side__nic", "term_side__nie", "term_side__niew", "term_side__nisw",
+	"term_side__regex", "termination_id", "termination_id__empty", "termination_id__gt", "termination_id__gte", "termination_id__lt",
+	"termination_id__lte", "termination_id__n", "termination_type", "termination_type__n", "updated_by_request", "upstream_speed",
+	"upstream_speed__empty", "upstream_speed__gt", "upstream_speed__gte", "upstream_speed__lt", "upstream_speed__lte", "upstream_speed__n",
+	"xconnect_id", "xconnect_id__empty", "xconnect_id__ic", "xconnect_id__ie", "xconnect_id__iew", "xconnect_id__iregex",
+	"xconnect_id__isw", "xconnect_id__n", "xconnect_id__nic", "xconnect_id__nie", "xconnect_id__niew", "xconnect_id__nisw",
+	"xconnect_id__regex",
 }
 
 // circuitTerminationDataAttributes returns the attributes shared by the singular and list data sources.
@@ -248,7 +249,7 @@ func (d *CircuitTerminationDataSource) Read(ctx context.Context, req datasource.
 	}
 	var obj *netbox.CircuitTermination
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -417,7 +418,7 @@ func circuitTerminationDataFromAPI(ctx context.Context, obj *netbox.CircuitTermi
 	out.CircuitId = conv.BriefID(obj.GetCircuitOk())
 	out.TermSide = conv.ChoiceScalar(obj.GetTermSideOk())
 	out.TerminationType = conv.String(obj.GetTerminationTypeOk())
-	out.TerminationId = conv.Int64From32(obj.GetTerminationIdOk())
+	out.TerminationId = conv.Int64From64(obj.GetTerminationIdOk())
 	out.PortSpeed = conv.Int64From32(obj.GetPortSpeedOk())
 	out.UpstreamSpeed = conv.Int64From32(obj.GetUpstreamSpeedOk())
 	out.XconnectId = conv.StringOrEmpty(obj.GetXconnectIdOk())

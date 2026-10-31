@@ -21,8 +21,8 @@ var _ MappedNullable = &PatchedWritablePowerOutletRequest{}
 
 // PatchedWritablePowerOutletRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedWritablePowerOutletRequest struct {
-	Device *int32        `json:"device,omitempty"`
-	Module NullableInt32 `json:"module,omitempty"`
+	Device *int64        `json:"device,omitempty"`
+	Module NullableInt64 `json:"module,omitempty"`
 	Name   *string       `json:"name,omitempty"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
@@ -31,13 +31,13 @@ type PatchedWritablePowerOutletRequest struct {
 	// * `enabled` - Enabled * `disabled` - Disabled * `faulty` - Faulty
 	Status    *string       `json:"status,omitempty"`
 	Color     *string       `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
-	PowerPort NullableInt32 `json:"power_port,omitempty"`
+	PowerPort NullableInt64 `json:"power_port,omitempty"`
 	// Phase (for three-phase feeds)  * `A` - A * `B` - B * `C` - C
 	FeedLeg     NullableString `json:"feed_leg,omitempty"`
 	Description *string        `json:"description,omitempty"`
 	// Treat as if a cable is connected
 	MarkConnected        *bool                  `json:"mark_connected,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -63,9 +63,9 @@ func NewPatchedWritablePowerOutletRequestWithDefaults() *PatchedWritablePowerOut
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise.
-func (o *PatchedWritablePowerOutletRequest) GetDevice() int32 {
+func (o *PatchedWritablePowerOutletRequest) GetDevice() int64 {
 	if o == nil || IsNil(o.Device) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Device
@@ -73,7 +73,7 @@ func (o *PatchedWritablePowerOutletRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritablePowerOutletRequest) GetDeviceOk() (*int32, bool) {
+func (o *PatchedWritablePowerOutletRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil || IsNil(o.Device) {
 		return nil, false
 	}
@@ -89,15 +89,15 @@ func (o *PatchedWritablePowerOutletRequest) HasDevice() bool {
 	return false
 }
 
-// SetDevice gets a reference to the given int32 and assigns it to the Device field.
-func (o *PatchedWritablePowerOutletRequest) SetDevice(v int32) {
+// SetDevice gets a reference to the given int64 and assigns it to the Device field.
+func (o *PatchedWritablePowerOutletRequest) SetDevice(v int64) {
 	o.Device = &v
 }
 
 // GetModule returns the Module field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePowerOutletRequest) GetModule() int32 {
+func (o *PatchedWritablePowerOutletRequest) GetModule() int64 {
 	if o == nil || IsNil(o.Module.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module.Get()
@@ -106,7 +106,7 @@ func (o *PatchedWritablePowerOutletRequest) GetModule() int32 {
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePowerOutletRequest) GetModuleOk() (*int32, bool) {
+func (o *PatchedWritablePowerOutletRequest) GetModuleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -122,8 +122,8 @@ func (o *PatchedWritablePowerOutletRequest) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given NullableInt32 and assigns it to the Module field.
-func (o *PatchedWritablePowerOutletRequest) SetModule(v int32) {
+// SetModule gets a reference to the given NullableInt64 and assigns it to the Module field.
+func (o *PatchedWritablePowerOutletRequest) SetModule(v int64) {
 	o.Module.Set(&v)
 }
 
@@ -309,9 +309,9 @@ func (o *PatchedWritablePowerOutletRequest) SetColor(v string) {
 }
 
 // GetPowerPort returns the PowerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePowerOutletRequest) GetPowerPort() int32 {
+func (o *PatchedWritablePowerOutletRequest) GetPowerPort() int64 {
 	if o == nil || IsNil(o.PowerPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PowerPort.Get()
@@ -320,7 +320,7 @@ func (o *PatchedWritablePowerOutletRequest) GetPowerPort() int32 {
 // GetPowerPortOk returns a tuple with the PowerPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePowerOutletRequest) GetPowerPortOk() (*int32, bool) {
+func (o *PatchedWritablePowerOutletRequest) GetPowerPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -336,8 +336,8 @@ func (o *PatchedWritablePowerOutletRequest) HasPowerPort() bool {
 	return false
 }
 
-// SetPowerPort gets a reference to the given NullableInt32 and assigns it to the PowerPort field.
-func (o *PatchedWritablePowerOutletRequest) SetPowerPort(v int32) {
+// SetPowerPort gets a reference to the given NullableInt64 and assigns it to the PowerPort field.
+func (o *PatchedWritablePowerOutletRequest) SetPowerPort(v int64) {
 	o.PowerPort.Set(&v)
 }
 
@@ -459,9 +459,9 @@ func (o *PatchedWritablePowerOutletRequest) SetMarkConnected(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePowerOutletRequest) GetOwner() int32 {
+func (o *PatchedWritablePowerOutletRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -470,7 +470,7 @@ func (o *PatchedWritablePowerOutletRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePowerOutletRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritablePowerOutletRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -486,8 +486,8 @@ func (o *PatchedWritablePowerOutletRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritablePowerOutletRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritablePowerOutletRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

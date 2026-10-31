@@ -22,8 +22,8 @@ var _ MappedNullable = &WritablePowerFeedRequest{}
 
 // WritablePowerFeedRequest Base serializer class for models inheriting from PrimaryModel.
 type WritablePowerFeedRequest struct {
-	PowerPanel int32         `json:"power_panel"`
-	Rack       NullableInt32 `json:"rack,omitempty"`
+	PowerPanel int64         `json:"power_panel"`
+	Rack       NullableInt64 `json:"rack,omitempty"`
 	Name       string        `json:"name"`
 	// * `offline` - Offline * `active` - Active * `planned` - Planned * `failed` - Failed
 	Status *string `json:"status,omitempty"`
@@ -40,8 +40,8 @@ type WritablePowerFeedRequest struct {
 	// Treat as if a cable is connected
 	MarkConnected        *bool                  `json:"mark_connected,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -54,7 +54,7 @@ type _WritablePowerFeedRequest WritablePowerFeedRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritablePowerFeedRequest(powerPanel int32, name string) *WritablePowerFeedRequest {
+func NewWritablePowerFeedRequest(powerPanel int64, name string) *WritablePowerFeedRequest {
 	this := WritablePowerFeedRequest{}
 	this.PowerPanel = powerPanel
 	this.Name = name
@@ -70,9 +70,9 @@ func NewWritablePowerFeedRequestWithDefaults() *WritablePowerFeedRequest {
 }
 
 // GetPowerPanel returns the PowerPanel field value
-func (o *WritablePowerFeedRequest) GetPowerPanel() int32 {
+func (o *WritablePowerFeedRequest) GetPowerPanel() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -81,7 +81,7 @@ func (o *WritablePowerFeedRequest) GetPowerPanel() int32 {
 
 // GetPowerPanelOk returns a tuple with the PowerPanel field value
 // and a boolean to check if the value has been set.
-func (o *WritablePowerFeedRequest) GetPowerPanelOk() (*int32, bool) {
+func (o *WritablePowerFeedRequest) GetPowerPanelOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -89,14 +89,14 @@ func (o *WritablePowerFeedRequest) GetPowerPanelOk() (*int32, bool) {
 }
 
 // SetPowerPanel sets field value
-func (o *WritablePowerFeedRequest) SetPowerPanel(v int32) {
+func (o *WritablePowerFeedRequest) SetPowerPanel(v int64) {
 	o.PowerPanel = v
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritablePowerFeedRequest) GetRack() int32 {
+func (o *WritablePowerFeedRequest) GetRack() int64 {
 	if o == nil || IsNil(o.Rack.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rack.Get()
@@ -105,7 +105,7 @@ func (o *WritablePowerFeedRequest) GetRack() int32 {
 // GetRackOk returns a tuple with the Rack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritablePowerFeedRequest) GetRackOk() (*int32, bool) {
+func (o *WritablePowerFeedRequest) GetRackOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -121,8 +121,8 @@ func (o *WritablePowerFeedRequest) HasRack() bool {
 	return false
 }
 
-// SetRack gets a reference to the given NullableInt32 and assigns it to the Rack field.
-func (o *WritablePowerFeedRequest) SetRack(v int32) {
+// SetRack gets a reference to the given NullableInt64 and assigns it to the Rack field.
+func (o *WritablePowerFeedRequest) SetRack(v int64) {
 	o.Rack.Set(&v)
 }
 
@@ -449,9 +449,9 @@ func (o *WritablePowerFeedRequest) SetDescription(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritablePowerFeedRequest) GetTenant() int32 {
+func (o *WritablePowerFeedRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -460,7 +460,7 @@ func (o *WritablePowerFeedRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritablePowerFeedRequest) GetTenantOk() (*int32, bool) {
+func (o *WritablePowerFeedRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -476,8 +476,8 @@ func (o *WritablePowerFeedRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *WritablePowerFeedRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *WritablePowerFeedRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -492,9 +492,9 @@ func (o *WritablePowerFeedRequest) UnsetTenant() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritablePowerFeedRequest) GetOwner() int32 {
+func (o *WritablePowerFeedRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -503,7 +503,7 @@ func (o *WritablePowerFeedRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritablePowerFeedRequest) GetOwnerOk() (*int32, bool) {
+func (o *WritablePowerFeedRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -519,8 +519,8 @@ func (o *WritablePowerFeedRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *WritablePowerFeedRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *WritablePowerFeedRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

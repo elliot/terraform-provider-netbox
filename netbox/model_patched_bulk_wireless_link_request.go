@@ -22,13 +22,13 @@ var _ MappedNullable = &PatchedBulkWirelessLinkRequest{}
 
 // PatchedBulkWirelessLinkRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkWirelessLinkRequest struct {
-	Id         int32   `json:"id"`
-	InterfaceA *int32  `json:"interface_a,omitempty"`
-	InterfaceB *int32  `json:"interface_b,omitempty"`
+	Id         int64   `json:"id"`
+	InterfaceA *int64  `json:"interface_a,omitempty"`
+	InterfaceB *int64  `json:"interface_b,omitempty"`
 	Ssid       *string `json:"ssid,omitempty"`
 	// * `connected` - Connected * `planned` - Planned * `decommissioning` - Decommissioning
 	Status *string       `json:"status,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// * `open` - Open * `wep` - WEP * `wpa-personal` - WPA Personal (PSK) * `wpa-enterprise` - WPA Enterprise
 	AuthType *string `json:"auth_type,omitempty"`
 	// * `auto` - Auto * `tkip` - TKIP * `aes` - AES
@@ -38,7 +38,7 @@ type PatchedBulkWirelessLinkRequest struct {
 	// * `km` - Kilometers * `m` - Meters * `mi` - Miles * `ft` - Feet
 	DistanceUnit         NullableString         `json:"distance_unit,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -51,7 +51,7 @@ type _PatchedBulkWirelessLinkRequest PatchedBulkWirelessLinkRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkWirelessLinkRequest(id int32) *PatchedBulkWirelessLinkRequest {
+func NewPatchedBulkWirelessLinkRequest(id int64) *PatchedBulkWirelessLinkRequest {
 	this := PatchedBulkWirelessLinkRequest{}
 	this.Id = id
 	return &this
@@ -66,9 +66,9 @@ func NewPatchedBulkWirelessLinkRequestWithDefaults() *PatchedBulkWirelessLinkReq
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkWirelessLinkRequest) GetId() int32 {
+func (o *PatchedBulkWirelessLinkRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -77,7 +77,7 @@ func (o *PatchedBulkWirelessLinkRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkWirelessLinkRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkWirelessLinkRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -85,14 +85,14 @@ func (o *PatchedBulkWirelessLinkRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkWirelessLinkRequest) SetId(v int32) {
+func (o *PatchedBulkWirelessLinkRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetInterfaceA returns the InterfaceA field value if set, zero value otherwise.
-func (o *PatchedBulkWirelessLinkRequest) GetInterfaceA() int32 {
+func (o *PatchedBulkWirelessLinkRequest) GetInterfaceA() int64 {
 	if o == nil || IsNil(o.InterfaceA) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InterfaceA
@@ -100,7 +100,7 @@ func (o *PatchedBulkWirelessLinkRequest) GetInterfaceA() int32 {
 
 // GetInterfaceAOk returns a tuple with the InterfaceA field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkWirelessLinkRequest) GetInterfaceAOk() (*int32, bool) {
+func (o *PatchedBulkWirelessLinkRequest) GetInterfaceAOk() (*int64, bool) {
 	if o == nil || IsNil(o.InterfaceA) {
 		return nil, false
 	}
@@ -116,15 +116,15 @@ func (o *PatchedBulkWirelessLinkRequest) HasInterfaceA() bool {
 	return false
 }
 
-// SetInterfaceA gets a reference to the given int32 and assigns it to the InterfaceA field.
-func (o *PatchedBulkWirelessLinkRequest) SetInterfaceA(v int32) {
+// SetInterfaceA gets a reference to the given int64 and assigns it to the InterfaceA field.
+func (o *PatchedBulkWirelessLinkRequest) SetInterfaceA(v int64) {
 	o.InterfaceA = &v
 }
 
 // GetInterfaceB returns the InterfaceB field value if set, zero value otherwise.
-func (o *PatchedBulkWirelessLinkRequest) GetInterfaceB() int32 {
+func (o *PatchedBulkWirelessLinkRequest) GetInterfaceB() int64 {
 	if o == nil || IsNil(o.InterfaceB) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InterfaceB
@@ -132,7 +132,7 @@ func (o *PatchedBulkWirelessLinkRequest) GetInterfaceB() int32 {
 
 // GetInterfaceBOk returns a tuple with the InterfaceB field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkWirelessLinkRequest) GetInterfaceBOk() (*int32, bool) {
+func (o *PatchedBulkWirelessLinkRequest) GetInterfaceBOk() (*int64, bool) {
 	if o == nil || IsNil(o.InterfaceB) {
 		return nil, false
 	}
@@ -148,8 +148,8 @@ func (o *PatchedBulkWirelessLinkRequest) HasInterfaceB() bool {
 	return false
 }
 
-// SetInterfaceB gets a reference to the given int32 and assigns it to the InterfaceB field.
-func (o *PatchedBulkWirelessLinkRequest) SetInterfaceB(v int32) {
+// SetInterfaceB gets a reference to the given int64 and assigns it to the InterfaceB field.
+func (o *PatchedBulkWirelessLinkRequest) SetInterfaceB(v int64) {
 	o.InterfaceB = &v
 }
 
@@ -218,9 +218,9 @@ func (o *PatchedBulkWirelessLinkRequest) SetStatus(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkWirelessLinkRequest) GetTenant() int32 {
+func (o *PatchedBulkWirelessLinkRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -229,7 +229,7 @@ func (o *PatchedBulkWirelessLinkRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkWirelessLinkRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkWirelessLinkRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -245,8 +245,8 @@ func (o *PatchedBulkWirelessLinkRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkWirelessLinkRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkWirelessLinkRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -475,9 +475,9 @@ func (o *PatchedBulkWirelessLinkRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkWirelessLinkRequest) GetOwner() int32 {
+func (o *PatchedBulkWirelessLinkRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -486,7 +486,7 @@ func (o *PatchedBulkWirelessLinkRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkWirelessLinkRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkWirelessLinkRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -502,8 +502,8 @@ func (o *PatchedBulkWirelessLinkRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkWirelessLinkRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkWirelessLinkRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

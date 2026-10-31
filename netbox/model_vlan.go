@@ -23,7 +23,7 @@ var _ MappedNullable = &VLAN{}
 
 // VLAN Base serializer class for models inheriting from PrimaryModel.
 type VLAN struct {
-	Id         int32                  `json:"id"`
+	Id         int64                  `json:"id"`
 	Url        *string                `json:"url,omitempty"`
 	DisplayUrl *string                `json:"display_url,omitempty"`
 	Display    *string                `json:"display,omitempty"`
@@ -55,7 +55,7 @@ type _VLAN VLAN
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVLAN(id int32) *VLAN {
+func NewVLAN(id int64) *VLAN {
 	this := VLAN{}
 	this.Id = id
 	return &this
@@ -70,9 +70,9 @@ func NewVLANWithDefaults() *VLAN {
 }
 
 // GetId returns the Id field value
-func (o *VLAN) GetId() int32 {
+func (o *VLAN) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -81,7 +81,7 @@ func (o *VLAN) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *VLAN) GetIdOk() (*int32, bool) {
+func (o *VLAN) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -89,7 +89,7 @@ func (o *VLAN) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *VLAN) SetId(v int32) {
+func (o *VLAN) SetId(v int64) {
 	o.Id = v
 }
 

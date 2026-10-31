@@ -23,7 +23,7 @@ var _ MappedNullable = &ImageAttachment{}
 
 // ImageAttachment Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type ImageAttachment struct {
-	Id                   int32        `json:"id"`
+	Id                   int64        `json:"id"`
 	Url                  *string      `json:"url,omitempty"`
 	Display              *string      `json:"display,omitempty"`
 	ObjectType           *string      `json:"object_type,omitempty"`
@@ -34,7 +34,7 @@ type ImageAttachment struct {
 	Description          *string      `json:"description,omitempty"`
 	ImageHeight          *int32       `json:"image_height,omitempty"`
 	ImageWidth           *int32       `json:"image_width,omitempty"`
-	ImageSize            *int32       `json:"image_size,omitempty"`
+	ImageSize            *int64       `json:"image_size,omitempty"`
 	Created              NullableTime `json:"created,omitempty"`
 	LastUpdated          NullableTime `json:"last_updated,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -46,7 +46,7 @@ type _ImageAttachment ImageAttachment
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewImageAttachment(id int32) *ImageAttachment {
+func NewImageAttachment(id int64) *ImageAttachment {
 	this := ImageAttachment{}
 	this.Id = id
 	return &this
@@ -61,9 +61,9 @@ func NewImageAttachmentWithDefaults() *ImageAttachment {
 }
 
 // GetId returns the Id field value
-func (o *ImageAttachment) GetId() int32 {
+func (o *ImageAttachment) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -72,7 +72,7 @@ func (o *ImageAttachment) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ImageAttachment) GetIdOk() (*int32, bool) {
+func (o *ImageAttachment) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -80,7 +80,7 @@ func (o *ImageAttachment) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *ImageAttachment) SetId(v int32) {
+func (o *ImageAttachment) SetId(v int64) {
 	o.Id = v
 }
 
@@ -406,9 +406,9 @@ func (o *ImageAttachment) SetImageWidth(v int32) {
 }
 
 // GetImageSize returns the ImageSize field value if set, zero value otherwise.
-func (o *ImageAttachment) GetImageSize() int32 {
+func (o *ImageAttachment) GetImageSize() int64 {
 	if o == nil || IsNil(o.ImageSize) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ImageSize
@@ -416,7 +416,7 @@ func (o *ImageAttachment) GetImageSize() int32 {
 
 // GetImageSizeOk returns a tuple with the ImageSize field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ImageAttachment) GetImageSizeOk() (*int32, bool) {
+func (o *ImageAttachment) GetImageSizeOk() (*int64, bool) {
 	if o == nil || IsNil(o.ImageSize) {
 		return nil, false
 	}
@@ -432,8 +432,8 @@ func (o *ImageAttachment) HasImageSize() bool {
 	return false
 }
 
-// SetImageSize gets a reference to the given int32 and assigns it to the ImageSize field.
-func (o *ImageAttachment) SetImageSize(v int32) {
+// SetImageSize gets a reference to the given int64 and assigns it to the ImageSize field.
+func (o *ImageAttachment) SetImageSize(v int64) {
 	o.ImageSize = &v
 }
 

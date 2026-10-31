@@ -23,15 +23,15 @@ var _ MappedNullable = &PatchedASNRequest{}
 type PatchedASNRequest struct {
 	// 16- or 32-bit autonomous system number
 	Asn                  *int64                 `json:"asn,omitempty"`
-	Rir                  NullableInt32          `json:"rir,omitempty"`
-	Role                 NullableInt32          `json:"role,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	Rir                  NullableInt64          `json:"rir,omitempty"`
+	Role                 NullableInt64          `json:"role,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
-	Sites                []int32                `json:"sites,omitempty"`
+	Sites                []int64                `json:"sites,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -87,9 +87,9 @@ func (o *PatchedASNRequest) SetAsn(v int64) {
 }
 
 // GetRir returns the Rir field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedASNRequest) GetRir() int32 {
+func (o *PatchedASNRequest) GetRir() int64 {
 	if o == nil || IsNil(o.Rir.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rir.Get()
@@ -98,7 +98,7 @@ func (o *PatchedASNRequest) GetRir() int32 {
 // GetRirOk returns a tuple with the Rir field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedASNRequest) GetRirOk() (*int32, bool) {
+func (o *PatchedASNRequest) GetRirOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -114,8 +114,8 @@ func (o *PatchedASNRequest) HasRir() bool {
 	return false
 }
 
-// SetRir gets a reference to the given NullableInt32 and assigns it to the Rir field.
-func (o *PatchedASNRequest) SetRir(v int32) {
+// SetRir gets a reference to the given NullableInt64 and assigns it to the Rir field.
+func (o *PatchedASNRequest) SetRir(v int64) {
 	o.Rir.Set(&v)
 }
 
@@ -130,9 +130,9 @@ func (o *PatchedASNRequest) UnsetRir() {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedASNRequest) GetRole() int32 {
+func (o *PatchedASNRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -141,7 +141,7 @@ func (o *PatchedASNRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedASNRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedASNRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -157,8 +157,8 @@ func (o *PatchedASNRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedASNRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedASNRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -173,9 +173,9 @@ func (o *PatchedASNRequest) UnsetRole() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedASNRequest) GetTenant() int32 {
+func (o *PatchedASNRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -184,7 +184,7 @@ func (o *PatchedASNRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedASNRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedASNRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -200,8 +200,8 @@ func (o *PatchedASNRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedASNRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedASNRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -248,9 +248,9 @@ func (o *PatchedASNRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedASNRequest) GetOwner() int32 {
+func (o *PatchedASNRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -259,7 +259,7 @@ func (o *PatchedASNRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedASNRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedASNRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -275,8 +275,8 @@ func (o *PatchedASNRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedASNRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedASNRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -387,9 +387,9 @@ func (o *PatchedASNRequest) SetCustomFields(v map[string]interface{}) {
 }
 
 // GetSites returns the Sites field value if set, zero value otherwise.
-func (o *PatchedASNRequest) GetSites() []int32 {
+func (o *PatchedASNRequest) GetSites() []int64 {
 	if o == nil || IsNil(o.Sites) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Sites
@@ -397,7 +397,7 @@ func (o *PatchedASNRequest) GetSites() []int32 {
 
 // GetSitesOk returns a tuple with the Sites field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedASNRequest) GetSitesOk() ([]int32, bool) {
+func (o *PatchedASNRequest) GetSitesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Sites) {
 		return nil, false
 	}
@@ -413,8 +413,8 @@ func (o *PatchedASNRequest) HasSites() bool {
 	return false
 }
 
-// SetSites gets a reference to the given []int32 and assigns it to the Sites field.
-func (o *PatchedASNRequest) SetSites(v []int32) {
+// SetSites gets a reference to the given []int64 and assigns it to the Sites field.
+func (o *PatchedASNRequest) SetSites(v []int64) {
 	o.Sites = v
 }
 

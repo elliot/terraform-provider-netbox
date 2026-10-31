@@ -25,10 +25,10 @@ type PlatformRequest struct {
 	Parent               NullableNestedPlatformRequest `json:"parent,omitempty"`
 	Name                 string                        `json:"name"`
 	Slug                 string                        `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Manufacturer         NullableInt32                 `json:"manufacturer,omitempty"`
-	ConfigTemplate       NullableInt32                 `json:"config_template,omitempty"`
+	Manufacturer         NullableInt64                 `json:"manufacturer,omitempty"`
+	ConfigTemplate       NullableInt64                 `json:"config_template,omitempty"`
 	Description          *string                       `json:"description,omitempty"`
-	Owner                NullableInt32                 `json:"owner,omitempty"`
+	Owner                NullableInt64                 `json:"owner,omitempty"`
 	Comments             *string                       `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest            `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}        `json:"custom_fields,omitempty"`
@@ -148,9 +148,9 @@ func (o *PlatformRequest) SetSlug(v string) {
 }
 
 // GetManufacturer returns the Manufacturer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PlatformRequest) GetManufacturer() int32 {
+func (o *PlatformRequest) GetManufacturer() int64 {
 	if o == nil || IsNil(o.Manufacturer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Manufacturer.Get()
@@ -159,7 +159,7 @@ func (o *PlatformRequest) GetManufacturer() int32 {
 // GetManufacturerOk returns a tuple with the Manufacturer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PlatformRequest) GetManufacturerOk() (*int32, bool) {
+func (o *PlatformRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -175,8 +175,8 @@ func (o *PlatformRequest) HasManufacturer() bool {
 	return false
 }
 
-// SetManufacturer gets a reference to the given NullableInt32 and assigns it to the Manufacturer field.
-func (o *PlatformRequest) SetManufacturer(v int32) {
+// SetManufacturer gets a reference to the given NullableInt64 and assigns it to the Manufacturer field.
+func (o *PlatformRequest) SetManufacturer(v int64) {
 	o.Manufacturer.Set(&v)
 }
 
@@ -191,9 +191,9 @@ func (o *PlatformRequest) UnsetManufacturer() {
 }
 
 // GetConfigTemplate returns the ConfigTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PlatformRequest) GetConfigTemplate() int32 {
+func (o *PlatformRequest) GetConfigTemplate() int64 {
 	if o == nil || IsNil(o.ConfigTemplate.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplate.Get()
@@ -202,7 +202,7 @@ func (o *PlatformRequest) GetConfigTemplate() int32 {
 // GetConfigTemplateOk returns a tuple with the ConfigTemplate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PlatformRequest) GetConfigTemplateOk() (*int32, bool) {
+func (o *PlatformRequest) GetConfigTemplateOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -218,8 +218,8 @@ func (o *PlatformRequest) HasConfigTemplate() bool {
 	return false
 }
 
-// SetConfigTemplate gets a reference to the given NullableInt32 and assigns it to the ConfigTemplate field.
-func (o *PlatformRequest) SetConfigTemplate(v int32) {
+// SetConfigTemplate gets a reference to the given NullableInt64 and assigns it to the ConfigTemplate field.
+func (o *PlatformRequest) SetConfigTemplate(v int64) {
 	o.ConfigTemplate.Set(&v)
 }
 
@@ -266,9 +266,9 @@ func (o *PlatformRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PlatformRequest) GetOwner() int32 {
+func (o *PlatformRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -277,7 +277,7 @@ func (o *PlatformRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PlatformRequest) GetOwnerOk() (*int32, bool) {
+func (o *PlatformRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -293,8 +293,8 @@ func (o *PlatformRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PlatformRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PlatformRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

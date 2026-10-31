@@ -261,7 +261,7 @@ func (r *FrontPortResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -292,7 +292,7 @@ func (r *FrontPortResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -322,7 +322,7 @@ func (r *FrontPortResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -342,9 +342,9 @@ func (r *FrontPortResource) ImportState(ctx context.Context, req resource.Import
 // frontPortToCreate builds the WritableFrontPortRequest request body from the plan.
 func frontPortToCreate(ctx context.Context, plan *FrontPortModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableFrontPortRequest {
 	const objectType = "dcim.frontport"
-	body := netbox.NewWritableFrontPortRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString(), plan.Type.ValueString())
+	body := netbox.NewWritableFrontPortRequest(plan.DeviceId.ValueInt64(), plan.Name.ValueString(), plan.Type.ValueString())
 	if conv.Known(plan.ModuleId) {
-		body.SetModule(conv.Int32(plan.ModuleId))
+		body.SetModule(plan.ModuleId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -361,7 +361,7 @@ func frontPortToCreate(ctx context.Context, plan *FrontPortModel, cf *customfiel
 			var items []FrontPortRearPortsItem
 			diags.Append(plan.RearPorts.ElementsAs(ctx, &items, false)...)
 			for _, it := range items {
-				e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), conv.Int32(it.RearPort))
+				e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), it.RearPort.ValueInt64())
 				if conv.Known(it.RearPortPosition) {
 					e.SetRearPortPosition(conv.Int32(it.RearPortPosition))
 				}
@@ -377,7 +377,7 @@ func frontPortToCreate(ctx context.Context, plan *FrontPortModel, cf *customfiel
 		body.SetMarkConnected(plan.MarkConnected.ValueBool())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -394,14 +394,14 @@ func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, cf *cust
 	body := netbox.NewPatchedWritableFrontPortRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.ModuleId.Equal(state.ModuleId) {
 		if plan.ModuleId.IsNull() {
 			body.SetModuleNil()
 		} else if !plan.ModuleId.IsUnknown() {
-			body.SetModule(conv.Int32(plan.ModuleId))
+			body.SetModule(plan.ModuleId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -436,7 +436,7 @@ func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, cf *cust
 				var items []FrontPortRearPortsItem
 				diags.Append(plan.RearPorts.ElementsAs(ctx, &items, false)...)
 				for _, it := range items {
-					e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), conv.Int32(it.RearPort))
+					e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), it.RearPort.ValueInt64())
 					if conv.Known(it.RearPortPosition) {
 						e.SetRearPortPosition(conv.Int32(it.RearPortPosition))
 					}
@@ -460,7 +460,7 @@ func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, cf *cust
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {
@@ -498,7 +498,7 @@ func frontPortFromAPI(ctx context.Context, obj *netbox.FrontPort, prior *FrontPo
 			src := &items[i]
 			vals = append(vals, FrontPortRearPortsItem{
 				Position:         conv.Int64From32(src.GetPositionOk()),
-				RearPort:         conv.Int64From32(src.GetRearPortOk()),
+				RearPort:         conv.Int64From64(src.GetRearPortOk()),
 				RearPortPosition: conv.Int64From32(src.GetRearPortPositionOk()),
 			})
 		}

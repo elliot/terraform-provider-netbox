@@ -23,8 +23,8 @@ var _ MappedNullable = &DeviceTypeRequest{}
 
 // DeviceTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type DeviceTypeRequest struct {
-	Manufacturer    int32         `json:"manufacturer"`
-	DefaultPlatform NullableInt32 `json:"default_platform,omitempty"`
+	Manufacturer    int64         `json:"manufacturer"`
+	DefaultPlatform NullableInt64 `json:"default_platform,omitempty"`
 	Model           string        `json:"model"`
 	Slug            string        `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	// Discrete part number (optional)
@@ -48,7 +48,7 @@ type DeviceTypeRequest struct {
 	FrontImage           **os.File              `json:"front_image,omitempty"`
 	RearImage            **os.File              `json:"rear_image,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -61,7 +61,7 @@ type _DeviceTypeRequest DeviceTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceTypeRequest(manufacturer int32, model string, slug string) *DeviceTypeRequest {
+func NewDeviceTypeRequest(manufacturer int64, model string, slug string) *DeviceTypeRequest {
 	this := DeviceTypeRequest{}
 	this.Manufacturer = manufacturer
 	this.Model = model
@@ -82,9 +82,9 @@ func NewDeviceTypeRequestWithDefaults() *DeviceTypeRequest {
 }
 
 // GetManufacturer returns the Manufacturer field value
-func (o *DeviceTypeRequest) GetManufacturer() int32 {
+func (o *DeviceTypeRequest) GetManufacturer() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -93,7 +93,7 @@ func (o *DeviceTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value
 // and a boolean to check if the value has been set.
-func (o *DeviceTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *DeviceTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -101,14 +101,14 @@ func (o *DeviceTypeRequest) GetManufacturerOk() (*int32, bool) {
 }
 
 // SetManufacturer sets field value
-func (o *DeviceTypeRequest) SetManufacturer(v int32) {
+func (o *DeviceTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = v
 }
 
 // GetDefaultPlatform returns the DefaultPlatform field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DeviceTypeRequest) GetDefaultPlatform() int32 {
+func (o *DeviceTypeRequest) GetDefaultPlatform() int64 {
 	if o == nil || IsNil(o.DefaultPlatform.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DefaultPlatform.Get()
@@ -117,7 +117,7 @@ func (o *DeviceTypeRequest) GetDefaultPlatform() int32 {
 // GetDefaultPlatformOk returns a tuple with the DefaultPlatform field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DeviceTypeRequest) GetDefaultPlatformOk() (*int32, bool) {
+func (o *DeviceTypeRequest) GetDefaultPlatformOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -133,8 +133,8 @@ func (o *DeviceTypeRequest) HasDefaultPlatform() bool {
 	return false
 }
 
-// SetDefaultPlatform gets a reference to the given NullableInt32 and assigns it to the DefaultPlatform field.
-func (o *DeviceTypeRequest) SetDefaultPlatform(v int32) {
+// SetDefaultPlatform gets a reference to the given NullableInt64 and assigns it to the DefaultPlatform field.
+func (o *DeviceTypeRequest) SetDefaultPlatform(v int64) {
 	o.DefaultPlatform.Set(&v)
 }
 
@@ -679,9 +679,9 @@ func (o *DeviceTypeRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DeviceTypeRequest) GetOwner() int32 {
+func (o *DeviceTypeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -690,7 +690,7 @@ func (o *DeviceTypeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DeviceTypeRequest) GetOwnerOk() (*int32, bool) {
+func (o *DeviceTypeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -706,8 +706,8 @@ func (o *DeviceTypeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *DeviceTypeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *DeviceTypeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

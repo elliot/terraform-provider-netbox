@@ -22,7 +22,7 @@ var _ MappedNullable = &BulkCustomFieldRequest{}
 
 // BulkCustomFieldRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type BulkCustomFieldRequest struct {
-	Id          int32    `json:"id"`
+	Id          int64    `json:"id"`
 	ObjectTypes []string `json:"object_types"`
 	// * `text` - Text * `longtext` - Text (long) * `integer` - Integer * `decimal` - Decimal * `boolean` - Boolean * `date` - Date * `datetime` - Date & time * `url` - URL * `json` - JSON * `select` - Selection * `multiselect` - Multiple selection * `object` - Object * `multiobject` - Multiple objects
 	Type              string         `json:"type"`
@@ -64,8 +64,8 @@ type BulkCustomFieldRequest struct {
 	ValidationRegex *string `json:"validation_regex,omitempty"`
 	// A JSON schema definition for validating the custom field value
 	ValidationSchema     interface{}   `json:"validation_schema,omitempty"`
-	ChoiceSet            NullableInt32 `json:"choice_set,omitempty"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	ChoiceSet            NullableInt64 `json:"choice_set,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	Comments             *string       `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -76,7 +76,7 @@ type _BulkCustomFieldRequest BulkCustomFieldRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkCustomFieldRequest(id int32, objectTypes []string, type_ string, name string) *BulkCustomFieldRequest {
+func NewBulkCustomFieldRequest(id int64, objectTypes []string, type_ string, name string) *BulkCustomFieldRequest {
 	this := BulkCustomFieldRequest{}
 	this.Id = id
 	this.ObjectTypes = objectTypes
@@ -94,9 +94,9 @@ func NewBulkCustomFieldRequestWithDefaults() *BulkCustomFieldRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkCustomFieldRequest) GetId() int32 {
+func (o *BulkCustomFieldRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -105,7 +105,7 @@ func (o *BulkCustomFieldRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkCustomFieldRequest) GetIdOk() (*int32, bool) {
+func (o *BulkCustomFieldRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -113,7 +113,7 @@ func (o *BulkCustomFieldRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkCustomFieldRequest) SetId(v int32) {
+func (o *BulkCustomFieldRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -834,9 +834,9 @@ func (o *BulkCustomFieldRequest) SetValidationSchema(v interface{}) {
 }
 
 // GetChoiceSet returns the ChoiceSet field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCustomFieldRequest) GetChoiceSet() int32 {
+func (o *BulkCustomFieldRequest) GetChoiceSet() int64 {
 	if o == nil || IsNil(o.ChoiceSet.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ChoiceSet.Get()
@@ -845,7 +845,7 @@ func (o *BulkCustomFieldRequest) GetChoiceSet() int32 {
 // GetChoiceSetOk returns a tuple with the ChoiceSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCustomFieldRequest) GetChoiceSetOk() (*int32, bool) {
+func (o *BulkCustomFieldRequest) GetChoiceSetOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -861,8 +861,8 @@ func (o *BulkCustomFieldRequest) HasChoiceSet() bool {
 	return false
 }
 
-// SetChoiceSet gets a reference to the given NullableInt32 and assigns it to the ChoiceSet field.
-func (o *BulkCustomFieldRequest) SetChoiceSet(v int32) {
+// SetChoiceSet gets a reference to the given NullableInt64 and assigns it to the ChoiceSet field.
+func (o *BulkCustomFieldRequest) SetChoiceSet(v int64) {
 	o.ChoiceSet.Set(&v)
 }
 
@@ -877,9 +877,9 @@ func (o *BulkCustomFieldRequest) UnsetChoiceSet() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCustomFieldRequest) GetOwner() int32 {
+func (o *BulkCustomFieldRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -888,7 +888,7 @@ func (o *BulkCustomFieldRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCustomFieldRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkCustomFieldRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -904,8 +904,8 @@ func (o *BulkCustomFieldRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkCustomFieldRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkCustomFieldRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

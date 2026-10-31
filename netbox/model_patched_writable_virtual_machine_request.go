@@ -22,30 +22,30 @@ var _ MappedNullable = &PatchedWritableVirtualMachineRequest{}
 // PatchedWritableVirtualMachineRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedWritableVirtualMachineRequest struct {
 	Name               *string       `json:"name,omitempty"`
-	VirtualMachineType NullableInt32 `json:"virtual_machine_type,omitempty"`
-	Role               NullableInt32 `json:"role,omitempty"`
+	VirtualMachineType NullableInt64 `json:"virtual_machine_type,omitempty"`
+	Role               NullableInt64 `json:"role,omitempty"`
 	// * `offline` - Offline * `active` - Active * `planned` - Planned * `staged` - Staged * `failed` - Failed * `decommissioning` - Decommissioning * `paused` - Paused
 	Status *string `json:"status,omitempty"`
 	// * `on` - On * `off` - Off * `laststate` - Last State
 	StartOnBoot *string            `json:"start_on_boot,omitempty"`
-	Site        NullableInt32      `json:"site,omitempty"`
-	Cluster     NullableInt32      `json:"cluster,omitempty"`
-	Device      NullableInt32      `json:"device,omitempty"`
-	Platform    NullableInt32      `json:"platform,omitempty"`
-	PrimaryIp4  NullableInt32      `json:"primary_ip4,omitempty"`
-	PrimaryIp6  NullableInt32      `json:"primary_ip6,omitempty"`
+	Site        NullableInt64      `json:"site,omitempty"`
+	Cluster     NullableInt64      `json:"cluster,omitempty"`
+	Device      NullableInt64      `json:"device,omitempty"`
+	Platform    NullableInt64      `json:"platform,omitempty"`
+	PrimaryIp4  NullableInt64      `json:"primary_ip4,omitempty"`
+	PrimaryIp6  NullableInt64      `json:"primary_ip6,omitempty"`
 	Vcpus       NullableFloat64    `json:"vcpus,omitempty"`
 	Memory      NullableInt32      `json:"memory,omitempty"`
 	Disk        NullableInt32      `json:"disk,omitempty"`
 	Description *string            `json:"description,omitempty"`
 	Serial      *string            `json:"serial,omitempty"`
-	Tenant      NullableInt32      `json:"tenant,omitempty"`
-	Owner       NullableInt32      `json:"owner,omitempty"`
+	Tenant      NullableInt64      `json:"tenant,omitempty"`
+	Owner       NullableInt64      `json:"owner,omitempty"`
 	Comments    *string            `json:"comments,omitempty"`
 	Tags        []NestedTagRequest `json:"tags,omitempty"`
 	// Local config context data takes precedence over source contexts in the final rendered config context
 	LocalContextData     interface{}            `json:"local_context_data,omitempty"`
-	ConfigTemplate       NullableInt32          `json:"config_template,omitempty"`
+	ConfigTemplate       NullableInt64          `json:"config_template,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -102,9 +102,9 @@ func (o *PatchedWritableVirtualMachineRequest) SetName(v string) {
 }
 
 // GetVirtualMachineType returns the VirtualMachineType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetVirtualMachineType() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetVirtualMachineType() int64 {
 	if o == nil || IsNil(o.VirtualMachineType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VirtualMachineType.Get()
@@ -113,7 +113,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetVirtualMachineType() int32 {
 // GetVirtualMachineTypeOk returns a tuple with the VirtualMachineType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetVirtualMachineTypeOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetVirtualMachineTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -129,8 +129,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasVirtualMachineType() bool {
 	return false
 }
 
-// SetVirtualMachineType gets a reference to the given NullableInt32 and assigns it to the VirtualMachineType field.
-func (o *PatchedWritableVirtualMachineRequest) SetVirtualMachineType(v int32) {
+// SetVirtualMachineType gets a reference to the given NullableInt64 and assigns it to the VirtualMachineType field.
+func (o *PatchedWritableVirtualMachineRequest) SetVirtualMachineType(v int64) {
 	o.VirtualMachineType.Set(&v)
 }
 
@@ -145,9 +145,9 @@ func (o *PatchedWritableVirtualMachineRequest) UnsetVirtualMachineType() {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetRole() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -156,7 +156,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -172,8 +172,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedWritableVirtualMachineRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedWritableVirtualMachineRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -252,9 +252,9 @@ func (o *PatchedWritableVirtualMachineRequest) SetStartOnBoot(v string) {
 }
 
 // GetSite returns the Site field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetSite() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetSite() int64 {
 	if o == nil || IsNil(o.Site.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Site.Get()
@@ -263,7 +263,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetSite() int32 {
 // GetSiteOk returns a tuple with the Site field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetSiteOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -279,8 +279,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasSite() bool {
 	return false
 }
 
-// SetSite gets a reference to the given NullableInt32 and assigns it to the Site field.
-func (o *PatchedWritableVirtualMachineRequest) SetSite(v int32) {
+// SetSite gets a reference to the given NullableInt64 and assigns it to the Site field.
+func (o *PatchedWritableVirtualMachineRequest) SetSite(v int64) {
 	o.Site.Set(&v)
 }
 
@@ -295,9 +295,9 @@ func (o *PatchedWritableVirtualMachineRequest) UnsetSite() {
 }
 
 // GetCluster returns the Cluster field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetCluster() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetCluster() int64 {
 	if o == nil || IsNil(o.Cluster.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Cluster.Get()
@@ -306,7 +306,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetCluster() int32 {
 // GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetClusterOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetClusterOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -322,8 +322,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasCluster() bool {
 	return false
 }
 
-// SetCluster gets a reference to the given NullableInt32 and assigns it to the Cluster field.
-func (o *PatchedWritableVirtualMachineRequest) SetCluster(v int32) {
+// SetCluster gets a reference to the given NullableInt64 and assigns it to the Cluster field.
+func (o *PatchedWritableVirtualMachineRequest) SetCluster(v int64) {
 	o.Cluster.Set(&v)
 }
 
@@ -338,9 +338,9 @@ func (o *PatchedWritableVirtualMachineRequest) UnsetCluster() {
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetDevice() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetDevice() int64 {
 	if o == nil || IsNil(o.Device.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Device.Get()
@@ -349,7 +349,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetDevice() int32 {
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetDeviceOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -365,8 +365,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasDevice() bool {
 	return false
 }
 
-// SetDevice gets a reference to the given NullableInt32 and assigns it to the Device field.
-func (o *PatchedWritableVirtualMachineRequest) SetDevice(v int32) {
+// SetDevice gets a reference to the given NullableInt64 and assigns it to the Device field.
+func (o *PatchedWritableVirtualMachineRequest) SetDevice(v int64) {
 	o.Device.Set(&v)
 }
 
@@ -381,9 +381,9 @@ func (o *PatchedWritableVirtualMachineRequest) UnsetDevice() {
 }
 
 // GetPlatform returns the Platform field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetPlatform() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetPlatform() int64 {
 	if o == nil || IsNil(o.Platform.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Platform.Get()
@@ -392,7 +392,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetPlatform() int32 {
 // GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetPlatformOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetPlatformOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -408,8 +408,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasPlatform() bool {
 	return false
 }
 
-// SetPlatform gets a reference to the given NullableInt32 and assigns it to the Platform field.
-func (o *PatchedWritableVirtualMachineRequest) SetPlatform(v int32) {
+// SetPlatform gets a reference to the given NullableInt64 and assigns it to the Platform field.
+func (o *PatchedWritableVirtualMachineRequest) SetPlatform(v int64) {
 	o.Platform.Set(&v)
 }
 
@@ -424,9 +424,9 @@ func (o *PatchedWritableVirtualMachineRequest) UnsetPlatform() {
 }
 
 // GetPrimaryIp4 returns the PrimaryIp4 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp4() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp4() int64 {
 	if o == nil || IsNil(o.PrimaryIp4.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp4.Get()
@@ -435,7 +435,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp4() int32 {
 // GetPrimaryIp4Ok returns a tuple with the PrimaryIp4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp4Ok() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp4Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -451,8 +451,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasPrimaryIp4() bool {
 	return false
 }
 
-// SetPrimaryIp4 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp4 field.
-func (o *PatchedWritableVirtualMachineRequest) SetPrimaryIp4(v int32) {
+// SetPrimaryIp4 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp4 field.
+func (o *PatchedWritableVirtualMachineRequest) SetPrimaryIp4(v int64) {
 	o.PrimaryIp4.Set(&v)
 }
 
@@ -467,9 +467,9 @@ func (o *PatchedWritableVirtualMachineRequest) UnsetPrimaryIp4() {
 }
 
 // GetPrimaryIp6 returns the PrimaryIp6 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp6() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp6() int64 {
 	if o == nil || IsNil(o.PrimaryIp6.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp6.Get()
@@ -478,7 +478,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp6() int32 {
 // GetPrimaryIp6Ok returns a tuple with the PrimaryIp6 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp6Ok() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetPrimaryIp6Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -494,8 +494,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasPrimaryIp6() bool {
 	return false
 }
 
-// SetPrimaryIp6 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp6 field.
-func (o *PatchedWritableVirtualMachineRequest) SetPrimaryIp6(v int32) {
+// SetPrimaryIp6 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp6 field.
+func (o *PatchedWritableVirtualMachineRequest) SetPrimaryIp6(v int64) {
 	o.PrimaryIp6.Set(&v)
 }
 
@@ -703,9 +703,9 @@ func (o *PatchedWritableVirtualMachineRequest) SetSerial(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetTenant() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -714,7 +714,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -730,8 +730,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableVirtualMachineRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableVirtualMachineRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -746,9 +746,9 @@ func (o *PatchedWritableVirtualMachineRequest) UnsetTenant() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetOwner() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -757,7 +757,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -773,8 +773,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableVirtualMachineRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableVirtualMachineRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -886,9 +886,9 @@ func (o *PatchedWritableVirtualMachineRequest) SetLocalContextData(v interface{}
 }
 
 // GetConfigTemplate returns the ConfigTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualMachineRequest) GetConfigTemplate() int32 {
+func (o *PatchedWritableVirtualMachineRequest) GetConfigTemplate() int64 {
 	if o == nil || IsNil(o.ConfigTemplate.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplate.Get()
@@ -897,7 +897,7 @@ func (o *PatchedWritableVirtualMachineRequest) GetConfigTemplate() int32 {
 // GetConfigTemplateOk returns a tuple with the ConfigTemplate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualMachineRequest) GetConfigTemplateOk() (*int32, bool) {
+func (o *PatchedWritableVirtualMachineRequest) GetConfigTemplateOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -913,8 +913,8 @@ func (o *PatchedWritableVirtualMachineRequest) HasConfigTemplate() bool {
 	return false
 }
 
-// SetConfigTemplate gets a reference to the given NullableInt32 and assigns it to the ConfigTemplate field.
-func (o *PatchedWritableVirtualMachineRequest) SetConfigTemplate(v int32) {
+// SetConfigTemplate gets a reference to the given NullableInt64 and assigns it to the ConfigTemplate field.
+func (o *PatchedWritableVirtualMachineRequest) SetConfigTemplate(v int64) {
 	o.ConfigTemplate.Set(&v)
 }
 

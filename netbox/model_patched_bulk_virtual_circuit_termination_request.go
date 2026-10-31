@@ -22,11 +22,11 @@ var _ MappedNullable = &PatchedBulkVirtualCircuitTerminationRequest{}
 
 // PatchedBulkVirtualCircuitTerminationRequest Adds support for custom fields and tags.
 type PatchedBulkVirtualCircuitTerminationRequest struct {
-	Id             int32  `json:"id"`
-	VirtualCircuit *int32 `json:"virtual_circuit,omitempty"`
+	Id             int64  `json:"id"`
+	VirtualCircuit *int64 `json:"virtual_circuit,omitempty"`
 	// * `peer` - Peer * `hub` - Hub * `spoke` - Spoke
 	Role                 *string                `json:"role,omitempty"`
-	Interface            *int32                 `json:"interface,omitempty"`
+	Interface            *int64                 `json:"interface,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -39,7 +39,7 @@ type _PatchedBulkVirtualCircuitTerminationRequest PatchedBulkVirtualCircuitTermi
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkVirtualCircuitTerminationRequest(id int32) *PatchedBulkVirtualCircuitTerminationRequest {
+func NewPatchedBulkVirtualCircuitTerminationRequest(id int64) *PatchedBulkVirtualCircuitTerminationRequest {
 	this := PatchedBulkVirtualCircuitTerminationRequest{}
 	this.Id = id
 	return &this
@@ -54,9 +54,9 @@ func NewPatchedBulkVirtualCircuitTerminationRequestWithDefaults() *PatchedBulkVi
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkVirtualCircuitTerminationRequest) GetId() int32 {
+func (o *PatchedBulkVirtualCircuitTerminationRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *PatchedBulkVirtualCircuitTerminationRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkVirtualCircuitTerminationRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitTerminationRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,14 +73,14 @@ func (o *PatchedBulkVirtualCircuitTerminationRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkVirtualCircuitTerminationRequest) SetId(v int32) {
+func (o *PatchedBulkVirtualCircuitTerminationRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetVirtualCircuit returns the VirtualCircuit field value if set, zero value otherwise.
-func (o *PatchedBulkVirtualCircuitTerminationRequest) GetVirtualCircuit() int32 {
+func (o *PatchedBulkVirtualCircuitTerminationRequest) GetVirtualCircuit() int64 {
 	if o == nil || IsNil(o.VirtualCircuit) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VirtualCircuit
@@ -88,7 +88,7 @@ func (o *PatchedBulkVirtualCircuitTerminationRequest) GetVirtualCircuit() int32 
 
 // GetVirtualCircuitOk returns a tuple with the VirtualCircuit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkVirtualCircuitTerminationRequest) GetVirtualCircuitOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitTerminationRequest) GetVirtualCircuitOk() (*int64, bool) {
 	if o == nil || IsNil(o.VirtualCircuit) {
 		return nil, false
 	}
@@ -104,8 +104,8 @@ func (o *PatchedBulkVirtualCircuitTerminationRequest) HasVirtualCircuit() bool {
 	return false
 }
 
-// SetVirtualCircuit gets a reference to the given int32 and assigns it to the VirtualCircuit field.
-func (o *PatchedBulkVirtualCircuitTerminationRequest) SetVirtualCircuit(v int32) {
+// SetVirtualCircuit gets a reference to the given int64 and assigns it to the VirtualCircuit field.
+func (o *PatchedBulkVirtualCircuitTerminationRequest) SetVirtualCircuit(v int64) {
 	o.VirtualCircuit = &v
 }
 
@@ -142,9 +142,9 @@ func (o *PatchedBulkVirtualCircuitTerminationRequest) SetRole(v string) {
 }
 
 // GetInterface returns the Interface field value if set, zero value otherwise.
-func (o *PatchedBulkVirtualCircuitTerminationRequest) GetInterface() int32 {
+func (o *PatchedBulkVirtualCircuitTerminationRequest) GetInterface() int64 {
 	if o == nil || IsNil(o.Interface) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Interface
@@ -152,7 +152,7 @@ func (o *PatchedBulkVirtualCircuitTerminationRequest) GetInterface() int32 {
 
 // GetInterfaceOk returns a tuple with the Interface field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkVirtualCircuitTerminationRequest) GetInterfaceOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitTerminationRequest) GetInterfaceOk() (*int64, bool) {
 	if o == nil || IsNil(o.Interface) {
 		return nil, false
 	}
@@ -168,8 +168,8 @@ func (o *PatchedBulkVirtualCircuitTerminationRequest) HasInterface() bool {
 	return false
 }
 
-// SetInterface gets a reference to the given int32 and assigns it to the Interface field.
-func (o *PatchedBulkVirtualCircuitTerminationRequest) SetInterface(v int32) {
+// SetInterface gets a reference to the given int64 and assigns it to the Interface field.
+func (o *PatchedBulkVirtualCircuitTerminationRequest) SetInterface(v int64) {
 	o.Interface = &v
 }
 

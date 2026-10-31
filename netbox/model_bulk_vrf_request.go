@@ -22,18 +22,18 @@ var _ MappedNullable = &BulkVRFRequest{}
 
 // BulkVRFRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkVRFRequest struct {
-	Id   int32  `json:"id"`
+	Id   int64  `json:"id"`
 	Name string `json:"name"`
 	// Unique route distinguisher (as defined in RFC 4364)
 	Rd     NullableString `json:"rd,omitempty"`
-	Tenant NullableInt32  `json:"tenant,omitempty"`
+	Tenant NullableInt64  `json:"tenant,omitempty"`
 	// Prevent duplicate prefixes/IP addresses within this VRF
 	EnforceUnique        *bool                  `json:"enforce_unique,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
-	ImportTargets        []int32                `json:"import_targets,omitempty"`
-	ExportTargets        []int32                `json:"export_targets,omitempty"`
+	ImportTargets        []int64                `json:"import_targets,omitempty"`
+	ExportTargets        []int64                `json:"export_targets,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -45,7 +45,7 @@ type _BulkVRFRequest BulkVRFRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkVRFRequest(id int32, name string) *BulkVRFRequest {
+func NewBulkVRFRequest(id int64, name string) *BulkVRFRequest {
 	this := BulkVRFRequest{}
 	this.Id = id
 	this.Name = name
@@ -61,9 +61,9 @@ func NewBulkVRFRequestWithDefaults() *BulkVRFRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkVRFRequest) GetId() int32 {
+func (o *BulkVRFRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -72,7 +72,7 @@ func (o *BulkVRFRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkVRFRequest) GetIdOk() (*int32, bool) {
+func (o *BulkVRFRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -80,7 +80,7 @@ func (o *BulkVRFRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkVRFRequest) SetId(v int32) {
+func (o *BulkVRFRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -152,9 +152,9 @@ func (o *BulkVRFRequest) UnsetRd() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkVRFRequest) GetTenant() int32 {
+func (o *BulkVRFRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -163,7 +163,7 @@ func (o *BulkVRFRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkVRFRequest) GetTenantOk() (*int32, bool) {
+func (o *BulkVRFRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -179,8 +179,8 @@ func (o *BulkVRFRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *BulkVRFRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *BulkVRFRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -259,9 +259,9 @@ func (o *BulkVRFRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkVRFRequest) GetOwner() int32 {
+func (o *BulkVRFRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -270,7 +270,7 @@ func (o *BulkVRFRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkVRFRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkVRFRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -286,8 +286,8 @@ func (o *BulkVRFRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkVRFRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkVRFRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -334,9 +334,9 @@ func (o *BulkVRFRequest) SetComments(v string) {
 }
 
 // GetImportTargets returns the ImportTargets field value if set, zero value otherwise.
-func (o *BulkVRFRequest) GetImportTargets() []int32 {
+func (o *BulkVRFRequest) GetImportTargets() []int64 {
 	if o == nil || IsNil(o.ImportTargets) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.ImportTargets
@@ -344,7 +344,7 @@ func (o *BulkVRFRequest) GetImportTargets() []int32 {
 
 // GetImportTargetsOk returns a tuple with the ImportTargets field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkVRFRequest) GetImportTargetsOk() ([]int32, bool) {
+func (o *BulkVRFRequest) GetImportTargetsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.ImportTargets) {
 		return nil, false
 	}
@@ -360,15 +360,15 @@ func (o *BulkVRFRequest) HasImportTargets() bool {
 	return false
 }
 
-// SetImportTargets gets a reference to the given []int32 and assigns it to the ImportTargets field.
-func (o *BulkVRFRequest) SetImportTargets(v []int32) {
+// SetImportTargets gets a reference to the given []int64 and assigns it to the ImportTargets field.
+func (o *BulkVRFRequest) SetImportTargets(v []int64) {
 	o.ImportTargets = v
 }
 
 // GetExportTargets returns the ExportTargets field value if set, zero value otherwise.
-func (o *BulkVRFRequest) GetExportTargets() []int32 {
+func (o *BulkVRFRequest) GetExportTargets() []int64 {
 	if o == nil || IsNil(o.ExportTargets) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.ExportTargets
@@ -376,7 +376,7 @@ func (o *BulkVRFRequest) GetExportTargets() []int32 {
 
 // GetExportTargetsOk returns a tuple with the ExportTargets field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkVRFRequest) GetExportTargetsOk() ([]int32, bool) {
+func (o *BulkVRFRequest) GetExportTargetsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.ExportTargets) {
 		return nil, false
 	}
@@ -392,8 +392,8 @@ func (o *BulkVRFRequest) HasExportTargets() bool {
 	return false
 }
 
-// SetExportTargets gets a reference to the given []int32 and assigns it to the ExportTargets field.
-func (o *BulkVRFRequest) SetExportTargets(v []int32) {
+// SetExportTargets gets a reference to the given []int64 and assigns it to the ExportTargets field.
+func (o *BulkVRFRequest) SetExportTargets(v []int64) {
 	o.ExportTargets = v
 }
 

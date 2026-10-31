@@ -186,7 +186,7 @@ func (d *JournalEntryDataSource) Read(ctx context.Context, req datasource.ReadRe
 	}
 	var obj *netbox.JournalEntry
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -352,7 +352,7 @@ func journalEntryDataFromAPI(ctx context.Context, obj *netbox.JournalEntry, out 
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.AssignedObjectType = conv.String(obj.GetAssignedObjectTypeOk())
 	out.AssignedObjectId = conv.Int64From64(obj.GetAssignedObjectIdOk())
-	out.CreatedById = conv.Int64From32(obj.GetCreatedByOk())
+	out.CreatedById = conv.Int64From64(obj.GetCreatedByOk())
 	out.Kind = conv.Choice(obj.GetKindOk())
 	out.Comments = conv.String(obj.GetCommentsOk())
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

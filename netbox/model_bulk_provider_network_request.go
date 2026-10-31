@@ -22,12 +22,12 @@ var _ MappedNullable = &BulkProviderNetworkRequest{}
 
 // BulkProviderNetworkRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkProviderNetworkRequest struct {
-	Id                   int32                  `json:"id"`
-	Provider             int32                  `json:"provider"`
+	Id                   int64                  `json:"id"`
+	Provider             int64                  `json:"provider"`
 	Name                 string                 `json:"name"`
 	ServiceId            *string                `json:"service_id,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -40,7 +40,7 @@ type _BulkProviderNetworkRequest BulkProviderNetworkRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkProviderNetworkRequest(id int32, provider int32, name string) *BulkProviderNetworkRequest {
+func NewBulkProviderNetworkRequest(id int64, provider int64, name string) *BulkProviderNetworkRequest {
 	this := BulkProviderNetworkRequest{}
 	this.Id = id
 	this.Provider = provider
@@ -57,9 +57,9 @@ func NewBulkProviderNetworkRequestWithDefaults() *BulkProviderNetworkRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkProviderNetworkRequest) GetId() int32 {
+func (o *BulkProviderNetworkRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *BulkProviderNetworkRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkProviderNetworkRequest) GetIdOk() (*int32, bool) {
+func (o *BulkProviderNetworkRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,14 +76,14 @@ func (o *BulkProviderNetworkRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkProviderNetworkRequest) SetId(v int32) {
+func (o *BulkProviderNetworkRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetProvider returns the Provider field value
-func (o *BulkProviderNetworkRequest) GetProvider() int32 {
+func (o *BulkProviderNetworkRequest) GetProvider() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -92,7 +92,7 @@ func (o *BulkProviderNetworkRequest) GetProvider() int32 {
 
 // GetProviderOk returns a tuple with the Provider field value
 // and a boolean to check if the value has been set.
-func (o *BulkProviderNetworkRequest) GetProviderOk() (*int32, bool) {
+func (o *BulkProviderNetworkRequest) GetProviderOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -100,7 +100,7 @@ func (o *BulkProviderNetworkRequest) GetProviderOk() (*int32, bool) {
 }
 
 // SetProvider sets field value
-func (o *BulkProviderNetworkRequest) SetProvider(v int32) {
+func (o *BulkProviderNetworkRequest) SetProvider(v int64) {
 	o.Provider = v
 }
 
@@ -193,9 +193,9 @@ func (o *BulkProviderNetworkRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkProviderNetworkRequest) GetOwner() int32 {
+func (o *BulkProviderNetworkRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -204,7 +204,7 @@ func (o *BulkProviderNetworkRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkProviderNetworkRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkProviderNetworkRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -220,8 +220,8 @@ func (o *BulkProviderNetworkRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkProviderNetworkRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkProviderNetworkRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

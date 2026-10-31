@@ -189,7 +189,7 @@ func (r *ProviderNetworkResource) Read(ctx context.Context, req resource.ReadReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -220,7 +220,7 @@ func (r *ProviderNetworkResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -250,7 +250,7 @@ func (r *ProviderNetworkResource) Delete(ctx context.Context, req resource.Delet
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -270,7 +270,7 @@ func (r *ProviderNetworkResource) ImportState(ctx context.Context, req resource.
 // providerNetworkToCreate builds the ProviderNetworkRequest request body from the plan.
 func providerNetworkToCreate(ctx context.Context, plan *ProviderNetworkModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ProviderNetworkRequest {
 	const objectType = "circuits.providernetwork"
-	body := netbox.NewProviderNetworkRequest(conv.Int32(plan.ProviderId), plan.Name.ValueString())
+	body := netbox.NewProviderNetworkRequest(plan.ProviderId.ValueInt64(), plan.Name.ValueString())
 	if !plan.ServiceId.IsUnknown() {
 		body.SetServiceId(plan.ServiceId.ValueString())
 	}
@@ -278,7 +278,7 @@ func providerNetworkToCreate(ctx context.Context, plan *ProviderNetworkModel, cf
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -298,7 +298,7 @@ func providerNetworkToPatch(ctx context.Context, plan, state *ProviderNetworkMod
 	body := netbox.NewPatchedProviderNetworkRequest()
 	if !plan.ProviderId.Equal(state.ProviderId) {
 		if conv.Known(plan.ProviderId) {
-			body.SetProvider(conv.Int32(plan.ProviderId))
+			body.SetProvider(plan.ProviderId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -320,7 +320,7 @@ func providerNetworkToPatch(ctx context.Context, plan, state *ProviderNetworkMod
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

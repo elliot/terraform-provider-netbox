@@ -23,7 +23,7 @@ var _ MappedNullable = &WirelessLAN{}
 
 // WirelessLAN Base serializer class for models inheriting from PrimaryModel.
 type WirelessLAN struct {
-	Id                   int32                         `json:"id"`
+	Id                   int64                         `json:"id"`
 	Url                  *string                       `json:"url,omitempty"`
 	DisplayUrl           *string                       `json:"display_url,omitempty"`
 	Display              *string                       `json:"display,omitempty"`
@@ -33,7 +33,7 @@ type WirelessLAN struct {
 	Status               *ChoiceString                 `json:"status,omitempty"`
 	Vlan                 NullableBriefVLAN             `json:"vlan,omitempty"`
 	ScopeType            NullableString                `json:"scope_type,omitempty"`
-	ScopeId              NullableInt32                 `json:"scope_id,omitempty"`
+	ScopeId              NullableInt64                 `json:"scope_id,omitempty"`
 	Scope                interface{}                   `json:"scope,omitempty"`
 	Tenant               NullableBriefTenant           `json:"tenant,omitempty"`
 	AuthType             *ChoiceString                 `json:"auth_type,omitempty"`
@@ -54,7 +54,7 @@ type _WirelessLAN WirelessLAN
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWirelessLAN(id int32) *WirelessLAN {
+func NewWirelessLAN(id int64) *WirelessLAN {
 	this := WirelessLAN{}
 	this.Id = id
 	return &this
@@ -69,9 +69,9 @@ func NewWirelessLANWithDefaults() *WirelessLAN {
 }
 
 // GetId returns the Id field value
-func (o *WirelessLAN) GetId() int32 {
+func (o *WirelessLAN) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -80,7 +80,7 @@ func (o *WirelessLAN) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *WirelessLAN) GetIdOk() (*int32, bool) {
+func (o *WirelessLAN) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -88,7 +88,7 @@ func (o *WirelessLAN) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *WirelessLAN) SetId(v int32) {
+func (o *WirelessLAN) SetId(v int64) {
 	o.Id = v
 }
 
@@ -414,9 +414,9 @@ func (o *WirelessLAN) UnsetScopeType() {
 }
 
 // GetScopeId returns the ScopeId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WirelessLAN) GetScopeId() int32 {
+func (o *WirelessLAN) GetScopeId() int64 {
 	if o == nil || IsNil(o.ScopeId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ScopeId.Get()
@@ -425,7 +425,7 @@ func (o *WirelessLAN) GetScopeId() int32 {
 // GetScopeIdOk returns a tuple with the ScopeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WirelessLAN) GetScopeIdOk() (*int32, bool) {
+func (o *WirelessLAN) GetScopeIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -441,8 +441,8 @@ func (o *WirelessLAN) HasScopeId() bool {
 	return false
 }
 
-// SetScopeId gets a reference to the given NullableInt32 and assigns it to the ScopeId field.
-func (o *WirelessLAN) SetScopeId(v int32) {
+// SetScopeId gets a reference to the given NullableInt64 and assigns it to the ScopeId field.
+func (o *WirelessLAN) SetScopeId(v int64) {
 	o.ScopeId.Set(&v)
 }
 

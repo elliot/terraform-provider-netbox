@@ -187,7 +187,7 @@ func (r *PermissionResource) Read(ctx context.Context, req resource.ReadRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -218,7 +218,7 @@ func (r *PermissionResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -259,7 +259,7 @@ func (r *PermissionResource) Delete(ctx context.Context, req resource.DeleteRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -289,10 +289,10 @@ func permissionToCreate(ctx context.Context, plan *PermissionModel, diags *diag.
 		body.SetConstraints(conv.JSONToAPI(plan.Constraints, diags))
 	}
 	if conv.Known(plan.GroupIds) {
-		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+		body.SetGroups(conv.Int64s(ctx, plan.GroupIds, diags))
 	}
 	if conv.Known(plan.UserIds) {
-		body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+		body.SetUsers(conv.Int64s(ctx, plan.UserIds, diags))
 	}
 	return body
 }
@@ -332,12 +332,12 @@ func permissionToPatch(ctx context.Context, plan, state *PermissionModel, diags 
 	}
 	if !plan.GroupIds.Equal(state.GroupIds) {
 		if conv.Known(plan.GroupIds) {
-			body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+			body.SetGroups(conv.Int64s(ctx, plan.GroupIds, diags))
 		}
 	}
 	if !plan.UserIds.Equal(state.UserIds) {
 		if conv.Known(plan.UserIds) {
-			body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+			body.SetUsers(conv.Int64s(ctx, plan.UserIds, diags))
 		}
 	}
 	return body

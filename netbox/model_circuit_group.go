@@ -23,7 +23,7 @@ var _ MappedNullable = &CircuitGroup{}
 
 // CircuitGroup Base serializer class for models inheriting from OrganizationalModel.
 type CircuitGroup struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Url                  *string                `json:"url,omitempty"`
 	DisplayUrl           *string                `json:"display_url,omitempty"`
 	Display              *string                `json:"display,omitempty"`
@@ -47,7 +47,7 @@ type _CircuitGroup CircuitGroup
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCircuitGroup(id int32) *CircuitGroup {
+func NewCircuitGroup(id int64) *CircuitGroup {
 	this := CircuitGroup{}
 	this.Id = id
 	return &this
@@ -62,9 +62,9 @@ func NewCircuitGroupWithDefaults() *CircuitGroup {
 }
 
 // GetId returns the Id field value
-func (o *CircuitGroup) GetId() int32 {
+func (o *CircuitGroup) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -73,7 +73,7 @@ func (o *CircuitGroup) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *CircuitGroup) GetIdOk() (*int32, bool) {
+func (o *CircuitGroup) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -81,7 +81,7 @@ func (o *CircuitGroup) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *CircuitGroup) SetId(v int32) {
+func (o *CircuitGroup) SetId(v int64) {
 	o.Id = v
 }
 

@@ -21,11 +21,11 @@ var _ MappedNullable = &PatchedVirtualDiskRequest{}
 
 // PatchedVirtualDiskRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedVirtualDiskRequest struct {
-	VirtualMachine       *int32                 `json:"virtual_machine,omitempty"`
+	VirtualMachine       *int64                 `json:"virtual_machine,omitempty"`
 	Name                 *string                `json:"name,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Size                 *int32                 `json:"size,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -51,9 +51,9 @@ func NewPatchedVirtualDiskRequestWithDefaults() *PatchedVirtualDiskRequest {
 }
 
 // GetVirtualMachine returns the VirtualMachine field value if set, zero value otherwise.
-func (o *PatchedVirtualDiskRequest) GetVirtualMachine() int32 {
+func (o *PatchedVirtualDiskRequest) GetVirtualMachine() int64 {
 	if o == nil || IsNil(o.VirtualMachine) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VirtualMachine
@@ -61,7 +61,7 @@ func (o *PatchedVirtualDiskRequest) GetVirtualMachine() int32 {
 
 // GetVirtualMachineOk returns a tuple with the VirtualMachine field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedVirtualDiskRequest) GetVirtualMachineOk() (*int32, bool) {
+func (o *PatchedVirtualDiskRequest) GetVirtualMachineOk() (*int64, bool) {
 	if o == nil || IsNil(o.VirtualMachine) {
 		return nil, false
 	}
@@ -77,8 +77,8 @@ func (o *PatchedVirtualDiskRequest) HasVirtualMachine() bool {
 	return false
 }
 
-// SetVirtualMachine gets a reference to the given int32 and assigns it to the VirtualMachine field.
-func (o *PatchedVirtualDiskRequest) SetVirtualMachine(v int32) {
+// SetVirtualMachine gets a reference to the given int64 and assigns it to the VirtualMachine field.
+func (o *PatchedVirtualDiskRequest) SetVirtualMachine(v int64) {
 	o.VirtualMachine = &v
 }
 
@@ -179,9 +179,9 @@ func (o *PatchedVirtualDiskRequest) SetSize(v int32) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedVirtualDiskRequest) GetOwner() int32 {
+func (o *PatchedVirtualDiskRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -190,7 +190,7 @@ func (o *PatchedVirtualDiskRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedVirtualDiskRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedVirtualDiskRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -206,8 +206,8 @@ func (o *PatchedVirtualDiskRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedVirtualDiskRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedVirtualDiskRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -23,7 +23,7 @@ var _ MappedNullable = &Interface{}
 
 // Interface Mixin for Interface and VMInterface serializers that adds a `mac_address` shortcut field for creating/updating the primary MACAddress in a single request. The validated write is centralized on the interface model (BaseInterface.set_primary_mac_address); this mixin is a thin adapter that owns the permission check, the shortcut-vs-primary_mac_address conflict guard, and translating the model's validation errors into API errors.
 type Interface struct {
-	Id         int32                       `json:"id"`
+	Id         int64                       `json:"id"`
 	Url        *string                     `json:"url,omitempty"`
 	DisplayUrl *string                     `json:"display_url,omitempty"`
 	Display    *string                     `json:"display,omitempty"`
@@ -87,8 +87,8 @@ type Interface struct {
 	CustomFields                map[string]interface{}        `json:"custom_fields,omitempty"`
 	Created                     NullableTime                  `json:"created,omitempty"`
 	LastUpdated                 NullableTime                  `json:"last_updated,omitempty"`
-	CountIpaddresses            *int32                        `json:"count_ipaddresses,omitempty"`
-	CountFhrpGroups             *int32                        `json:"count_fhrp_groups,omitempty"`
+	CountIpaddresses            *int64                        `json:"count_ipaddresses,omitempty"`
+	CountFhrpGroups             *int64                        `json:"count_fhrp_groups,omitempty"`
 	Occupied                    *bool                         `json:"_occupied,omitempty"`
 	AdditionalProperties        map[string]interface{}
 }
@@ -99,7 +99,7 @@ type _Interface Interface
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInterface(id int32) *Interface {
+func NewInterface(id int64) *Interface {
 	this := Interface{}
 	this.Id = id
 	return &this
@@ -114,9 +114,9 @@ func NewInterfaceWithDefaults() *Interface {
 }
 
 // GetId returns the Id field value
-func (o *Interface) GetId() int32 {
+func (o *Interface) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -125,7 +125,7 @@ func (o *Interface) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *Interface) GetIdOk() (*int32, bool) {
+func (o *Interface) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -133,7 +133,7 @@ func (o *Interface) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *Interface) SetId(v int32) {
+func (o *Interface) SetId(v int64) {
 	o.Id = v
 }
 
@@ -2176,9 +2176,9 @@ func (o *Interface) UnsetLastUpdated() {
 }
 
 // GetCountIpaddresses returns the CountIpaddresses field value if set, zero value otherwise.
-func (o *Interface) GetCountIpaddresses() int32 {
+func (o *Interface) GetCountIpaddresses() int64 {
 	if o == nil || IsNil(o.CountIpaddresses) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CountIpaddresses
@@ -2186,7 +2186,7 @@ func (o *Interface) GetCountIpaddresses() int32 {
 
 // GetCountIpaddressesOk returns a tuple with the CountIpaddresses field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Interface) GetCountIpaddressesOk() (*int32, bool) {
+func (o *Interface) GetCountIpaddressesOk() (*int64, bool) {
 	if o == nil || IsNil(o.CountIpaddresses) {
 		return nil, false
 	}
@@ -2202,15 +2202,15 @@ func (o *Interface) HasCountIpaddresses() bool {
 	return false
 }
 
-// SetCountIpaddresses gets a reference to the given int32 and assigns it to the CountIpaddresses field.
-func (o *Interface) SetCountIpaddresses(v int32) {
+// SetCountIpaddresses gets a reference to the given int64 and assigns it to the CountIpaddresses field.
+func (o *Interface) SetCountIpaddresses(v int64) {
 	o.CountIpaddresses = &v
 }
 
 // GetCountFhrpGroups returns the CountFhrpGroups field value if set, zero value otherwise.
-func (o *Interface) GetCountFhrpGroups() int32 {
+func (o *Interface) GetCountFhrpGroups() int64 {
 	if o == nil || IsNil(o.CountFhrpGroups) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CountFhrpGroups
@@ -2218,7 +2218,7 @@ func (o *Interface) GetCountFhrpGroups() int32 {
 
 // GetCountFhrpGroupsOk returns a tuple with the CountFhrpGroups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Interface) GetCountFhrpGroupsOk() (*int32, bool) {
+func (o *Interface) GetCountFhrpGroupsOk() (*int64, bool) {
 	if o == nil || IsNil(o.CountFhrpGroups) {
 		return nil, false
 	}
@@ -2234,8 +2234,8 @@ func (o *Interface) HasCountFhrpGroups() bool {
 	return false
 }
 
-// SetCountFhrpGroups gets a reference to the given int32 and assigns it to the CountFhrpGroups field.
-func (o *Interface) SetCountFhrpGroups(v int32) {
+// SetCountFhrpGroups gets a reference to the given int64 and assigns it to the CountFhrpGroups field.
+func (o *Interface) SetCountFhrpGroups(v int64) {
 	o.CountFhrpGroups = &v
 }
 

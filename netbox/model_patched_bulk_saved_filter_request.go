@@ -22,17 +22,17 @@ var _ MappedNullable = &PatchedBulkSavedFilterRequest{}
 
 // PatchedBulkSavedFilterRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedBulkSavedFilterRequest struct {
-	Id                   int32         `json:"id"`
+	Id                   int64         `json:"id"`
 	ObjectTypes          []string      `json:"object_types,omitempty"`
 	Name                 *string       `json:"name,omitempty"`
 	Slug                 *string       `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description          *string       `json:"description,omitempty"`
-	User                 NullableInt32 `json:"user,omitempty"`
+	User                 NullableInt64 `json:"user,omitempty"`
 	Weight               *int32        `json:"weight,omitempty"`
 	Enabled              *bool         `json:"enabled,omitempty"`
 	Shared               *bool         `json:"shared,omitempty"`
 	Parameters           interface{}   `json:"parameters,omitempty"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -42,7 +42,7 @@ type _PatchedBulkSavedFilterRequest PatchedBulkSavedFilterRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkSavedFilterRequest(id int32) *PatchedBulkSavedFilterRequest {
+func NewPatchedBulkSavedFilterRequest(id int64) *PatchedBulkSavedFilterRequest {
 	this := PatchedBulkSavedFilterRequest{}
 	this.Id = id
 	return &this
@@ -57,9 +57,9 @@ func NewPatchedBulkSavedFilterRequestWithDefaults() *PatchedBulkSavedFilterReque
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkSavedFilterRequest) GetId() int32 {
+func (o *PatchedBulkSavedFilterRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *PatchedBulkSavedFilterRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkSavedFilterRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkSavedFilterRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *PatchedBulkSavedFilterRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkSavedFilterRequest) SetId(v int32) {
+func (o *PatchedBulkSavedFilterRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -209,9 +209,9 @@ func (o *PatchedBulkSavedFilterRequest) SetDescription(v string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkSavedFilterRequest) GetUser() int32 {
+func (o *PatchedBulkSavedFilterRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User.Get()
@@ -220,7 +220,7 @@ func (o *PatchedBulkSavedFilterRequest) GetUser() int32 {
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkSavedFilterRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedBulkSavedFilterRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -236,8 +236,8 @@ func (o *PatchedBulkSavedFilterRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given NullableInt32 and assigns it to the User field.
-func (o *PatchedBulkSavedFilterRequest) SetUser(v int32) {
+// SetUser gets a reference to the given NullableInt64 and assigns it to the User field.
+func (o *PatchedBulkSavedFilterRequest) SetUser(v int64) {
 	o.User.Set(&v)
 }
 
@@ -381,9 +381,9 @@ func (o *PatchedBulkSavedFilterRequest) SetParameters(v interface{}) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkSavedFilterRequest) GetOwner() int32 {
+func (o *PatchedBulkSavedFilterRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -392,7 +392,7 @@ func (o *PatchedBulkSavedFilterRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkSavedFilterRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkSavedFilterRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -408,8 +408,8 @@ func (o *PatchedBulkSavedFilterRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkSavedFilterRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkSavedFilterRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

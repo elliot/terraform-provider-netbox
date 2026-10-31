@@ -222,7 +222,7 @@ func (r *ModuleResource) Read(ctx context.Context, req resource.ReadRequest, res
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -253,7 +253,7 @@ func (r *ModuleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -283,7 +283,7 @@ func (r *ModuleResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -303,7 +303,7 @@ func (r *ModuleResource) ImportState(ctx context.Context, req resource.ImportSta
 // moduleToCreate builds the WritableModuleRequest request body from the plan.
 func moduleToCreate(ctx context.Context, plan *ModuleModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableModuleRequest {
 	const objectType = "dcim.module"
-	body := netbox.NewWritableModuleRequest(conv.Int32(plan.DeviceId), conv.Int32(plan.ModuleBayId), conv.Int32(plan.ModuleTypeId))
+	body := netbox.NewWritableModuleRequest(plan.DeviceId.ValueInt64(), plan.ModuleBayId.ValueInt64(), plan.ModuleTypeId.ValueInt64())
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
@@ -317,7 +317,7 @@ func moduleToCreate(ctx context.Context, plan *ModuleModel, cf *customfields.Cac
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -343,17 +343,17 @@ func moduleToPatch(ctx context.Context, plan, state *ModuleModel, cf *customfiel
 	body := netbox.NewPatchedWritableModuleRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.ModuleBayId.Equal(state.ModuleBayId) {
 		if conv.Known(plan.ModuleBayId) {
-			body.SetModuleBay(conv.Int32(plan.ModuleBayId))
+			body.SetModuleBay(plan.ModuleBayId.ValueInt64())
 		}
 	}
 	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
 		if conv.Known(plan.ModuleTypeId) {
-			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+			body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -382,7 +382,7 @@ func moduleToPatch(ctx context.Context, plan, state *ModuleModel, cf *customfiel
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

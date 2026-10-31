@@ -22,15 +22,15 @@ var _ MappedNullable = &BulkProviderRequest{}
 
 // BulkProviderRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkProviderRequest struct {
-	Id int32 `json:"id"`
+	Id int64 `json:"id"`
 	// Full name of the provider
 	Name                 string                 `json:"name"`
 	Slug                 string                 `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Accounts             []int32                `json:"accounts,omitempty"`
+	Accounts             []int64                `json:"accounts,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
-	Asns                 []int32                `json:"asns,omitempty"`
+	Asns                 []int64                `json:"asns,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -42,7 +42,7 @@ type _BulkProviderRequest BulkProviderRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkProviderRequest(id int32, name string, slug string) *BulkProviderRequest {
+func NewBulkProviderRequest(id int64, name string, slug string) *BulkProviderRequest {
 	this := BulkProviderRequest{}
 	this.Id = id
 	this.Name = name
@@ -59,9 +59,9 @@ func NewBulkProviderRequestWithDefaults() *BulkProviderRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkProviderRequest) GetId() int32 {
+func (o *BulkProviderRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -70,7 +70,7 @@ func (o *BulkProviderRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkProviderRequest) GetIdOk() (*int32, bool) {
+func (o *BulkProviderRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -78,7 +78,7 @@ func (o *BulkProviderRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkProviderRequest) SetId(v int32) {
+func (o *BulkProviderRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -131,9 +131,9 @@ func (o *BulkProviderRequest) SetSlug(v string) {
 }
 
 // GetAccounts returns the Accounts field value if set, zero value otherwise.
-func (o *BulkProviderRequest) GetAccounts() []int32 {
+func (o *BulkProviderRequest) GetAccounts() []int64 {
 	if o == nil || IsNil(o.Accounts) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Accounts
@@ -141,7 +141,7 @@ func (o *BulkProviderRequest) GetAccounts() []int32 {
 
 // GetAccountsOk returns a tuple with the Accounts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkProviderRequest) GetAccountsOk() ([]int32, bool) {
+func (o *BulkProviderRequest) GetAccountsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Accounts) {
 		return nil, false
 	}
@@ -157,8 +157,8 @@ func (o *BulkProviderRequest) HasAccounts() bool {
 	return false
 }
 
-// SetAccounts gets a reference to the given []int32 and assigns it to the Accounts field.
-func (o *BulkProviderRequest) SetAccounts(v []int32) {
+// SetAccounts gets a reference to the given []int64 and assigns it to the Accounts field.
+func (o *BulkProviderRequest) SetAccounts(v []int64) {
 	o.Accounts = v
 }
 
@@ -195,9 +195,9 @@ func (o *BulkProviderRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkProviderRequest) GetOwner() int32 {
+func (o *BulkProviderRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -206,7 +206,7 @@ func (o *BulkProviderRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkProviderRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkProviderRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -222,8 +222,8 @@ func (o *BulkProviderRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkProviderRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkProviderRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -270,9 +270,9 @@ func (o *BulkProviderRequest) SetComments(v string) {
 }
 
 // GetAsns returns the Asns field value if set, zero value otherwise.
-func (o *BulkProviderRequest) GetAsns() []int32 {
+func (o *BulkProviderRequest) GetAsns() []int64 {
 	if o == nil || IsNil(o.Asns) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Asns
@@ -280,7 +280,7 @@ func (o *BulkProviderRequest) GetAsns() []int32 {
 
 // GetAsnsOk returns a tuple with the Asns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkProviderRequest) GetAsnsOk() ([]int32, bool) {
+func (o *BulkProviderRequest) GetAsnsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Asns) {
 		return nil, false
 	}
@@ -296,8 +296,8 @@ func (o *BulkProviderRequest) HasAsns() bool {
 	return false
 }
 
-// SetAsns gets a reference to the given []int32 and assigns it to the Asns field.
-func (o *BulkProviderRequest) SetAsns(v []int32) {
+// SetAsns gets a reference to the given []int64 and assigns it to the Asns field.
+func (o *BulkProviderRequest) SetAsns(v []int64) {
 	o.Asns = v
 }
 

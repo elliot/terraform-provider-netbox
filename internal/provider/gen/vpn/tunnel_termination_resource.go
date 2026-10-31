@@ -182,7 +182,7 @@ func (r *TunnelTerminationResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -213,7 +213,7 @@ func (r *TunnelTerminationResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -243,7 +243,7 @@ func (r *TunnelTerminationResource) Delete(ctx context.Context, req resource.Del
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -263,12 +263,12 @@ func (r *TunnelTerminationResource) ImportState(ctx context.Context, req resourc
 // tunnelTerminationToCreate builds the WritableTunnelTerminationRequest request body from the plan.
 func tunnelTerminationToCreate(ctx context.Context, plan *TunnelTerminationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableTunnelTerminationRequest {
 	const objectType = "vpn.tunneltermination"
-	body := netbox.NewWritableTunnelTerminationRequest(conv.Int32(plan.TunnelId), plan.Role.ValueString(), plan.TerminationType.ValueString())
+	body := netbox.NewWritableTunnelTerminationRequest(plan.TunnelId.ValueInt64(), plan.Role.ValueString(), plan.TerminationType.ValueString())
 	if conv.Known(plan.TerminationId) {
 		body.SetTerminationId(plan.TerminationId.ValueInt64())
 	}
 	if conv.Known(plan.OutsideIpId) {
-		body.SetOutsideIp(conv.Int32(plan.OutsideIpId))
+		body.SetOutsideIp(plan.OutsideIpId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -285,7 +285,7 @@ func tunnelTerminationToPatch(ctx context.Context, plan, state *TunnelTerminatio
 	body := netbox.NewPatchedWritableTunnelTerminationRequest()
 	if !plan.TunnelId.Equal(state.TunnelId) {
 		if conv.Known(plan.TunnelId) {
-			body.SetTunnel(conv.Int32(plan.TunnelId))
+			body.SetTunnel(plan.TunnelId.ValueInt64())
 		}
 	}
 	if !plan.Role.Equal(state.Role) {
@@ -307,7 +307,7 @@ func tunnelTerminationToPatch(ctx context.Context, plan, state *TunnelTerminatio
 		if plan.OutsideIpId.IsNull() {
 			body.SetOutsideIpNil()
 		} else if !plan.OutsideIpId.IsUnknown() {
-			body.SetOutsideIp(conv.Int32(plan.OutsideIpId))
+			body.SetOutsideIp(plan.OutsideIpId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

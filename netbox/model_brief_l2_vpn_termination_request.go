@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefL2VPNTerminationRequest{}
 
 // BriefL2VPNTerminationRequest Adds support for custom fields and tags.
 type BriefL2VPNTerminationRequest struct {
-	L2vpn                int32 `json:"l2vpn"`
+	L2vpn                int64 `json:"l2vpn"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,7 +32,7 @@ type _BriefL2VPNTerminationRequest BriefL2VPNTerminationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefL2VPNTerminationRequest(l2vpn int32) *BriefL2VPNTerminationRequest {
+func NewBriefL2VPNTerminationRequest(l2vpn int64) *BriefL2VPNTerminationRequest {
 	this := BriefL2VPNTerminationRequest{}
 	this.L2vpn = l2vpn
 	return &this
@@ -47,9 +47,9 @@ func NewBriefL2VPNTerminationRequestWithDefaults() *BriefL2VPNTerminationRequest
 }
 
 // GetL2vpn returns the L2vpn field value
-func (o *BriefL2VPNTerminationRequest) GetL2vpn() int32 {
+func (o *BriefL2VPNTerminationRequest) GetL2vpn() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -58,7 +58,7 @@ func (o *BriefL2VPNTerminationRequest) GetL2vpn() int32 {
 
 // GetL2vpnOk returns a tuple with the L2vpn field value
 // and a boolean to check if the value has been set.
-func (o *BriefL2VPNTerminationRequest) GetL2vpnOk() (*int32, bool) {
+func (o *BriefL2VPNTerminationRequest) GetL2vpnOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -66,7 +66,7 @@ func (o *BriefL2VPNTerminationRequest) GetL2vpnOk() (*int32, bool) {
 }
 
 // SetL2vpn sets field value
-func (o *BriefL2VPNTerminationRequest) SetL2vpn(v int32) {
+func (o *BriefL2VPNTerminationRequest) SetL2vpn(v int64) {
 	o.L2vpn = v
 }
 

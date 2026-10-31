@@ -52,11 +52,12 @@ var virtualCircuitTerminationFilterNames = []string{
 	"id__gte", "id__lt", "id__lte", "id__n", "interface_id", "interface_id__n",
 	"last_updated", "last_updated__empty", "last_updated__gt", "last_updated__gte", "last_updated__lt", "last_updated__lte",
 	"last_updated__n", "modified_by_request", "provider", "provider__n", "provider_account", "provider_account__n",
-	"provider_account_id", "provider_account_id__n", "provider_id", "provider_id__n", "provider_network_id", "provider_network_id__n",
-	"q", "role", "role__empty", "role__ic", "role__ie", "role__iew",
-	"role__iregex", "role__isw", "role__n", "role__nic", "role__nie", "role__niew",
-	"role__nisw", "role__regex", "tag", "tag__any", "tag__n", "tag_id",
-	"tag_id__any", "tag_id__n", "updated_by_request", "virtual_circuit_id", "virtual_circuit_id__n",
+	"provider_account_id", "provider_account_id__n", "provider_id", "provider_id__n", "provider_network", "provider_network__n",
+	"provider_network_id", "provider_network_id__n", "q", "role", "role__empty", "role__ic",
+	"role__ie", "role__iew", "role__iregex", "role__isw", "role__n", "role__nic",
+	"role__nie", "role__niew", "role__nisw", "role__regex", "tag", "tag__any",
+	"tag__n", "tag_id", "tag_id__any", "tag_id__n", "updated_by_request", "virtual_circuit_id",
+	"virtual_circuit_id__n",
 }
 
 // virtualCircuitTerminationDataAttributes returns the attributes shared by the singular and list data sources.
@@ -186,7 +187,7 @@ func (d *VirtualCircuitTerminationDataSource) Read(ctx context.Context, req data
 	}
 	var obj *netbox.VirtualCircuitTermination
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return

@@ -159,7 +159,7 @@ func (r *NotificationGroupResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -190,7 +190,7 @@ func (r *NotificationGroupResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -220,7 +220,7 @@ func (r *NotificationGroupResource) Delete(ctx context.Context, req resource.Del
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -244,10 +244,10 @@ func notificationGroupToCreate(ctx context.Context, plan *NotificationGroupModel
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.GroupIds) {
-		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+		body.SetGroups(conv.Int64s(ctx, plan.GroupIds, diags))
 	}
 	if conv.Known(plan.UserIds) {
-		body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+		body.SetUsers(conv.Int64s(ctx, plan.UserIds, diags))
 	}
 	return body
 }
@@ -267,12 +267,12 @@ func notificationGroupToPatch(ctx context.Context, plan, state *NotificationGrou
 	}
 	if !plan.GroupIds.Equal(state.GroupIds) {
 		if conv.Known(plan.GroupIds) {
-			body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+			body.SetGroups(conv.Int64s(ctx, plan.GroupIds, diags))
 		}
 	}
 	if !plan.UserIds.Equal(state.UserIds) {
 		if conv.Known(plan.UserIds) {
-			body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+			body.SetUsers(conv.Int64s(ctx, plan.UserIds, diags))
 		}
 	}
 	return body

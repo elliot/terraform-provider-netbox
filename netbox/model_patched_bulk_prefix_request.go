@@ -22,22 +22,22 @@ var _ MappedNullable = &PatchedBulkPrefixRequest{}
 
 // PatchedBulkPrefixRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkPrefixRequest struct {
-	Id        int32          `json:"id"`
+	Id        int64          `json:"id"`
 	Prefix    *string        `json:"prefix,omitempty"`
-	Vrf       NullableInt32  `json:"vrf,omitempty"`
+	Vrf       NullableInt64  `json:"vrf,omitempty"`
 	ScopeType NullableString `json:"scope_type,omitempty"`
-	ScopeId   NullableInt32  `json:"scope_id,omitempty"`
-	Tenant    NullableInt32  `json:"tenant,omitempty"`
-	Vlan      NullableInt32  `json:"vlan,omitempty"`
+	ScopeId   NullableInt64  `json:"scope_id,omitempty"`
+	Tenant    NullableInt64  `json:"tenant,omitempty"`
+	Vlan      NullableInt64  `json:"vlan,omitempty"`
 	// * `container` - Container * `active` - Active * `reserved` - Reserved * `deprecated` - Deprecated
 	Status *string       `json:"status,omitempty"`
-	Role   NullableInt32 `json:"role,omitempty"`
+	Role   NullableInt64 `json:"role,omitempty"`
 	// All IP addresses within this prefix are considered usable
 	IsPool *bool `json:"is_pool,omitempty"`
 	// Treat as fully utilized
 	MarkUtilized         *bool                  `json:"mark_utilized,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -50,7 +50,7 @@ type _PatchedBulkPrefixRequest PatchedBulkPrefixRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkPrefixRequest(id int32) *PatchedBulkPrefixRequest {
+func NewPatchedBulkPrefixRequest(id int64) *PatchedBulkPrefixRequest {
 	this := PatchedBulkPrefixRequest{}
 	this.Id = id
 	return &this
@@ -65,9 +65,9 @@ func NewPatchedBulkPrefixRequestWithDefaults() *PatchedBulkPrefixRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkPrefixRequest) GetId() int32 {
+func (o *PatchedBulkPrefixRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -76,7 +76,7 @@ func (o *PatchedBulkPrefixRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkPrefixRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkPrefixRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,7 +84,7 @@ func (o *PatchedBulkPrefixRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkPrefixRequest) SetId(v int32) {
+func (o *PatchedBulkPrefixRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -121,9 +121,9 @@ func (o *PatchedBulkPrefixRequest) SetPrefix(v string) {
 }
 
 // GetVrf returns the Vrf field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkPrefixRequest) GetVrf() int32 {
+func (o *PatchedBulkPrefixRequest) GetVrf() int64 {
 	if o == nil || IsNil(o.Vrf.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vrf.Get()
@@ -132,7 +132,7 @@ func (o *PatchedBulkPrefixRequest) GetVrf() int32 {
 // GetVrfOk returns a tuple with the Vrf field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkPrefixRequest) GetVrfOk() (*int32, bool) {
+func (o *PatchedBulkPrefixRequest) GetVrfOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -148,8 +148,8 @@ func (o *PatchedBulkPrefixRequest) HasVrf() bool {
 	return false
 }
 
-// SetVrf gets a reference to the given NullableInt32 and assigns it to the Vrf field.
-func (o *PatchedBulkPrefixRequest) SetVrf(v int32) {
+// SetVrf gets a reference to the given NullableInt64 and assigns it to the Vrf field.
+func (o *PatchedBulkPrefixRequest) SetVrf(v int64) {
 	o.Vrf.Set(&v)
 }
 
@@ -207,9 +207,9 @@ func (o *PatchedBulkPrefixRequest) UnsetScopeType() {
 }
 
 // GetScopeId returns the ScopeId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkPrefixRequest) GetScopeId() int32 {
+func (o *PatchedBulkPrefixRequest) GetScopeId() int64 {
 	if o == nil || IsNil(o.ScopeId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ScopeId.Get()
@@ -218,7 +218,7 @@ func (o *PatchedBulkPrefixRequest) GetScopeId() int32 {
 // GetScopeIdOk returns a tuple with the ScopeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkPrefixRequest) GetScopeIdOk() (*int32, bool) {
+func (o *PatchedBulkPrefixRequest) GetScopeIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -234,8 +234,8 @@ func (o *PatchedBulkPrefixRequest) HasScopeId() bool {
 	return false
 }
 
-// SetScopeId gets a reference to the given NullableInt32 and assigns it to the ScopeId field.
-func (o *PatchedBulkPrefixRequest) SetScopeId(v int32) {
+// SetScopeId gets a reference to the given NullableInt64 and assigns it to the ScopeId field.
+func (o *PatchedBulkPrefixRequest) SetScopeId(v int64) {
 	o.ScopeId.Set(&v)
 }
 
@@ -250,9 +250,9 @@ func (o *PatchedBulkPrefixRequest) UnsetScopeId() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkPrefixRequest) GetTenant() int32 {
+func (o *PatchedBulkPrefixRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -261,7 +261,7 @@ func (o *PatchedBulkPrefixRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkPrefixRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkPrefixRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -277,8 +277,8 @@ func (o *PatchedBulkPrefixRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkPrefixRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkPrefixRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -293,9 +293,9 @@ func (o *PatchedBulkPrefixRequest) UnsetTenant() {
 }
 
 // GetVlan returns the Vlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkPrefixRequest) GetVlan() int32 {
+func (o *PatchedBulkPrefixRequest) GetVlan() int64 {
 	if o == nil || IsNil(o.Vlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vlan.Get()
@@ -304,7 +304,7 @@ func (o *PatchedBulkPrefixRequest) GetVlan() int32 {
 // GetVlanOk returns a tuple with the Vlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkPrefixRequest) GetVlanOk() (*int32, bool) {
+func (o *PatchedBulkPrefixRequest) GetVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -320,8 +320,8 @@ func (o *PatchedBulkPrefixRequest) HasVlan() bool {
 	return false
 }
 
-// SetVlan gets a reference to the given NullableInt32 and assigns it to the Vlan field.
-func (o *PatchedBulkPrefixRequest) SetVlan(v int32) {
+// SetVlan gets a reference to the given NullableInt64 and assigns it to the Vlan field.
+func (o *PatchedBulkPrefixRequest) SetVlan(v int64) {
 	o.Vlan.Set(&v)
 }
 
@@ -368,9 +368,9 @@ func (o *PatchedBulkPrefixRequest) SetStatus(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkPrefixRequest) GetRole() int32 {
+func (o *PatchedBulkPrefixRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -379,7 +379,7 @@ func (o *PatchedBulkPrefixRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkPrefixRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedBulkPrefixRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -395,8 +395,8 @@ func (o *PatchedBulkPrefixRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedBulkPrefixRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedBulkPrefixRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -507,9 +507,9 @@ func (o *PatchedBulkPrefixRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkPrefixRequest) GetOwner() int32 {
+func (o *PatchedBulkPrefixRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -518,7 +518,7 @@ func (o *PatchedBulkPrefixRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkPrefixRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkPrefixRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -534,8 +534,8 @@ func (o *PatchedBulkPrefixRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkPrefixRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkPrefixRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

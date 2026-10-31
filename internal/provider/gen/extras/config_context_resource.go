@@ -292,7 +292,7 @@ func (r *ConfigContextResource) Read(ctx context.Context, req resource.ReadReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -323,7 +323,7 @@ func (r *ConfigContextResource) Update(ctx context.Context, req resource.UpdateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -353,7 +353,7 @@ func (r *ConfigContextResource) Delete(ctx context.Context, req resource.DeleteR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -377,7 +377,7 @@ func configContextToCreate(ctx context.Context, plan *ConfigContextModel, diags 
 		body.SetWeight(conv.Int32(plan.Weight))
 	}
 	if conv.Known(plan.ProfileId) {
-		body.SetProfile(conv.Int32(plan.ProfileId))
+		body.SetProfile(plan.ProfileId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -386,49 +386,49 @@ func configContextToCreate(ctx context.Context, plan *ConfigContextModel, diags 
 		body.SetIsActive(plan.IsActive.ValueBool())
 	}
 	if conv.Known(plan.RegionIds) {
-		body.SetRegions(conv.Int32s(ctx, plan.RegionIds, diags))
+		body.SetRegions(conv.Int64s(ctx, plan.RegionIds, diags))
 	}
 	if conv.Known(plan.SiteGroupIds) {
-		body.SetSiteGroups(conv.Int32s(ctx, plan.SiteGroupIds, diags))
+		body.SetSiteGroups(conv.Int64s(ctx, plan.SiteGroupIds, diags))
 	}
 	if conv.Known(plan.SiteIds) {
-		body.SetSites(conv.Int32s(ctx, plan.SiteIds, diags))
+		body.SetSites(conv.Int64s(ctx, plan.SiteIds, diags))
 	}
 	if conv.Known(plan.LocationIds) {
-		body.SetLocations(conv.Int32s(ctx, plan.LocationIds, diags))
+		body.SetLocations(conv.Int64s(ctx, plan.LocationIds, diags))
 	}
 	if conv.Known(plan.DeviceTypeIds) {
-		body.SetDeviceTypes(conv.Int32s(ctx, plan.DeviceTypeIds, diags))
+		body.SetDeviceTypes(conv.Int64s(ctx, plan.DeviceTypeIds, diags))
 	}
 	if conv.Known(plan.RoleIds) {
-		body.SetRoles(conv.Int32s(ctx, plan.RoleIds, diags))
+		body.SetRoles(conv.Int64s(ctx, plan.RoleIds, diags))
 	}
 	if conv.Known(plan.PlatformIds) {
-		body.SetPlatforms(conv.Int32s(ctx, plan.PlatformIds, diags))
+		body.SetPlatforms(conv.Int64s(ctx, plan.PlatformIds, diags))
 	}
 	if conv.Known(plan.ClusterTypeIds) {
-		body.SetClusterTypes(conv.Int32s(ctx, plan.ClusterTypeIds, diags))
+		body.SetClusterTypes(conv.Int64s(ctx, plan.ClusterTypeIds, diags))
 	}
 	if conv.Known(plan.ClusterGroupIds) {
-		body.SetClusterGroups(conv.Int32s(ctx, plan.ClusterGroupIds, diags))
+		body.SetClusterGroups(conv.Int64s(ctx, plan.ClusterGroupIds, diags))
 	}
 	if conv.Known(plan.ClusterIds) {
-		body.SetClusters(conv.Int32s(ctx, plan.ClusterIds, diags))
+		body.SetClusters(conv.Int64s(ctx, plan.ClusterIds, diags))
 	}
 	if conv.Known(plan.TenantGroupIds) {
-		body.SetTenantGroups(conv.Int32s(ctx, plan.TenantGroupIds, diags))
+		body.SetTenantGroups(conv.Int64s(ctx, plan.TenantGroupIds, diags))
 	}
 	if conv.Known(plan.TenantIds) {
-		body.SetTenants(conv.Int32s(ctx, plan.TenantIds, diags))
+		body.SetTenants(conv.Int64s(ctx, plan.TenantIds, diags))
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.Strings(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.DataSourceId) {
-		body.SetDataSource(conv.Int32(plan.DataSourceId))
+		body.SetDataSource(plan.DataSourceId.ValueInt64())
 	}
 	return body
 }
@@ -450,7 +450,7 @@ func configContextToPatch(ctx context.Context, plan, state *ConfigContextModel, 
 		if plan.ProfileId.IsNull() {
 			body.SetProfileNil()
 		} else if !plan.ProfileId.IsUnknown() {
-			body.SetProfile(conv.Int32(plan.ProfileId))
+			body.SetProfile(plan.ProfileId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -465,69 +465,69 @@ func configContextToPatch(ctx context.Context, plan, state *ConfigContextModel, 
 	}
 	if !plan.RegionIds.Equal(state.RegionIds) {
 		if conv.Known(plan.RegionIds) {
-			body.SetRegions(conv.Int32s(ctx, plan.RegionIds, diags))
+			body.SetRegions(conv.Int64s(ctx, plan.RegionIds, diags))
 		}
 	}
 	if !plan.SiteGroupIds.Equal(state.SiteGroupIds) {
 		if conv.Known(plan.SiteGroupIds) {
-			body.SetSiteGroups(conv.Int32s(ctx, plan.SiteGroupIds, diags))
+			body.SetSiteGroups(conv.Int64s(ctx, plan.SiteGroupIds, diags))
 		}
 	}
 	if !plan.SiteIds.Equal(state.SiteIds) {
 		if conv.Known(plan.SiteIds) {
-			body.SetSites(conv.Int32s(ctx, plan.SiteIds, diags))
+			body.SetSites(conv.Int64s(ctx, plan.SiteIds, diags))
 		}
 	}
 	if !plan.LocationIds.Equal(state.LocationIds) {
 		if conv.Known(plan.LocationIds) {
-			body.SetLocations(conv.Int32s(ctx, plan.LocationIds, diags))
+			body.SetLocations(conv.Int64s(ctx, plan.LocationIds, diags))
 		}
 	}
 	if !plan.DeviceTypeIds.Equal(state.DeviceTypeIds) {
 		if conv.Known(plan.DeviceTypeIds) {
-			body.SetDeviceTypes(conv.Int32s(ctx, plan.DeviceTypeIds, diags))
+			body.SetDeviceTypes(conv.Int64s(ctx, plan.DeviceTypeIds, diags))
 		}
 	}
 	if !plan.RoleIds.Equal(state.RoleIds) {
 		if conv.Known(plan.RoleIds) {
-			body.SetRoles(conv.Int32s(ctx, plan.RoleIds, diags))
+			body.SetRoles(conv.Int64s(ctx, plan.RoleIds, diags))
 		}
 	}
 	if !plan.PlatformIds.Equal(state.PlatformIds) {
 		if conv.Known(plan.PlatformIds) {
-			body.SetPlatforms(conv.Int32s(ctx, plan.PlatformIds, diags))
+			body.SetPlatforms(conv.Int64s(ctx, plan.PlatformIds, diags))
 		}
 	}
 	if !plan.ClusterTypeIds.Equal(state.ClusterTypeIds) {
 		if conv.Known(plan.ClusterTypeIds) {
-			body.SetClusterTypes(conv.Int32s(ctx, plan.ClusterTypeIds, diags))
+			body.SetClusterTypes(conv.Int64s(ctx, plan.ClusterTypeIds, diags))
 		}
 	}
 	if !plan.ClusterGroupIds.Equal(state.ClusterGroupIds) {
 		if conv.Known(plan.ClusterGroupIds) {
-			body.SetClusterGroups(conv.Int32s(ctx, plan.ClusterGroupIds, diags))
+			body.SetClusterGroups(conv.Int64s(ctx, plan.ClusterGroupIds, diags))
 		}
 	}
 	if !plan.ClusterIds.Equal(state.ClusterIds) {
 		if conv.Known(plan.ClusterIds) {
-			body.SetClusters(conv.Int32s(ctx, plan.ClusterIds, diags))
+			body.SetClusters(conv.Int64s(ctx, plan.ClusterIds, diags))
 		}
 	}
 	if !plan.TenantGroupIds.Equal(state.TenantGroupIds) {
 		if conv.Known(plan.TenantGroupIds) {
-			body.SetTenantGroups(conv.Int32s(ctx, plan.TenantGroupIds, diags))
+			body.SetTenantGroups(conv.Int64s(ctx, plan.TenantGroupIds, diags))
 		}
 	}
 	if !plan.TenantIds.Equal(state.TenantIds) {
 		if conv.Known(plan.TenantIds) {
-			body.SetTenants(conv.Int32s(ctx, plan.TenantIds, diags))
+			body.SetTenants(conv.Int64s(ctx, plan.TenantIds, diags))
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {
@@ -537,7 +537,7 @@ func configContextToPatch(ctx context.Context, plan, state *ConfigContextModel, 
 	}
 	if !plan.DataSourceId.Equal(state.DataSourceId) {
 		if conv.Known(plan.DataSourceId) {
-			body.SetDataSource(conv.Int32(plan.DataSourceId))
+			body.SetDataSource(plan.DataSourceId.ValueInt64())
 		}
 	}
 	if !plan.Data.Equal(state.Data) {

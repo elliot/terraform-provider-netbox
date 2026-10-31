@@ -21,7 +21,7 @@ var _ MappedNullable = &PatchedFHRPGroupAssignmentRequest{}
 
 // PatchedFHRPGroupAssignmentRequest Adds support for custom fields and tags.
 type PatchedFHRPGroupAssignmentRequest struct {
-	Group                *int32  `json:"group,omitempty"`
+	Group                *int64  `json:"group,omitempty"`
 	InterfaceType        *string `json:"interface_type,omitempty"`
 	InterfaceId          *int64  `json:"interface_id,omitempty"`
 	Priority             *int32  `json:"priority,omitempty"`
@@ -48,9 +48,9 @@ func NewPatchedFHRPGroupAssignmentRequestWithDefaults() *PatchedFHRPGroupAssignm
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise.
-func (o *PatchedFHRPGroupAssignmentRequest) GetGroup() int32 {
+func (o *PatchedFHRPGroupAssignmentRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group
@@ -58,7 +58,7 @@ func (o *PatchedFHRPGroupAssignmentRequest) GetGroup() int32 {
 
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedFHRPGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
+func (o *PatchedFHRPGroupAssignmentRequest) GetGroupOk() (*int64, bool) {
 	if o == nil || IsNil(o.Group) {
 		return nil, false
 	}
@@ -74,8 +74,8 @@ func (o *PatchedFHRPGroupAssignmentRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given int32 and assigns it to the Group field.
-func (o *PatchedFHRPGroupAssignmentRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given int64 and assigns it to the Group field.
+func (o *PatchedFHRPGroupAssignmentRequest) SetGroup(v int64) {
 	o.Group = &v
 }
 

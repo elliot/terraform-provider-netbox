@@ -185,7 +185,7 @@ func (d *VlanTranslationRuleDataSource) Read(ctx context.Context, req datasource
 	}
 	var obj *netbox.VLANTranslationRule
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -351,7 +351,7 @@ func (d *VlanTranslationRuleListDataSource) Read(ctx context.Context, req dataso
 func vlanTranslationRuleDataFromAPI(ctx context.Context, obj *netbox.VLANTranslationRule, out *VlanTranslationRuleDataModel, diags *diag.Diagnostics) {
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
-	out.PolicyId = conv.Int64From32(obj.GetPolicyOk())
+	out.PolicyId = conv.Int64From64(obj.GetPolicyOk())
 	out.LocalVid = conv.Int64From32(obj.GetLocalVidOk())
 	out.RemoteVid = conv.Int64From32(obj.GetRemoteVidOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())

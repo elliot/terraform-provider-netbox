@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefPowerPortRequest{}
 
 // BriefPowerPortRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type BriefPowerPortRequest struct {
-	Device               int32   `json:"device"`
+	Device               int64   `json:"device"`
 	Name                 string  `json:"name"`
 	Description          *string `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -34,7 +34,7 @@ type _BriefPowerPortRequest BriefPowerPortRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefPowerPortRequest(device int32, name string) *BriefPowerPortRequest {
+func NewBriefPowerPortRequest(device int64, name string) *BriefPowerPortRequest {
 	this := BriefPowerPortRequest{}
 	this.Device = device
 	this.Name = name
@@ -50,9 +50,9 @@ func NewBriefPowerPortRequestWithDefaults() *BriefPowerPortRequest {
 }
 
 // GetDevice returns the Device field value
-func (o *BriefPowerPortRequest) GetDevice() int32 {
+func (o *BriefPowerPortRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -61,7 +61,7 @@ func (o *BriefPowerPortRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *BriefPowerPortRequest) GetDeviceOk() (*int32, bool) {
+func (o *BriefPowerPortRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -69,7 +69,7 @@ func (o *BriefPowerPortRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *BriefPowerPortRequest) SetDevice(v int32) {
+func (o *BriefPowerPortRequest) SetDevice(v int64) {
 	o.Device = v
 }
 

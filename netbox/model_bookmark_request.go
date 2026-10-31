@@ -24,7 +24,7 @@ var _ MappedNullable = &BookmarkRequest{}
 type BookmarkRequest struct {
 	ObjectType           string `json:"object_type"`
 	ObjectId             int64  `json:"object_id"`
-	User                 int32  `json:"user"`
+	User                 int64  `json:"user"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -34,7 +34,7 @@ type _BookmarkRequest BookmarkRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBookmarkRequest(objectType string, objectId int64, user int32) *BookmarkRequest {
+func NewBookmarkRequest(objectType string, objectId int64, user int64) *BookmarkRequest {
 	this := BookmarkRequest{}
 	this.ObjectType = objectType
 	this.ObjectId = objectId
@@ -99,9 +99,9 @@ func (o *BookmarkRequest) SetObjectId(v int64) {
 }
 
 // GetUser returns the User field value
-func (o *BookmarkRequest) GetUser() int32 {
+func (o *BookmarkRequest) GetUser() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -110,7 +110,7 @@ func (o *BookmarkRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value
 // and a boolean to check if the value has been set.
-func (o *BookmarkRequest) GetUserOk() (*int32, bool) {
+func (o *BookmarkRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -118,7 +118,7 @@ func (o *BookmarkRequest) GetUserOk() (*int32, bool) {
 }
 
 // SetUser sets field value
-func (o *BookmarkRequest) SetUser(v int32) {
+func (o *BookmarkRequest) SetUser(v int64) {
 	o.User = v
 }
 

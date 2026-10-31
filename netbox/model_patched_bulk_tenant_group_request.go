@@ -22,14 +22,14 @@ var _ MappedNullable = &PatchedBulkTenantGroupRequest{}
 
 // PatchedBulkTenantGroupRequest Base serializer class for models inheriting from NestedGroupModel.
 type PatchedBulkTenantGroupRequest struct {
-	Id                   int32                            `json:"id"`
+	Id                   int64                            `json:"id"`
 	Name                 *string                          `json:"name,omitempty"`
 	Slug                 *string                          `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Parent               NullableNestedTenantGroupRequest `json:"parent,omitempty"`
 	Description          *string                          `json:"description,omitempty"`
 	Tags                 []NestedTagRequest               `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}           `json:"custom_fields,omitempty"`
-	Owner                NullableInt32                    `json:"owner,omitempty"`
+	Owner                NullableInt64                    `json:"owner,omitempty"`
 	Comments             *string                          `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -40,7 +40,7 @@ type _PatchedBulkTenantGroupRequest PatchedBulkTenantGroupRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkTenantGroupRequest(id int32) *PatchedBulkTenantGroupRequest {
+func NewPatchedBulkTenantGroupRequest(id int64) *PatchedBulkTenantGroupRequest {
 	this := PatchedBulkTenantGroupRequest{}
 	this.Id = id
 	return &this
@@ -55,9 +55,9 @@ func NewPatchedBulkTenantGroupRequestWithDefaults() *PatchedBulkTenantGroupReque
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkTenantGroupRequest) GetId() int32 {
+func (o *PatchedBulkTenantGroupRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -66,7 +66,7 @@ func (o *PatchedBulkTenantGroupRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkTenantGroupRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkTenantGroupRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,7 +74,7 @@ func (o *PatchedBulkTenantGroupRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkTenantGroupRequest) SetId(v int32) {
+func (o *PatchedBulkTenantGroupRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -282,9 +282,9 @@ func (o *PatchedBulkTenantGroupRequest) SetCustomFields(v map[string]interface{}
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkTenantGroupRequest) GetOwner() int32 {
+func (o *PatchedBulkTenantGroupRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -293,7 +293,7 @@ func (o *PatchedBulkTenantGroupRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkTenantGroupRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkTenantGroupRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -309,8 +309,8 @@ func (o *PatchedBulkTenantGroupRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkTenantGroupRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkTenantGroupRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

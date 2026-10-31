@@ -23,7 +23,7 @@ var _ MappedNullable = &PatchedWritableJournalEntryRequest{}
 type PatchedWritableJournalEntryRequest struct {
 	AssignedObjectType *string       `json:"assigned_object_type,omitempty"`
 	AssignedObjectId   *int64        `json:"assigned_object_id,omitempty"`
-	CreatedBy          NullableInt32 `json:"created_by,omitempty"`
+	CreatedBy          NullableInt64 `json:"created_by,omitempty"`
 	// * `info` - Info * `success` - Success * `warning` - Warning * `danger` - Danger
 	Kind                 *string                `json:"kind,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
@@ -116,9 +116,9 @@ func (o *PatchedWritableJournalEntryRequest) SetAssignedObjectId(v int64) {
 }
 
 // GetCreatedBy returns the CreatedBy field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableJournalEntryRequest) GetCreatedBy() int32 {
+func (o *PatchedWritableJournalEntryRequest) GetCreatedBy() int64 {
 	if o == nil || IsNil(o.CreatedBy.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CreatedBy.Get()
@@ -127,7 +127,7 @@ func (o *PatchedWritableJournalEntryRequest) GetCreatedBy() int32 {
 // GetCreatedByOk returns a tuple with the CreatedBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableJournalEntryRequest) GetCreatedByOk() (*int32, bool) {
+func (o *PatchedWritableJournalEntryRequest) GetCreatedByOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -143,8 +143,8 @@ func (o *PatchedWritableJournalEntryRequest) HasCreatedBy() bool {
 	return false
 }
 
-// SetCreatedBy gets a reference to the given NullableInt32 and assigns it to the CreatedBy field.
-func (o *PatchedWritableJournalEntryRequest) SetCreatedBy(v int32) {
+// SetCreatedBy gets a reference to the given NullableInt64 and assigns it to the CreatedBy field.
+func (o *PatchedWritableJournalEntryRequest) SetCreatedBy(v int64) {
 	o.CreatedBy.Set(&v)
 }
 

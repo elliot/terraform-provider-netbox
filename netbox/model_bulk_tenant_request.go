@@ -22,12 +22,12 @@ var _ MappedNullable = &BulkTenantRequest{}
 
 // BulkTenantRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkTenantRequest struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Name                 string                 `json:"name"`
 	Slug                 string                 `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Group                NullableInt32          `json:"group,omitempty"`
+	Group                NullableInt64          `json:"group,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -40,7 +40,7 @@ type _BulkTenantRequest BulkTenantRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkTenantRequest(id int32, name string, slug string) *BulkTenantRequest {
+func NewBulkTenantRequest(id int64, name string, slug string) *BulkTenantRequest {
 	this := BulkTenantRequest{}
 	this.Id = id
 	this.Name = name
@@ -57,9 +57,9 @@ func NewBulkTenantRequestWithDefaults() *BulkTenantRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkTenantRequest) GetId() int32 {
+func (o *BulkTenantRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *BulkTenantRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkTenantRequest) GetIdOk() (*int32, bool) {
+func (o *BulkTenantRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *BulkTenantRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkTenantRequest) SetId(v int32) {
+func (o *BulkTenantRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -129,9 +129,9 @@ func (o *BulkTenantRequest) SetSlug(v string) {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkTenantRequest) GetGroup() int32 {
+func (o *BulkTenantRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -140,7 +140,7 @@ func (o *BulkTenantRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkTenantRequest) GetGroupOk() (*int32, bool) {
+func (o *BulkTenantRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -156,8 +156,8 @@ func (o *BulkTenantRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *BulkTenantRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *BulkTenantRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -204,9 +204,9 @@ func (o *BulkTenantRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkTenantRequest) GetOwner() int32 {
+func (o *BulkTenantRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -215,7 +215,7 @@ func (o *BulkTenantRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkTenantRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkTenantRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -231,8 +231,8 @@ func (o *BulkTenantRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkTenantRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkTenantRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

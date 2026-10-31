@@ -242,7 +242,7 @@ func (d *VlanGroupDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 	var obj *netbox.VLANGroup
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -415,7 +415,7 @@ func vlanGroupDataFromAPI(ctx context.Context, obj *netbox.VLANGroup, out *VlanG
 	out.Name = conv.String(obj.GetNameOk())
 	out.Slug = conv.String(obj.GetSlugOk())
 	out.ScopeType = conv.String(obj.GetScopeTypeOk())
-	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
+	out.ScopeId = conv.Int64From64(obj.GetScopeIdOk())
 	out.VidRanges = conv.IntRangesFromAPI(obj.GetVidRanges())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
@@ -427,7 +427,7 @@ func vlanGroupDataFromAPI(ctx context.Context, obj *netbox.VLANGroup, out *VlanG
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
-	out.TotalVlanIds = conv.Int64From32(obj.GetTotalVlanIdsOk())
+	out.TotalVlanIds = conv.Int64From64(obj.GetTotalVlanIdsOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.VlanCount = conv.Int64From64(obj.GetVlanCountOk())
 	out.Utilization = conv.String(obj.GetUtilizationOk())

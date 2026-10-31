@@ -22,14 +22,14 @@ var _ MappedNullable = &PatchedBulkSiteGroupRequest{}
 
 // PatchedBulkSiteGroupRequest Base serializer class for models inheriting from NestedGroupModel.
 type PatchedBulkSiteGroupRequest struct {
-	Id                   int32                          `json:"id"`
+	Id                   int64                          `json:"id"`
 	Name                 *string                        `json:"name,omitempty"`
 	Slug                 *string                        `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Parent               NullableNestedSiteGroupRequest `json:"parent,omitempty"`
 	Description          *string                        `json:"description,omitempty"`
 	Tags                 []NestedTagRequest             `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}         `json:"custom_fields,omitempty"`
-	Owner                NullableInt32                  `json:"owner,omitempty"`
+	Owner                NullableInt64                  `json:"owner,omitempty"`
 	Comments             *string                        `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -40,7 +40,7 @@ type _PatchedBulkSiteGroupRequest PatchedBulkSiteGroupRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkSiteGroupRequest(id int32) *PatchedBulkSiteGroupRequest {
+func NewPatchedBulkSiteGroupRequest(id int64) *PatchedBulkSiteGroupRequest {
 	this := PatchedBulkSiteGroupRequest{}
 	this.Id = id
 	return &this
@@ -55,9 +55,9 @@ func NewPatchedBulkSiteGroupRequestWithDefaults() *PatchedBulkSiteGroupRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkSiteGroupRequest) GetId() int32 {
+func (o *PatchedBulkSiteGroupRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -66,7 +66,7 @@ func (o *PatchedBulkSiteGroupRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkSiteGroupRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkSiteGroupRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,7 +74,7 @@ func (o *PatchedBulkSiteGroupRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkSiteGroupRequest) SetId(v int32) {
+func (o *PatchedBulkSiteGroupRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -282,9 +282,9 @@ func (o *PatchedBulkSiteGroupRequest) SetCustomFields(v map[string]interface{}) 
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkSiteGroupRequest) GetOwner() int32 {
+func (o *PatchedBulkSiteGroupRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -293,7 +293,7 @@ func (o *PatchedBulkSiteGroupRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkSiteGroupRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkSiteGroupRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -309,8 +309,8 @@ func (o *PatchedBulkSiteGroupRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkSiteGroupRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkSiteGroupRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -22,15 +22,15 @@ var _ MappedNullable = &PatchedBulkProviderRequest{}
 
 // PatchedBulkProviderRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkProviderRequest struct {
-	Id int32 `json:"id"`
+	Id int64 `json:"id"`
 	// Full name of the provider
 	Name                 *string                `json:"name,omitempty"`
 	Slug                 *string                `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Accounts             []int32                `json:"accounts,omitempty"`
+	Accounts             []int64                `json:"accounts,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
-	Asns                 []int32                `json:"asns,omitempty"`
+	Asns                 []int64                `json:"asns,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -42,7 +42,7 @@ type _PatchedBulkProviderRequest PatchedBulkProviderRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkProviderRequest(id int32) *PatchedBulkProviderRequest {
+func NewPatchedBulkProviderRequest(id int64) *PatchedBulkProviderRequest {
 	this := PatchedBulkProviderRequest{}
 	this.Id = id
 	return &this
@@ -57,9 +57,9 @@ func NewPatchedBulkProviderRequestWithDefaults() *PatchedBulkProviderRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkProviderRequest) GetId() int32 {
+func (o *PatchedBulkProviderRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *PatchedBulkProviderRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkProviderRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkProviderRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *PatchedBulkProviderRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkProviderRequest) SetId(v int32) {
+func (o *PatchedBulkProviderRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -145,9 +145,9 @@ func (o *PatchedBulkProviderRequest) SetSlug(v string) {
 }
 
 // GetAccounts returns the Accounts field value if set, zero value otherwise.
-func (o *PatchedBulkProviderRequest) GetAccounts() []int32 {
+func (o *PatchedBulkProviderRequest) GetAccounts() []int64 {
 	if o == nil || IsNil(o.Accounts) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Accounts
@@ -155,7 +155,7 @@ func (o *PatchedBulkProviderRequest) GetAccounts() []int32 {
 
 // GetAccountsOk returns a tuple with the Accounts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkProviderRequest) GetAccountsOk() ([]int32, bool) {
+func (o *PatchedBulkProviderRequest) GetAccountsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Accounts) {
 		return nil, false
 	}
@@ -171,8 +171,8 @@ func (o *PatchedBulkProviderRequest) HasAccounts() bool {
 	return false
 }
 
-// SetAccounts gets a reference to the given []int32 and assigns it to the Accounts field.
-func (o *PatchedBulkProviderRequest) SetAccounts(v []int32) {
+// SetAccounts gets a reference to the given []int64 and assigns it to the Accounts field.
+func (o *PatchedBulkProviderRequest) SetAccounts(v []int64) {
 	o.Accounts = v
 }
 
@@ -209,9 +209,9 @@ func (o *PatchedBulkProviderRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkProviderRequest) GetOwner() int32 {
+func (o *PatchedBulkProviderRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -220,7 +220,7 @@ func (o *PatchedBulkProviderRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkProviderRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkProviderRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -236,8 +236,8 @@ func (o *PatchedBulkProviderRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkProviderRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkProviderRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -284,9 +284,9 @@ func (o *PatchedBulkProviderRequest) SetComments(v string) {
 }
 
 // GetAsns returns the Asns field value if set, zero value otherwise.
-func (o *PatchedBulkProviderRequest) GetAsns() []int32 {
+func (o *PatchedBulkProviderRequest) GetAsns() []int64 {
 	if o == nil || IsNil(o.Asns) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Asns
@@ -294,7 +294,7 @@ func (o *PatchedBulkProviderRequest) GetAsns() []int32 {
 
 // GetAsnsOk returns a tuple with the Asns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkProviderRequest) GetAsnsOk() ([]int32, bool) {
+func (o *PatchedBulkProviderRequest) GetAsnsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Asns) {
 		return nil, false
 	}
@@ -310,8 +310,8 @@ func (o *PatchedBulkProviderRequest) HasAsns() bool {
 	return false
 }
 
-// SetAsns gets a reference to the given []int32 and assigns it to the Asns field.
-func (o *PatchedBulkProviderRequest) SetAsns(v []int32) {
+// SetAsns gets a reference to the given []int64 and assigns it to the Asns field.
+func (o *PatchedBulkProviderRequest) SetAsns(v []int64) {
 	o.Asns = v
 }
 

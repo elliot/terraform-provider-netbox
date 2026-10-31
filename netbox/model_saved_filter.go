@@ -23,7 +23,7 @@ var _ MappedNullable = &SavedFilter{}
 
 // SavedFilter Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type SavedFilter struct {
-	Id                   int32              `json:"id"`
+	Id                   int64              `json:"id"`
 	Url                  *string            `json:"url,omitempty"`
 	DisplayUrl           *string            `json:"display_url,omitempty"`
 	Display              *string            `json:"display,omitempty"`
@@ -31,7 +31,7 @@ type SavedFilter struct {
 	Name                 *string            `json:"name,omitempty"`
 	Slug                 *string            `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description          *string            `json:"description,omitempty"`
-	User                 NullableInt32      `json:"user,omitempty"`
+	User                 NullableInt64      `json:"user,omitempty"`
 	Weight               *int32             `json:"weight,omitempty"`
 	Enabled              *bool              `json:"enabled,omitempty"`
 	Shared               *bool              `json:"shared,omitempty"`
@@ -48,7 +48,7 @@ type _SavedFilter SavedFilter
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSavedFilter(id int32) *SavedFilter {
+func NewSavedFilter(id int64) *SavedFilter {
 	this := SavedFilter{}
 	this.Id = id
 	return &this
@@ -63,9 +63,9 @@ func NewSavedFilterWithDefaults() *SavedFilter {
 }
 
 // GetId returns the Id field value
-func (o *SavedFilter) GetId() int32 {
+func (o *SavedFilter) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -74,7 +74,7 @@ func (o *SavedFilter) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *SavedFilter) GetIdOk() (*int32, bool) {
+func (o *SavedFilter) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -82,7 +82,7 @@ func (o *SavedFilter) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *SavedFilter) SetId(v int32) {
+func (o *SavedFilter) SetId(v int64) {
 	o.Id = v
 }
 
@@ -311,9 +311,9 @@ func (o *SavedFilter) SetDescription(v string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SavedFilter) GetUser() int32 {
+func (o *SavedFilter) GetUser() int64 {
 	if o == nil || IsNil(o.User.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User.Get()
@@ -322,7 +322,7 @@ func (o *SavedFilter) GetUser() int32 {
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SavedFilter) GetUserOk() (*int32, bool) {
+func (o *SavedFilter) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -338,8 +338,8 @@ func (o *SavedFilter) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given NullableInt32 and assigns it to the User field.
-func (o *SavedFilter) SetUser(v int32) {
+// SetUser gets a reference to the given NullableInt64 and assigns it to the User field.
+func (o *SavedFilter) SetUser(v int64) {
 	o.User.Set(&v)
 }
 

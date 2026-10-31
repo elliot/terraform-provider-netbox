@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefRouteTarget{}
 
 // BriefRouteTarget Base serializer class for models inheriting from PrimaryModel.
 type BriefRouteTarget struct {
-	Id      int32   `json:"id"`
+	Id      int64   `json:"id"`
 	Url     *string `json:"url,omitempty"`
 	Display *string `json:"display,omitempty"`
 	// Route target value (formatted in accordance with RFC 4360)
@@ -37,7 +37,7 @@ type _BriefRouteTarget BriefRouteTarget
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefRouteTarget(id int32) *BriefRouteTarget {
+func NewBriefRouteTarget(id int64) *BriefRouteTarget {
 	this := BriefRouteTarget{}
 	this.Id = id
 	return &this
@@ -52,9 +52,9 @@ func NewBriefRouteTargetWithDefaults() *BriefRouteTarget {
 }
 
 // GetId returns the Id field value
-func (o *BriefRouteTarget) GetId() int32 {
+func (o *BriefRouteTarget) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *BriefRouteTarget) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefRouteTarget) GetIdOk() (*int32, bool) {
+func (o *BriefRouteTarget) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *BriefRouteTarget) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefRouteTarget) SetId(v int32) {
+func (o *BriefRouteTarget) SetId(v int64) {
 	o.Id = v
 }
 

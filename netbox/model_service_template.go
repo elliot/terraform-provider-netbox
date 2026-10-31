@@ -23,7 +23,7 @@ var _ MappedNullable = &ServiceTemplate{}
 
 // ServiceTemplate Shared port-mapping handling for the Service and ServiceTemplate serializers, including backward compatibility for the legacy single-protocol “protocol“/“ports“ representation.  Read: alongside the “port_mappings“ list, a service that uses a single protocol also reports the legacy “protocol“ and “ports“ fields; a multi-protocol service reports “null“ for both (it cannot be expressed in the old single-protocol format).  Write: either format is accepted. When the legacy “protocol“/“ports“ pair is supplied (and “port_mappings“ is not), it is translated into “port_mappings“. Supplying both together is accepted only when the legacy fields agree with what “port_mappings“ implies (e.g. a full-object round-trip that echoes back the read representation); a genuine conflict is rejected as ambiguous.  Subclassing “serializers.Serializer“ (rather than a plain mixin) lets DRF's metaclass collect the fields declared here into the inheriting serializers.
 type ServiceTemplate struct {
-	Id           int32    `json:"id"`
+	Id           int64    `json:"id"`
 	Url          *string  `json:"url,omitempty"`
 	DisplayUrl   *string  `json:"display_url,omitempty"`
 	Display      *string  `json:"display,omitempty"`
@@ -49,7 +49,7 @@ type _ServiceTemplate ServiceTemplate
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewServiceTemplate(id int32) *ServiceTemplate {
+func NewServiceTemplate(id int64) *ServiceTemplate {
 	this := ServiceTemplate{}
 	this.Id = id
 	return &this
@@ -64,9 +64,9 @@ func NewServiceTemplateWithDefaults() *ServiceTemplate {
 }
 
 // GetId returns the Id field value
-func (o *ServiceTemplate) GetId() int32 {
+func (o *ServiceTemplate) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *ServiceTemplate) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ServiceTemplate) GetIdOk() (*int32, bool) {
+func (o *ServiceTemplate) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,7 +83,7 @@ func (o *ServiceTemplate) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *ServiceTemplate) SetId(v int32) {
+func (o *ServiceTemplate) SetId(v int64) {
 	o.Id = v
 }
 

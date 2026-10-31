@@ -22,8 +22,8 @@ var _ MappedNullable = &WritableFrontPortRequest{}
 
 // WritableFrontPortRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type WritableFrontPortRequest struct {
-	Device int32         `json:"device"`
-	Module NullableInt32 `json:"module,omitempty"`
+	Device int64         `json:"device"`
+	Module NullableInt64 `json:"module,omitempty"`
 	Name   string        `json:"name"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
@@ -35,7 +35,7 @@ type WritableFrontPortRequest struct {
 	Description *string                   `json:"description,omitempty"`
 	// Treat as if a cable is connected
 	MarkConnected        *bool                  `json:"mark_connected,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -47,7 +47,7 @@ type _WritableFrontPortRequest WritableFrontPortRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableFrontPortRequest(device int32, name string, type_ string) *WritableFrontPortRequest {
+func NewWritableFrontPortRequest(device int64, name string, type_ string) *WritableFrontPortRequest {
 	this := WritableFrontPortRequest{}
 	this.Device = device
 	this.Name = name
@@ -64,9 +64,9 @@ func NewWritableFrontPortRequestWithDefaults() *WritableFrontPortRequest {
 }
 
 // GetDevice returns the Device field value
-func (o *WritableFrontPortRequest) GetDevice() int32 {
+func (o *WritableFrontPortRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *WritableFrontPortRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *WritableFrontPortRequest) GetDeviceOk() (*int32, bool) {
+func (o *WritableFrontPortRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,14 +83,14 @@ func (o *WritableFrontPortRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *WritableFrontPortRequest) SetDevice(v int32) {
+func (o *WritableFrontPortRequest) SetDevice(v int64) {
 	o.Device = v
 }
 
 // GetModule returns the Module field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableFrontPortRequest) GetModule() int32 {
+func (o *WritableFrontPortRequest) GetModule() int64 {
 	if o == nil || IsNil(o.Module.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module.Get()
@@ -99,7 +99,7 @@ func (o *WritableFrontPortRequest) GetModule() int32 {
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableFrontPortRequest) GetModuleOk() (*int32, bool) {
+func (o *WritableFrontPortRequest) GetModuleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -115,8 +115,8 @@ func (o *WritableFrontPortRequest) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given NullableInt32 and assigns it to the Module field.
-func (o *WritableFrontPortRequest) SetModule(v int32) {
+// SetModule gets a reference to the given NullableInt64 and assigns it to the Module field.
+func (o *WritableFrontPortRequest) SetModule(v int64) {
 	o.Module.Set(&v)
 }
 
@@ -371,9 +371,9 @@ func (o *WritableFrontPortRequest) SetMarkConnected(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableFrontPortRequest) GetOwner() int32 {
+func (o *WritableFrontPortRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -382,7 +382,7 @@ func (o *WritableFrontPortRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableFrontPortRequest) GetOwnerOk() (*int32, bool) {
+func (o *WritableFrontPortRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -398,8 +398,8 @@ func (o *WritableFrontPortRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *WritableFrontPortRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *WritableFrontPortRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

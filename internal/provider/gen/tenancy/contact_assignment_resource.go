@@ -182,7 +182,7 @@ func (r *ContactAssignmentResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -213,7 +213,7 @@ func (r *ContactAssignmentResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -243,7 +243,7 @@ func (r *ContactAssignmentResource) Delete(ctx context.Context, req resource.Del
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -263,9 +263,9 @@ func (r *ContactAssignmentResource) ImportState(ctx context.Context, req resourc
 // contactAssignmentToCreate builds the WritableContactAssignmentRequest request body from the plan.
 func contactAssignmentToCreate(ctx context.Context, plan *ContactAssignmentModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableContactAssignmentRequest {
 	const objectType = "tenancy.contactassignment"
-	body := netbox.NewWritableContactAssignmentRequest(plan.ObjectType.ValueString(), plan.ObjectId.ValueInt64(), conv.Int32(plan.ContactId))
+	body := netbox.NewWritableContactAssignmentRequest(plan.ObjectType.ValueString(), plan.ObjectId.ValueInt64(), plan.ContactId.ValueInt64())
 	if conv.Known(plan.RoleId) {
-		body.SetRole(conv.Int32(plan.RoleId))
+		body.SetRole(plan.RoleId.ValueInt64())
 	}
 	if conv.Known(plan.Priority) {
 		body.SetPriority(plan.Priority.ValueString())
@@ -295,14 +295,14 @@ func contactAssignmentToPatch(ctx context.Context, plan, state *ContactAssignmen
 	}
 	if !plan.ContactId.Equal(state.ContactId) {
 		if conv.Known(plan.ContactId) {
-			body.SetContact(conv.Int32(plan.ContactId))
+			body.SetContact(plan.ContactId.ValueInt64())
 		}
 	}
 	if !plan.RoleId.Equal(state.RoleId) {
 		if plan.RoleId.IsNull() {
 			body.SetRoleNil()
 		} else if !plan.RoleId.IsUnknown() {
-			body.SetRole(conv.Int32(plan.RoleId))
+			body.SetRole(plan.RoleId.ValueInt64())
 		}
 	}
 	if !plan.Priority.Equal(state.Priority) {

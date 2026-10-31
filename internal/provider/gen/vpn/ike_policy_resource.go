@@ -215,7 +215,7 @@ func (r *IkePolicyResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -246,7 +246,7 @@ func (r *IkePolicyResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -276,7 +276,7 @@ func (r *IkePolicyResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -304,13 +304,13 @@ func ikePolicyToCreate(ctx context.Context, plan *IkePolicyModel, cf *customfiel
 		body.SetMode(plan.Mode.ValueString())
 	}
 	if conv.Known(plan.ProposalIds) {
-		body.SetProposals(conv.Int32s(ctx, plan.ProposalIds, diags))
+		body.SetProposals(conv.Int64s(ctx, plan.ProposalIds, diags))
 	}
 	if !plan.PresharedKey.IsUnknown() {
 		body.SetPresharedKey(plan.PresharedKey.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -350,7 +350,7 @@ func ikePolicyToPatch(ctx context.Context, plan, state *IkePolicyModel, cf *cust
 	}
 	if !plan.ProposalIds.Equal(state.ProposalIds) {
 		if conv.Known(plan.ProposalIds) {
-			body.SetProposals(conv.Int32s(ctx, plan.ProposalIds, diags))
+			body.SetProposals(conv.Int64s(ctx, plan.ProposalIds, diags))
 		}
 	}
 	if !plan.PresharedKey.Equal(state.PresharedKey) {
@@ -362,7 +362,7 @@ func ikePolicyToPatch(ctx context.Context, plan, state *IkePolicyModel, cf *cust
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

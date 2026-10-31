@@ -22,20 +22,20 @@ var _ MappedNullable = &BulkRackRequest{}
 
 // BulkRackRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkRackRequest struct {
-	Id         int32          `json:"id"`
+	Id         int64          `json:"id"`
 	Name       string         `json:"name"`
 	FacilityId NullableString `json:"facility_id,omitempty"`
-	Site       int32          `json:"site"`
-	Location   NullableInt32  `json:"location,omitempty"`
-	Group      NullableInt32  `json:"group,omitempty"`
-	Tenant     NullableInt32  `json:"tenant,omitempty"`
+	Site       int64          `json:"site"`
+	Location   NullableInt64  `json:"location,omitempty"`
+	Group      NullableInt64  `json:"group,omitempty"`
+	Tenant     NullableInt64  `json:"tenant,omitempty"`
 	// * `reserved` - Reserved * `available` - Available * `planned` - Planned * `active` - Active * `deprecated` - Deprecated
 	Status *string       `json:"status,omitempty"`
-	Role   NullableInt32 `json:"role,omitempty"`
+	Role   NullableInt64 `json:"role,omitempty"`
 	Serial *string       `json:"serial,omitempty"`
 	// A unique tag used to identify this rack
 	AssetTag NullableString `json:"asset_tag,omitempty"`
-	RackType NullableInt32  `json:"rack_type,omitempty"`
+	RackType NullableInt64  `json:"rack_type,omitempty"`
 	// * `2-post-frame` - 2-post frame * `4-post-frame` - 4-post frame * `4-post-cabinet` - 4-post cabinet * `wall-frame` - Wall-mounted frame * `wall-frame-vertical` - Wall-mounted frame (vertical) * `wall-cabinet` - Wall-mounted cabinet * `wall-cabinet-vertical` - Wall-mounted cabinet (vertical)
 	FormFactor NullableString `json:"form_factor,omitempty"`
 	// * `10` - 10 inches * `19` - 19 inches * `21` - 21 inches * `23` - 23 inches
@@ -68,7 +68,7 @@ type BulkRackRequest struct {
 	// Cooling capacity (kW)
 	CoolingCapacity      NullableFloat64        `json:"cooling_capacity,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -81,7 +81,7 @@ type _BulkRackRequest BulkRackRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkRackRequest(id int32, name string, site int32) *BulkRackRequest {
+func NewBulkRackRequest(id int64, name string, site int64) *BulkRackRequest {
 	this := BulkRackRequest{}
 	this.Id = id
 	this.Name = name
@@ -98,9 +98,9 @@ func NewBulkRackRequestWithDefaults() *BulkRackRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkRackRequest) GetId() int32 {
+func (o *BulkRackRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -109,7 +109,7 @@ func (o *BulkRackRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkRackRequest) GetIdOk() (*int32, bool) {
+func (o *BulkRackRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -117,7 +117,7 @@ func (o *BulkRackRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkRackRequest) SetId(v int32) {
+func (o *BulkRackRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -189,9 +189,9 @@ func (o *BulkRackRequest) UnsetFacilityId() {
 }
 
 // GetSite returns the Site field value
-func (o *BulkRackRequest) GetSite() int32 {
+func (o *BulkRackRequest) GetSite() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -200,7 +200,7 @@ func (o *BulkRackRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value
 // and a boolean to check if the value has been set.
-func (o *BulkRackRequest) GetSiteOk() (*int32, bool) {
+func (o *BulkRackRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -208,14 +208,14 @@ func (o *BulkRackRequest) GetSiteOk() (*int32, bool) {
 }
 
 // SetSite sets field value
-func (o *BulkRackRequest) SetSite(v int32) {
+func (o *BulkRackRequest) SetSite(v int64) {
 	o.Site = v
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkRackRequest) GetLocation() int32 {
+func (o *BulkRackRequest) GetLocation() int64 {
 	if o == nil || IsNil(o.Location.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Location.Get()
@@ -224,7 +224,7 @@ func (o *BulkRackRequest) GetLocation() int32 {
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkRackRequest) GetLocationOk() (*int32, bool) {
+func (o *BulkRackRequest) GetLocationOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -240,8 +240,8 @@ func (o *BulkRackRequest) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given NullableInt32 and assigns it to the Location field.
-func (o *BulkRackRequest) SetLocation(v int32) {
+// SetLocation gets a reference to the given NullableInt64 and assigns it to the Location field.
+func (o *BulkRackRequest) SetLocation(v int64) {
 	o.Location.Set(&v)
 }
 
@@ -256,9 +256,9 @@ func (o *BulkRackRequest) UnsetLocation() {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkRackRequest) GetGroup() int32 {
+func (o *BulkRackRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -267,7 +267,7 @@ func (o *BulkRackRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkRackRequest) GetGroupOk() (*int32, bool) {
+func (o *BulkRackRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -283,8 +283,8 @@ func (o *BulkRackRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *BulkRackRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *BulkRackRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -299,9 +299,9 @@ func (o *BulkRackRequest) UnsetGroup() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkRackRequest) GetTenant() int32 {
+func (o *BulkRackRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -310,7 +310,7 @@ func (o *BulkRackRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkRackRequest) GetTenantOk() (*int32, bool) {
+func (o *BulkRackRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -326,8 +326,8 @@ func (o *BulkRackRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *BulkRackRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *BulkRackRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -374,9 +374,9 @@ func (o *BulkRackRequest) SetStatus(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkRackRequest) GetRole() int32 {
+func (o *BulkRackRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -385,7 +385,7 @@ func (o *BulkRackRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkRackRequest) GetRoleOk() (*int32, bool) {
+func (o *BulkRackRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -401,8 +401,8 @@ func (o *BulkRackRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *BulkRackRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *BulkRackRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -492,9 +492,9 @@ func (o *BulkRackRequest) UnsetAssetTag() {
 }
 
 // GetRackType returns the RackType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkRackRequest) GetRackType() int32 {
+func (o *BulkRackRequest) GetRackType() int64 {
 	if o == nil || IsNil(o.RackType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RackType.Get()
@@ -503,7 +503,7 @@ func (o *BulkRackRequest) GetRackType() int32 {
 // GetRackTypeOk returns a tuple with the RackType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkRackRequest) GetRackTypeOk() (*int32, bool) {
+func (o *BulkRackRequest) GetRackTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -519,8 +519,8 @@ func (o *BulkRackRequest) HasRackType() bool {
 	return false
 }
 
-// SetRackType gets a reference to the given NullableInt32 and assigns it to the RackType field.
-func (o *BulkRackRequest) SetRackType(v int32) {
+// SetRackType gets a reference to the given NullableInt64 and assigns it to the RackType field.
+func (o *BulkRackRequest) SetRackType(v int64) {
 	o.RackType.Set(&v)
 }
 
@@ -1200,9 +1200,9 @@ func (o *BulkRackRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkRackRequest) GetOwner() int32 {
+func (o *BulkRackRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -1211,7 +1211,7 @@ func (o *BulkRackRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkRackRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkRackRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1227,8 +1227,8 @@ func (o *BulkRackRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkRackRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkRackRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -22,13 +22,13 @@ var _ MappedNullable = &NestedInterface{}
 
 // NestedInterface Represents an object related through a ForeignKey field. On write, it accepts a primary key (PK) value or a dictionary of attributes which can be used to uniquely identify the related object. This class should be subclassed to return a full representation of the related object on read.
 type NestedInterface struct {
-	Id                   int32         `json:"id"`
+	Id                   int64         `json:"id"`
 	Url                  *string       `json:"url,omitempty"`
 	DisplayUrl           *string       `json:"display_url,omitempty"`
 	Display              *string       `json:"display,omitempty"`
 	Device               *NestedDevice `json:"device,omitempty"`
 	Name                 *string       `json:"name,omitempty"`
-	Cable                NullableInt32 `json:"cable,omitempty"`
+	Cable                NullableInt64 `json:"cable,omitempty"`
 	Occupied             *bool         `json:"_occupied,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -39,7 +39,7 @@ type _NestedInterface NestedInterface
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNestedInterface(id int32) *NestedInterface {
+func NewNestedInterface(id int64) *NestedInterface {
 	this := NestedInterface{}
 	this.Id = id
 	return &this
@@ -54,9 +54,9 @@ func NewNestedInterfaceWithDefaults() *NestedInterface {
 }
 
 // GetId returns the Id field value
-func (o *NestedInterface) GetId() int32 {
+func (o *NestedInterface) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *NestedInterface) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *NestedInterface) GetIdOk() (*int32, bool) {
+func (o *NestedInterface) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *NestedInterface) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *NestedInterface) SetId(v int32) {
+func (o *NestedInterface) SetId(v int64) {
 	o.Id = v
 }
 
@@ -238,9 +238,9 @@ func (o *NestedInterface) SetName(v string) {
 }
 
 // GetCable returns the Cable field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *NestedInterface) GetCable() int32 {
+func (o *NestedInterface) GetCable() int64 {
 	if o == nil || IsNil(o.Cable.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Cable.Get()
@@ -249,7 +249,7 @@ func (o *NestedInterface) GetCable() int32 {
 // GetCableOk returns a tuple with the Cable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NestedInterface) GetCableOk() (*int32, bool) {
+func (o *NestedInterface) GetCableOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -265,8 +265,8 @@ func (o *NestedInterface) HasCable() bool {
 	return false
 }
 
-// SetCable gets a reference to the given NullableInt32 and assigns it to the Cable field.
-func (o *NestedInterface) SetCable(v int32) {
+// SetCable gets a reference to the given NullableInt64 and assigns it to the Cable field.
+func (o *NestedInterface) SetCable(v int64) {
 	o.Cable.Set(&v)
 }
 

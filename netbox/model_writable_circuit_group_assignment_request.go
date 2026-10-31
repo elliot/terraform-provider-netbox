@@ -22,7 +22,7 @@ var _ MappedNullable = &WritableCircuitGroupAssignmentRequest{}
 
 // WritableCircuitGroupAssignmentRequest Base serializer for group assignments under CircuitSerializer.
 type WritableCircuitGroupAssignmentRequest struct {
-	Group      int32  `json:"group"`
+	Group      int64  `json:"group"`
 	MemberType string `json:"member_type"`
 	MemberId   int64  `json:"member_id"`
 	// * `primary` - Primary * `secondary` - Secondary * `tertiary` - Tertiary * `inactive` - Inactive
@@ -38,7 +38,7 @@ type _WritableCircuitGroupAssignmentRequest WritableCircuitGroupAssignmentReques
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableCircuitGroupAssignmentRequest(group int32, memberType string, memberId int64) *WritableCircuitGroupAssignmentRequest {
+func NewWritableCircuitGroupAssignmentRequest(group int64, memberType string, memberId int64) *WritableCircuitGroupAssignmentRequest {
 	this := WritableCircuitGroupAssignmentRequest{}
 	this.Group = group
 	this.MemberType = memberType
@@ -55,9 +55,9 @@ func NewWritableCircuitGroupAssignmentRequestWithDefaults() *WritableCircuitGrou
 }
 
 // GetGroup returns the Group field value
-func (o *WritableCircuitGroupAssignmentRequest) GetGroup() int32 {
+func (o *WritableCircuitGroupAssignmentRequest) GetGroup() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -66,7 +66,7 @@ func (o *WritableCircuitGroupAssignmentRequest) GetGroup() int32 {
 
 // GetGroupOk returns a tuple with the Group field value
 // and a boolean to check if the value has been set.
-func (o *WritableCircuitGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
+func (o *WritableCircuitGroupAssignmentRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,7 +74,7 @@ func (o *WritableCircuitGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
 }
 
 // SetGroup sets field value
-func (o *WritableCircuitGroupAssignmentRequest) SetGroup(v int32) {
+func (o *WritableCircuitGroupAssignmentRequest) SetGroup(v int64) {
 	o.Group = v
 }
 

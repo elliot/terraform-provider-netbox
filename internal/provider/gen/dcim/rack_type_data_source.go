@@ -304,7 +304,7 @@ func (d *RackTypeDataSource) Read(ctx context.Context, req datasource.ReadReques
 	}
 	var obj *netbox.RackType
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -499,5 +499,5 @@ func rackTypeDataFromAPI(ctx context.Context, obj *netbox.RackType, out *RackTyp
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.RackCount = conv.Int64From32(obj.GetRackCountOk())
+	out.RackCount = conv.Int64From64(obj.GetRackCountOk())
 }

@@ -22,9 +22,9 @@ var _ MappedNullable = &BulkConsolePortRequest{}
 
 // BulkConsolePortRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type BulkConsolePortRequest struct {
-	Id     int32         `json:"id"`
-	Device int32         `json:"device"`
-	Module NullableInt32 `json:"module,omitempty"`
+	Id     int64         `json:"id"`
+	Device int64         `json:"device"`
+	Module NullableInt64 `json:"module,omitempty"`
 	Name   string        `json:"name"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
@@ -35,7 +35,7 @@ type BulkConsolePortRequest struct {
 	Description *string       `json:"description,omitempty"`
 	// Treat as if a cable is connected
 	MarkConnected        *bool                  `json:"mark_connected,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -47,7 +47,7 @@ type _BulkConsolePortRequest BulkConsolePortRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkConsolePortRequest(id int32, device int32, name string) *BulkConsolePortRequest {
+func NewBulkConsolePortRequest(id int64, device int64, name string) *BulkConsolePortRequest {
 	this := BulkConsolePortRequest{}
 	this.Id = id
 	this.Device = device
@@ -64,9 +64,9 @@ func NewBulkConsolePortRequestWithDefaults() *BulkConsolePortRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkConsolePortRequest) GetId() int32 {
+func (o *BulkConsolePortRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *BulkConsolePortRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkConsolePortRequest) GetIdOk() (*int32, bool) {
+func (o *BulkConsolePortRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,14 +83,14 @@ func (o *BulkConsolePortRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkConsolePortRequest) SetId(v int32) {
+func (o *BulkConsolePortRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetDevice returns the Device field value
-func (o *BulkConsolePortRequest) GetDevice() int32 {
+func (o *BulkConsolePortRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -99,7 +99,7 @@ func (o *BulkConsolePortRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *BulkConsolePortRequest) GetDeviceOk() (*int32, bool) {
+func (o *BulkConsolePortRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -107,14 +107,14 @@ func (o *BulkConsolePortRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *BulkConsolePortRequest) SetDevice(v int32) {
+func (o *BulkConsolePortRequest) SetDevice(v int64) {
 	o.Device = v
 }
 
 // GetModule returns the Module field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkConsolePortRequest) GetModule() int32 {
+func (o *BulkConsolePortRequest) GetModule() int64 {
 	if o == nil || IsNil(o.Module.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module.Get()
@@ -123,7 +123,7 @@ func (o *BulkConsolePortRequest) GetModule() int32 {
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkConsolePortRequest) GetModuleOk() (*int32, bool) {
+func (o *BulkConsolePortRequest) GetModuleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -139,8 +139,8 @@ func (o *BulkConsolePortRequest) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given NullableInt32 and assigns it to the Module field.
-func (o *BulkConsolePortRequest) SetModule(v int32) {
+// SetModule gets a reference to the given NullableInt64 and assigns it to the Module field.
+func (o *BulkConsolePortRequest) SetModule(v int64) {
 	o.Module.Set(&v)
 }
 
@@ -350,9 +350,9 @@ func (o *BulkConsolePortRequest) SetMarkConnected(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkConsolePortRequest) GetOwner() int32 {
+func (o *BulkConsolePortRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -361,7 +361,7 @@ func (o *BulkConsolePortRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkConsolePortRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkConsolePortRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -377,8 +377,8 @@ func (o *BulkConsolePortRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkConsolePortRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkConsolePortRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

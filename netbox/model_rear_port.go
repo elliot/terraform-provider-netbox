@@ -23,7 +23,7 @@ var _ MappedNullable = &RearPort{}
 
 // RearPort Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type RearPort struct {
-	Id         int32               `json:"id"`
+	Id         int64               `json:"id"`
 	Url        *string             `json:"url,omitempty"`
 	DisplayUrl *string             `json:"display_url,omitempty"`
 	Display    *string             `json:"display,omitempty"`
@@ -60,7 +60,7 @@ type _RearPort RearPort
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRearPort(id int32) *RearPort {
+func NewRearPort(id int64) *RearPort {
 	this := RearPort{}
 	this.Id = id
 	return &this
@@ -75,9 +75,9 @@ func NewRearPortWithDefaults() *RearPort {
 }
 
 // GetId returns the Id field value
-func (o *RearPort) GetId() int32 {
+func (o *RearPort) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -86,7 +86,7 @@ func (o *RearPort) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *RearPort) GetIdOk() (*int32, bool) {
+func (o *RearPort) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -94,7 +94,7 @@ func (o *RearPort) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *RearPort) SetId(v int32) {
+func (o *RearPort) SetId(v int64) {
 	o.Id = v
 }
 

@@ -334,7 +334,7 @@ func (r *CustomFieldResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -365,7 +365,7 @@ func (r *CustomFieldResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -413,7 +413,7 @@ func (r *CustomFieldResource) Delete(ctx context.Context, req resource.DeleteReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -495,10 +495,10 @@ func customFieldToCreate(ctx context.Context, plan *CustomFieldModel, diags *dia
 		body.SetValidationSchema(conv.JSONToAPI(plan.ValidationSchema, diags))
 	}
 	if conv.Known(plan.ChoiceSetId) {
-		body.SetChoiceSet(conv.Int32(plan.ChoiceSetId))
+		body.SetChoiceSet(plan.ChoiceSetId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -625,14 +625,14 @@ func customFieldToPatch(ctx context.Context, plan, state *CustomFieldModel, diag
 		if plan.ChoiceSetId.IsNull() {
 			body.SetChoiceSetNil()
 		} else if !plan.ChoiceSetId.IsUnknown() {
-			body.SetChoiceSet(conv.Int32(plan.ChoiceSetId))
+			body.SetChoiceSet(plan.ChoiceSetId.ValueInt64())
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

@@ -216,7 +216,7 @@ func (r *ClusterResource) Read(ctx context.Context, req resource.ReadRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -247,7 +247,7 @@ func (r *ClusterResource) Update(ctx context.Context, req resource.UpdateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -277,7 +277,7 @@ func (r *ClusterResource) Delete(ctx context.Context, req resource.DeleteRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -297,27 +297,27 @@ func (r *ClusterResource) ImportState(ctx context.Context, req resource.ImportSt
 // clusterToCreate builds the WritableClusterRequest request body from the plan.
 func clusterToCreate(ctx context.Context, plan *ClusterModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableClusterRequest {
 	const objectType = "virtualization.cluster"
-	body := netbox.NewWritableClusterRequest(plan.Name.ValueString(), conv.Int32(plan.TypeId))
+	body := netbox.NewWritableClusterRequest(plan.Name.ValueString(), plan.TypeId.ValueInt64())
 	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+		body.SetGroup(plan.GroupId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.ScopeType) {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
 	if conv.Known(plan.ScopeId) {
-		body.SetScopeId(conv.Int32(plan.ScopeId))
+		body.SetScopeId(plan.ScopeId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -342,14 +342,14 @@ func clusterToPatch(ctx context.Context, plan, state *ClusterModel, cf *customfi
 	}
 	if !plan.TypeId.Equal(state.TypeId) {
 		if conv.Known(plan.TypeId) {
-			body.SetType(conv.Int32(plan.TypeId))
+			body.SetType(plan.TypeId.ValueInt64())
 		}
 	}
 	if !plan.GroupId.Equal(state.GroupId) {
 		if plan.GroupId.IsNull() {
 			body.SetGroupNil()
 		} else if !plan.GroupId.IsUnknown() {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -361,7 +361,7 @@ func clusterToPatch(ctx context.Context, plan, state *ClusterModel, cf *customfi
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.ScopeType.Equal(state.ScopeType) {
@@ -373,7 +373,7 @@ func clusterToPatch(ctx context.Context, plan, state *ClusterModel, cf *customfi
 	}
 	if !plan.ScopeId.Equal(state.ScopeId) {
 		if conv.Known(plan.ScopeId) {
-			body.SetScopeId(conv.Int32(plan.ScopeId))
+			body.SetScopeId(plan.ScopeId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -385,7 +385,7 @@ func clusterToPatch(ctx context.Context, plan, state *ClusterModel, cf *customfi
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -420,7 +420,7 @@ func clusterFromAPI(ctx context.Context, obj *netbox.Cluster, prior *ClusterMode
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.ScopeType = conv.StringKeep(conv.String(obj.GetScopeTypeOk()), conv.PriorString(prior, func(m *ClusterModel) types.String { return m.ScopeType }), false)
-	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
+	out.ScopeId = conv.Int64From64(obj.GetScopeIdOk())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ClusterModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ClusterModel) types.String { return m.Comments }), false)

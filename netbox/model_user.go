@@ -23,7 +23,7 @@ var _ MappedNullable = &User{}
 
 // User Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type User struct {
-	Id         int32   `json:"id"`
+	Id         int64   `json:"id"`
 	Url        *string `json:"url,omitempty"`
 	DisplayUrl *string `json:"display_url,omitempty"`
 	Display    *string `json:"display,omitempty"`
@@ -47,7 +47,7 @@ type _User User
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUser(id int32) *User {
+func NewUser(id int64) *User {
 	this := User{}
 	this.Id = id
 	return &this
@@ -62,9 +62,9 @@ func NewUserWithDefaults() *User {
 }
 
 // GetId returns the Id field value
-func (o *User) GetId() int32 {
+func (o *User) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -73,7 +73,7 @@ func (o *User) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *User) GetIdOk() (*int32, bool) {
+func (o *User) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -81,7 +81,7 @@ func (o *User) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *User) SetId(v int32) {
+func (o *User) SetId(v int64) {
 	o.Id = v
 }
 

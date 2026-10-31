@@ -265,7 +265,7 @@ func (r *SiteResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -296,7 +296,7 @@ func (r *SiteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -326,7 +326,7 @@ func (r *SiteResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -351,13 +351,13 @@ func siteToCreate(ctx context.Context, plan *SiteModel, cf *customfields.Cache, 
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.RegionId) {
-		body.SetRegion(conv.Int32(plan.RegionId))
+		body.SetRegion(plan.RegionId.ValueInt64())
 	}
 	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+		body.SetGroup(plan.GroupId.ValueInt64())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if !plan.Facility.IsUnknown() {
 		body.SetFacility(plan.Facility.ValueString())
@@ -381,13 +381,13 @@ func siteToCreate(ctx context.Context, plan *SiteModel, cf *customfields.Cache, 
 		body.SetLongitude(plan.Longitude.ValueFloat64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
 	}
 	if conv.Known(plan.AsnIds) {
-		body.SetAsns(conv.Int32s(ctx, plan.AsnIds, diags))
+		body.SetAsns(conv.Int64s(ctx, plan.AsnIds, diags))
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -421,21 +421,21 @@ func siteToPatch(ctx context.Context, plan, state *SiteModel, cf *customfields.C
 		if plan.RegionId.IsNull() {
 			body.SetRegionNil()
 		} else if !plan.RegionId.IsUnknown() {
-			body.SetRegion(conv.Int32(plan.RegionId))
+			body.SetRegion(plan.RegionId.ValueInt64())
 		}
 	}
 	if !plan.GroupId.Equal(state.GroupId) {
 		if plan.GroupId.IsNull() {
 			body.SetGroupNil()
 		} else if !plan.GroupId.IsUnknown() {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Facility.Equal(state.Facility) {
@@ -479,7 +479,7 @@ func siteToPatch(ctx context.Context, plan, state *SiteModel, cf *customfields.C
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -489,7 +489,7 @@ func siteToPatch(ctx context.Context, plan, state *SiteModel, cf *customfields.C
 	}
 	if !plan.AsnIds.Equal(state.AsnIds) {
 		if conv.Known(plan.AsnIds) {
-			body.SetAsns(conv.Int32s(ctx, plan.AsnIds, diags))
+			body.SetAsns(conv.Int64s(ctx, plan.AsnIds, diags))
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

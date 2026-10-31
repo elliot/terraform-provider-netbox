@@ -219,7 +219,7 @@ func (r *LocationResource) Read(ctx context.Context, req resource.ReadRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -250,7 +250,7 @@ func (r *LocationResource) Update(ctx context.Context, req resource.UpdateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -280,7 +280,7 @@ func (r *LocationResource) Delete(ctx context.Context, req resource.DeleteReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -300,15 +300,15 @@ func (r *LocationResource) ImportState(ctx context.Context, req resource.ImportS
 // locationToCreate builds the WritableLocationRequest request body from the plan.
 func locationToCreate(ctx context.Context, plan *LocationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableLocationRequest {
 	const objectType = "dcim.location"
-	body := netbox.NewWritableLocationRequest(plan.Name.ValueString(), plan.Slug.ValueString(), conv.Int32(plan.SiteId))
+	body := netbox.NewWritableLocationRequest(plan.Name.ValueString(), plan.Slug.ValueString(), plan.SiteId.ValueInt64())
 	if conv.Known(plan.ParentId) {
-		body.SetParent(conv.Int32(plan.ParentId))
+		body.SetParent(plan.ParentId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if !plan.Facility.IsUnknown() {
 		body.SetFacility(plan.Facility.ValueString())
@@ -323,7 +323,7 @@ func locationToCreate(ctx context.Context, plan *LocationModel, cf *customfields
 		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -347,14 +347,14 @@ func locationToPatch(ctx context.Context, plan, state *LocationModel, cf *custom
 	}
 	if !plan.SiteId.Equal(state.SiteId) {
 		if conv.Known(plan.SiteId) {
-			body.SetSite(conv.Int32(plan.SiteId))
+			body.SetSite(plan.SiteId.ValueInt64())
 		}
 	}
 	if !plan.ParentId.Equal(state.ParentId) {
 		if plan.ParentId.IsNull() {
 			body.SetParentNil()
 		} else if !plan.ParentId.IsUnknown() {
-			body.SetParent(conv.Int32(plan.ParentId))
+			body.SetParent(plan.ParentId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -366,7 +366,7 @@ func locationToPatch(ctx context.Context, plan, state *LocationModel, cf *custom
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Facility.Equal(state.Facility) {
@@ -393,7 +393,7 @@ func locationToPatch(ctx context.Context, plan, state *LocationModel, cf *custom
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

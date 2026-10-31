@@ -22,7 +22,7 @@ var _ MappedNullable = &PatchedBulkIKEProposalRequest{}
 
 // PatchedBulkIKEProposalRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkIKEProposalRequest struct {
-	Id          int32   `json:"id"`
+	Id          int64   `json:"id"`
 	Name        *string `json:"name,omitempty"`
 	Description *string `json:"description,omitempty"`
 	// * `preshared-keys` - Pre-shared keys * `certificates` - Certificates * `rsa-signatures` - RSA signatures * `dsa-signatures` - DSA signatures
@@ -35,7 +35,7 @@ type PatchedBulkIKEProposalRequest struct {
 	Group *int32 `json:"group,omitempty"`
 	// Security association lifetime (in seconds)
 	SaLifetime           NullableInt32          `json:"sa_lifetime,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -48,7 +48,7 @@ type _PatchedBulkIKEProposalRequest PatchedBulkIKEProposalRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkIKEProposalRequest(id int32) *PatchedBulkIKEProposalRequest {
+func NewPatchedBulkIKEProposalRequest(id int64) *PatchedBulkIKEProposalRequest {
 	this := PatchedBulkIKEProposalRequest{}
 	this.Id = id
 	return &this
@@ -63,9 +63,9 @@ func NewPatchedBulkIKEProposalRequestWithDefaults() *PatchedBulkIKEProposalReque
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkIKEProposalRequest) GetId() int32 {
+func (o *PatchedBulkIKEProposalRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -74,7 +74,7 @@ func (o *PatchedBulkIKEProposalRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkIKEProposalRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkIKEProposalRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -82,7 +82,7 @@ func (o *PatchedBulkIKEProposalRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkIKEProposalRequest) SetId(v int32) {
+func (o *PatchedBulkIKEProposalRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -322,9 +322,9 @@ func (o *PatchedBulkIKEProposalRequest) UnsetSaLifetime() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkIKEProposalRequest) GetOwner() int32 {
+func (o *PatchedBulkIKEProposalRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -333,7 +333,7 @@ func (o *PatchedBulkIKEProposalRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkIKEProposalRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkIKEProposalRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -349,8 +349,8 @@ func (o *PatchedBulkIKEProposalRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkIKEProposalRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkIKEProposalRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

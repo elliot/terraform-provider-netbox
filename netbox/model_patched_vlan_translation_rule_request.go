@@ -21,7 +21,7 @@ var _ MappedNullable = &PatchedVLANTranslationRuleRequest{}
 
 // PatchedVLANTranslationRuleRequest Adds support for custom fields and tags.
 type PatchedVLANTranslationRuleRequest struct {
-	Policy *int32 `json:"policy,omitempty"`
+	Policy *int64 `json:"policy,omitempty"`
 	// Numeric VLAN ID (1-4094)
 	LocalVid *int32 `json:"local_vid,omitempty"`
 	// Numeric VLAN ID (1-4094)
@@ -52,9 +52,9 @@ func NewPatchedVLANTranslationRuleRequestWithDefaults() *PatchedVLANTranslationR
 }
 
 // GetPolicy returns the Policy field value if set, zero value otherwise.
-func (o *PatchedVLANTranslationRuleRequest) GetPolicy() int32 {
+func (o *PatchedVLANTranslationRuleRequest) GetPolicy() int64 {
 	if o == nil || IsNil(o.Policy) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Policy
@@ -62,7 +62,7 @@ func (o *PatchedVLANTranslationRuleRequest) GetPolicy() int32 {
 
 // GetPolicyOk returns a tuple with the Policy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedVLANTranslationRuleRequest) GetPolicyOk() (*int32, bool) {
+func (o *PatchedVLANTranslationRuleRequest) GetPolicyOk() (*int64, bool) {
 	if o == nil || IsNil(o.Policy) {
 		return nil, false
 	}
@@ -78,8 +78,8 @@ func (o *PatchedVLANTranslationRuleRequest) HasPolicy() bool {
 	return false
 }
 
-// SetPolicy gets a reference to the given int32 and assigns it to the Policy field.
-func (o *PatchedVLANTranslationRuleRequest) SetPolicy(v int32) {
+// SetPolicy gets a reference to the given int64 and assigns it to the Policy field.
+func (o *PatchedVLANTranslationRuleRequest) SetPolicy(v int64) {
 	o.Policy = &v
 }
 

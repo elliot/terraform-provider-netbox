@@ -22,14 +22,14 @@ var _ MappedNullable = &BriefDeviceType{}
 
 // BriefDeviceType Base serializer class for models inheriting from PrimaryModel.
 type BriefDeviceType struct {
-	Id                   int32              `json:"id"`
+	Id                   int64              `json:"id"`
 	Url                  *string            `json:"url,omitempty"`
 	Display              *string            `json:"display,omitempty"`
 	Manufacturer         *BriefManufacturer `json:"manufacturer,omitempty"`
 	Model                *string            `json:"model,omitempty"`
 	Slug                 *string            `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description          *string            `json:"description,omitempty"`
-	DeviceCount          *int32             `json:"device_count,omitempty"`
+	DeviceCount          *int64             `json:"device_count,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -39,7 +39,7 @@ type _BriefDeviceType BriefDeviceType
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefDeviceType(id int32) *BriefDeviceType {
+func NewBriefDeviceType(id int64) *BriefDeviceType {
 	this := BriefDeviceType{}
 	this.Id = id
 	return &this
@@ -54,9 +54,9 @@ func NewBriefDeviceTypeWithDefaults() *BriefDeviceType {
 }
 
 // GetId returns the Id field value
-func (o *BriefDeviceType) GetId() int32 {
+func (o *BriefDeviceType) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *BriefDeviceType) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefDeviceType) GetIdOk() (*int32, bool) {
+func (o *BriefDeviceType) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *BriefDeviceType) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefDeviceType) SetId(v int32) {
+func (o *BriefDeviceType) SetId(v int64) {
 	o.Id = v
 }
 
@@ -270,9 +270,9 @@ func (o *BriefDeviceType) SetDescription(v string) {
 }
 
 // GetDeviceCount returns the DeviceCount field value if set, zero value otherwise.
-func (o *BriefDeviceType) GetDeviceCount() int32 {
+func (o *BriefDeviceType) GetDeviceCount() int64 {
 	if o == nil || IsNil(o.DeviceCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceCount
@@ -280,7 +280,7 @@ func (o *BriefDeviceType) GetDeviceCount() int32 {
 
 // GetDeviceCountOk returns a tuple with the DeviceCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BriefDeviceType) GetDeviceCountOk() (*int32, bool) {
+func (o *BriefDeviceType) GetDeviceCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.DeviceCount) {
 		return nil, false
 	}
@@ -296,8 +296,8 @@ func (o *BriefDeviceType) HasDeviceCount() bool {
 	return false
 }
 
-// SetDeviceCount gets a reference to the given int32 and assigns it to the DeviceCount field.
-func (o *BriefDeviceType) SetDeviceCount(v int32) {
+// SetDeviceCount gets a reference to the given int64 and assigns it to the DeviceCount field.
+func (o *BriefDeviceType) SetDeviceCount(v int64) {
 	o.DeviceCount = &v
 }
 

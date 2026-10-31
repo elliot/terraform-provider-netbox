@@ -21,7 +21,7 @@ var _ MappedNullable = &PatchedWritableCircuitGroupAssignmentRequest{}
 
 // PatchedWritableCircuitGroupAssignmentRequest Base serializer for group assignments under CircuitSerializer.
 type PatchedWritableCircuitGroupAssignmentRequest struct {
-	Group      *int32  `json:"group,omitempty"`
+	Group      *int64  `json:"group,omitempty"`
 	MemberType *string `json:"member_type,omitempty"`
 	MemberId   *int64  `json:"member_id,omitempty"`
 	// * `primary` - Primary * `secondary` - Secondary * `tertiary` - Tertiary * `inactive` - Inactive
@@ -51,9 +51,9 @@ func NewPatchedWritableCircuitGroupAssignmentRequestWithDefaults() *PatchedWrita
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise.
-func (o *PatchedWritableCircuitGroupAssignmentRequest) GetGroup() int32 {
+func (o *PatchedWritableCircuitGroupAssignmentRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group
@@ -61,7 +61,7 @@ func (o *PatchedWritableCircuitGroupAssignmentRequest) GetGroup() int32 {
 
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableCircuitGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
+func (o *PatchedWritableCircuitGroupAssignmentRequest) GetGroupOk() (*int64, bool) {
 	if o == nil || IsNil(o.Group) {
 		return nil, false
 	}
@@ -77,8 +77,8 @@ func (o *PatchedWritableCircuitGroupAssignmentRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given int32 and assigns it to the Group field.
-func (o *PatchedWritableCircuitGroupAssignmentRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given int64 and assigns it to the Group field.
+func (o *PatchedWritableCircuitGroupAssignmentRequest) SetGroup(v int64) {
 	o.Group = &v
 }
 

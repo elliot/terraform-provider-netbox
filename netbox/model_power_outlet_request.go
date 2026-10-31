@@ -22,8 +22,8 @@ var _ MappedNullable = &PowerOutletRequest{}
 
 // PowerOutletRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PowerOutletRequest struct {
-	Device int32         `json:"device"`
-	Module NullableInt32 `json:"module,omitempty"`
+	Device int64         `json:"device"`
+	Module NullableInt64 `json:"module,omitempty"`
 	Name   string        `json:"name"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
@@ -32,13 +32,13 @@ type PowerOutletRequest struct {
 	// * `enabled` - Enabled * `disabled` - Disabled * `faulty` - Faulty
 	Status    *string       `json:"status,omitempty"`
 	Color     *string       `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
-	PowerPort NullableInt32 `json:"power_port,omitempty"`
+	PowerPort NullableInt64 `json:"power_port,omitempty"`
 	// * `A` - A * `B` - B * `C` - C
 	FeedLeg     NullableString `json:"feed_leg,omitempty"`
 	Description *string        `json:"description,omitempty"`
 	// Treat as if a cable is connected
 	MarkConnected        *bool                  `json:"mark_connected,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -50,7 +50,7 @@ type _PowerOutletRequest PowerOutletRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPowerOutletRequest(device int32, name string) *PowerOutletRequest {
+func NewPowerOutletRequest(device int64, name string) *PowerOutletRequest {
 	this := PowerOutletRequest{}
 	this.Device = device
 	this.Name = name
@@ -66,9 +66,9 @@ func NewPowerOutletRequestWithDefaults() *PowerOutletRequest {
 }
 
 // GetDevice returns the Device field value
-func (o *PowerOutletRequest) GetDevice() int32 {
+func (o *PowerOutletRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -77,7 +77,7 @@ func (o *PowerOutletRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *PowerOutletRequest) GetDeviceOk() (*int32, bool) {
+func (o *PowerOutletRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -85,14 +85,14 @@ func (o *PowerOutletRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *PowerOutletRequest) SetDevice(v int32) {
+func (o *PowerOutletRequest) SetDevice(v int64) {
 	o.Device = v
 }
 
 // GetModule returns the Module field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PowerOutletRequest) GetModule() int32 {
+func (o *PowerOutletRequest) GetModule() int64 {
 	if o == nil || IsNil(o.Module.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module.Get()
@@ -101,7 +101,7 @@ func (o *PowerOutletRequest) GetModule() int32 {
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PowerOutletRequest) GetModuleOk() (*int32, bool) {
+func (o *PowerOutletRequest) GetModuleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -117,8 +117,8 @@ func (o *PowerOutletRequest) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given NullableInt32 and assigns it to the Module field.
-func (o *PowerOutletRequest) SetModule(v int32) {
+// SetModule gets a reference to the given NullableInt64 and assigns it to the Module field.
+func (o *PowerOutletRequest) SetModule(v int64) {
 	o.Module.Set(&v)
 }
 
@@ -296,9 +296,9 @@ func (o *PowerOutletRequest) SetColor(v string) {
 }
 
 // GetPowerPort returns the PowerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PowerOutletRequest) GetPowerPort() int32 {
+func (o *PowerOutletRequest) GetPowerPort() int64 {
 	if o == nil || IsNil(o.PowerPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PowerPort.Get()
@@ -307,7 +307,7 @@ func (o *PowerOutletRequest) GetPowerPort() int32 {
 // GetPowerPortOk returns a tuple with the PowerPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PowerOutletRequest) GetPowerPortOk() (*int32, bool) {
+func (o *PowerOutletRequest) GetPowerPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -323,8 +323,8 @@ func (o *PowerOutletRequest) HasPowerPort() bool {
 	return false
 }
 
-// SetPowerPort gets a reference to the given NullableInt32 and assigns it to the PowerPort field.
-func (o *PowerOutletRequest) SetPowerPort(v int32) {
+// SetPowerPort gets a reference to the given NullableInt64 and assigns it to the PowerPort field.
+func (o *PowerOutletRequest) SetPowerPort(v int64) {
 	o.PowerPort.Set(&v)
 }
 
@@ -446,9 +446,9 @@ func (o *PowerOutletRequest) SetMarkConnected(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PowerOutletRequest) GetOwner() int32 {
+func (o *PowerOutletRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -457,7 +457,7 @@ func (o *PowerOutletRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PowerOutletRequest) GetOwnerOk() (*int32, bool) {
+func (o *PowerOutletRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -473,8 +473,8 @@ func (o *PowerOutletRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PowerOutletRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PowerOutletRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

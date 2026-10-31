@@ -22,11 +22,11 @@ var _ MappedNullable = &PatchedWritableAggregateRequest{}
 // PatchedWritableAggregateRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedWritableAggregateRequest struct {
 	Prefix               *string                `json:"prefix,omitempty"`
-	Rir                  *int32                 `json:"rir,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	Rir                  *int64                 `json:"rir,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	DateAdded            NullableString         `json:"date_added,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -85,9 +85,9 @@ func (o *PatchedWritableAggregateRequest) SetPrefix(v string) {
 }
 
 // GetRir returns the Rir field value if set, zero value otherwise.
-func (o *PatchedWritableAggregateRequest) GetRir() int32 {
+func (o *PatchedWritableAggregateRequest) GetRir() int64 {
 	if o == nil || IsNil(o.Rir) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rir
@@ -95,7 +95,7 @@ func (o *PatchedWritableAggregateRequest) GetRir() int32 {
 
 // GetRirOk returns a tuple with the Rir field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableAggregateRequest) GetRirOk() (*int32, bool) {
+func (o *PatchedWritableAggregateRequest) GetRirOk() (*int64, bool) {
 	if o == nil || IsNil(o.Rir) {
 		return nil, false
 	}
@@ -111,15 +111,15 @@ func (o *PatchedWritableAggregateRequest) HasRir() bool {
 	return false
 }
 
-// SetRir gets a reference to the given int32 and assigns it to the Rir field.
-func (o *PatchedWritableAggregateRequest) SetRir(v int32) {
+// SetRir gets a reference to the given int64 and assigns it to the Rir field.
+func (o *PatchedWritableAggregateRequest) SetRir(v int64) {
 	o.Rir = &v
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableAggregateRequest) GetTenant() int32 {
+func (o *PatchedWritableAggregateRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -128,7 +128,7 @@ func (o *PatchedWritableAggregateRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableAggregateRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableAggregateRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -144,8 +144,8 @@ func (o *PatchedWritableAggregateRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableAggregateRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableAggregateRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -235,9 +235,9 @@ func (o *PatchedWritableAggregateRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableAggregateRequest) GetOwner() int32 {
+func (o *PatchedWritableAggregateRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -246,7 +246,7 @@ func (o *PatchedWritableAggregateRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableAggregateRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableAggregateRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -262,8 +262,8 @@ func (o *PatchedWritableAggregateRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableAggregateRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableAggregateRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -30,9 +30,9 @@ type ServiceRequest struct {
 	Protocol NullableString `json:"protocol,omitempty"`
 	// Deprecated; use port_mappings. Reported only for single-protocol services.
 	Ports                []int32                `json:"ports,omitempty"`
-	Ipaddresses          []int32                `json:"ipaddresses,omitempty"`
+	Ipaddresses          []int64                `json:"ipaddresses,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -242,9 +242,9 @@ func (o *ServiceRequest) SetPorts(v []int32) {
 }
 
 // GetIpaddresses returns the Ipaddresses field value if set, zero value otherwise.
-func (o *ServiceRequest) GetIpaddresses() []int32 {
+func (o *ServiceRequest) GetIpaddresses() []int64 {
 	if o == nil || IsNil(o.Ipaddresses) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Ipaddresses
@@ -252,7 +252,7 @@ func (o *ServiceRequest) GetIpaddresses() []int32 {
 
 // GetIpaddressesOk returns a tuple with the Ipaddresses field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ServiceRequest) GetIpaddressesOk() ([]int32, bool) {
+func (o *ServiceRequest) GetIpaddressesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Ipaddresses) {
 		return nil, false
 	}
@@ -268,8 +268,8 @@ func (o *ServiceRequest) HasIpaddresses() bool {
 	return false
 }
 
-// SetIpaddresses gets a reference to the given []int32 and assigns it to the Ipaddresses field.
-func (o *ServiceRequest) SetIpaddresses(v []int32) {
+// SetIpaddresses gets a reference to the given []int64 and assigns it to the Ipaddresses field.
+func (o *ServiceRequest) SetIpaddresses(v []int64) {
 	o.Ipaddresses = v
 }
 
@@ -306,9 +306,9 @@ func (o *ServiceRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ServiceRequest) GetOwner() int32 {
+func (o *ServiceRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -317,7 +317,7 @@ func (o *ServiceRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServiceRequest) GetOwnerOk() (*int32, bool) {
+func (o *ServiceRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -333,8 +333,8 @@ func (o *ServiceRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *ServiceRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *ServiceRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

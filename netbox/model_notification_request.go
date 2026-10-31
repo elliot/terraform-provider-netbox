@@ -25,7 +25,7 @@ var _ MappedNullable = &NotificationRequest{}
 type NotificationRequest struct {
 	ObjectType string       `json:"object_type"`
 	ObjectId   int64        `json:"object_id"`
-	User       int32        `json:"user"`
+	User       int64        `json:"user"`
 	Read       NullableTime `json:"read,omitempty"`
 	// * `object_created` - Object created * `object_updated` - Object updated * `object_deleted` - Object deleted * `job_started` - Job started * `job_completed` - Job completed * `job_failed` - Job failed * `job_errored` - Job errored
 	EventType            string `json:"event_type"`
@@ -38,7 +38,7 @@ type _NotificationRequest NotificationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNotificationRequest(objectType string, objectId int64, user int32, eventType string) *NotificationRequest {
+func NewNotificationRequest(objectType string, objectId int64, user int64, eventType string) *NotificationRequest {
 	this := NotificationRequest{}
 	this.ObjectType = objectType
 	this.ObjectId = objectId
@@ -104,9 +104,9 @@ func (o *NotificationRequest) SetObjectId(v int64) {
 }
 
 // GetUser returns the User field value
-func (o *NotificationRequest) GetUser() int32 {
+func (o *NotificationRequest) GetUser() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -115,7 +115,7 @@ func (o *NotificationRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value
 // and a boolean to check if the value has been set.
-func (o *NotificationRequest) GetUserOk() (*int32, bool) {
+func (o *NotificationRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -123,7 +123,7 @@ func (o *NotificationRequest) GetUserOk() (*int32, bool) {
 }
 
 // SetUser sets field value
-func (o *NotificationRequest) SetUser(v int32) {
+func (o *NotificationRequest) SetUser(v int64) {
 	o.User = v
 }
 

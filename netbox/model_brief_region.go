@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefRegion{}
 
 // BriefRegion Base serializer class for models inheriting from NestedGroupModel.
 type BriefRegion struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	Display              *string `json:"display,omitempty"`
 	Name                 *string `json:"name,omitempty"`
@@ -39,7 +39,7 @@ type _BriefRegion BriefRegion
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefRegion(id int32) *BriefRegion {
+func NewBriefRegion(id int64) *BriefRegion {
 	this := BriefRegion{}
 	this.Id = id
 	return &this
@@ -54,9 +54,9 @@ func NewBriefRegionWithDefaults() *BriefRegion {
 }
 
 // GetId returns the Id field value
-func (o *BriefRegion) GetId() int32 {
+func (o *BriefRegion) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *BriefRegion) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefRegion) GetIdOk() (*int32, bool) {
+func (o *BriefRegion) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *BriefRegion) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefRegion) SetId(v int32) {
+func (o *BriefRegion) SetId(v int64) {
 	o.Id = v
 }
 

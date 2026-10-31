@@ -25,11 +25,11 @@ type ProviderRequest struct {
 	// Full name of the provider
 	Name                 string                 `json:"name"`
 	Slug                 string                 `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Accounts             []int32                `json:"accounts,omitempty"`
+	Accounts             []int64                `json:"accounts,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
-	Asns                 []int32                `json:"asns,omitempty"`
+	Asns                 []int64                `json:"asns,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -105,9 +105,9 @@ func (o *ProviderRequest) SetSlug(v string) {
 }
 
 // GetAccounts returns the Accounts field value if set, zero value otherwise.
-func (o *ProviderRequest) GetAccounts() []int32 {
+func (o *ProviderRequest) GetAccounts() []int64 {
 	if o == nil || IsNil(o.Accounts) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Accounts
@@ -115,7 +115,7 @@ func (o *ProviderRequest) GetAccounts() []int32 {
 
 // GetAccountsOk returns a tuple with the Accounts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ProviderRequest) GetAccountsOk() ([]int32, bool) {
+func (o *ProviderRequest) GetAccountsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Accounts) {
 		return nil, false
 	}
@@ -131,8 +131,8 @@ func (o *ProviderRequest) HasAccounts() bool {
 	return false
 }
 
-// SetAccounts gets a reference to the given []int32 and assigns it to the Accounts field.
-func (o *ProviderRequest) SetAccounts(v []int32) {
+// SetAccounts gets a reference to the given []int64 and assigns it to the Accounts field.
+func (o *ProviderRequest) SetAccounts(v []int64) {
 	o.Accounts = v
 }
 
@@ -169,9 +169,9 @@ func (o *ProviderRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ProviderRequest) GetOwner() int32 {
+func (o *ProviderRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -180,7 +180,7 @@ func (o *ProviderRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ProviderRequest) GetOwnerOk() (*int32, bool) {
+func (o *ProviderRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -196,8 +196,8 @@ func (o *ProviderRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *ProviderRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *ProviderRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -244,9 +244,9 @@ func (o *ProviderRequest) SetComments(v string) {
 }
 
 // GetAsns returns the Asns field value if set, zero value otherwise.
-func (o *ProviderRequest) GetAsns() []int32 {
+func (o *ProviderRequest) GetAsns() []int64 {
 	if o == nil || IsNil(o.Asns) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Asns
@@ -254,7 +254,7 @@ func (o *ProviderRequest) GetAsns() []int32 {
 
 // GetAsnsOk returns a tuple with the Asns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ProviderRequest) GetAsnsOk() ([]int32, bool) {
+func (o *ProviderRequest) GetAsnsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Asns) {
 		return nil, false
 	}
@@ -270,8 +270,8 @@ func (o *ProviderRequest) HasAsns() bool {
 	return false
 }
 
-// SetAsns gets a reference to the given []int32 and assigns it to the Asns field.
-func (o *ProviderRequest) SetAsns(v []int32) {
+// SetAsns gets a reference to the given []int64 and assigns it to the Asns field.
+func (o *ProviderRequest) SetAsns(v []int64) {
 	o.Asns = v
 }
 

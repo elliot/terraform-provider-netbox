@@ -198,7 +198,7 @@ func (r *PlatformResource) Read(ctx context.Context, req resource.ReadRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -229,7 +229,7 @@ func (r *PlatformResource) Update(ctx context.Context, req resource.UpdateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -259,7 +259,7 @@ func (r *PlatformResource) Delete(ctx context.Context, req resource.DeleteReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -281,19 +281,19 @@ func platformToCreate(ctx context.Context, plan *PlatformModel, cf *customfields
 	const objectType = "dcim.platform"
 	body := netbox.NewWritablePlatformRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.ParentId) {
-		body.SetParent(conv.Int32(plan.ParentId))
+		body.SetParent(plan.ParentId.ValueInt64())
 	}
 	if conv.Known(plan.ManufacturerId) {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 	}
 	if conv.Known(plan.ConfigTemplateId) {
-		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+		body.SetConfigTemplate(plan.ConfigTemplateId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -315,7 +315,7 @@ func platformToPatch(ctx context.Context, plan, state *PlatformModel, cf *custom
 		if plan.ParentId.IsNull() {
 			body.SetParentNil()
 		} else if !plan.ParentId.IsUnknown() {
-			body.SetParent(conv.Int32(plan.ParentId))
+			body.SetParent(plan.ParentId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -332,14 +332,14 @@ func platformToPatch(ctx context.Context, plan, state *PlatformModel, cf *custom
 		if plan.ManufacturerId.IsNull() {
 			body.SetManufacturerNil()
 		} else if !plan.ManufacturerId.IsUnknown() {
-			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+			body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 		}
 	}
 	if !plan.ConfigTemplateId.Equal(state.ConfigTemplateId) {
 		if plan.ConfigTemplateId.IsNull() {
 			body.SetConfigTemplateNil()
 		} else if !plan.ConfigTemplateId.IsUnknown() {
-			body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+			body.SetConfigTemplate(plan.ConfigTemplateId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -351,7 +351,7 @@ func platformToPatch(ctx context.Context, plan, state *PlatformModel, cf *custom
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

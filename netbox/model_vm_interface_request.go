@@ -22,23 +22,23 @@ var _ MappedNullable = &VMInterfaceRequest{}
 
 // VMInterfaceRequest Mixin for Interface and VMInterface serializers that adds a `mac_address` shortcut field for creating/updating the primary MACAddress in a single request. The validated write is centralized on the interface model (BaseInterface.set_primary_mac_address); this mixin is a thin adapter that owns the permission check, the shortcut-vs-primary_mac_address conflict guard, and translating the model's validation errors into API errors.
 type VMInterfaceRequest struct {
-	VirtualMachine    int32                            `json:"virtual_machine"`
+	VirtualMachine    int64                            `json:"virtual_machine"`
 	Name              string                           `json:"name"`
 	Enabled           *bool                            `json:"enabled,omitempty"`
 	Parent            NullableNestedVMInterfaceRequest `json:"parent,omitempty"`
 	Bridge            NullableNestedVMInterfaceRequest `json:"bridge,omitempty"`
 	Mtu               NullableInt32                    `json:"mtu,omitempty"`
 	MacAddress        NullableString                   `json:"mac_address,omitempty"`
-	PrimaryMacAddress NullableInt32                    `json:"primary_mac_address,omitempty"`
+	PrimaryMacAddress NullableInt64                    `json:"primary_mac_address,omitempty"`
 	Description       *string                          `json:"description,omitempty"`
 	// * `access` - Access * `tagged` - Tagged * `tagged-all` - Tagged (All) * `q-in-q` - Q-in-Q (802.1ad)
 	Mode                  *string                `json:"mode,omitempty"`
-	UntaggedVlan          NullableInt32          `json:"untagged_vlan,omitempty"`
-	TaggedVlans           []int32                `json:"tagged_vlans,omitempty"`
-	QinqSvlan             NullableInt32          `json:"qinq_svlan,omitempty"`
-	VlanTranslationPolicy NullableInt32          `json:"vlan_translation_policy,omitempty"`
-	Vrf                   NullableInt32          `json:"vrf,omitempty"`
-	Owner                 NullableInt32          `json:"owner,omitempty"`
+	UntaggedVlan          NullableInt64          `json:"untagged_vlan,omitempty"`
+	TaggedVlans           []int64                `json:"tagged_vlans,omitempty"`
+	QinqSvlan             NullableInt64          `json:"qinq_svlan,omitempty"`
+	VlanTranslationPolicy NullableInt64          `json:"vlan_translation_policy,omitempty"`
+	Vrf                   NullableInt64          `json:"vrf,omitempty"`
+	Owner                 NullableInt64          `json:"owner,omitempty"`
 	Tags                  []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields          map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties  map[string]interface{}
@@ -50,7 +50,7 @@ type _VMInterfaceRequest VMInterfaceRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVMInterfaceRequest(virtualMachine int32, name string) *VMInterfaceRequest {
+func NewVMInterfaceRequest(virtualMachine int64, name string) *VMInterfaceRequest {
 	this := VMInterfaceRequest{}
 	this.VirtualMachine = virtualMachine
 	this.Name = name
@@ -66,9 +66,9 @@ func NewVMInterfaceRequestWithDefaults() *VMInterfaceRequest {
 }
 
 // GetVirtualMachine returns the VirtualMachine field value
-func (o *VMInterfaceRequest) GetVirtualMachine() int32 {
+func (o *VMInterfaceRequest) GetVirtualMachine() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -77,7 +77,7 @@ func (o *VMInterfaceRequest) GetVirtualMachine() int32 {
 
 // GetVirtualMachineOk returns a tuple with the VirtualMachine field value
 // and a boolean to check if the value has been set.
-func (o *VMInterfaceRequest) GetVirtualMachineOk() (*int32, bool) {
+func (o *VMInterfaceRequest) GetVirtualMachineOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -85,7 +85,7 @@ func (o *VMInterfaceRequest) GetVirtualMachineOk() (*int32, bool) {
 }
 
 // SetVirtualMachine sets field value
-func (o *VMInterfaceRequest) SetVirtualMachine(v int32) {
+func (o *VMInterfaceRequest) SetVirtualMachine(v int64) {
 	o.VirtualMachine = v
 }
 
@@ -318,9 +318,9 @@ func (o *VMInterfaceRequest) UnsetMacAddress() {
 }
 
 // GetPrimaryMacAddress returns the PrimaryMacAddress field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VMInterfaceRequest) GetPrimaryMacAddress() int32 {
+func (o *VMInterfaceRequest) GetPrimaryMacAddress() int64 {
 	if o == nil || IsNil(o.PrimaryMacAddress.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryMacAddress.Get()
@@ -329,7 +329,7 @@ func (o *VMInterfaceRequest) GetPrimaryMacAddress() int32 {
 // GetPrimaryMacAddressOk returns a tuple with the PrimaryMacAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VMInterfaceRequest) GetPrimaryMacAddressOk() (*int32, bool) {
+func (o *VMInterfaceRequest) GetPrimaryMacAddressOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -345,8 +345,8 @@ func (o *VMInterfaceRequest) HasPrimaryMacAddress() bool {
 	return false
 }
 
-// SetPrimaryMacAddress gets a reference to the given NullableInt32 and assigns it to the PrimaryMacAddress field.
-func (o *VMInterfaceRequest) SetPrimaryMacAddress(v int32) {
+// SetPrimaryMacAddress gets a reference to the given NullableInt64 and assigns it to the PrimaryMacAddress field.
+func (o *VMInterfaceRequest) SetPrimaryMacAddress(v int64) {
 	o.PrimaryMacAddress.Set(&v)
 }
 
@@ -425,9 +425,9 @@ func (o *VMInterfaceRequest) SetMode(v string) {
 }
 
 // GetUntaggedVlan returns the UntaggedVlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VMInterfaceRequest) GetUntaggedVlan() int32 {
+func (o *VMInterfaceRequest) GetUntaggedVlan() int64 {
 	if o == nil || IsNil(o.UntaggedVlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.UntaggedVlan.Get()
@@ -436,7 +436,7 @@ func (o *VMInterfaceRequest) GetUntaggedVlan() int32 {
 // GetUntaggedVlanOk returns a tuple with the UntaggedVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VMInterfaceRequest) GetUntaggedVlanOk() (*int32, bool) {
+func (o *VMInterfaceRequest) GetUntaggedVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -452,8 +452,8 @@ func (o *VMInterfaceRequest) HasUntaggedVlan() bool {
 	return false
 }
 
-// SetUntaggedVlan gets a reference to the given NullableInt32 and assigns it to the UntaggedVlan field.
-func (o *VMInterfaceRequest) SetUntaggedVlan(v int32) {
+// SetUntaggedVlan gets a reference to the given NullableInt64 and assigns it to the UntaggedVlan field.
+func (o *VMInterfaceRequest) SetUntaggedVlan(v int64) {
 	o.UntaggedVlan.Set(&v)
 }
 
@@ -468,9 +468,9 @@ func (o *VMInterfaceRequest) UnsetUntaggedVlan() {
 }
 
 // GetTaggedVlans returns the TaggedVlans field value if set, zero value otherwise.
-func (o *VMInterfaceRequest) GetTaggedVlans() []int32 {
+func (o *VMInterfaceRequest) GetTaggedVlans() []int64 {
 	if o == nil || IsNil(o.TaggedVlans) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.TaggedVlans
@@ -478,7 +478,7 @@ func (o *VMInterfaceRequest) GetTaggedVlans() []int32 {
 
 // GetTaggedVlansOk returns a tuple with the TaggedVlans field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VMInterfaceRequest) GetTaggedVlansOk() ([]int32, bool) {
+func (o *VMInterfaceRequest) GetTaggedVlansOk() ([]int64, bool) {
 	if o == nil || IsNil(o.TaggedVlans) {
 		return nil, false
 	}
@@ -494,15 +494,15 @@ func (o *VMInterfaceRequest) HasTaggedVlans() bool {
 	return false
 }
 
-// SetTaggedVlans gets a reference to the given []int32 and assigns it to the TaggedVlans field.
-func (o *VMInterfaceRequest) SetTaggedVlans(v []int32) {
+// SetTaggedVlans gets a reference to the given []int64 and assigns it to the TaggedVlans field.
+func (o *VMInterfaceRequest) SetTaggedVlans(v []int64) {
 	o.TaggedVlans = v
 }
 
 // GetQinqSvlan returns the QinqSvlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VMInterfaceRequest) GetQinqSvlan() int32 {
+func (o *VMInterfaceRequest) GetQinqSvlan() int64 {
 	if o == nil || IsNil(o.QinqSvlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.QinqSvlan.Get()
@@ -511,7 +511,7 @@ func (o *VMInterfaceRequest) GetQinqSvlan() int32 {
 // GetQinqSvlanOk returns a tuple with the QinqSvlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VMInterfaceRequest) GetQinqSvlanOk() (*int32, bool) {
+func (o *VMInterfaceRequest) GetQinqSvlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -527,8 +527,8 @@ func (o *VMInterfaceRequest) HasQinqSvlan() bool {
 	return false
 }
 
-// SetQinqSvlan gets a reference to the given NullableInt32 and assigns it to the QinqSvlan field.
-func (o *VMInterfaceRequest) SetQinqSvlan(v int32) {
+// SetQinqSvlan gets a reference to the given NullableInt64 and assigns it to the QinqSvlan field.
+func (o *VMInterfaceRequest) SetQinqSvlan(v int64) {
 	o.QinqSvlan.Set(&v)
 }
 
@@ -543,9 +543,9 @@ func (o *VMInterfaceRequest) UnsetQinqSvlan() {
 }
 
 // GetVlanTranslationPolicy returns the VlanTranslationPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VMInterfaceRequest) GetVlanTranslationPolicy() int32 {
+func (o *VMInterfaceRequest) GetVlanTranslationPolicy() int64 {
 	if o == nil || IsNil(o.VlanTranslationPolicy.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VlanTranslationPolicy.Get()
@@ -554,7 +554,7 @@ func (o *VMInterfaceRequest) GetVlanTranslationPolicy() int32 {
 // GetVlanTranslationPolicyOk returns a tuple with the VlanTranslationPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VMInterfaceRequest) GetVlanTranslationPolicyOk() (*int32, bool) {
+func (o *VMInterfaceRequest) GetVlanTranslationPolicyOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -570,8 +570,8 @@ func (o *VMInterfaceRequest) HasVlanTranslationPolicy() bool {
 	return false
 }
 
-// SetVlanTranslationPolicy gets a reference to the given NullableInt32 and assigns it to the VlanTranslationPolicy field.
-func (o *VMInterfaceRequest) SetVlanTranslationPolicy(v int32) {
+// SetVlanTranslationPolicy gets a reference to the given NullableInt64 and assigns it to the VlanTranslationPolicy field.
+func (o *VMInterfaceRequest) SetVlanTranslationPolicy(v int64) {
 	o.VlanTranslationPolicy.Set(&v)
 }
 
@@ -586,9 +586,9 @@ func (o *VMInterfaceRequest) UnsetVlanTranslationPolicy() {
 }
 
 // GetVrf returns the Vrf field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VMInterfaceRequest) GetVrf() int32 {
+func (o *VMInterfaceRequest) GetVrf() int64 {
 	if o == nil || IsNil(o.Vrf.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vrf.Get()
@@ -597,7 +597,7 @@ func (o *VMInterfaceRequest) GetVrf() int32 {
 // GetVrfOk returns a tuple with the Vrf field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VMInterfaceRequest) GetVrfOk() (*int32, bool) {
+func (o *VMInterfaceRequest) GetVrfOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -613,8 +613,8 @@ func (o *VMInterfaceRequest) HasVrf() bool {
 	return false
 }
 
-// SetVrf gets a reference to the given NullableInt32 and assigns it to the Vrf field.
-func (o *VMInterfaceRequest) SetVrf(v int32) {
+// SetVrf gets a reference to the given NullableInt64 and assigns it to the Vrf field.
+func (o *VMInterfaceRequest) SetVrf(v int64) {
 	o.Vrf.Set(&v)
 }
 
@@ -629,9 +629,9 @@ func (o *VMInterfaceRequest) UnsetVrf() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VMInterfaceRequest) GetOwner() int32 {
+func (o *VMInterfaceRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -640,7 +640,7 @@ func (o *VMInterfaceRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VMInterfaceRequest) GetOwnerOk() (*int32, bool) {
+func (o *VMInterfaceRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -656,8 +656,8 @@ func (o *VMInterfaceRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *VMInterfaceRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *VMInterfaceRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

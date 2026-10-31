@@ -21,7 +21,7 @@ var _ MappedNullable = &PatchedL2VPNTerminationRequest{}
 
 // PatchedL2VPNTerminationRequest Adds support for custom fields and tags.
 type PatchedL2VPNTerminationRequest struct {
-	L2vpn                *int32                 `json:"l2vpn,omitempty"`
+	L2vpn                *int64                 `json:"l2vpn,omitempty"`
 	AssignedObjectType   *string                `json:"assigned_object_type,omitempty"`
 	AssignedObjectId     *int64                 `json:"assigned_object_id,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
@@ -49,9 +49,9 @@ func NewPatchedL2VPNTerminationRequestWithDefaults() *PatchedL2VPNTerminationReq
 }
 
 // GetL2vpn returns the L2vpn field value if set, zero value otherwise.
-func (o *PatchedL2VPNTerminationRequest) GetL2vpn() int32 {
+func (o *PatchedL2VPNTerminationRequest) GetL2vpn() int64 {
 	if o == nil || IsNil(o.L2vpn) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.L2vpn
@@ -59,7 +59,7 @@ func (o *PatchedL2VPNTerminationRequest) GetL2vpn() int32 {
 
 // GetL2vpnOk returns a tuple with the L2vpn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedL2VPNTerminationRequest) GetL2vpnOk() (*int32, bool) {
+func (o *PatchedL2VPNTerminationRequest) GetL2vpnOk() (*int64, bool) {
 	if o == nil || IsNil(o.L2vpn) {
 		return nil, false
 	}
@@ -75,8 +75,8 @@ func (o *PatchedL2VPNTerminationRequest) HasL2vpn() bool {
 	return false
 }
 
-// SetL2vpn gets a reference to the given int32 and assigns it to the L2vpn field.
-func (o *PatchedL2VPNTerminationRequest) SetL2vpn(v int32) {
+// SetL2vpn gets a reference to the given int64 and assigns it to the L2vpn field.
+func (o *PatchedL2VPNTerminationRequest) SetL2vpn(v int64) {
 	o.L2vpn = &v
 }
 

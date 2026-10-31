@@ -50,6 +50,15 @@ func NullableInt32(v types.Int64) netbox.NullableInt32 {
 	return *netbox.NewNullableInt32(Int32Ptr(v))
 }
 
+// NullableInt64 is NullableInt32 for int64 client fields.
+func NullableInt64(v types.Int64) netbox.NullableInt64 {
+	if !Known(v) {
+		return *netbox.NewNullableInt64(nil)
+	}
+	n := v.ValueInt64()
+	return *netbox.NewNullableInt64(&n)
+}
+
 // Float32 converts a Float64 value to float32.
 func Float32(v types.Float64) float32 { return float32(v.ValueFloat64()) }
 
@@ -326,7 +335,7 @@ func RFC3339(v *time.Time, ok bool) timetypes.RFC3339 {
 }
 
 // idGetter is implemented by every Brief*/Nested* client type.
-type idGetter interface{ GetId() int32 }
+type idGetter interface{ GetId() int64 }
 
 // BriefID converts a (*BriefX, ok) getter result to the object's ID.
 func BriefID[T any, P interface {
@@ -336,7 +345,7 @@ func BriefID[T any, P interface {
 	if !ok || v == nil {
 		return types.Int64Null()
 	}
-	return types.Int64Value(int64(v.GetId()))
+	return types.Int64Value(v.GetId())
 }
 
 // BriefIDs converts a slice of Brief*/Nested* objects into a Set of IDs.
@@ -346,7 +355,7 @@ func BriefIDs[T any, P interface {
 }](items []T) types.Set {
 	vals := make([]attr.Value, 0, len(items))
 	for i := range items {
-		vals = append(vals, types.Int64Value(int64(P(&items[i]).GetId())))
+		vals = append(vals, types.Int64Value(P(&items[i]).GetId()))
 	}
 	return types.SetValueMust(types.Int64Type, vals)
 }

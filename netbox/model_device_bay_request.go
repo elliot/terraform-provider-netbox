@@ -22,14 +22,14 @@ var _ MappedNullable = &DeviceBayRequest{}
 
 // DeviceBayRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type DeviceBayRequest struct {
-	Device int32  `json:"device"`
+	Device int64  `json:"device"`
 	Name   string `json:"name"`
 	// Physical label
 	Label                *string                `json:"label,omitempty"`
 	Enabled              *bool                  `json:"enabled,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	InstalledDevice      NullableInt32          `json:"installed_device,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	InstalledDevice      NullableInt64          `json:"installed_device,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -41,7 +41,7 @@ type _DeviceBayRequest DeviceBayRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceBayRequest(device int32, name string) *DeviceBayRequest {
+func NewDeviceBayRequest(device int64, name string) *DeviceBayRequest {
 	this := DeviceBayRequest{}
 	this.Device = device
 	this.Name = name
@@ -57,9 +57,9 @@ func NewDeviceBayRequestWithDefaults() *DeviceBayRequest {
 }
 
 // GetDevice returns the Device field value
-func (o *DeviceBayRequest) GetDevice() int32 {
+func (o *DeviceBayRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *DeviceBayRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *DeviceBayRequest) GetDeviceOk() (*int32, bool) {
+func (o *DeviceBayRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *DeviceBayRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *DeviceBayRequest) SetDevice(v int32) {
+func (o *DeviceBayRequest) SetDevice(v int64) {
 	o.Device = v
 }
 
@@ -201,9 +201,9 @@ func (o *DeviceBayRequest) SetDescription(v string) {
 }
 
 // GetInstalledDevice returns the InstalledDevice field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DeviceBayRequest) GetInstalledDevice() int32 {
+func (o *DeviceBayRequest) GetInstalledDevice() int64 {
 	if o == nil || IsNil(o.InstalledDevice.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InstalledDevice.Get()
@@ -212,7 +212,7 @@ func (o *DeviceBayRequest) GetInstalledDevice() int32 {
 // GetInstalledDeviceOk returns a tuple with the InstalledDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DeviceBayRequest) GetInstalledDeviceOk() (*int32, bool) {
+func (o *DeviceBayRequest) GetInstalledDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -228,8 +228,8 @@ func (o *DeviceBayRequest) HasInstalledDevice() bool {
 	return false
 }
 
-// SetInstalledDevice gets a reference to the given NullableInt32 and assigns it to the InstalledDevice field.
-func (o *DeviceBayRequest) SetInstalledDevice(v int32) {
+// SetInstalledDevice gets a reference to the given NullableInt64 and assigns it to the InstalledDevice field.
+func (o *DeviceBayRequest) SetInstalledDevice(v int64) {
 	o.InstalledDevice.Set(&v)
 }
 
@@ -244,9 +244,9 @@ func (o *DeviceBayRequest) UnsetInstalledDevice() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *DeviceBayRequest) GetOwner() int32 {
+func (o *DeviceBayRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -255,7 +255,7 @@ func (o *DeviceBayRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *DeviceBayRequest) GetOwnerOk() (*int32, bool) {
+func (o *DeviceBayRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -271,8 +271,8 @@ func (o *DeviceBayRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *DeviceBayRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *DeviceBayRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

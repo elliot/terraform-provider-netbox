@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefDataSource{}
 
 // BriefDataSource Base serializer class for models inheriting from PrimaryModel.
 type BriefDataSource struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	Display              *string `json:"display,omitempty"`
 	Name                 *string `json:"name,omitempty"`
@@ -36,7 +36,7 @@ type _BriefDataSource BriefDataSource
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefDataSource(id int32) *BriefDataSource {
+func NewBriefDataSource(id int64) *BriefDataSource {
 	this := BriefDataSource{}
 	this.Id = id
 	return &this
@@ -51,9 +51,9 @@ func NewBriefDataSourceWithDefaults() *BriefDataSource {
 }
 
 // GetId returns the Id field value
-func (o *BriefDataSource) GetId() int32 {
+func (o *BriefDataSource) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -62,7 +62,7 @@ func (o *BriefDataSource) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefDataSource) GetIdOk() (*int32, bool) {
+func (o *BriefDataSource) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,7 +70,7 @@ func (o *BriefDataSource) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefDataSource) SetId(v int32) {
+func (o *BriefDataSource) SetId(v int64) {
 	o.Id = v
 }
 

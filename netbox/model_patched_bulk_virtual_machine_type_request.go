@@ -22,14 +22,14 @@ var _ MappedNullable = &PatchedBulkVirtualMachineTypeRequest{}
 
 // PatchedBulkVirtualMachineTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkVirtualMachineTypeRequest struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Name                 *string                `json:"name,omitempty"`
 	Slug                 *string                `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	DefaultPlatform      NullableInt32          `json:"default_platform,omitempty"`
+	DefaultPlatform      NullableInt64          `json:"default_platform,omitempty"`
 	DefaultVcpus         NullableFloat64        `json:"default_vcpus,omitempty"`
 	DefaultMemory        NullableInt32          `json:"default_memory,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -42,7 +42,7 @@ type _PatchedBulkVirtualMachineTypeRequest PatchedBulkVirtualMachineTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkVirtualMachineTypeRequest(id int32) *PatchedBulkVirtualMachineTypeRequest {
+func NewPatchedBulkVirtualMachineTypeRequest(id int64) *PatchedBulkVirtualMachineTypeRequest {
 	this := PatchedBulkVirtualMachineTypeRequest{}
 	this.Id = id
 	return &this
@@ -57,9 +57,9 @@ func NewPatchedBulkVirtualMachineTypeRequestWithDefaults() *PatchedBulkVirtualMa
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkVirtualMachineTypeRequest) GetId() int32 {
+func (o *PatchedBulkVirtualMachineTypeRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *PatchedBulkVirtualMachineTypeRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkVirtualMachineTypeRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineTypeRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *PatchedBulkVirtualMachineTypeRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkVirtualMachineTypeRequest) SetId(v int32) {
+func (o *PatchedBulkVirtualMachineTypeRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -145,9 +145,9 @@ func (o *PatchedBulkVirtualMachineTypeRequest) SetSlug(v string) {
 }
 
 // GetDefaultPlatform returns the DefaultPlatform field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineTypeRequest) GetDefaultPlatform() int32 {
+func (o *PatchedBulkVirtualMachineTypeRequest) GetDefaultPlatform() int64 {
 	if o == nil || IsNil(o.DefaultPlatform.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DefaultPlatform.Get()
@@ -156,7 +156,7 @@ func (o *PatchedBulkVirtualMachineTypeRequest) GetDefaultPlatform() int32 {
 // GetDefaultPlatformOk returns a tuple with the DefaultPlatform field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineTypeRequest) GetDefaultPlatformOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineTypeRequest) GetDefaultPlatformOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -172,8 +172,8 @@ func (o *PatchedBulkVirtualMachineTypeRequest) HasDefaultPlatform() bool {
 	return false
 }
 
-// SetDefaultPlatform gets a reference to the given NullableInt32 and assigns it to the DefaultPlatform field.
-func (o *PatchedBulkVirtualMachineTypeRequest) SetDefaultPlatform(v int32) {
+// SetDefaultPlatform gets a reference to the given NullableInt64 and assigns it to the DefaultPlatform field.
+func (o *PatchedBulkVirtualMachineTypeRequest) SetDefaultPlatform(v int64) {
 	o.DefaultPlatform.Set(&v)
 }
 
@@ -306,9 +306,9 @@ func (o *PatchedBulkVirtualMachineTypeRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineTypeRequest) GetOwner() int32 {
+func (o *PatchedBulkVirtualMachineTypeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -317,7 +317,7 @@ func (o *PatchedBulkVirtualMachineTypeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineTypeRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineTypeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -333,8 +333,8 @@ func (o *PatchedBulkVirtualMachineTypeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkVirtualMachineTypeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkVirtualMachineTypeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

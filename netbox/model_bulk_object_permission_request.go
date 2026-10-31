@@ -22,7 +22,7 @@ var _ MappedNullable = &BulkObjectPermissionRequest{}
 
 // BulkObjectPermissionRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkObjectPermissionRequest struct {
-	Id          int32    `json:"id"`
+	Id          int64    `json:"id"`
 	Name        string   `json:"name"`
 	Description *string  `json:"description,omitempty"`
 	Enabled     *bool    `json:"enabled,omitempty"`
@@ -31,8 +31,8 @@ type BulkObjectPermissionRequest struct {
 	Actions []string `json:"actions"`
 	// Queryset filter matching the applicable objects of the selected type(s)
 	Constraints          interface{} `json:"constraints,omitempty"`
-	Groups               []int32     `json:"groups,omitempty"`
-	Users                []int32     `json:"users,omitempty"`
+	Groups               []int64     `json:"groups,omitempty"`
+	Users                []int64     `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -42,7 +42,7 @@ type _BulkObjectPermissionRequest BulkObjectPermissionRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkObjectPermissionRequest(id int32, name string, objectTypes []string, actions []string) *BulkObjectPermissionRequest {
+func NewBulkObjectPermissionRequest(id int64, name string, objectTypes []string, actions []string) *BulkObjectPermissionRequest {
 	this := BulkObjectPermissionRequest{}
 	this.Id = id
 	this.Name = name
@@ -60,9 +60,9 @@ func NewBulkObjectPermissionRequestWithDefaults() *BulkObjectPermissionRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkObjectPermissionRequest) GetId() int32 {
+func (o *BulkObjectPermissionRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -71,7 +71,7 @@ func (o *BulkObjectPermissionRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkObjectPermissionRequest) GetIdOk() (*int32, bool) {
+func (o *BulkObjectPermissionRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -79,7 +79,7 @@ func (o *BulkObjectPermissionRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkObjectPermissionRequest) SetId(v int32) {
+func (o *BulkObjectPermissionRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -253,9 +253,9 @@ func (o *BulkObjectPermissionRequest) SetConstraints(v interface{}) {
 }
 
 // GetGroups returns the Groups field value if set, zero value otherwise.
-func (o *BulkObjectPermissionRequest) GetGroups() []int32 {
+func (o *BulkObjectPermissionRequest) GetGroups() []int64 {
 	if o == nil || IsNil(o.Groups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Groups
@@ -263,7 +263,7 @@ func (o *BulkObjectPermissionRequest) GetGroups() []int32 {
 
 // GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkObjectPermissionRequest) GetGroupsOk() ([]int32, bool) {
+func (o *BulkObjectPermissionRequest) GetGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Groups) {
 		return nil, false
 	}
@@ -279,15 +279,15 @@ func (o *BulkObjectPermissionRequest) HasGroups() bool {
 	return false
 }
 
-// SetGroups gets a reference to the given []int32 and assigns it to the Groups field.
-func (o *BulkObjectPermissionRequest) SetGroups(v []int32) {
+// SetGroups gets a reference to the given []int64 and assigns it to the Groups field.
+func (o *BulkObjectPermissionRequest) SetGroups(v []int64) {
 	o.Groups = v
 }
 
 // GetUsers returns the Users field value if set, zero value otherwise.
-func (o *BulkObjectPermissionRequest) GetUsers() []int32 {
+func (o *BulkObjectPermissionRequest) GetUsers() []int64 {
 	if o == nil || IsNil(o.Users) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Users
@@ -295,7 +295,7 @@ func (o *BulkObjectPermissionRequest) GetUsers() []int32 {
 
 // GetUsersOk returns a tuple with the Users field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkObjectPermissionRequest) GetUsersOk() ([]int32, bool) {
+func (o *BulkObjectPermissionRequest) GetUsersOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Users) {
 		return nil, false
 	}
@@ -311,8 +311,8 @@ func (o *BulkObjectPermissionRequest) HasUsers() bool {
 	return false
 }
 
-// SetUsers gets a reference to the given []int32 and assigns it to the Users field.
-func (o *BulkObjectPermissionRequest) SetUsers(v []int32) {
+// SetUsers gets a reference to the given []int64 and assigns it to the Users field.
+func (o *BulkObjectPermissionRequest) SetUsers(v []int64) {
 	o.Users = v
 }
 

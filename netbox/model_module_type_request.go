@@ -22,8 +22,8 @@ var _ MappedNullable = &ModuleTypeRequest{}
 
 // ModuleTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type ModuleTypeRequest struct {
-	Profile      NullableInt32 `json:"profile,omitempty"`
-	Manufacturer int32         `json:"manufacturer"`
+	Profile      NullableInt64 `json:"profile,omitempty"`
+	Manufacturer int64         `json:"manufacturer"`
 	Model        string        `json:"model"`
 	// Discrete part number (optional)
 	PartNumber *string `json:"part_number,omitempty"`
@@ -38,8 +38,8 @@ type ModuleTypeRequest struct {
 	EndOfLife            NullableString         `json:"end_of_life,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Attributes           interface{}            `json:"attributes,omitempty"`
-	ModuleBayTypes       []int32                `json:"module_bay_types,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	ModuleBayTypes       []int64                `json:"module_bay_types,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -52,7 +52,7 @@ type _ModuleTypeRequest ModuleTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewModuleTypeRequest(manufacturer int32, model string) *ModuleTypeRequest {
+func NewModuleTypeRequest(manufacturer int64, model string) *ModuleTypeRequest {
 	this := ModuleTypeRequest{}
 	this.Manufacturer = manufacturer
 	this.Model = model
@@ -68,9 +68,9 @@ func NewModuleTypeRequestWithDefaults() *ModuleTypeRequest {
 }
 
 // GetProfile returns the Profile field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ModuleTypeRequest) GetProfile() int32 {
+func (o *ModuleTypeRequest) GetProfile() int64 {
 	if o == nil || IsNil(o.Profile.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Profile.Get()
@@ -79,7 +79,7 @@ func (o *ModuleTypeRequest) GetProfile() int32 {
 // GetProfileOk returns a tuple with the Profile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ModuleTypeRequest) GetProfileOk() (*int32, bool) {
+func (o *ModuleTypeRequest) GetProfileOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -95,8 +95,8 @@ func (o *ModuleTypeRequest) HasProfile() bool {
 	return false
 }
 
-// SetProfile gets a reference to the given NullableInt32 and assigns it to the Profile field.
-func (o *ModuleTypeRequest) SetProfile(v int32) {
+// SetProfile gets a reference to the given NullableInt64 and assigns it to the Profile field.
+func (o *ModuleTypeRequest) SetProfile(v int64) {
 	o.Profile.Set(&v)
 }
 
@@ -111,9 +111,9 @@ func (o *ModuleTypeRequest) UnsetProfile() {
 }
 
 // GetManufacturer returns the Manufacturer field value
-func (o *ModuleTypeRequest) GetManufacturer() int32 {
+func (o *ModuleTypeRequest) GetManufacturer() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -122,7 +122,7 @@ func (o *ModuleTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value
 // and a boolean to check if the value has been set.
-func (o *ModuleTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *ModuleTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -130,7 +130,7 @@ func (o *ModuleTypeRequest) GetManufacturerOk() (*int32, bool) {
 }
 
 // SetManufacturer sets field value
-func (o *ModuleTypeRequest) SetManufacturer(v int32) {
+func (o *ModuleTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = v
 }
 
@@ -471,9 +471,9 @@ func (o *ModuleTypeRequest) SetAttributes(v interface{}) {
 }
 
 // GetModuleBayTypes returns the ModuleBayTypes field value if set, zero value otherwise.
-func (o *ModuleTypeRequest) GetModuleBayTypes() []int32 {
+func (o *ModuleTypeRequest) GetModuleBayTypes() []int64 {
 	if o == nil || IsNil(o.ModuleBayTypes) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.ModuleBayTypes
@@ -481,7 +481,7 @@ func (o *ModuleTypeRequest) GetModuleBayTypes() []int32 {
 
 // GetModuleBayTypesOk returns a tuple with the ModuleBayTypes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleTypeRequest) GetModuleBayTypesOk() ([]int32, bool) {
+func (o *ModuleTypeRequest) GetModuleBayTypesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.ModuleBayTypes) {
 		return nil, false
 	}
@@ -497,15 +497,15 @@ func (o *ModuleTypeRequest) HasModuleBayTypes() bool {
 	return false
 }
 
-// SetModuleBayTypes gets a reference to the given []int32 and assigns it to the ModuleBayTypes field.
-func (o *ModuleTypeRequest) SetModuleBayTypes(v []int32) {
+// SetModuleBayTypes gets a reference to the given []int64 and assigns it to the ModuleBayTypes field.
+func (o *ModuleTypeRequest) SetModuleBayTypes(v []int64) {
 	o.ModuleBayTypes = v
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ModuleTypeRequest) GetOwner() int32 {
+func (o *ModuleTypeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -514,7 +514,7 @@ func (o *ModuleTypeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ModuleTypeRequest) GetOwnerOk() (*int32, bool) {
+func (o *ModuleTypeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -530,8 +530,8 @@ func (o *ModuleTypeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *ModuleTypeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *ModuleTypeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

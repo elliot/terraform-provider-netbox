@@ -23,7 +23,7 @@ var _ MappedNullable = &VMInterface{}
 
 // VMInterface Mixin for Interface and VMInterface serializers that adds a `mac_address` shortcut field for creating/updating the primary MACAddress in a single request. The validated write is centralized on the interface model (BaseInterface.set_primary_mac_address); this mixin is a thin adapter that owns the permission check, the shortcut-vs-primary_mac_address conflict guard, and translating the model's validation errors into API errors.
 type VMInterface struct {
-	Id                    int32                              `json:"id"`
+	Id                    int64                              `json:"id"`
 	Url                   *string                            `json:"url,omitempty"`
 	DisplayUrl            *string                            `json:"display_url,omitempty"`
 	Display               *string                            `json:"display,omitempty"`
@@ -49,8 +49,8 @@ type VMInterface struct {
 	CustomFields          map[string]interface{}             `json:"custom_fields,omitempty"`
 	Created               NullableTime                       `json:"created,omitempty"`
 	LastUpdated           NullableTime                       `json:"last_updated,omitempty"`
-	CountIpaddresses      *int32                             `json:"count_ipaddresses,omitempty"`
-	CountFhrpGroups       *int32                             `json:"count_fhrp_groups,omitempty"`
+	CountIpaddresses      *int64                             `json:"count_ipaddresses,omitempty"`
+	CountFhrpGroups       *int64                             `json:"count_fhrp_groups,omitempty"`
 	AdditionalProperties  map[string]interface{}
 }
 
@@ -60,7 +60,7 @@ type _VMInterface VMInterface
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVMInterface(id int32) *VMInterface {
+func NewVMInterface(id int64) *VMInterface {
 	this := VMInterface{}
 	this.Id = id
 	return &this
@@ -75,9 +75,9 @@ func NewVMInterfaceWithDefaults() *VMInterface {
 }
 
 // GetId returns the Id field value
-func (o *VMInterface) GetId() int32 {
+func (o *VMInterface) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -86,7 +86,7 @@ func (o *VMInterface) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *VMInterface) GetIdOk() (*int32, bool) {
+func (o *VMInterface) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -94,7 +94,7 @@ func (o *VMInterface) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *VMInterface) SetId(v int32) {
+func (o *VMInterface) SetId(v int64) {
 	o.Id = v
 }
 
@@ -1043,9 +1043,9 @@ func (o *VMInterface) UnsetLastUpdated() {
 }
 
 // GetCountIpaddresses returns the CountIpaddresses field value if set, zero value otherwise.
-func (o *VMInterface) GetCountIpaddresses() int32 {
+func (o *VMInterface) GetCountIpaddresses() int64 {
 	if o == nil || IsNil(o.CountIpaddresses) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CountIpaddresses
@@ -1053,7 +1053,7 @@ func (o *VMInterface) GetCountIpaddresses() int32 {
 
 // GetCountIpaddressesOk returns a tuple with the CountIpaddresses field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VMInterface) GetCountIpaddressesOk() (*int32, bool) {
+func (o *VMInterface) GetCountIpaddressesOk() (*int64, bool) {
 	if o == nil || IsNil(o.CountIpaddresses) {
 		return nil, false
 	}
@@ -1069,15 +1069,15 @@ func (o *VMInterface) HasCountIpaddresses() bool {
 	return false
 }
 
-// SetCountIpaddresses gets a reference to the given int32 and assigns it to the CountIpaddresses field.
-func (o *VMInterface) SetCountIpaddresses(v int32) {
+// SetCountIpaddresses gets a reference to the given int64 and assigns it to the CountIpaddresses field.
+func (o *VMInterface) SetCountIpaddresses(v int64) {
 	o.CountIpaddresses = &v
 }
 
 // GetCountFhrpGroups returns the CountFhrpGroups field value if set, zero value otherwise.
-func (o *VMInterface) GetCountFhrpGroups() int32 {
+func (o *VMInterface) GetCountFhrpGroups() int64 {
 	if o == nil || IsNil(o.CountFhrpGroups) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CountFhrpGroups
@@ -1085,7 +1085,7 @@ func (o *VMInterface) GetCountFhrpGroups() int32 {
 
 // GetCountFhrpGroupsOk returns a tuple with the CountFhrpGroups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VMInterface) GetCountFhrpGroupsOk() (*int32, bool) {
+func (o *VMInterface) GetCountFhrpGroupsOk() (*int64, bool) {
 	if o == nil || IsNil(o.CountFhrpGroups) {
 		return nil, false
 	}
@@ -1101,8 +1101,8 @@ func (o *VMInterface) HasCountFhrpGroups() bool {
 	return false
 }
 
-// SetCountFhrpGroups gets a reference to the given int32 and assigns it to the CountFhrpGroups field.
-func (o *VMInterface) SetCountFhrpGroups(v int32) {
+// SetCountFhrpGroups gets a reference to the given int64 and assigns it to the CountFhrpGroups field.
+func (o *VMInterface) SetCountFhrpGroups(v int64) {
 	o.CountFhrpGroups = &v
 }
 

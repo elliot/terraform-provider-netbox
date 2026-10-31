@@ -22,9 +22,9 @@ var _ MappedNullable = &BulkPowerFeedRequest{}
 
 // BulkPowerFeedRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkPowerFeedRequest struct {
-	Id         int32         `json:"id"`
-	PowerPanel int32         `json:"power_panel"`
-	Rack       NullableInt32 `json:"rack,omitempty"`
+	Id         int64         `json:"id"`
+	PowerPanel int64         `json:"power_panel"`
+	Rack       NullableInt64 `json:"rack,omitempty"`
 	Name       string        `json:"name"`
 	// * `offline` - Offline * `active` - Active * `planned` - Planned * `failed` - Failed
 	Status *string `json:"status,omitempty"`
@@ -41,8 +41,8 @@ type BulkPowerFeedRequest struct {
 	// Treat as if a cable is connected
 	MarkConnected        *bool                  `json:"mark_connected,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -55,7 +55,7 @@ type _BulkPowerFeedRequest BulkPowerFeedRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkPowerFeedRequest(id int32, powerPanel int32, name string) *BulkPowerFeedRequest {
+func NewBulkPowerFeedRequest(id int64, powerPanel int64, name string) *BulkPowerFeedRequest {
 	this := BulkPowerFeedRequest{}
 	this.Id = id
 	this.PowerPanel = powerPanel
@@ -72,9 +72,9 @@ func NewBulkPowerFeedRequestWithDefaults() *BulkPowerFeedRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkPowerFeedRequest) GetId() int32 {
+func (o *BulkPowerFeedRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -83,7 +83,7 @@ func (o *BulkPowerFeedRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkPowerFeedRequest) GetIdOk() (*int32, bool) {
+func (o *BulkPowerFeedRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -91,14 +91,14 @@ func (o *BulkPowerFeedRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkPowerFeedRequest) SetId(v int32) {
+func (o *BulkPowerFeedRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetPowerPanel returns the PowerPanel field value
-func (o *BulkPowerFeedRequest) GetPowerPanel() int32 {
+func (o *BulkPowerFeedRequest) GetPowerPanel() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -107,7 +107,7 @@ func (o *BulkPowerFeedRequest) GetPowerPanel() int32 {
 
 // GetPowerPanelOk returns a tuple with the PowerPanel field value
 // and a boolean to check if the value has been set.
-func (o *BulkPowerFeedRequest) GetPowerPanelOk() (*int32, bool) {
+func (o *BulkPowerFeedRequest) GetPowerPanelOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -115,14 +115,14 @@ func (o *BulkPowerFeedRequest) GetPowerPanelOk() (*int32, bool) {
 }
 
 // SetPowerPanel sets field value
-func (o *BulkPowerFeedRequest) SetPowerPanel(v int32) {
+func (o *BulkPowerFeedRequest) SetPowerPanel(v int64) {
 	o.PowerPanel = v
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkPowerFeedRequest) GetRack() int32 {
+func (o *BulkPowerFeedRequest) GetRack() int64 {
 	if o == nil || IsNil(o.Rack.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rack.Get()
@@ -131,7 +131,7 @@ func (o *BulkPowerFeedRequest) GetRack() int32 {
 // GetRackOk returns a tuple with the Rack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkPowerFeedRequest) GetRackOk() (*int32, bool) {
+func (o *BulkPowerFeedRequest) GetRackOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -147,8 +147,8 @@ func (o *BulkPowerFeedRequest) HasRack() bool {
 	return false
 }
 
-// SetRack gets a reference to the given NullableInt32 and assigns it to the Rack field.
-func (o *BulkPowerFeedRequest) SetRack(v int32) {
+// SetRack gets a reference to the given NullableInt64 and assigns it to the Rack field.
+func (o *BulkPowerFeedRequest) SetRack(v int64) {
 	o.Rack.Set(&v)
 }
 
@@ -475,9 +475,9 @@ func (o *BulkPowerFeedRequest) SetDescription(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkPowerFeedRequest) GetTenant() int32 {
+func (o *BulkPowerFeedRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -486,7 +486,7 @@ func (o *BulkPowerFeedRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkPowerFeedRequest) GetTenantOk() (*int32, bool) {
+func (o *BulkPowerFeedRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -502,8 +502,8 @@ func (o *BulkPowerFeedRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *BulkPowerFeedRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *BulkPowerFeedRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -518,9 +518,9 @@ func (o *BulkPowerFeedRequest) UnsetTenant() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkPowerFeedRequest) GetOwner() int32 {
+func (o *BulkPowerFeedRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -529,7 +529,7 @@ func (o *BulkPowerFeedRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkPowerFeedRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkPowerFeedRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -545,8 +545,8 @@ func (o *BulkPowerFeedRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkPowerFeedRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkPowerFeedRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

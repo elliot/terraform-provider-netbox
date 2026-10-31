@@ -22,10 +22,10 @@ var _ MappedNullable = &BulkBookmarkRequest{}
 
 // BulkBookmarkRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkBookmarkRequest struct {
-	Id                   int32  `json:"id"`
+	Id                   int64  `json:"id"`
 	ObjectType           string `json:"object_type"`
 	ObjectId             int64  `json:"object_id"`
-	User                 int32  `json:"user"`
+	User                 int64  `json:"user"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -35,7 +35,7 @@ type _BulkBookmarkRequest BulkBookmarkRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkBookmarkRequest(id int32, objectType string, objectId int64, user int32) *BulkBookmarkRequest {
+func NewBulkBookmarkRequest(id int64, objectType string, objectId int64, user int64) *BulkBookmarkRequest {
 	this := BulkBookmarkRequest{}
 	this.Id = id
 	this.ObjectType = objectType
@@ -53,9 +53,9 @@ func NewBulkBookmarkRequestWithDefaults() *BulkBookmarkRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkBookmarkRequest) GetId() int32 {
+func (o *BulkBookmarkRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -64,7 +64,7 @@ func (o *BulkBookmarkRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkBookmarkRequest) GetIdOk() (*int32, bool) {
+func (o *BulkBookmarkRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -72,7 +72,7 @@ func (o *BulkBookmarkRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkBookmarkRequest) SetId(v int32) {
+func (o *BulkBookmarkRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -125,9 +125,9 @@ func (o *BulkBookmarkRequest) SetObjectId(v int64) {
 }
 
 // GetUser returns the User field value
-func (o *BulkBookmarkRequest) GetUser() int32 {
+func (o *BulkBookmarkRequest) GetUser() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -136,7 +136,7 @@ func (o *BulkBookmarkRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value
 // and a boolean to check if the value has been set.
-func (o *BulkBookmarkRequest) GetUserOk() (*int32, bool) {
+func (o *BulkBookmarkRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -144,7 +144,7 @@ func (o *BulkBookmarkRequest) GetUserOk() (*int32, bool) {
 }
 
 // SetUser sets field value
-func (o *BulkBookmarkRequest) SetUser(v int32) {
+func (o *BulkBookmarkRequest) SetUser(v int64) {
 	o.User = v
 }
 

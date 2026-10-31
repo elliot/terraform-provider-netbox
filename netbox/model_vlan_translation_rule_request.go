@@ -22,7 +22,7 @@ var _ MappedNullable = &VLANTranslationRuleRequest{}
 
 // VLANTranslationRuleRequest Adds support for custom fields and tags.
 type VLANTranslationRuleRequest struct {
-	Policy int32 `json:"policy"`
+	Policy int64 `json:"policy"`
 	// Numeric VLAN ID (1-4094)
 	LocalVid int32 `json:"local_vid"`
 	// Numeric VLAN ID (1-4094)
@@ -39,7 +39,7 @@ type _VLANTranslationRuleRequest VLANTranslationRuleRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVLANTranslationRuleRequest(policy int32, localVid int32, remoteVid int32) *VLANTranslationRuleRequest {
+func NewVLANTranslationRuleRequest(policy int64, localVid int32, remoteVid int32) *VLANTranslationRuleRequest {
 	this := VLANTranslationRuleRequest{}
 	this.Policy = policy
 	this.LocalVid = localVid
@@ -56,9 +56,9 @@ func NewVLANTranslationRuleRequestWithDefaults() *VLANTranslationRuleRequest {
 }
 
 // GetPolicy returns the Policy field value
-func (o *VLANTranslationRuleRequest) GetPolicy() int32 {
+func (o *VLANTranslationRuleRequest) GetPolicy() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -67,7 +67,7 @@ func (o *VLANTranslationRuleRequest) GetPolicy() int32 {
 
 // GetPolicyOk returns a tuple with the Policy field value
 // and a boolean to check if the value has been set.
-func (o *VLANTranslationRuleRequest) GetPolicyOk() (*int32, bool) {
+func (o *VLANTranslationRuleRequest) GetPolicyOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,7 +75,7 @@ func (o *VLANTranslationRuleRequest) GetPolicyOk() (*int32, bool) {
 }
 
 // SetPolicy sets field value
-func (o *VLANTranslationRuleRequest) SetPolicy(v int32) {
+func (o *VLANTranslationRuleRequest) SetPolicy(v int64) {
 	o.Policy = v
 }
 

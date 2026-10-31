@@ -22,7 +22,7 @@ var _ MappedNullable = &PatchedBulkConfigTemplateRequest{}
 
 // PatchedBulkConfigTemplateRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedBulkConfigTemplateRequest struct {
-	Id          int32   `json:"id"`
+	Id          int64   `json:"id"`
 	Name        *string `json:"name,omitempty"`
 	Description *string `json:"description,omitempty"`
 	// Any <a href=\"https://jinja.palletsprojects.com/en/stable/api/#jinja2.Environment\">additional parameters</a> to pass when constructing the Jinja environment
@@ -39,10 +39,10 @@ type PatchedBulkConfigTemplateRequest struct {
 	AsAttachment *bool `json:"as_attachment,omitempty"`
 	// Enable verbose error output when rendering this template. Not recommended for production use.
 	Debug      *bool  `json:"debug,omitempty"`
-	DataSource *int32 `json:"data_source,omitempty"`
+	DataSource *int64 `json:"data_source,omitempty"`
 	// Enable automatic synchronization of data when the data file is updated
 	AutoSyncEnabled      *bool              `json:"auto_sync_enabled,omitempty"`
-	Owner                NullableInt32      `json:"owner,omitempty"`
+	Owner                NullableInt64      `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest `json:"tags,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -53,7 +53,7 @@ type _PatchedBulkConfigTemplateRequest PatchedBulkConfigTemplateRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkConfigTemplateRequest(id int32) *PatchedBulkConfigTemplateRequest {
+func NewPatchedBulkConfigTemplateRequest(id int64) *PatchedBulkConfigTemplateRequest {
 	this := PatchedBulkConfigTemplateRequest{}
 	this.Id = id
 	return &this
@@ -68,9 +68,9 @@ func NewPatchedBulkConfigTemplateRequestWithDefaults() *PatchedBulkConfigTemplat
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkConfigTemplateRequest) GetId() int32 {
+func (o *PatchedBulkConfigTemplateRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -79,7 +79,7 @@ func (o *PatchedBulkConfigTemplateRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigTemplateRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkConfigTemplateRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -87,7 +87,7 @@ func (o *PatchedBulkConfigTemplateRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkConfigTemplateRequest) SetId(v int32) {
+func (o *PatchedBulkConfigTemplateRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -381,9 +381,9 @@ func (o *PatchedBulkConfigTemplateRequest) SetDebug(v bool) {
 }
 
 // GetDataSource returns the DataSource field value if set, zero value otherwise.
-func (o *PatchedBulkConfigTemplateRequest) GetDataSource() int32 {
+func (o *PatchedBulkConfigTemplateRequest) GetDataSource() int64 {
 	if o == nil || IsNil(o.DataSource) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DataSource
@@ -391,7 +391,7 @@ func (o *PatchedBulkConfigTemplateRequest) GetDataSource() int32 {
 
 // GetDataSourceOk returns a tuple with the DataSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigTemplateRequest) GetDataSourceOk() (*int32, bool) {
+func (o *PatchedBulkConfigTemplateRequest) GetDataSourceOk() (*int64, bool) {
 	if o == nil || IsNil(o.DataSource) {
 		return nil, false
 	}
@@ -407,8 +407,8 @@ func (o *PatchedBulkConfigTemplateRequest) HasDataSource() bool {
 	return false
 }
 
-// SetDataSource gets a reference to the given int32 and assigns it to the DataSource field.
-func (o *PatchedBulkConfigTemplateRequest) SetDataSource(v int32) {
+// SetDataSource gets a reference to the given int64 and assigns it to the DataSource field.
+func (o *PatchedBulkConfigTemplateRequest) SetDataSource(v int64) {
 	o.DataSource = &v
 }
 
@@ -445,9 +445,9 @@ func (o *PatchedBulkConfigTemplateRequest) SetAutoSyncEnabled(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkConfigTemplateRequest) GetOwner() int32 {
+func (o *PatchedBulkConfigTemplateRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -456,7 +456,7 @@ func (o *PatchedBulkConfigTemplateRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkConfigTemplateRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkConfigTemplateRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -472,8 +472,8 @@ func (o *PatchedBulkConfigTemplateRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkConfigTemplateRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkConfigTemplateRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -22,7 +22,7 @@ var _ MappedNullable = &BulkExportTemplateRequest{}
 
 // BulkExportTemplateRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type BulkExportTemplateRequest struct {
-	Id          int32    `json:"id"`
+	Id          int64    `json:"id"`
 	ObjectTypes []string `json:"object_types"`
 	Name        string   `json:"name"`
 	Description *string  `json:"description,omitempty"`
@@ -38,10 +38,10 @@ type BulkExportTemplateRequest struct {
 	FileExtension *string `json:"file_extension,omitempty"`
 	// Download file as attachment
 	AsAttachment *bool  `json:"as_attachment,omitempty"`
-	DataSource   *int32 `json:"data_source,omitempty"`
+	DataSource   *int64 `json:"data_source,omitempty"`
 	// Enable automatic synchronization of data when the data file is updated
 	AutoSyncEnabled      *bool         `json:"auto_sync_enabled,omitempty"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -51,7 +51,7 @@ type _BulkExportTemplateRequest BulkExportTemplateRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkExportTemplateRequest(id int32, objectTypes []string, name string, templateCode string) *BulkExportTemplateRequest {
+func NewBulkExportTemplateRequest(id int64, objectTypes []string, name string, templateCode string) *BulkExportTemplateRequest {
 	this := BulkExportTemplateRequest{}
 	this.Id = id
 	this.ObjectTypes = objectTypes
@@ -69,9 +69,9 @@ func NewBulkExportTemplateRequestWithDefaults() *BulkExportTemplateRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkExportTemplateRequest) GetId() int32 {
+func (o *BulkExportTemplateRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -80,7 +80,7 @@ func (o *BulkExportTemplateRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkExportTemplateRequest) GetIdOk() (*int32, bool) {
+func (o *BulkExportTemplateRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -88,7 +88,7 @@ func (o *BulkExportTemplateRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkExportTemplateRequest) SetId(v int32) {
+func (o *BulkExportTemplateRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -358,9 +358,9 @@ func (o *BulkExportTemplateRequest) SetAsAttachment(v bool) {
 }
 
 // GetDataSource returns the DataSource field value if set, zero value otherwise.
-func (o *BulkExportTemplateRequest) GetDataSource() int32 {
+func (o *BulkExportTemplateRequest) GetDataSource() int64 {
 	if o == nil || IsNil(o.DataSource) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DataSource
@@ -368,7 +368,7 @@ func (o *BulkExportTemplateRequest) GetDataSource() int32 {
 
 // GetDataSourceOk returns a tuple with the DataSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkExportTemplateRequest) GetDataSourceOk() (*int32, bool) {
+func (o *BulkExportTemplateRequest) GetDataSourceOk() (*int64, bool) {
 	if o == nil || IsNil(o.DataSource) {
 		return nil, false
 	}
@@ -384,8 +384,8 @@ func (o *BulkExportTemplateRequest) HasDataSource() bool {
 	return false
 }
 
-// SetDataSource gets a reference to the given int32 and assigns it to the DataSource field.
-func (o *BulkExportTemplateRequest) SetDataSource(v int32) {
+// SetDataSource gets a reference to the given int64 and assigns it to the DataSource field.
+func (o *BulkExportTemplateRequest) SetDataSource(v int64) {
 	o.DataSource = &v
 }
 
@@ -422,9 +422,9 @@ func (o *BulkExportTemplateRequest) SetAutoSyncEnabled(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkExportTemplateRequest) GetOwner() int32 {
+func (o *BulkExportTemplateRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -433,7 +433,7 @@ func (o *BulkExportTemplateRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkExportTemplateRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkExportTemplateRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -449,8 +449,8 @@ func (o *BulkExportTemplateRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkExportTemplateRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkExportTemplateRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

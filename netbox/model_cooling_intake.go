@@ -23,7 +23,7 @@ var _ MappedNullable = &CoolingIntake{}
 
 // CoolingIntake Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type CoolingIntake struct {
-	Id         int32               `json:"id"`
+	Id         int64               `json:"id"`
 	Url        *string             `json:"url,omitempty"`
 	DisplayUrl *string             `json:"display_url,omitempty"`
 	Display    *string             `json:"display,omitempty"`
@@ -53,7 +53,7 @@ type _CoolingIntake CoolingIntake
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCoolingIntake(id int32) *CoolingIntake {
+func NewCoolingIntake(id int64) *CoolingIntake {
 	this := CoolingIntake{}
 	this.Id = id
 	return &this
@@ -68,9 +68,9 @@ func NewCoolingIntakeWithDefaults() *CoolingIntake {
 }
 
 // GetId returns the Id field value
-func (o *CoolingIntake) GetId() int32 {
+func (o *CoolingIntake) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -79,7 +79,7 @@ func (o *CoolingIntake) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *CoolingIntake) GetIdOk() (*int32, bool) {
+func (o *CoolingIntake) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -87,7 +87,7 @@ func (o *CoolingIntake) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *CoolingIntake) SetId(v int32) {
+func (o *CoolingIntake) SetId(v int64) {
 	o.Id = v
 }
 

@@ -22,7 +22,7 @@ var _ MappedNullable = &NestedProviderAccount{}
 
 // NestedProviderAccount Represents an object related through a ForeignKey field. On write, it accepts a primary key (PK) value or a dictionary of attributes which can be used to uniquely identify the related object. This class should be subclassed to return a full representation of the related object on read.
 type NestedProviderAccount struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	DisplayUrl           *string `json:"display_url,omitempty"`
 	Display              *string `json:"display,omitempty"`
@@ -37,7 +37,7 @@ type _NestedProviderAccount NestedProviderAccount
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNestedProviderAccount(id int32) *NestedProviderAccount {
+func NewNestedProviderAccount(id int64) *NestedProviderAccount {
 	this := NestedProviderAccount{}
 	this.Id = id
 	return &this
@@ -52,9 +52,9 @@ func NewNestedProviderAccountWithDefaults() *NestedProviderAccount {
 }
 
 // GetId returns the Id field value
-func (o *NestedProviderAccount) GetId() int32 {
+func (o *NestedProviderAccount) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *NestedProviderAccount) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *NestedProviderAccount) GetIdOk() (*int32, bool) {
+func (o *NestedProviderAccount) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *NestedProviderAccount) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *NestedProviderAccount) SetId(v int32) {
+func (o *NestedProviderAccount) SetId(v int64) {
 	o.Id = v
 }
 

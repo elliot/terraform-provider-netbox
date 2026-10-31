@@ -281,7 +281,7 @@ func (d *VmInterfaceDataSource) Read(ctx context.Context, req datasource.ReadReq
 	}
 	var obj *netbox.VMInterface
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -473,6 +473,6 @@ func vmInterfaceDataFromAPI(ctx context.Context, obj *netbox.VMInterface, out *V
 	out.MacAddressIds = conv.BriefIDs(obj.GetMacAddresses())
 	out.L2vpnTerminationId = conv.BriefID(obj.GetL2vpnTerminationOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.CountIpaddresses = conv.Int64From32(obj.GetCountIpaddressesOk())
-	out.CountFhrpGroups = conv.Int64From32(obj.GetCountFhrpGroupsOk())
+	out.CountIpaddresses = conv.Int64From64(obj.GetCountIpaddressesOk())
+	out.CountFhrpGroups = conv.Int64From64(obj.GetCountFhrpGroupsOk())
 }

@@ -224,7 +224,7 @@ func (r *CircuitTerminationResource) Read(ctx context.Context, req resource.Read
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -255,7 +255,7 @@ func (r *CircuitTerminationResource) Update(ctx context.Context, req resource.Up
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -285,7 +285,7 @@ func (r *CircuitTerminationResource) Delete(ctx context.Context, req resource.De
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -305,12 +305,12 @@ func (r *CircuitTerminationResource) ImportState(ctx context.Context, req resour
 // circuitTerminationToCreate builds the CircuitTerminationRequest request body from the plan.
 func circuitTerminationToCreate(ctx context.Context, plan *CircuitTerminationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.CircuitTerminationRequest {
 	const objectType = "circuits.circuittermination"
-	body := netbox.NewCircuitTerminationRequest(conv.Int32(plan.CircuitId), plan.TermSide.ValueString())
+	body := netbox.NewCircuitTerminationRequest(plan.CircuitId.ValueInt64(), plan.TermSide.ValueString())
 	if conv.Known(plan.TerminationType) {
 		body.SetTerminationType(plan.TerminationType.ValueString())
 	}
 	if conv.Known(plan.TerminationId) {
-		body.SetTerminationId(conv.Int32(plan.TerminationId))
+		body.SetTerminationId(plan.TerminationId.ValueInt64())
 	}
 	if conv.Known(plan.PortSpeed) {
 		body.SetPortSpeed(conv.Int32(plan.PortSpeed))
@@ -345,7 +345,7 @@ func circuitTerminationToPatch(ctx context.Context, plan, state *CircuitTerminat
 	body := netbox.NewPatchedCircuitTerminationRequest()
 	if !plan.CircuitId.Equal(state.CircuitId) {
 		if conv.Known(plan.CircuitId) {
-			body.SetCircuit(conv.Int32(plan.CircuitId))
+			body.SetCircuit(plan.CircuitId.ValueInt64())
 		}
 	}
 	if !plan.TermSide.Equal(state.TermSide) {
@@ -362,7 +362,7 @@ func circuitTerminationToPatch(ctx context.Context, plan, state *CircuitTerminat
 	}
 	if !plan.TerminationId.Equal(state.TerminationId) {
 		if conv.Known(plan.TerminationId) {
-			body.SetTerminationId(conv.Int32(plan.TerminationId))
+			body.SetTerminationId(plan.TerminationId.ValueInt64())
 		}
 	}
 	if !plan.PortSpeed.Equal(state.PortSpeed) {
@@ -419,7 +419,7 @@ func circuitTerminationFromAPI(ctx context.Context, obj *netbox.CircuitTerminati
 	out.CircuitId = conv.BriefID(obj.GetCircuitOk())
 	out.TermSide = conv.ChoiceScalar(obj.GetTermSideOk())
 	out.TerminationType = conv.StringKeep(conv.String(obj.GetTerminationTypeOk()), conv.PriorString(prior, func(m *CircuitTerminationModel) types.String { return m.TerminationType }), false)
-	out.TerminationId = conv.Int64From32(obj.GetTerminationIdOk())
+	out.TerminationId = conv.Int64From64(obj.GetTerminationIdOk())
 	out.PortSpeed = conv.Int64From32(obj.GetPortSpeedOk())
 	out.UpstreamSpeed = conv.Int64From32(obj.GetUpstreamSpeedOk())
 	out.XconnectId = conv.StringKeep(conv.StringOrEmpty(obj.GetXconnectIdOk()), conv.PriorString(prior, func(m *CircuitTerminationModel) types.String { return m.XconnectId }), false)

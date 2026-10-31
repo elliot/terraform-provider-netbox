@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefDeviceTypeRequest{}
 
 // BriefDeviceTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type BriefDeviceTypeRequest struct {
-	Manufacturer         int32   `json:"manufacturer"`
+	Manufacturer         int64   `json:"manufacturer"`
 	Model                string  `json:"model"`
 	Slug                 string  `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description          *string `json:"description,omitempty"`
@@ -35,7 +35,7 @@ type _BriefDeviceTypeRequest BriefDeviceTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefDeviceTypeRequest(manufacturer int32, model string, slug string) *BriefDeviceTypeRequest {
+func NewBriefDeviceTypeRequest(manufacturer int64, model string, slug string) *BriefDeviceTypeRequest {
 	this := BriefDeviceTypeRequest{}
 	this.Manufacturer = manufacturer
 	this.Model = model
@@ -52,9 +52,9 @@ func NewBriefDeviceTypeRequestWithDefaults() *BriefDeviceTypeRequest {
 }
 
 // GetManufacturer returns the Manufacturer field value
-func (o *BriefDeviceTypeRequest) GetManufacturer() int32 {
+func (o *BriefDeviceTypeRequest) GetManufacturer() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *BriefDeviceTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value
 // and a boolean to check if the value has been set.
-func (o *BriefDeviceTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *BriefDeviceTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *BriefDeviceTypeRequest) GetManufacturerOk() (*int32, bool) {
 }
 
 // SetManufacturer sets field value
-func (o *BriefDeviceTypeRequest) SetManufacturer(v int32) {
+func (o *BriefDeviceTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = v
 }
 

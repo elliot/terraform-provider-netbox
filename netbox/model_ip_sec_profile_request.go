@@ -26,9 +26,9 @@ type IPSecProfileRequest struct {
 	Description *string `json:"description,omitempty"`
 	// * `esp` - ESP * `ah` - AH
 	Mode                 string                 `json:"mode"`
-	IkePolicy            int32                  `json:"ike_policy"`
-	IpsecPolicy          int32                  `json:"ipsec_policy"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	IkePolicy            int64                  `json:"ike_policy"`
+	IpsecPolicy          int64                  `json:"ipsec_policy"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -41,7 +41,7 @@ type _IPSecProfileRequest IPSecProfileRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewIPSecProfileRequest(name string, mode string, ikePolicy int32, ipsecPolicy int32) *IPSecProfileRequest {
+func NewIPSecProfileRequest(name string, mode string, ikePolicy int64, ipsecPolicy int64) *IPSecProfileRequest {
 	this := IPSecProfileRequest{}
 	this.Name = name
 	this.Mode = mode
@@ -139,9 +139,9 @@ func (o *IPSecProfileRequest) SetMode(v string) {
 }
 
 // GetIkePolicy returns the IkePolicy field value
-func (o *IPSecProfileRequest) GetIkePolicy() int32 {
+func (o *IPSecProfileRequest) GetIkePolicy() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -150,7 +150,7 @@ func (o *IPSecProfileRequest) GetIkePolicy() int32 {
 
 // GetIkePolicyOk returns a tuple with the IkePolicy field value
 // and a boolean to check if the value has been set.
-func (o *IPSecProfileRequest) GetIkePolicyOk() (*int32, bool) {
+func (o *IPSecProfileRequest) GetIkePolicyOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -158,14 +158,14 @@ func (o *IPSecProfileRequest) GetIkePolicyOk() (*int32, bool) {
 }
 
 // SetIkePolicy sets field value
-func (o *IPSecProfileRequest) SetIkePolicy(v int32) {
+func (o *IPSecProfileRequest) SetIkePolicy(v int64) {
 	o.IkePolicy = v
 }
 
 // GetIpsecPolicy returns the IpsecPolicy field value
-func (o *IPSecProfileRequest) GetIpsecPolicy() int32 {
+func (o *IPSecProfileRequest) GetIpsecPolicy() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -174,7 +174,7 @@ func (o *IPSecProfileRequest) GetIpsecPolicy() int32 {
 
 // GetIpsecPolicyOk returns a tuple with the IpsecPolicy field value
 // and a boolean to check if the value has been set.
-func (o *IPSecProfileRequest) GetIpsecPolicyOk() (*int32, bool) {
+func (o *IPSecProfileRequest) GetIpsecPolicyOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -182,14 +182,14 @@ func (o *IPSecProfileRequest) GetIpsecPolicyOk() (*int32, bool) {
 }
 
 // SetIpsecPolicy sets field value
-func (o *IPSecProfileRequest) SetIpsecPolicy(v int32) {
+func (o *IPSecProfileRequest) SetIpsecPolicy(v int64) {
 	o.IpsecPolicy = v
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *IPSecProfileRequest) GetOwner() int32 {
+func (o *IPSecProfileRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -198,7 +198,7 @@ func (o *IPSecProfileRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *IPSecProfileRequest) GetOwnerOk() (*int32, bool) {
+func (o *IPSecProfileRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -214,8 +214,8 @@ func (o *IPSecProfileRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *IPSecProfileRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *IPSecProfileRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

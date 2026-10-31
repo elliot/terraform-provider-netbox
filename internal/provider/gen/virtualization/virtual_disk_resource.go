@@ -179,7 +179,7 @@ func (r *VirtualDiskResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -210,7 +210,7 @@ func (r *VirtualDiskResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -240,7 +240,7 @@ func (r *VirtualDiskResource) Delete(ctx context.Context, req resource.DeleteReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -260,12 +260,12 @@ func (r *VirtualDiskResource) ImportState(ctx context.Context, req resource.Impo
 // virtualDiskToCreate builds the VirtualDiskRequest request body from the plan.
 func virtualDiskToCreate(ctx context.Context, plan *VirtualDiskModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.VirtualDiskRequest {
 	const objectType = "virtualization.virtualdisk"
-	body := netbox.NewVirtualDiskRequest(conv.Int32(plan.VirtualMachineId), plan.Name.ValueString(), conv.Int32(plan.Size))
+	body := netbox.NewVirtualDiskRequest(plan.VirtualMachineId.ValueInt64(), plan.Name.ValueString(), conv.Int32(plan.Size))
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -282,7 +282,7 @@ func virtualDiskToPatch(ctx context.Context, plan, state *VirtualDiskModel, cf *
 	body := netbox.NewPatchedVirtualDiskRequest()
 	if !plan.VirtualMachineId.Equal(state.VirtualMachineId) {
 		if conv.Known(plan.VirtualMachineId) {
-			body.SetVirtualMachine(conv.Int32(plan.VirtualMachineId))
+			body.SetVirtualMachine(plan.VirtualMachineId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -304,7 +304,7 @@ func virtualDiskToPatch(ctx context.Context, plan, state *VirtualDiskModel, cf *
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

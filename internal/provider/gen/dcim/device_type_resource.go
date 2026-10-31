@@ -289,7 +289,7 @@ func (r *DeviceTypeResource) Read(ctx context.Context, req resource.ReadRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -320,7 +320,7 @@ func (r *DeviceTypeResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -350,7 +350,7 @@ func (r *DeviceTypeResource) Delete(ctx context.Context, req resource.DeleteRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -370,9 +370,9 @@ func (r *DeviceTypeResource) ImportState(ctx context.Context, req resource.Impor
 // deviceTypeToCreate builds the WritableDeviceTypeRequest request body from the plan.
 func deviceTypeToCreate(ctx context.Context, plan *DeviceTypeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableDeviceTypeRequest {
 	const objectType = "dcim.devicetype"
-	body := netbox.NewWritableDeviceTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString(), plan.Slug.ValueString())
+	body := netbox.NewWritableDeviceTypeRequest(plan.ManufacturerId.ValueInt64(), plan.Model.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.DefaultPlatformId) {
-		body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
+		body.SetDefaultPlatform(plan.DefaultPlatformId.ValueInt64())
 	}
 	if !plan.PartNumber.IsUnknown() {
 		body.SetPartNumber(plan.PartNumber.ValueString())
@@ -408,7 +408,7 @@ func deviceTypeToCreate(ctx context.Context, plan *DeviceTypeModel, cf *customfi
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -428,14 +428,14 @@ func deviceTypeToPatch(ctx context.Context, plan, state *DeviceTypeModel, cf *cu
 	body := netbox.NewPatchedWritableDeviceTypeRequest()
 	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
 		if conv.Known(plan.ManufacturerId) {
-			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+			body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 		}
 	}
 	if !plan.DefaultPlatformId.Equal(state.DefaultPlatformId) {
 		if plan.DefaultPlatformId.IsNull() {
 			body.SetDefaultPlatformNil()
 		} else if !plan.DefaultPlatformId.IsUnknown() {
-			body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
+			body.SetDefaultPlatform(plan.DefaultPlatformId.ValueInt64())
 		}
 	}
 	if !plan.Model.Equal(state.Model) {
@@ -509,7 +509,7 @@ func deviceTypeToPatch(ctx context.Context, plan, state *DeviceTypeModel, cf *cu
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

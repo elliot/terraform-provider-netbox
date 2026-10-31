@@ -22,10 +22,10 @@ var _ MappedNullable = &PatchedBulkBookmarkRequest{}
 
 // PatchedBulkBookmarkRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedBulkBookmarkRequest struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	ObjectType           *string `json:"object_type,omitempty"`
 	ObjectId             *int64  `json:"object_id,omitempty"`
-	User                 *int32  `json:"user,omitempty"`
+	User                 *int64  `json:"user,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -35,7 +35,7 @@ type _PatchedBulkBookmarkRequest PatchedBulkBookmarkRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkBookmarkRequest(id int32) *PatchedBulkBookmarkRequest {
+func NewPatchedBulkBookmarkRequest(id int64) *PatchedBulkBookmarkRequest {
 	this := PatchedBulkBookmarkRequest{}
 	this.Id = id
 	return &this
@@ -50,9 +50,9 @@ func NewPatchedBulkBookmarkRequestWithDefaults() *PatchedBulkBookmarkRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkBookmarkRequest) GetId() int32 {
+func (o *PatchedBulkBookmarkRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -61,7 +61,7 @@ func (o *PatchedBulkBookmarkRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkBookmarkRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkBookmarkRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -69,7 +69,7 @@ func (o *PatchedBulkBookmarkRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkBookmarkRequest) SetId(v int32) {
+func (o *PatchedBulkBookmarkRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -138,9 +138,9 @@ func (o *PatchedBulkBookmarkRequest) SetObjectId(v int64) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise.
-func (o *PatchedBulkBookmarkRequest) GetUser() int32 {
+func (o *PatchedBulkBookmarkRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User
@@ -148,7 +148,7 @@ func (o *PatchedBulkBookmarkRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkBookmarkRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedBulkBookmarkRequest) GetUserOk() (*int64, bool) {
 	if o == nil || IsNil(o.User) {
 		return nil, false
 	}
@@ -164,8 +164,8 @@ func (o *PatchedBulkBookmarkRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given int32 and assigns it to the User field.
-func (o *PatchedBulkBookmarkRequest) SetUser(v int32) {
+// SetUser gets a reference to the given int64 and assigns it to the User field.
+func (o *PatchedBulkBookmarkRequest) SetUser(v int64) {
 	o.User = &v
 }
 

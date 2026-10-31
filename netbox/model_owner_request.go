@@ -23,10 +23,10 @@ var _ MappedNullable = &OwnerRequest{}
 // OwnerRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type OwnerRequest struct {
 	Name                 string        `json:"name"`
-	Group                NullableInt32 `json:"group"`
+	Group                NullableInt64 `json:"group"`
 	Description          *string       `json:"description,omitempty"`
-	UserGroups           []int32       `json:"user_groups,omitempty"`
-	Users                []int32       `json:"users,omitempty"`
+	UserGroups           []int64       `json:"user_groups,omitempty"`
+	Users                []int64       `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -36,7 +36,7 @@ type _OwnerRequest OwnerRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewOwnerRequest(name string, group NullableInt32) *OwnerRequest {
+func NewOwnerRequest(name string, group NullableInt64) *OwnerRequest {
 	this := OwnerRequest{}
 	this.Name = name
 	this.Group = group
@@ -76,10 +76,10 @@ func (o *OwnerRequest) SetName(v string) {
 }
 
 // GetGroup returns the Group field value
-// If the value is explicit nil, the zero value for int32 will be returned
-func (o *OwnerRequest) GetGroup() int32 {
+// If the value is explicit nil, the zero value for int64 will be returned
+func (o *OwnerRequest) GetGroup() int64 {
 	if o == nil || o.Group.Get() == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -89,7 +89,7 @@ func (o *OwnerRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *OwnerRequest) GetGroupOk() (*int32, bool) {
+func (o *OwnerRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -97,7 +97,7 @@ func (o *OwnerRequest) GetGroupOk() (*int32, bool) {
 }
 
 // SetGroup sets field value
-func (o *OwnerRequest) SetGroup(v int32) {
+func (o *OwnerRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -134,9 +134,9 @@ func (o *OwnerRequest) SetDescription(v string) {
 }
 
 // GetUserGroups returns the UserGroups field value if set, zero value otherwise.
-func (o *OwnerRequest) GetUserGroups() []int32 {
+func (o *OwnerRequest) GetUserGroups() []int64 {
 	if o == nil || IsNil(o.UserGroups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.UserGroups
@@ -144,7 +144,7 @@ func (o *OwnerRequest) GetUserGroups() []int32 {
 
 // GetUserGroupsOk returns a tuple with the UserGroups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *OwnerRequest) GetUserGroupsOk() ([]int32, bool) {
+func (o *OwnerRequest) GetUserGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.UserGroups) {
 		return nil, false
 	}
@@ -160,15 +160,15 @@ func (o *OwnerRequest) HasUserGroups() bool {
 	return false
 }
 
-// SetUserGroups gets a reference to the given []int32 and assigns it to the UserGroups field.
-func (o *OwnerRequest) SetUserGroups(v []int32) {
+// SetUserGroups gets a reference to the given []int64 and assigns it to the UserGroups field.
+func (o *OwnerRequest) SetUserGroups(v []int64) {
 	o.UserGroups = v
 }
 
 // GetUsers returns the Users field value if set, zero value otherwise.
-func (o *OwnerRequest) GetUsers() []int32 {
+func (o *OwnerRequest) GetUsers() []int64 {
 	if o == nil || IsNil(o.Users) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Users
@@ -176,7 +176,7 @@ func (o *OwnerRequest) GetUsers() []int32 {
 
 // GetUsersOk returns a tuple with the Users field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *OwnerRequest) GetUsersOk() ([]int32, bool) {
+func (o *OwnerRequest) GetUsersOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Users) {
 		return nil, false
 	}
@@ -192,8 +192,8 @@ func (o *OwnerRequest) HasUsers() bool {
 	return false
 }
 
-// SetUsers gets a reference to the given []int32 and assigns it to the Users field.
-func (o *OwnerRequest) SetUsers(v []int32) {
+// SetUsers gets a reference to the given []int64 and assigns it to the Users field.
+func (o *OwnerRequest) SetUsers(v []int64) {
 	o.Users = v
 }
 

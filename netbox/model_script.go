@@ -22,16 +22,16 @@ var _ MappedNullable = &Script{}
 
 // Script Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type Script struct {
-	Id                   int32          `json:"id"`
-	Url                  *string        `json:"url,omitempty"`
-	DisplayUrl           *string        `json:"display_url,omitempty"`
-	Module               *int32         `json:"module,omitempty"`
-	Name                 *string        `json:"name,omitempty"`
-	Description          NullableString `json:"description,omitempty"`
-	Vars                 interface{}    `json:"vars,omitempty"`
-	Result               *BriefJob      `json:"result,omitempty"`
-	Display              *string        `json:"display,omitempty"`
-	IsExecutable         *bool          `json:"is_executable,omitempty"`
+	Id                   int64            `json:"id"`
+	Url                  *string          `json:"url,omitempty"`
+	DisplayUrl           *string          `json:"display_url,omitempty"`
+	Module               *int64           `json:"module,omitempty"`
+	Name                 *string          `json:"name,omitempty"`
+	Description          NullableString   `json:"description,omitempty"`
+	Vars                 interface{}      `json:"vars,omitempty"`
+	Result               NullableBriefJob `json:"result,omitempty"`
+	Display              *string          `json:"display,omitempty"`
+	IsExecutable         *bool            `json:"is_executable,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -41,7 +41,7 @@ type _Script Script
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewScript(id int32) *Script {
+func NewScript(id int64) *Script {
 	this := Script{}
 	this.Id = id
 	return &this
@@ -56,9 +56,9 @@ func NewScriptWithDefaults() *Script {
 }
 
 // GetId returns the Id field value
-func (o *Script) GetId() int32 {
+func (o *Script) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -67,7 +67,7 @@ func (o *Script) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *Script) GetIdOk() (*int32, bool) {
+func (o *Script) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,7 +75,7 @@ func (o *Script) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *Script) SetId(v int32) {
+func (o *Script) SetId(v int64) {
 	o.Id = v
 }
 
@@ -144,9 +144,9 @@ func (o *Script) SetDisplayUrl(v string) {
 }
 
 // GetModule returns the Module field value if set, zero value otherwise.
-func (o *Script) GetModule() int32 {
+func (o *Script) GetModule() int64 {
 	if o == nil || IsNil(o.Module) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module
@@ -154,7 +154,7 @@ func (o *Script) GetModule() int32 {
 
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Script) GetModuleOk() (*int32, bool) {
+func (o *Script) GetModuleOk() (*int64, bool) {
 	if o == nil || IsNil(o.Module) {
 		return nil, false
 	}
@@ -170,8 +170,8 @@ func (o *Script) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given int32 and assigns it to the Module field.
-func (o *Script) SetModule(v int32) {
+// SetModule gets a reference to the given int64 and assigns it to the Module field.
+func (o *Script) SetModule(v int64) {
 	o.Module = &v
 }
 
@@ -283,36 +283,47 @@ func (o *Script) SetVars(v interface{}) {
 	o.Vars = v
 }
 
-// GetResult returns the Result field value if set, zero value otherwise.
+// GetResult returns the Result field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Script) GetResult() BriefJob {
-	if o == nil || IsNil(o.Result) {
+	if o == nil || IsNil(o.Result.Get()) {
 		var ret BriefJob
 		return ret
 	}
-	return *o.Result
+	return *o.Result.Get()
 }
 
 // GetResultOk returns a tuple with the Result field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Script) GetResultOk() (*BriefJob, bool) {
-	if o == nil || IsNil(o.Result) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Result, true
+	return o.Result.Get(), o.Result.IsSet()
 }
 
 // HasResult returns a boolean if a field has been set.
 func (o *Script) HasResult() bool {
-	if o != nil && !IsNil(o.Result) {
+	if o != nil && o.Result.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetResult gets a reference to the given BriefJob and assigns it to the Result field.
+// SetResult gets a reference to the given NullableBriefJob and assigns it to the Result field.
 func (o *Script) SetResult(v BriefJob) {
-	o.Result = &v
+	o.Result.Set(&v)
+}
+
+// SetResultNil sets the value for Result to be an explicit nil
+func (o *Script) SetResultNil() {
+	o.Result.Set(nil)
+}
+
+// UnsetResult ensures that no value is present for Result, not even an explicit nil
+func (o *Script) UnsetResult() {
+	o.Result.Unset()
 }
 
 // GetDisplay returns the Display field value if set, zero value otherwise.
@@ -408,8 +419,8 @@ func (o Script) ToMap() (map[string]interface{}, error) {
 	if o.Vars != nil {
 		toSerialize["vars"] = o.Vars
 	}
-	if !IsNil(o.Result) {
-		toSerialize["result"] = o.Result
+	if o.Result.IsSet() {
+		toSerialize["result"] = o.Result.Get()
 	}
 	if !IsNil(o.Display) {
 		toSerialize["display"] = o.Display

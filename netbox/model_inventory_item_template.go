@@ -23,11 +23,11 @@ var _ MappedNullable = &InventoryItemTemplate{}
 
 // InventoryItemTemplate Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type InventoryItemTemplate struct {
-	Id         int32            `json:"id"`
+	Id         int64            `json:"id"`
 	Url        *string          `json:"url,omitempty"`
 	Display    *string          `json:"display,omitempty"`
 	DeviceType *BriefDeviceType `json:"device_type,omitempty"`
-	Parent     NullableInt32    `json:"parent,omitempty"`
+	Parent     NullableInt64    `json:"parent,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name *string `json:"name,omitempty"`
 	// Physical label
@@ -52,7 +52,7 @@ type _InventoryItemTemplate InventoryItemTemplate
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInventoryItemTemplate(id int32) *InventoryItemTemplate {
+func NewInventoryItemTemplate(id int64) *InventoryItemTemplate {
 	this := InventoryItemTemplate{}
 	this.Id = id
 	return &this
@@ -67,9 +67,9 @@ func NewInventoryItemTemplateWithDefaults() *InventoryItemTemplate {
 }
 
 // GetId returns the Id field value
-func (o *InventoryItemTemplate) GetId() int32 {
+func (o *InventoryItemTemplate) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -78,7 +78,7 @@ func (o *InventoryItemTemplate) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *InventoryItemTemplate) GetIdOk() (*int32, bool) {
+func (o *InventoryItemTemplate) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -86,7 +86,7 @@ func (o *InventoryItemTemplate) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *InventoryItemTemplate) SetId(v int32) {
+func (o *InventoryItemTemplate) SetId(v int64) {
 	o.Id = v
 }
 
@@ -187,9 +187,9 @@ func (o *InventoryItemTemplate) SetDeviceType(v BriefDeviceType) {
 }
 
 // GetParent returns the Parent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *InventoryItemTemplate) GetParent() int32 {
+func (o *InventoryItemTemplate) GetParent() int64 {
 	if o == nil || IsNil(o.Parent.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Parent.Get()
@@ -198,7 +198,7 @@ func (o *InventoryItemTemplate) GetParent() int32 {
 // GetParentOk returns a tuple with the Parent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *InventoryItemTemplate) GetParentOk() (*int32, bool) {
+func (o *InventoryItemTemplate) GetParentOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -214,8 +214,8 @@ func (o *InventoryItemTemplate) HasParent() bool {
 	return false
 }
 
-// SetParent gets a reference to the given NullableInt32 and assigns it to the Parent field.
-func (o *InventoryItemTemplate) SetParent(v int32) {
+// SetParent gets a reference to the given NullableInt64 and assigns it to the Parent field.
+func (o *InventoryItemTemplate) SetParent(v int64) {
 	o.Parent.Set(&v)
 }
 

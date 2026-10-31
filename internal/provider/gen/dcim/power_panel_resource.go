@@ -186,7 +186,7 @@ func (r *PowerPanelResource) Read(ctx context.Context, req resource.ReadRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -217,7 +217,7 @@ func (r *PowerPanelResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -247,7 +247,7 @@ func (r *PowerPanelResource) Delete(ctx context.Context, req resource.DeleteRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -267,15 +267,15 @@ func (r *PowerPanelResource) ImportState(ctx context.Context, req resource.Impor
 // powerPanelToCreate builds the PowerPanelRequest request body from the plan.
 func powerPanelToCreate(ctx context.Context, plan *PowerPanelModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.PowerPanelRequest {
 	const objectType = "dcim.powerpanel"
-	body := netbox.NewPowerPanelRequest(conv.Int32(plan.SiteId), plan.Name.ValueString())
+	body := netbox.NewPowerPanelRequest(plan.SiteId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.LocationId) {
-		body.SetLocation(conv.Int32(plan.LocationId))
+		body.SetLocation(plan.LocationId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -295,14 +295,14 @@ func powerPanelToPatch(ctx context.Context, plan, state *PowerPanelModel, cf *cu
 	body := netbox.NewPatchedPowerPanelRequest()
 	if !plan.SiteId.Equal(state.SiteId) {
 		if conv.Known(plan.SiteId) {
-			body.SetSite(conv.Int32(plan.SiteId))
+			body.SetSite(plan.SiteId.ValueInt64())
 		}
 	}
 	if !plan.LocationId.Equal(state.LocationId) {
 		if plan.LocationId.IsNull() {
 			body.SetLocationNil()
 		} else if !plan.LocationId.IsUnknown() {
-			body.SetLocation(conv.Int32(plan.LocationId))
+			body.SetLocation(plan.LocationId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -319,7 +319,7 @@ func powerPanelToPatch(ctx context.Context, plan, state *PowerPanelModel, cf *cu
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

@@ -440,7 +440,7 @@ func (d *DeviceDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	var obj *netbox.Device
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -646,16 +646,16 @@ func deviceDataFromAPI(ctx context.Context, obj *netbox.Device, out *DeviceDataM
 	out.PrimaryIpId = conv.BriefID(obj.GetPrimaryIpOk())
 	out.ConfigContext = conv.JSONFromAPI(obj.GetConfigContext())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.ConsolePortCount = conv.Int64From32(obj.GetConsolePortCountOk())
-	out.ConsoleServerPortCount = conv.Int64From32(obj.GetConsoleServerPortCountOk())
-	out.PowerPortCount = conv.Int64From32(obj.GetPowerPortCountOk())
-	out.PowerOutletCount = conv.Int64From32(obj.GetPowerOutletCountOk())
-	out.CoolingIntakeCount = conv.Int64From32(obj.GetCoolingIntakeCountOk())
-	out.CoolingOutflowCount = conv.Int64From32(obj.GetCoolingOutflowCountOk())
-	out.InterfaceCount = conv.Int64From32(obj.GetInterfaceCountOk())
-	out.FrontPortCount = conv.Int64From32(obj.GetFrontPortCountOk())
-	out.RearPortCount = conv.Int64From32(obj.GetRearPortCountOk())
-	out.DeviceBayCount = conv.Int64From32(obj.GetDeviceBayCountOk())
-	out.ModuleBayCount = conv.Int64From32(obj.GetModuleBayCountOk())
-	out.InventoryItemCount = conv.Int64From32(obj.GetInventoryItemCountOk())
+	out.ConsolePortCount = conv.Int64From64(obj.GetConsolePortCountOk())
+	out.ConsoleServerPortCount = conv.Int64From64(obj.GetConsoleServerPortCountOk())
+	out.PowerPortCount = conv.Int64From64(obj.GetPowerPortCountOk())
+	out.PowerOutletCount = conv.Int64From64(obj.GetPowerOutletCountOk())
+	out.CoolingIntakeCount = conv.Int64From64(obj.GetCoolingIntakeCountOk())
+	out.CoolingOutflowCount = conv.Int64From64(obj.GetCoolingOutflowCountOk())
+	out.InterfaceCount = conv.Int64From64(obj.GetInterfaceCountOk())
+	out.FrontPortCount = conv.Int64From64(obj.GetFrontPortCountOk())
+	out.RearPortCount = conv.Int64From64(obj.GetRearPortCountOk())
+	out.DeviceBayCount = conv.Int64From64(obj.GetDeviceBayCountOk())
+	out.ModuleBayCount = conv.Int64From64(obj.GetModuleBayCountOk())
+	out.InventoryItemCount = conv.Int64From64(obj.GetInventoryItemCountOk())
 }

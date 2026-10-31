@@ -22,8 +22,8 @@ var _ MappedNullable = &BriefModuleTypeRequest{}
 
 // BriefModuleTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type BriefModuleTypeRequest struct {
-	Profile              NullableInt32 `json:"profile,omitempty"`
-	Manufacturer         int32         `json:"manufacturer"`
+	Profile              NullableInt64 `json:"profile,omitempty"`
+	Manufacturer         int64         `json:"manufacturer"`
 	Model                string        `json:"model"`
 	Description          *string       `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -35,7 +35,7 @@ type _BriefModuleTypeRequest BriefModuleTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefModuleTypeRequest(manufacturer int32, model string) *BriefModuleTypeRequest {
+func NewBriefModuleTypeRequest(manufacturer int64, model string) *BriefModuleTypeRequest {
 	this := BriefModuleTypeRequest{}
 	this.Manufacturer = manufacturer
 	this.Model = model
@@ -51,9 +51,9 @@ func NewBriefModuleTypeRequestWithDefaults() *BriefModuleTypeRequest {
 }
 
 // GetProfile returns the Profile field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BriefModuleTypeRequest) GetProfile() int32 {
+func (o *BriefModuleTypeRequest) GetProfile() int64 {
 	if o == nil || IsNil(o.Profile.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Profile.Get()
@@ -62,7 +62,7 @@ func (o *BriefModuleTypeRequest) GetProfile() int32 {
 // GetProfileOk returns a tuple with the Profile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BriefModuleTypeRequest) GetProfileOk() (*int32, bool) {
+func (o *BriefModuleTypeRequest) GetProfileOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -78,8 +78,8 @@ func (o *BriefModuleTypeRequest) HasProfile() bool {
 	return false
 }
 
-// SetProfile gets a reference to the given NullableInt32 and assigns it to the Profile field.
-func (o *BriefModuleTypeRequest) SetProfile(v int32) {
+// SetProfile gets a reference to the given NullableInt64 and assigns it to the Profile field.
+func (o *BriefModuleTypeRequest) SetProfile(v int64) {
 	o.Profile.Set(&v)
 }
 
@@ -94,9 +94,9 @@ func (o *BriefModuleTypeRequest) UnsetProfile() {
 }
 
 // GetManufacturer returns the Manufacturer field value
-func (o *BriefModuleTypeRequest) GetManufacturer() int32 {
+func (o *BriefModuleTypeRequest) GetManufacturer() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -105,7 +105,7 @@ func (o *BriefModuleTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value
 // and a boolean to check if the value has been set.
-func (o *BriefModuleTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *BriefModuleTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -113,7 +113,7 @@ func (o *BriefModuleTypeRequest) GetManufacturerOk() (*int32, bool) {
 }
 
 // SetManufacturer sets field value
-func (o *BriefModuleTypeRequest) SetManufacturer(v int32) {
+func (o *BriefModuleTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = v
 }
 

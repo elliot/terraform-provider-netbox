@@ -22,9 +22,9 @@ var _ MappedNullable = &PatchedBulkCoolingSourceRequest{}
 
 // PatchedBulkCoolingSourceRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkCoolingSourceRequest struct {
-	Id       int32         `json:"id"`
-	Site     *int32        `json:"site,omitempty"`
-	Location NullableInt32 `json:"location,omitempty"`
+	Id       int64         `json:"id"`
+	Site     *int64        `json:"site,omitempty"`
+	Location NullableInt64 `json:"location,omitempty"`
 	Name     *string       `json:"name,omitempty"`
 	// * `chiller` - Chiller * `cooling-tower` - Cooling tower * `dry-cooler` - Dry cooler * `crac` - CRAC * `crah` - CRAH
 	Type *string `json:"type,omitempty"`
@@ -35,7 +35,7 @@ type PatchedBulkCoolingSourceRequest struct {
 	// Total rated cooling capacity (kW)
 	CoolingCapacity      NullableFloat64        `json:"cooling_capacity,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -48,7 +48,7 @@ type _PatchedBulkCoolingSourceRequest PatchedBulkCoolingSourceRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkCoolingSourceRequest(id int32) *PatchedBulkCoolingSourceRequest {
+func NewPatchedBulkCoolingSourceRequest(id int64) *PatchedBulkCoolingSourceRequest {
 	this := PatchedBulkCoolingSourceRequest{}
 	this.Id = id
 	return &this
@@ -63,9 +63,9 @@ func NewPatchedBulkCoolingSourceRequestWithDefaults() *PatchedBulkCoolingSourceR
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkCoolingSourceRequest) GetId() int32 {
+func (o *PatchedBulkCoolingSourceRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -74,7 +74,7 @@ func (o *PatchedBulkCoolingSourceRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkCoolingSourceRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkCoolingSourceRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -82,14 +82,14 @@ func (o *PatchedBulkCoolingSourceRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkCoolingSourceRequest) SetId(v int32) {
+func (o *PatchedBulkCoolingSourceRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetSite returns the Site field value if set, zero value otherwise.
-func (o *PatchedBulkCoolingSourceRequest) GetSite() int32 {
+func (o *PatchedBulkCoolingSourceRequest) GetSite() int64 {
 	if o == nil || IsNil(o.Site) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Site
@@ -97,7 +97,7 @@ func (o *PatchedBulkCoolingSourceRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkCoolingSourceRequest) GetSiteOk() (*int32, bool) {
+func (o *PatchedBulkCoolingSourceRequest) GetSiteOk() (*int64, bool) {
 	if o == nil || IsNil(o.Site) {
 		return nil, false
 	}
@@ -113,15 +113,15 @@ func (o *PatchedBulkCoolingSourceRequest) HasSite() bool {
 	return false
 }
 
-// SetSite gets a reference to the given int32 and assigns it to the Site field.
-func (o *PatchedBulkCoolingSourceRequest) SetSite(v int32) {
+// SetSite gets a reference to the given int64 and assigns it to the Site field.
+func (o *PatchedBulkCoolingSourceRequest) SetSite(v int64) {
 	o.Site = &v
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCoolingSourceRequest) GetLocation() int32 {
+func (o *PatchedBulkCoolingSourceRequest) GetLocation() int64 {
 	if o == nil || IsNil(o.Location.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Location.Get()
@@ -130,7 +130,7 @@ func (o *PatchedBulkCoolingSourceRequest) GetLocation() int32 {
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCoolingSourceRequest) GetLocationOk() (*int32, bool) {
+func (o *PatchedBulkCoolingSourceRequest) GetLocationOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -146,8 +146,8 @@ func (o *PatchedBulkCoolingSourceRequest) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given NullableInt32 and assigns it to the Location field.
-func (o *PatchedBulkCoolingSourceRequest) SetLocation(v int32) {
+// SetLocation gets a reference to the given NullableInt64 and assigns it to the Location field.
+func (o *PatchedBulkCoolingSourceRequest) SetLocation(v int64) {
 	o.Location.Set(&v)
 }
 
@@ -376,9 +376,9 @@ func (o *PatchedBulkCoolingSourceRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCoolingSourceRequest) GetOwner() int32 {
+func (o *PatchedBulkCoolingSourceRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -387,7 +387,7 @@ func (o *PatchedBulkCoolingSourceRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCoolingSourceRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkCoolingSourceRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -403,8 +403,8 @@ func (o *PatchedBulkCoolingSourceRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkCoolingSourceRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkCoolingSourceRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -161,7 +161,7 @@ func (d *ScriptDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	var obj *netbox.Script
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -330,7 +330,7 @@ func scriptDataFromAPI(ctx context.Context, obj *netbox.Script, out *ScriptDataM
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Url = conv.String(obj.GetUrlOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
-	out.Module = conv.Int64From32(obj.GetModuleOk())
+	out.Module = conv.Int64From64(obj.GetModuleOk())
 	out.Name = conv.String(obj.GetNameOk())
 	out.Description = conv.String(obj.GetDescriptionOk())
 	out.Vars = conv.JSONFromAPI(obj.GetVars())

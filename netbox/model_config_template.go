@@ -23,7 +23,7 @@ var _ MappedNullable = &ConfigTemplate{}
 
 // ConfigTemplate Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type ConfigTemplate struct {
-	Id          int32   `json:"id"`
+	Id          int64   `json:"id"`
 	Url         *string `json:"url,omitempty"`
 	DisplayUrl  *string `json:"display_url,omitempty"`
 	Display     *string `json:"display,omitempty"`
@@ -63,7 +63,7 @@ type _ConfigTemplate ConfigTemplate
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigTemplate(id int32) *ConfigTemplate {
+func NewConfigTemplate(id int64) *ConfigTemplate {
 	this := ConfigTemplate{}
 	this.Id = id
 	return &this
@@ -78,9 +78,9 @@ func NewConfigTemplateWithDefaults() *ConfigTemplate {
 }
 
 // GetId returns the Id field value
-func (o *ConfigTemplate) GetId() int32 {
+func (o *ConfigTemplate) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -89,7 +89,7 @@ func (o *ConfigTemplate) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ConfigTemplate) GetIdOk() (*int32, bool) {
+func (o *ConfigTemplate) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -97,7 +97,7 @@ func (o *ConfigTemplate) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *ConfigTemplate) SetId(v int32) {
+func (o *ConfigTemplate) SetId(v int64) {
 	o.Id = v
 }
 

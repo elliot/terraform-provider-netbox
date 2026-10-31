@@ -234,7 +234,7 @@ func (r *FrontPortTemplateResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -265,7 +265,7 @@ func (r *FrontPortTemplateResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -295,7 +295,7 @@ func (r *FrontPortTemplateResource) Delete(ctx context.Context, req resource.Del
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -316,10 +316,10 @@ func (r *FrontPortTemplateResource) ImportState(ctx context.Context, req resourc
 func frontPortTemplateToCreate(ctx context.Context, plan *FrontPortTemplateModel, diags *diag.Diagnostics) *netbox.WritableFrontPortTemplateRequest {
 	body := netbox.NewWritableFrontPortTemplateRequest(plan.Name.ValueString(), plan.Type.ValueString())
 	if conv.Known(plan.DeviceTypeId) {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 	}
 	if conv.Known(plan.ModuleTypeId) {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -336,7 +336,7 @@ func frontPortTemplateToCreate(ctx context.Context, plan *FrontPortTemplateModel
 			var items []FrontPortTemplateRearPortsItem
 			diags.Append(plan.RearPorts.ElementsAs(ctx, &items, false)...)
 			for _, it := range items {
-				e := netbox.NewFrontPortTemplateMappingRequest(conv.Int32(it.Position), conv.Int32(it.RearPort))
+				e := netbox.NewFrontPortTemplateMappingRequest(conv.Int32(it.Position), it.RearPort.ValueInt64())
 				if conv.Known(it.RearPortPosition) {
 					e.SetRearPortPosition(conv.Int32(it.RearPortPosition))
 				}
@@ -358,14 +358,14 @@ func frontPortTemplateToPatch(ctx context.Context, plan, state *FrontPortTemplat
 		if plan.DeviceTypeId.IsNull() {
 			body.SetDeviceTypeNil()
 		} else if !plan.DeviceTypeId.IsUnknown() {
-			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+			body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 		}
 	}
 	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
 		if plan.ModuleTypeId.IsNull() {
 			body.SetModuleTypeNil()
 		} else if !plan.ModuleTypeId.IsUnknown() {
-			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+			body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -400,7 +400,7 @@ func frontPortTemplateToPatch(ctx context.Context, plan, state *FrontPortTemplat
 				var items []FrontPortTemplateRearPortsItem
 				diags.Append(plan.RearPorts.ElementsAs(ctx, &items, false)...)
 				for _, it := range items {
-					e := netbox.NewFrontPortTemplateMappingRequest(conv.Int32(it.Position), conv.Int32(it.RearPort))
+					e := netbox.NewFrontPortTemplateMappingRequest(conv.Int32(it.Position), it.RearPort.ValueInt64())
 					if conv.Known(it.RearPortPosition) {
 						e.SetRearPortPosition(conv.Int32(it.RearPortPosition))
 					}
@@ -436,7 +436,7 @@ func frontPortTemplateFromAPI(ctx context.Context, obj *netbox.FrontPortTemplate
 			src := &items[i]
 			vals = append(vals, FrontPortTemplateRearPortsItem{
 				Position:         conv.Int64From32(src.GetPositionOk()),
-				RearPort:         conv.Int64From32(src.GetRearPortOk()),
+				RearPort:         conv.Int64From64(src.GetRearPortOk()),
 				RearPortPosition: conv.Int64From32(src.GetRearPortPositionOk()),
 			})
 		}

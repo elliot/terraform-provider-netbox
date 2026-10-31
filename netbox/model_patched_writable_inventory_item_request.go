@@ -21,15 +21,15 @@ var _ MappedNullable = &PatchedWritableInventoryItemRequest{}
 
 // PatchedWritableInventoryItemRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedWritableInventoryItemRequest struct {
-	Device *int32        `json:"device,omitempty"`
-	Parent NullableInt32 `json:"parent,omitempty"`
+	Device *int64        `json:"device,omitempty"`
+	Parent NullableInt64 `json:"parent,omitempty"`
 	Name   *string       `json:"name,omitempty"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
 	// * `offline` - Offline * `active` - Active * `planned` - Planned * `staged` - Staged * `failed` - Failed * `decommissioning` - Decommissioning
 	Status       *string       `json:"status,omitempty"`
-	Role         NullableInt32 `json:"role,omitempty"`
-	Manufacturer NullableInt32 `json:"manufacturer,omitempty"`
+	Role         NullableInt64 `json:"role,omitempty"`
+	Manufacturer NullableInt64 `json:"manufacturer,omitempty"`
 	// Manufacturer-assigned part identifier
 	PartId *string `json:"part_id,omitempty"`
 	Serial *string `json:"serial,omitempty"`
@@ -40,7 +40,7 @@ type PatchedWritableInventoryItemRequest struct {
 	Description          *string                `json:"description,omitempty"`
 	ComponentType        NullableString         `json:"component_type,omitempty"`
 	ComponentId          NullableInt64          `json:"component_id,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -66,9 +66,9 @@ func NewPatchedWritableInventoryItemRequestWithDefaults() *PatchedWritableInvent
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise.
-func (o *PatchedWritableInventoryItemRequest) GetDevice() int32 {
+func (o *PatchedWritableInventoryItemRequest) GetDevice() int64 {
 	if o == nil || IsNil(o.Device) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Device
@@ -76,7 +76,7 @@ func (o *PatchedWritableInventoryItemRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableInventoryItemRequest) GetDeviceOk() (*int32, bool) {
+func (o *PatchedWritableInventoryItemRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil || IsNil(o.Device) {
 		return nil, false
 	}
@@ -92,15 +92,15 @@ func (o *PatchedWritableInventoryItemRequest) HasDevice() bool {
 	return false
 }
 
-// SetDevice gets a reference to the given int32 and assigns it to the Device field.
-func (o *PatchedWritableInventoryItemRequest) SetDevice(v int32) {
+// SetDevice gets a reference to the given int64 and assigns it to the Device field.
+func (o *PatchedWritableInventoryItemRequest) SetDevice(v int64) {
 	o.Device = &v
 }
 
 // GetParent returns the Parent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableInventoryItemRequest) GetParent() int32 {
+func (o *PatchedWritableInventoryItemRequest) GetParent() int64 {
 	if o == nil || IsNil(o.Parent.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Parent.Get()
@@ -109,7 +109,7 @@ func (o *PatchedWritableInventoryItemRequest) GetParent() int32 {
 // GetParentOk returns a tuple with the Parent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableInventoryItemRequest) GetParentOk() (*int32, bool) {
+func (o *PatchedWritableInventoryItemRequest) GetParentOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -125,8 +125,8 @@ func (o *PatchedWritableInventoryItemRequest) HasParent() bool {
 	return false
 }
 
-// SetParent gets a reference to the given NullableInt32 and assigns it to the Parent field.
-func (o *PatchedWritableInventoryItemRequest) SetParent(v int32) {
+// SetParent gets a reference to the given NullableInt64 and assigns it to the Parent field.
+func (o *PatchedWritableInventoryItemRequest) SetParent(v int64) {
 	o.Parent.Set(&v)
 }
 
@@ -237,9 +237,9 @@ func (o *PatchedWritableInventoryItemRequest) SetStatus(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableInventoryItemRequest) GetRole() int32 {
+func (o *PatchedWritableInventoryItemRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -248,7 +248,7 @@ func (o *PatchedWritableInventoryItemRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableInventoryItemRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedWritableInventoryItemRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -264,8 +264,8 @@ func (o *PatchedWritableInventoryItemRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedWritableInventoryItemRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedWritableInventoryItemRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -280,9 +280,9 @@ func (o *PatchedWritableInventoryItemRequest) UnsetRole() {
 }
 
 // GetManufacturer returns the Manufacturer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableInventoryItemRequest) GetManufacturer() int32 {
+func (o *PatchedWritableInventoryItemRequest) GetManufacturer() int64 {
 	if o == nil || IsNil(o.Manufacturer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Manufacturer.Get()
@@ -291,7 +291,7 @@ func (o *PatchedWritableInventoryItemRequest) GetManufacturer() int32 {
 // GetManufacturerOk returns a tuple with the Manufacturer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableInventoryItemRequest) GetManufacturerOk() (*int32, bool) {
+func (o *PatchedWritableInventoryItemRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -307,8 +307,8 @@ func (o *PatchedWritableInventoryItemRequest) HasManufacturer() bool {
 	return false
 }
 
-// SetManufacturer gets a reference to the given NullableInt32 and assigns it to the Manufacturer field.
-func (o *PatchedWritableInventoryItemRequest) SetManufacturer(v int32) {
+// SetManufacturer gets a reference to the given NullableInt64 and assigns it to the Manufacturer field.
+func (o *PatchedWritableInventoryItemRequest) SetManufacturer(v int64) {
 	o.Manufacturer.Set(&v)
 }
 
@@ -580,9 +580,9 @@ func (o *PatchedWritableInventoryItemRequest) UnsetComponentId() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableInventoryItemRequest) GetOwner() int32 {
+func (o *PatchedWritableInventoryItemRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -591,7 +591,7 @@ func (o *PatchedWritableInventoryItemRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableInventoryItemRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableInventoryItemRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -607,8 +607,8 @@ func (o *PatchedWritableInventoryItemRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableInventoryItemRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableInventoryItemRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

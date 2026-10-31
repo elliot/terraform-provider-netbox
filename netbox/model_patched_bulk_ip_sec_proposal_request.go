@@ -22,7 +22,7 @@ var _ MappedNullable = &PatchedBulkIPSecProposalRequest{}
 
 // PatchedBulkIPSecProposalRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkIPSecProposalRequest struct {
-	Id          int32   `json:"id"`
+	Id          int64   `json:"id"`
 	Name        *string `json:"name,omitempty"`
 	Description *string `json:"description,omitempty"`
 	// * `aes-128-cbc` - 128-bit AES (CBC) * `aes-128-gcm` - 128-bit AES (GCM) * `aes-192-cbc` - 192-bit AES (CBC) * `aes-192-gcm` - 192-bit AES (GCM) * `aes-256-cbc` - 256-bit AES (CBC) * `aes-256-gcm` - 256-bit AES (GCM) * `3des-cbc` - 3DES * `des-cbc` - DES
@@ -33,7 +33,7 @@ type PatchedBulkIPSecProposalRequest struct {
 	SaLifetimeSeconds NullableInt32 `json:"sa_lifetime_seconds,omitempty"`
 	// Security association lifetime (in kilobytes)
 	SaLifetimeData       NullableInt32          `json:"sa_lifetime_data,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -46,7 +46,7 @@ type _PatchedBulkIPSecProposalRequest PatchedBulkIPSecProposalRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkIPSecProposalRequest(id int32) *PatchedBulkIPSecProposalRequest {
+func NewPatchedBulkIPSecProposalRequest(id int64) *PatchedBulkIPSecProposalRequest {
 	this := PatchedBulkIPSecProposalRequest{}
 	this.Id = id
 	return &this
@@ -61,9 +61,9 @@ func NewPatchedBulkIPSecProposalRequestWithDefaults() *PatchedBulkIPSecProposalR
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkIPSecProposalRequest) GetId() int32 {
+func (o *PatchedBulkIPSecProposalRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -72,7 +72,7 @@ func (o *PatchedBulkIPSecProposalRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkIPSecProposalRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkIPSecProposalRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -80,7 +80,7 @@ func (o *PatchedBulkIPSecProposalRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkIPSecProposalRequest) SetId(v int32) {
+func (o *PatchedBulkIPSecProposalRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -299,9 +299,9 @@ func (o *PatchedBulkIPSecProposalRequest) UnsetSaLifetimeData() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkIPSecProposalRequest) GetOwner() int32 {
+func (o *PatchedBulkIPSecProposalRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -310,7 +310,7 @@ func (o *PatchedBulkIPSecProposalRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkIPSecProposalRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkIPSecProposalRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -326,8 +326,8 @@ func (o *PatchedBulkIPSecProposalRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkIPSecProposalRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkIPSecProposalRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
