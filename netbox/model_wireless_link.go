@@ -23,7 +23,7 @@ var _ MappedNullable = &WirelessLink{}
 
 // WirelessLink Base serializer class for models inheriting from PrimaryModel.
 type WirelessLink struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Url                  *string                `json:"url,omitempty"`
 	DisplayUrl           *string                `json:"display_url,omitempty"`
 	Display              *string                `json:"display,omitempty"`
@@ -53,7 +53,7 @@ type _WirelessLink WirelessLink
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWirelessLink(id int32) *WirelessLink {
+func NewWirelessLink(id int64) *WirelessLink {
 	this := WirelessLink{}
 	this.Id = id
 	return &this
@@ -68,9 +68,9 @@ func NewWirelessLinkWithDefaults() *WirelessLink {
 }
 
 // GetId returns the Id field value
-func (o *WirelessLink) GetId() int32 {
+func (o *WirelessLink) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -79,7 +79,7 @@ func (o *WirelessLink) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *WirelessLink) GetIdOk() (*int32, bool) {
+func (o *WirelessLink) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -87,7 +87,7 @@ func (o *WirelessLink) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *WirelessLink) SetId(v int32) {
+func (o *WirelessLink) SetId(v int64) {
 	o.Id = v
 }
 

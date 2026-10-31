@@ -23,17 +23,17 @@ var _ MappedNullable = &WritableDeviceRequest{}
 // WritableDeviceRequest Base serializer class for models inheriting from PrimaryModel.
 type WritableDeviceRequest struct {
 	Name       NullableString `json:"name,omitempty"`
-	DeviceType int32          `json:"device_type"`
-	Role       int32          `json:"role"`
-	Tenant     NullableInt32  `json:"tenant,omitempty"`
-	Platform   NullableInt32  `json:"platform,omitempty"`
+	DeviceType int64          `json:"device_type"`
+	Role       int64          `json:"role"`
+	Tenant     NullableInt64  `json:"tenant,omitempty"`
+	Platform   NullableInt64  `json:"platform,omitempty"`
 	// Chassis serial number, assigned by the manufacturer
 	Serial *string `json:"serial,omitempty"`
 	// A unique tag used to identify this device
 	AssetTag NullableString  `json:"asset_tag,omitempty"`
-	Site     int32           `json:"site"`
-	Location NullableInt32   `json:"location,omitempty"`
-	Rack     NullableInt32   `json:"rack,omitempty"`
+	Site     int64           `json:"site"`
+	Location NullableInt64   `json:"location,omitempty"`
+	Rack     NullableInt64   `json:"rack,omitempty"`
 	Position NullableFloat64 `json:"position,omitempty"`
 	// * `front` - Front * `rear` - Rear
 	Face NullableString `json:"face,omitempty"`
@@ -47,18 +47,18 @@ type WritableDeviceRequest struct {
 	Airflow NullableString `json:"airflow,omitempty"`
 	// * `air` - Air * `liquid` - Liquid * `hybrid` - Hybrid * `immersion` - Immersion
 	CoolingMethod  NullableString `json:"cooling_method,omitempty"`
-	PrimaryIp4     NullableInt32  `json:"primary_ip4,omitempty"`
-	PrimaryIp6     NullableInt32  `json:"primary_ip6,omitempty"`
-	OobIp          NullableInt32  `json:"oob_ip,omitempty"`
-	Cluster        NullableInt32  `json:"cluster,omitempty"`
-	VirtualChassis NullableInt32  `json:"virtual_chassis,omitempty"`
+	PrimaryIp4     NullableInt64  `json:"primary_ip4,omitempty"`
+	PrimaryIp6     NullableInt64  `json:"primary_ip6,omitempty"`
+	OobIp          NullableInt64  `json:"oob_ip,omitempty"`
+	Cluster        NullableInt64  `json:"cluster,omitempty"`
+	VirtualChassis NullableInt64  `json:"virtual_chassis,omitempty"`
 	VcPosition     NullableInt32  `json:"vc_position,omitempty"`
 	// Virtual chassis master election priority
 	VcPriority     NullableInt32 `json:"vc_priority,omitempty"`
 	Description    *string       `json:"description,omitempty"`
-	Owner          NullableInt32 `json:"owner,omitempty"`
+	Owner          NullableInt64 `json:"owner,omitempty"`
 	Comments       *string       `json:"comments,omitempty"`
-	ConfigTemplate NullableInt32 `json:"config_template,omitempty"`
+	ConfigTemplate NullableInt64 `json:"config_template,omitempty"`
 	// Local config context data takes precedence over source contexts in the final rendered config context
 	LocalContextData     interface{}            `json:"local_context_data,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
@@ -72,7 +72,7 @@ type _WritableDeviceRequest WritableDeviceRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableDeviceRequest(deviceType int32, role int32, site int32) *WritableDeviceRequest {
+func NewWritableDeviceRequest(deviceType int64, role int64, site int64) *WritableDeviceRequest {
 	this := WritableDeviceRequest{}
 	this.DeviceType = deviceType
 	this.Role = role
@@ -132,9 +132,9 @@ func (o *WritableDeviceRequest) UnsetName() {
 }
 
 // GetDeviceType returns the DeviceType field value
-func (o *WritableDeviceRequest) GetDeviceType() int32 {
+func (o *WritableDeviceRequest) GetDeviceType() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -143,7 +143,7 @@ func (o *WritableDeviceRequest) GetDeviceType() int32 {
 
 // GetDeviceTypeOk returns a tuple with the DeviceType field value
 // and a boolean to check if the value has been set.
-func (o *WritableDeviceRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -151,14 +151,14 @@ func (o *WritableDeviceRequest) GetDeviceTypeOk() (*int32, bool) {
 }
 
 // SetDeviceType sets field value
-func (o *WritableDeviceRequest) SetDeviceType(v int32) {
+func (o *WritableDeviceRequest) SetDeviceType(v int64) {
 	o.DeviceType = v
 }
 
 // GetRole returns the Role field value
-func (o *WritableDeviceRequest) GetRole() int32 {
+func (o *WritableDeviceRequest) GetRole() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -167,7 +167,7 @@ func (o *WritableDeviceRequest) GetRole() int32 {
 
 // GetRoleOk returns a tuple with the Role field value
 // and a boolean to check if the value has been set.
-func (o *WritableDeviceRequest) GetRoleOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -175,14 +175,14 @@ func (o *WritableDeviceRequest) GetRoleOk() (*int32, bool) {
 }
 
 // SetRole sets field value
-func (o *WritableDeviceRequest) SetRole(v int32) {
+func (o *WritableDeviceRequest) SetRole(v int64) {
 	o.Role = v
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetTenant() int32 {
+func (o *WritableDeviceRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -191,7 +191,7 @@ func (o *WritableDeviceRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetTenantOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -207,8 +207,8 @@ func (o *WritableDeviceRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *WritableDeviceRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *WritableDeviceRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -223,9 +223,9 @@ func (o *WritableDeviceRequest) UnsetTenant() {
 }
 
 // GetPlatform returns the Platform field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetPlatform() int32 {
+func (o *WritableDeviceRequest) GetPlatform() int64 {
 	if o == nil || IsNil(o.Platform.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Platform.Get()
@@ -234,7 +234,7 @@ func (o *WritableDeviceRequest) GetPlatform() int32 {
 // GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetPlatformOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetPlatformOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -250,8 +250,8 @@ func (o *WritableDeviceRequest) HasPlatform() bool {
 	return false
 }
 
-// SetPlatform gets a reference to the given NullableInt32 and assigns it to the Platform field.
-func (o *WritableDeviceRequest) SetPlatform(v int32) {
+// SetPlatform gets a reference to the given NullableInt64 and assigns it to the Platform field.
+func (o *WritableDeviceRequest) SetPlatform(v int64) {
 	o.Platform.Set(&v)
 }
 
@@ -341,9 +341,9 @@ func (o *WritableDeviceRequest) UnsetAssetTag() {
 }
 
 // GetSite returns the Site field value
-func (o *WritableDeviceRequest) GetSite() int32 {
+func (o *WritableDeviceRequest) GetSite() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -352,7 +352,7 @@ func (o *WritableDeviceRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value
 // and a boolean to check if the value has been set.
-func (o *WritableDeviceRequest) GetSiteOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -360,14 +360,14 @@ func (o *WritableDeviceRequest) GetSiteOk() (*int32, bool) {
 }
 
 // SetSite sets field value
-func (o *WritableDeviceRequest) SetSite(v int32) {
+func (o *WritableDeviceRequest) SetSite(v int64) {
 	o.Site = v
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetLocation() int32 {
+func (o *WritableDeviceRequest) GetLocation() int64 {
 	if o == nil || IsNil(o.Location.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Location.Get()
@@ -376,7 +376,7 @@ func (o *WritableDeviceRequest) GetLocation() int32 {
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetLocationOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetLocationOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -392,8 +392,8 @@ func (o *WritableDeviceRequest) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given NullableInt32 and assigns it to the Location field.
-func (o *WritableDeviceRequest) SetLocation(v int32) {
+// SetLocation gets a reference to the given NullableInt64 and assigns it to the Location field.
+func (o *WritableDeviceRequest) SetLocation(v int64) {
 	o.Location.Set(&v)
 }
 
@@ -408,9 +408,9 @@ func (o *WritableDeviceRequest) UnsetLocation() {
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetRack() int32 {
+func (o *WritableDeviceRequest) GetRack() int64 {
 	if o == nil || IsNil(o.Rack.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rack.Get()
@@ -419,7 +419,7 @@ func (o *WritableDeviceRequest) GetRack() int32 {
 // GetRackOk returns a tuple with the Rack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetRackOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetRackOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -435,8 +435,8 @@ func (o *WritableDeviceRequest) HasRack() bool {
 	return false
 }
 
-// SetRack gets a reference to the given NullableInt32 and assigns it to the Rack field.
-func (o *WritableDeviceRequest) SetRack(v int32) {
+// SetRack gets a reference to the given NullableInt64 and assigns it to the Rack field.
+func (o *WritableDeviceRequest) SetRack(v int64) {
 	o.Rack.Set(&v)
 }
 
@@ -741,9 +741,9 @@ func (o *WritableDeviceRequest) UnsetCoolingMethod() {
 }
 
 // GetPrimaryIp4 returns the PrimaryIp4 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetPrimaryIp4() int32 {
+func (o *WritableDeviceRequest) GetPrimaryIp4() int64 {
 	if o == nil || IsNil(o.PrimaryIp4.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp4.Get()
@@ -752,7 +752,7 @@ func (o *WritableDeviceRequest) GetPrimaryIp4() int32 {
 // GetPrimaryIp4Ok returns a tuple with the PrimaryIp4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetPrimaryIp4Ok() (*int32, bool) {
+func (o *WritableDeviceRequest) GetPrimaryIp4Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -768,8 +768,8 @@ func (o *WritableDeviceRequest) HasPrimaryIp4() bool {
 	return false
 }
 
-// SetPrimaryIp4 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp4 field.
-func (o *WritableDeviceRequest) SetPrimaryIp4(v int32) {
+// SetPrimaryIp4 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp4 field.
+func (o *WritableDeviceRequest) SetPrimaryIp4(v int64) {
 	o.PrimaryIp4.Set(&v)
 }
 
@@ -784,9 +784,9 @@ func (o *WritableDeviceRequest) UnsetPrimaryIp4() {
 }
 
 // GetPrimaryIp6 returns the PrimaryIp6 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetPrimaryIp6() int32 {
+func (o *WritableDeviceRequest) GetPrimaryIp6() int64 {
 	if o == nil || IsNil(o.PrimaryIp6.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp6.Get()
@@ -795,7 +795,7 @@ func (o *WritableDeviceRequest) GetPrimaryIp6() int32 {
 // GetPrimaryIp6Ok returns a tuple with the PrimaryIp6 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetPrimaryIp6Ok() (*int32, bool) {
+func (o *WritableDeviceRequest) GetPrimaryIp6Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -811,8 +811,8 @@ func (o *WritableDeviceRequest) HasPrimaryIp6() bool {
 	return false
 }
 
-// SetPrimaryIp6 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp6 field.
-func (o *WritableDeviceRequest) SetPrimaryIp6(v int32) {
+// SetPrimaryIp6 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp6 field.
+func (o *WritableDeviceRequest) SetPrimaryIp6(v int64) {
 	o.PrimaryIp6.Set(&v)
 }
 
@@ -827,9 +827,9 @@ func (o *WritableDeviceRequest) UnsetPrimaryIp6() {
 }
 
 // GetOobIp returns the OobIp field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetOobIp() int32 {
+func (o *WritableDeviceRequest) GetOobIp() int64 {
 	if o == nil || IsNil(o.OobIp.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.OobIp.Get()
@@ -838,7 +838,7 @@ func (o *WritableDeviceRequest) GetOobIp() int32 {
 // GetOobIpOk returns a tuple with the OobIp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetOobIpOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetOobIpOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -854,8 +854,8 @@ func (o *WritableDeviceRequest) HasOobIp() bool {
 	return false
 }
 
-// SetOobIp gets a reference to the given NullableInt32 and assigns it to the OobIp field.
-func (o *WritableDeviceRequest) SetOobIp(v int32) {
+// SetOobIp gets a reference to the given NullableInt64 and assigns it to the OobIp field.
+func (o *WritableDeviceRequest) SetOobIp(v int64) {
 	o.OobIp.Set(&v)
 }
 
@@ -870,9 +870,9 @@ func (o *WritableDeviceRequest) UnsetOobIp() {
 }
 
 // GetCluster returns the Cluster field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetCluster() int32 {
+func (o *WritableDeviceRequest) GetCluster() int64 {
 	if o == nil || IsNil(o.Cluster.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Cluster.Get()
@@ -881,7 +881,7 @@ func (o *WritableDeviceRequest) GetCluster() int32 {
 // GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetClusterOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetClusterOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -897,8 +897,8 @@ func (o *WritableDeviceRequest) HasCluster() bool {
 	return false
 }
 
-// SetCluster gets a reference to the given NullableInt32 and assigns it to the Cluster field.
-func (o *WritableDeviceRequest) SetCluster(v int32) {
+// SetCluster gets a reference to the given NullableInt64 and assigns it to the Cluster field.
+func (o *WritableDeviceRequest) SetCluster(v int64) {
 	o.Cluster.Set(&v)
 }
 
@@ -913,9 +913,9 @@ func (o *WritableDeviceRequest) UnsetCluster() {
 }
 
 // GetVirtualChassis returns the VirtualChassis field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetVirtualChassis() int32 {
+func (o *WritableDeviceRequest) GetVirtualChassis() int64 {
 	if o == nil || IsNil(o.VirtualChassis.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VirtualChassis.Get()
@@ -924,7 +924,7 @@ func (o *WritableDeviceRequest) GetVirtualChassis() int32 {
 // GetVirtualChassisOk returns a tuple with the VirtualChassis field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetVirtualChassisOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetVirtualChassisOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -940,8 +940,8 @@ func (o *WritableDeviceRequest) HasVirtualChassis() bool {
 	return false
 }
 
-// SetVirtualChassis gets a reference to the given NullableInt32 and assigns it to the VirtualChassis field.
-func (o *WritableDeviceRequest) SetVirtualChassis(v int32) {
+// SetVirtualChassis gets a reference to the given NullableInt64 and assigns it to the VirtualChassis field.
+func (o *WritableDeviceRequest) SetVirtualChassis(v int64) {
 	o.VirtualChassis.Set(&v)
 }
 
@@ -1074,9 +1074,9 @@ func (o *WritableDeviceRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetOwner() int32 {
+func (o *WritableDeviceRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -1085,7 +1085,7 @@ func (o *WritableDeviceRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetOwnerOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1101,8 +1101,8 @@ func (o *WritableDeviceRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *WritableDeviceRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *WritableDeviceRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -1149,9 +1149,9 @@ func (o *WritableDeviceRequest) SetComments(v string) {
 }
 
 // GetConfigTemplate returns the ConfigTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRequest) GetConfigTemplate() int32 {
+func (o *WritableDeviceRequest) GetConfigTemplate() int64 {
 	if o == nil || IsNil(o.ConfigTemplate.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplate.Get()
@@ -1160,7 +1160,7 @@ func (o *WritableDeviceRequest) GetConfigTemplate() int32 {
 // GetConfigTemplateOk returns a tuple with the ConfigTemplate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRequest) GetConfigTemplateOk() (*int32, bool) {
+func (o *WritableDeviceRequest) GetConfigTemplateOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1176,8 +1176,8 @@ func (o *WritableDeviceRequest) HasConfigTemplate() bool {
 	return false
 }
 
-// SetConfigTemplate gets a reference to the given NullableInt32 and assigns it to the ConfigTemplate field.
-func (o *WritableDeviceRequest) SetConfigTemplate(v int32) {
+// SetConfigTemplate gets a reference to the given NullableInt64 and assigns it to the ConfigTemplate field.
+func (o *WritableDeviceRequest) SetConfigTemplate(v int64) {
 	o.ConfigTemplate.Set(&v)
 }
 

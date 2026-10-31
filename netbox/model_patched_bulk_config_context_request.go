@@ -22,27 +22,27 @@ var _ MappedNullable = &PatchedBulkConfigContextRequest{}
 
 // PatchedBulkConfigContextRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedBulkConfigContextRequest struct {
-	Id                   int32         `json:"id"`
+	Id                   int64         `json:"id"`
 	Name                 *string       `json:"name,omitempty"`
 	Weight               *int32        `json:"weight,omitempty"`
-	Profile              NullableInt32 `json:"profile,omitempty"`
+	Profile              NullableInt64 `json:"profile,omitempty"`
 	Description          *string       `json:"description,omitempty"`
 	IsActive             *bool         `json:"is_active,omitempty"`
-	Regions              []int32       `json:"regions,omitempty"`
-	SiteGroups           []int32       `json:"site_groups,omitempty"`
-	Sites                []int32       `json:"sites,omitempty"`
-	Locations            []int32       `json:"locations,omitempty"`
-	DeviceTypes          []int32       `json:"device_types,omitempty"`
-	Roles                []int32       `json:"roles,omitempty"`
-	Platforms            []int32       `json:"platforms,omitempty"`
-	ClusterTypes         []int32       `json:"cluster_types,omitempty"`
-	ClusterGroups        []int32       `json:"cluster_groups,omitempty"`
-	Clusters             []int32       `json:"clusters,omitempty"`
-	TenantGroups         []int32       `json:"tenant_groups,omitempty"`
-	Tenants              []int32       `json:"tenants,omitempty"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	Regions              []int64       `json:"regions,omitempty"`
+	SiteGroups           []int64       `json:"site_groups,omitempty"`
+	Sites                []int64       `json:"sites,omitempty"`
+	Locations            []int64       `json:"locations,omitempty"`
+	DeviceTypes          []int64       `json:"device_types,omitempty"`
+	Roles                []int64       `json:"roles,omitempty"`
+	Platforms            []int64       `json:"platforms,omitempty"`
+	ClusterTypes         []int64       `json:"cluster_types,omitempty"`
+	ClusterGroups        []int64       `json:"cluster_groups,omitempty"`
+	Clusters             []int64       `json:"clusters,omitempty"`
+	TenantGroups         []int64       `json:"tenant_groups,omitempty"`
+	Tenants              []int64       `json:"tenants,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	Tags                 []string      `json:"tags,omitempty"`
-	DataSource           *int32        `json:"data_source,omitempty"`
+	DataSource           *int64        `json:"data_source,omitempty"`
 	Data                 interface{}   `json:"data,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -53,7 +53,7 @@ type _PatchedBulkConfigContextRequest PatchedBulkConfigContextRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkConfigContextRequest(id int32) *PatchedBulkConfigContextRequest {
+func NewPatchedBulkConfigContextRequest(id int64) *PatchedBulkConfigContextRequest {
 	this := PatchedBulkConfigContextRequest{}
 	this.Id = id
 	return &this
@@ -68,9 +68,9 @@ func NewPatchedBulkConfigContextRequestWithDefaults() *PatchedBulkConfigContextR
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkConfigContextRequest) GetId() int32 {
+func (o *PatchedBulkConfigContextRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -79,7 +79,7 @@ func (o *PatchedBulkConfigContextRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -87,7 +87,7 @@ func (o *PatchedBulkConfigContextRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkConfigContextRequest) SetId(v int32) {
+func (o *PatchedBulkConfigContextRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -156,9 +156,9 @@ func (o *PatchedBulkConfigContextRequest) SetWeight(v int32) {
 }
 
 // GetProfile returns the Profile field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkConfigContextRequest) GetProfile() int32 {
+func (o *PatchedBulkConfigContextRequest) GetProfile() int64 {
 	if o == nil || IsNil(o.Profile.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Profile.Get()
@@ -167,7 +167,7 @@ func (o *PatchedBulkConfigContextRequest) GetProfile() int32 {
 // GetProfileOk returns a tuple with the Profile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkConfigContextRequest) GetProfileOk() (*int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetProfileOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -183,8 +183,8 @@ func (o *PatchedBulkConfigContextRequest) HasProfile() bool {
 	return false
 }
 
-// SetProfile gets a reference to the given NullableInt32 and assigns it to the Profile field.
-func (o *PatchedBulkConfigContextRequest) SetProfile(v int32) {
+// SetProfile gets a reference to the given NullableInt64 and assigns it to the Profile field.
+func (o *PatchedBulkConfigContextRequest) SetProfile(v int64) {
 	o.Profile.Set(&v)
 }
 
@@ -263,9 +263,9 @@ func (o *PatchedBulkConfigContextRequest) SetIsActive(v bool) {
 }
 
 // GetRegions returns the Regions field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetRegions() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetRegions() []int64 {
 	if o == nil || IsNil(o.Regions) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Regions
@@ -273,7 +273,7 @@ func (o *PatchedBulkConfigContextRequest) GetRegions() []int32 {
 
 // GetRegionsOk returns a tuple with the Regions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetRegionsOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetRegionsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Regions) {
 		return nil, false
 	}
@@ -289,15 +289,15 @@ func (o *PatchedBulkConfigContextRequest) HasRegions() bool {
 	return false
 }
 
-// SetRegions gets a reference to the given []int32 and assigns it to the Regions field.
-func (o *PatchedBulkConfigContextRequest) SetRegions(v []int32) {
+// SetRegions gets a reference to the given []int64 and assigns it to the Regions field.
+func (o *PatchedBulkConfigContextRequest) SetRegions(v []int64) {
 	o.Regions = v
 }
 
 // GetSiteGroups returns the SiteGroups field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetSiteGroups() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetSiteGroups() []int64 {
 	if o == nil || IsNil(o.SiteGroups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.SiteGroups
@@ -305,7 +305,7 @@ func (o *PatchedBulkConfigContextRequest) GetSiteGroups() []int32 {
 
 // GetSiteGroupsOk returns a tuple with the SiteGroups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetSiteGroupsOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetSiteGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.SiteGroups) {
 		return nil, false
 	}
@@ -321,15 +321,15 @@ func (o *PatchedBulkConfigContextRequest) HasSiteGroups() bool {
 	return false
 }
 
-// SetSiteGroups gets a reference to the given []int32 and assigns it to the SiteGroups field.
-func (o *PatchedBulkConfigContextRequest) SetSiteGroups(v []int32) {
+// SetSiteGroups gets a reference to the given []int64 and assigns it to the SiteGroups field.
+func (o *PatchedBulkConfigContextRequest) SetSiteGroups(v []int64) {
 	o.SiteGroups = v
 }
 
 // GetSites returns the Sites field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetSites() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetSites() []int64 {
 	if o == nil || IsNil(o.Sites) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Sites
@@ -337,7 +337,7 @@ func (o *PatchedBulkConfigContextRequest) GetSites() []int32 {
 
 // GetSitesOk returns a tuple with the Sites field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetSitesOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetSitesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Sites) {
 		return nil, false
 	}
@@ -353,15 +353,15 @@ func (o *PatchedBulkConfigContextRequest) HasSites() bool {
 	return false
 }
 
-// SetSites gets a reference to the given []int32 and assigns it to the Sites field.
-func (o *PatchedBulkConfigContextRequest) SetSites(v []int32) {
+// SetSites gets a reference to the given []int64 and assigns it to the Sites field.
+func (o *PatchedBulkConfigContextRequest) SetSites(v []int64) {
 	o.Sites = v
 }
 
 // GetLocations returns the Locations field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetLocations() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetLocations() []int64 {
 	if o == nil || IsNil(o.Locations) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Locations
@@ -369,7 +369,7 @@ func (o *PatchedBulkConfigContextRequest) GetLocations() []int32 {
 
 // GetLocationsOk returns a tuple with the Locations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetLocationsOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetLocationsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Locations) {
 		return nil, false
 	}
@@ -385,15 +385,15 @@ func (o *PatchedBulkConfigContextRequest) HasLocations() bool {
 	return false
 }
 
-// SetLocations gets a reference to the given []int32 and assigns it to the Locations field.
-func (o *PatchedBulkConfigContextRequest) SetLocations(v []int32) {
+// SetLocations gets a reference to the given []int64 and assigns it to the Locations field.
+func (o *PatchedBulkConfigContextRequest) SetLocations(v []int64) {
 	o.Locations = v
 }
 
 // GetDeviceTypes returns the DeviceTypes field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetDeviceTypes() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetDeviceTypes() []int64 {
 	if o == nil || IsNil(o.DeviceTypes) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.DeviceTypes
@@ -401,7 +401,7 @@ func (o *PatchedBulkConfigContextRequest) GetDeviceTypes() []int32 {
 
 // GetDeviceTypesOk returns a tuple with the DeviceTypes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetDeviceTypesOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetDeviceTypesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.DeviceTypes) {
 		return nil, false
 	}
@@ -417,15 +417,15 @@ func (o *PatchedBulkConfigContextRequest) HasDeviceTypes() bool {
 	return false
 }
 
-// SetDeviceTypes gets a reference to the given []int32 and assigns it to the DeviceTypes field.
-func (o *PatchedBulkConfigContextRequest) SetDeviceTypes(v []int32) {
+// SetDeviceTypes gets a reference to the given []int64 and assigns it to the DeviceTypes field.
+func (o *PatchedBulkConfigContextRequest) SetDeviceTypes(v []int64) {
 	o.DeviceTypes = v
 }
 
 // GetRoles returns the Roles field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetRoles() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetRoles() []int64 {
 	if o == nil || IsNil(o.Roles) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Roles
@@ -433,7 +433,7 @@ func (o *PatchedBulkConfigContextRequest) GetRoles() []int32 {
 
 // GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetRolesOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetRolesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Roles) {
 		return nil, false
 	}
@@ -449,15 +449,15 @@ func (o *PatchedBulkConfigContextRequest) HasRoles() bool {
 	return false
 }
 
-// SetRoles gets a reference to the given []int32 and assigns it to the Roles field.
-func (o *PatchedBulkConfigContextRequest) SetRoles(v []int32) {
+// SetRoles gets a reference to the given []int64 and assigns it to the Roles field.
+func (o *PatchedBulkConfigContextRequest) SetRoles(v []int64) {
 	o.Roles = v
 }
 
 // GetPlatforms returns the Platforms field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetPlatforms() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetPlatforms() []int64 {
 	if o == nil || IsNil(o.Platforms) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Platforms
@@ -465,7 +465,7 @@ func (o *PatchedBulkConfigContextRequest) GetPlatforms() []int32 {
 
 // GetPlatformsOk returns a tuple with the Platforms field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetPlatformsOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetPlatformsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Platforms) {
 		return nil, false
 	}
@@ -481,15 +481,15 @@ func (o *PatchedBulkConfigContextRequest) HasPlatforms() bool {
 	return false
 }
 
-// SetPlatforms gets a reference to the given []int32 and assigns it to the Platforms field.
-func (o *PatchedBulkConfigContextRequest) SetPlatforms(v []int32) {
+// SetPlatforms gets a reference to the given []int64 and assigns it to the Platforms field.
+func (o *PatchedBulkConfigContextRequest) SetPlatforms(v []int64) {
 	o.Platforms = v
 }
 
 // GetClusterTypes returns the ClusterTypes field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetClusterTypes() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetClusterTypes() []int64 {
 	if o == nil || IsNil(o.ClusterTypes) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.ClusterTypes
@@ -497,7 +497,7 @@ func (o *PatchedBulkConfigContextRequest) GetClusterTypes() []int32 {
 
 // GetClusterTypesOk returns a tuple with the ClusterTypes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetClusterTypesOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetClusterTypesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.ClusterTypes) {
 		return nil, false
 	}
@@ -513,15 +513,15 @@ func (o *PatchedBulkConfigContextRequest) HasClusterTypes() bool {
 	return false
 }
 
-// SetClusterTypes gets a reference to the given []int32 and assigns it to the ClusterTypes field.
-func (o *PatchedBulkConfigContextRequest) SetClusterTypes(v []int32) {
+// SetClusterTypes gets a reference to the given []int64 and assigns it to the ClusterTypes field.
+func (o *PatchedBulkConfigContextRequest) SetClusterTypes(v []int64) {
 	o.ClusterTypes = v
 }
 
 // GetClusterGroups returns the ClusterGroups field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetClusterGroups() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetClusterGroups() []int64 {
 	if o == nil || IsNil(o.ClusterGroups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.ClusterGroups
@@ -529,7 +529,7 @@ func (o *PatchedBulkConfigContextRequest) GetClusterGroups() []int32 {
 
 // GetClusterGroupsOk returns a tuple with the ClusterGroups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetClusterGroupsOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetClusterGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.ClusterGroups) {
 		return nil, false
 	}
@@ -545,15 +545,15 @@ func (o *PatchedBulkConfigContextRequest) HasClusterGroups() bool {
 	return false
 }
 
-// SetClusterGroups gets a reference to the given []int32 and assigns it to the ClusterGroups field.
-func (o *PatchedBulkConfigContextRequest) SetClusterGroups(v []int32) {
+// SetClusterGroups gets a reference to the given []int64 and assigns it to the ClusterGroups field.
+func (o *PatchedBulkConfigContextRequest) SetClusterGroups(v []int64) {
 	o.ClusterGroups = v
 }
 
 // GetClusters returns the Clusters field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetClusters() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetClusters() []int64 {
 	if o == nil || IsNil(o.Clusters) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Clusters
@@ -561,7 +561,7 @@ func (o *PatchedBulkConfigContextRequest) GetClusters() []int32 {
 
 // GetClustersOk returns a tuple with the Clusters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetClustersOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetClustersOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Clusters) {
 		return nil, false
 	}
@@ -577,15 +577,15 @@ func (o *PatchedBulkConfigContextRequest) HasClusters() bool {
 	return false
 }
 
-// SetClusters gets a reference to the given []int32 and assigns it to the Clusters field.
-func (o *PatchedBulkConfigContextRequest) SetClusters(v []int32) {
+// SetClusters gets a reference to the given []int64 and assigns it to the Clusters field.
+func (o *PatchedBulkConfigContextRequest) SetClusters(v []int64) {
 	o.Clusters = v
 }
 
 // GetTenantGroups returns the TenantGroups field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetTenantGroups() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetTenantGroups() []int64 {
 	if o == nil || IsNil(o.TenantGroups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.TenantGroups
@@ -593,7 +593,7 @@ func (o *PatchedBulkConfigContextRequest) GetTenantGroups() []int32 {
 
 // GetTenantGroupsOk returns a tuple with the TenantGroups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetTenantGroupsOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetTenantGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.TenantGroups) {
 		return nil, false
 	}
@@ -609,15 +609,15 @@ func (o *PatchedBulkConfigContextRequest) HasTenantGroups() bool {
 	return false
 }
 
-// SetTenantGroups gets a reference to the given []int32 and assigns it to the TenantGroups field.
-func (o *PatchedBulkConfigContextRequest) SetTenantGroups(v []int32) {
+// SetTenantGroups gets a reference to the given []int64 and assigns it to the TenantGroups field.
+func (o *PatchedBulkConfigContextRequest) SetTenantGroups(v []int64) {
 	o.TenantGroups = v
 }
 
 // GetTenants returns the Tenants field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetTenants() []int32 {
+func (o *PatchedBulkConfigContextRequest) GetTenants() []int64 {
 	if o == nil || IsNil(o.Tenants) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Tenants
@@ -625,7 +625,7 @@ func (o *PatchedBulkConfigContextRequest) GetTenants() []int32 {
 
 // GetTenantsOk returns a tuple with the Tenants field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetTenantsOk() ([]int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetTenantsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Tenants) {
 		return nil, false
 	}
@@ -641,15 +641,15 @@ func (o *PatchedBulkConfigContextRequest) HasTenants() bool {
 	return false
 }
 
-// SetTenants gets a reference to the given []int32 and assigns it to the Tenants field.
-func (o *PatchedBulkConfigContextRequest) SetTenants(v []int32) {
+// SetTenants gets a reference to the given []int64 and assigns it to the Tenants field.
+func (o *PatchedBulkConfigContextRequest) SetTenants(v []int64) {
 	o.Tenants = v
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkConfigContextRequest) GetOwner() int32 {
+func (o *PatchedBulkConfigContextRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -658,7 +658,7 @@ func (o *PatchedBulkConfigContextRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkConfigContextRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -674,8 +674,8 @@ func (o *PatchedBulkConfigContextRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkConfigContextRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkConfigContextRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -722,9 +722,9 @@ func (o *PatchedBulkConfigContextRequest) SetTags(v []string) {
 }
 
 // GetDataSource returns the DataSource field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextRequest) GetDataSource() int32 {
+func (o *PatchedBulkConfigContextRequest) GetDataSource() int64 {
 	if o == nil || IsNil(o.DataSource) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DataSource
@@ -732,7 +732,7 @@ func (o *PatchedBulkConfigContextRequest) GetDataSource() int32 {
 
 // GetDataSourceOk returns a tuple with the DataSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextRequest) GetDataSourceOk() (*int32, bool) {
+func (o *PatchedBulkConfigContextRequest) GetDataSourceOk() (*int64, bool) {
 	if o == nil || IsNil(o.DataSource) {
 		return nil, false
 	}
@@ -748,8 +748,8 @@ func (o *PatchedBulkConfigContextRequest) HasDataSource() bool {
 	return false
 }
 
-// SetDataSource gets a reference to the given int32 and assigns it to the DataSource field.
-func (o *PatchedBulkConfigContextRequest) SetDataSource(v int32) {
+// SetDataSource gets a reference to the given int64 and assigns it to the DataSource field.
+func (o *PatchedBulkConfigContextRequest) SetDataSource(v int64) {
 	o.DataSource = &v
 }
 

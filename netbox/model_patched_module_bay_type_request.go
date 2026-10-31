@@ -23,10 +23,10 @@ var _ MappedNullable = &PatchedModuleBayTypeRequest{}
 type PatchedModuleBayTypeRequest struct {
 	Name                 *string                `json:"name,omitempty"`
 	Slug                 *string                `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Manufacturer         NullableInt32          `json:"manufacturer,omitempty"`
+	Manufacturer         NullableInt64          `json:"manufacturer,omitempty"`
 	Color                *string                `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -117,9 +117,9 @@ func (o *PatchedModuleBayTypeRequest) SetSlug(v string) {
 }
 
 // GetManufacturer returns the Manufacturer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedModuleBayTypeRequest) GetManufacturer() int32 {
+func (o *PatchedModuleBayTypeRequest) GetManufacturer() int64 {
 	if o == nil || IsNil(o.Manufacturer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Manufacturer.Get()
@@ -128,7 +128,7 @@ func (o *PatchedModuleBayTypeRequest) GetManufacturer() int32 {
 // GetManufacturerOk returns a tuple with the Manufacturer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedModuleBayTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *PatchedModuleBayTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -144,8 +144,8 @@ func (o *PatchedModuleBayTypeRequest) HasManufacturer() bool {
 	return false
 }
 
-// SetManufacturer gets a reference to the given NullableInt32 and assigns it to the Manufacturer field.
-func (o *PatchedModuleBayTypeRequest) SetManufacturer(v int32) {
+// SetManufacturer gets a reference to the given NullableInt64 and assigns it to the Manufacturer field.
+func (o *PatchedModuleBayTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer.Set(&v)
 }
 
@@ -224,9 +224,9 @@ func (o *PatchedModuleBayTypeRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedModuleBayTypeRequest) GetOwner() int32 {
+func (o *PatchedModuleBayTypeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -235,7 +235,7 @@ func (o *PatchedModuleBayTypeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedModuleBayTypeRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedModuleBayTypeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -251,8 +251,8 @@ func (o *PatchedModuleBayTypeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedModuleBayTypeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedModuleBayTypeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

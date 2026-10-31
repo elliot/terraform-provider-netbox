@@ -23,17 +23,17 @@ var _ MappedNullable = &VLANGroup{}
 
 // VLANGroup Base serializer class for models inheriting from OrganizationalModel.
 type VLANGroup struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Url                  *string                `json:"url,omitempty"`
 	DisplayUrl           *string                `json:"display_url,omitempty"`
 	Display              *string                `json:"display,omitempty"`
 	Name                 *string                `json:"name,omitempty"`
 	Slug                 *string                `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	ScopeType            NullableString         `json:"scope_type,omitempty"`
-	ScopeId              NullableInt32          `json:"scope_id,omitempty"`
+	ScopeId              NullableInt64          `json:"scope_id,omitempty"`
 	Scope                interface{}            `json:"scope,omitempty"`
 	VidRanges            [][]int32              `json:"vid_ranges,omitempty"`
-	TotalVlanIds         *int32                 `json:"total_vlan_ids,omitempty"`
+	TotalVlanIds         *int64                 `json:"total_vlan_ids,omitempty"`
 	Tenant               NullableBriefTenant    `json:"tenant,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Owner                NullableBriefOwner     `json:"owner,omitempty"`
@@ -53,7 +53,7 @@ type _VLANGroup VLANGroup
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVLANGroup(id int32) *VLANGroup {
+func NewVLANGroup(id int64) *VLANGroup {
 	this := VLANGroup{}
 	this.Id = id
 	return &this
@@ -68,9 +68,9 @@ func NewVLANGroupWithDefaults() *VLANGroup {
 }
 
 // GetId returns the Id field value
-func (o *VLANGroup) GetId() int32 {
+func (o *VLANGroup) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -79,7 +79,7 @@ func (o *VLANGroup) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *VLANGroup) GetIdOk() (*int32, bool) {
+func (o *VLANGroup) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -87,7 +87,7 @@ func (o *VLANGroup) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *VLANGroup) SetId(v int32) {
+func (o *VLANGroup) SetId(v int64) {
 	o.Id = v
 }
 
@@ -295,9 +295,9 @@ func (o *VLANGroup) UnsetScopeType() {
 }
 
 // GetScopeId returns the ScopeId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VLANGroup) GetScopeId() int32 {
+func (o *VLANGroup) GetScopeId() int64 {
 	if o == nil || IsNil(o.ScopeId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ScopeId.Get()
@@ -306,7 +306,7 @@ func (o *VLANGroup) GetScopeId() int32 {
 // GetScopeIdOk returns a tuple with the ScopeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VLANGroup) GetScopeIdOk() (*int32, bool) {
+func (o *VLANGroup) GetScopeIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -322,8 +322,8 @@ func (o *VLANGroup) HasScopeId() bool {
 	return false
 }
 
-// SetScopeId gets a reference to the given NullableInt32 and assigns it to the ScopeId field.
-func (o *VLANGroup) SetScopeId(v int32) {
+// SetScopeId gets a reference to the given NullableInt64 and assigns it to the ScopeId field.
+func (o *VLANGroup) SetScopeId(v int64) {
 	o.ScopeId.Set(&v)
 }
 
@@ -403,9 +403,9 @@ func (o *VLANGroup) SetVidRanges(v [][]int32) {
 }
 
 // GetTotalVlanIds returns the TotalVlanIds field value if set, zero value otherwise.
-func (o *VLANGroup) GetTotalVlanIds() int32 {
+func (o *VLANGroup) GetTotalVlanIds() int64 {
 	if o == nil || IsNil(o.TotalVlanIds) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.TotalVlanIds
@@ -413,7 +413,7 @@ func (o *VLANGroup) GetTotalVlanIds() int32 {
 
 // GetTotalVlanIdsOk returns a tuple with the TotalVlanIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VLANGroup) GetTotalVlanIdsOk() (*int32, bool) {
+func (o *VLANGroup) GetTotalVlanIdsOk() (*int64, bool) {
 	if o == nil || IsNil(o.TotalVlanIds) {
 		return nil, false
 	}
@@ -429,8 +429,8 @@ func (o *VLANGroup) HasTotalVlanIds() bool {
 	return false
 }
 
-// SetTotalVlanIds gets a reference to the given int32 and assigns it to the TotalVlanIds field.
-func (o *VLANGroup) SetTotalVlanIds(v int32) {
+// SetTotalVlanIds gets a reference to the given int64 and assigns it to the TotalVlanIds field.
+func (o *VLANGroup) SetTotalVlanIds(v int64) {
 	o.TotalVlanIds = &v
 }
 

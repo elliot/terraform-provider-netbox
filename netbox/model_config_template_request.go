@@ -38,10 +38,10 @@ type ConfigTemplateRequest struct {
 	AsAttachment *bool `json:"as_attachment,omitempty"`
 	// Enable verbose error output when rendering this template. Not recommended for production use.
 	Debug      *bool  `json:"debug,omitempty"`
-	DataSource *int32 `json:"data_source,omitempty"`
+	DataSource *int64 `json:"data_source,omitempty"`
 	// Enable automatic synchronization of data when the data file is updated
 	AutoSyncEnabled      *bool              `json:"auto_sync_enabled,omitempty"`
-	Owner                NullableInt32      `json:"owner,omitempty"`
+	Owner                NullableInt64      `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest `json:"tags,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -341,9 +341,9 @@ func (o *ConfigTemplateRequest) SetDebug(v bool) {
 }
 
 // GetDataSource returns the DataSource field value if set, zero value otherwise.
-func (o *ConfigTemplateRequest) GetDataSource() int32 {
+func (o *ConfigTemplateRequest) GetDataSource() int64 {
 	if o == nil || IsNil(o.DataSource) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DataSource
@@ -351,7 +351,7 @@ func (o *ConfigTemplateRequest) GetDataSource() int32 {
 
 // GetDataSourceOk returns a tuple with the DataSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigTemplateRequest) GetDataSourceOk() (*int32, bool) {
+func (o *ConfigTemplateRequest) GetDataSourceOk() (*int64, bool) {
 	if o == nil || IsNil(o.DataSource) {
 		return nil, false
 	}
@@ -367,8 +367,8 @@ func (o *ConfigTemplateRequest) HasDataSource() bool {
 	return false
 }
 
-// SetDataSource gets a reference to the given int32 and assigns it to the DataSource field.
-func (o *ConfigTemplateRequest) SetDataSource(v int32) {
+// SetDataSource gets a reference to the given int64 and assigns it to the DataSource field.
+func (o *ConfigTemplateRequest) SetDataSource(v int64) {
 	o.DataSource = &v
 }
 
@@ -405,9 +405,9 @@ func (o *ConfigTemplateRequest) SetAutoSyncEnabled(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigTemplateRequest) GetOwner() int32 {
+func (o *ConfigTemplateRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -416,7 +416,7 @@ func (o *ConfigTemplateRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigTemplateRequest) GetOwnerOk() (*int32, bool) {
+func (o *ConfigTemplateRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -432,8 +432,8 @@ func (o *ConfigTemplateRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *ConfigTemplateRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *ConfigTemplateRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

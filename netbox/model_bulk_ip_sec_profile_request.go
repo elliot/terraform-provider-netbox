@@ -22,14 +22,14 @@ var _ MappedNullable = &BulkIPSecProfileRequest{}
 
 // BulkIPSecProfileRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkIPSecProfileRequest struct {
-	Id          int32   `json:"id"`
+	Id          int64   `json:"id"`
 	Name        string  `json:"name"`
 	Description *string `json:"description,omitempty"`
 	// * `esp` - ESP * `ah` - AH
 	Mode                 string                 `json:"mode"`
-	IkePolicy            int32                  `json:"ike_policy"`
-	IpsecPolicy          int32                  `json:"ipsec_policy"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	IkePolicy            int64                  `json:"ike_policy"`
+	IpsecPolicy          int64                  `json:"ipsec_policy"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -42,7 +42,7 @@ type _BulkIPSecProfileRequest BulkIPSecProfileRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkIPSecProfileRequest(id int32, name string, mode string, ikePolicy int32, ipsecPolicy int32) *BulkIPSecProfileRequest {
+func NewBulkIPSecProfileRequest(id int64, name string, mode string, ikePolicy int64, ipsecPolicy int64) *BulkIPSecProfileRequest {
 	this := BulkIPSecProfileRequest{}
 	this.Id = id
 	this.Name = name
@@ -61,9 +61,9 @@ func NewBulkIPSecProfileRequestWithDefaults() *BulkIPSecProfileRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkIPSecProfileRequest) GetId() int32 {
+func (o *BulkIPSecProfileRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -72,7 +72,7 @@ func (o *BulkIPSecProfileRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkIPSecProfileRequest) GetIdOk() (*int32, bool) {
+func (o *BulkIPSecProfileRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -80,7 +80,7 @@ func (o *BulkIPSecProfileRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkIPSecProfileRequest) SetId(v int32) {
+func (o *BulkIPSecProfileRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -165,9 +165,9 @@ func (o *BulkIPSecProfileRequest) SetMode(v string) {
 }
 
 // GetIkePolicy returns the IkePolicy field value
-func (o *BulkIPSecProfileRequest) GetIkePolicy() int32 {
+func (o *BulkIPSecProfileRequest) GetIkePolicy() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -176,7 +176,7 @@ func (o *BulkIPSecProfileRequest) GetIkePolicy() int32 {
 
 // GetIkePolicyOk returns a tuple with the IkePolicy field value
 // and a boolean to check if the value has been set.
-func (o *BulkIPSecProfileRequest) GetIkePolicyOk() (*int32, bool) {
+func (o *BulkIPSecProfileRequest) GetIkePolicyOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -184,14 +184,14 @@ func (o *BulkIPSecProfileRequest) GetIkePolicyOk() (*int32, bool) {
 }
 
 // SetIkePolicy sets field value
-func (o *BulkIPSecProfileRequest) SetIkePolicy(v int32) {
+func (o *BulkIPSecProfileRequest) SetIkePolicy(v int64) {
 	o.IkePolicy = v
 }
 
 // GetIpsecPolicy returns the IpsecPolicy field value
-func (o *BulkIPSecProfileRequest) GetIpsecPolicy() int32 {
+func (o *BulkIPSecProfileRequest) GetIpsecPolicy() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -200,7 +200,7 @@ func (o *BulkIPSecProfileRequest) GetIpsecPolicy() int32 {
 
 // GetIpsecPolicyOk returns a tuple with the IpsecPolicy field value
 // and a boolean to check if the value has been set.
-func (o *BulkIPSecProfileRequest) GetIpsecPolicyOk() (*int32, bool) {
+func (o *BulkIPSecProfileRequest) GetIpsecPolicyOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -208,14 +208,14 @@ func (o *BulkIPSecProfileRequest) GetIpsecPolicyOk() (*int32, bool) {
 }
 
 // SetIpsecPolicy sets field value
-func (o *BulkIPSecProfileRequest) SetIpsecPolicy(v int32) {
+func (o *BulkIPSecProfileRequest) SetIpsecPolicy(v int64) {
 	o.IpsecPolicy = v
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkIPSecProfileRequest) GetOwner() int32 {
+func (o *BulkIPSecProfileRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -224,7 +224,7 @@ func (o *BulkIPSecProfileRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkIPSecProfileRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkIPSecProfileRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -240,8 +240,8 @@ func (o *BulkIPSecProfileRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkIPSecProfileRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkIPSecProfileRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

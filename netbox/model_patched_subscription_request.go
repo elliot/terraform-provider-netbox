@@ -23,7 +23,7 @@ var _ MappedNullable = &PatchedSubscriptionRequest{}
 type PatchedSubscriptionRequest struct {
 	ObjectType           *string `json:"object_type,omitempty"`
 	ObjectId             *int64  `json:"object_id,omitempty"`
-	User                 *int32  `json:"user,omitempty"`
+	User                 *int64  `json:"user,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -111,9 +111,9 @@ func (o *PatchedSubscriptionRequest) SetObjectId(v int64) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise.
-func (o *PatchedSubscriptionRequest) GetUser() int32 {
+func (o *PatchedSubscriptionRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User
@@ -121,7 +121,7 @@ func (o *PatchedSubscriptionRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedSubscriptionRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedSubscriptionRequest) GetUserOk() (*int64, bool) {
 	if o == nil || IsNil(o.User) {
 		return nil, false
 	}
@@ -137,8 +137,8 @@ func (o *PatchedSubscriptionRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given int32 and assigns it to the User field.
-func (o *PatchedSubscriptionRequest) SetUser(v int32) {
+// SetUser gets a reference to the given int64 and assigns it to the User field.
+func (o *PatchedSubscriptionRequest) SetUser(v int64) {
 	o.User = &v
 }
 

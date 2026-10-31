@@ -21,7 +21,7 @@ var _ MappedNullable = &PatchedContactRequest{}
 
 // PatchedContactRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedContactRequest struct {
-	Groups               []int32                `json:"groups,omitempty"`
+	Groups               []int64                `json:"groups,omitempty"`
 	Name                 *string                `json:"name,omitempty"`
 	Title                *string                `json:"title,omitempty"`
 	Phone                *string                `json:"phone,omitempty"`
@@ -29,7 +29,7 @@ type PatchedContactRequest struct {
 	Address              *string                `json:"address,omitempty"`
 	Link                 *string                `json:"link,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -56,9 +56,9 @@ func NewPatchedContactRequestWithDefaults() *PatchedContactRequest {
 }
 
 // GetGroups returns the Groups field value if set, zero value otherwise.
-func (o *PatchedContactRequest) GetGroups() []int32 {
+func (o *PatchedContactRequest) GetGroups() []int64 {
 	if o == nil || IsNil(o.Groups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Groups
@@ -66,7 +66,7 @@ func (o *PatchedContactRequest) GetGroups() []int32 {
 
 // GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedContactRequest) GetGroupsOk() ([]int32, bool) {
+func (o *PatchedContactRequest) GetGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Groups) {
 		return nil, false
 	}
@@ -82,8 +82,8 @@ func (o *PatchedContactRequest) HasGroups() bool {
 	return false
 }
 
-// SetGroups gets a reference to the given []int32 and assigns it to the Groups field.
-func (o *PatchedContactRequest) SetGroups(v []int32) {
+// SetGroups gets a reference to the given []int64 and assigns it to the Groups field.
+func (o *PatchedContactRequest) SetGroups(v []int64) {
 	o.Groups = v
 }
 
@@ -312,9 +312,9 @@ func (o *PatchedContactRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedContactRequest) GetOwner() int32 {
+func (o *PatchedContactRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -323,7 +323,7 @@ func (o *PatchedContactRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedContactRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedContactRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -339,8 +339,8 @@ func (o *PatchedContactRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedContactRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedContactRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

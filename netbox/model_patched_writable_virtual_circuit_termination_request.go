@@ -21,10 +21,10 @@ var _ MappedNullable = &PatchedWritableVirtualCircuitTerminationRequest{}
 
 // PatchedWritableVirtualCircuitTerminationRequest Adds support for custom fields and tags.
 type PatchedWritableVirtualCircuitTerminationRequest struct {
-	VirtualCircuit *int32 `json:"virtual_circuit,omitempty"`
+	VirtualCircuit *int64 `json:"virtual_circuit,omitempty"`
 	// * `peer` - Peer * `hub` - Hub * `spoke` - Spoke
 	Role                 *string                `json:"role,omitempty"`
-	Interface            *int32                 `json:"interface,omitempty"`
+	Interface            *int64                 `json:"interface,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -51,9 +51,9 @@ func NewPatchedWritableVirtualCircuitTerminationRequestWithDefaults() *PatchedWr
 }
 
 // GetVirtualCircuit returns the VirtualCircuit field value if set, zero value otherwise.
-func (o *PatchedWritableVirtualCircuitTerminationRequest) GetVirtualCircuit() int32 {
+func (o *PatchedWritableVirtualCircuitTerminationRequest) GetVirtualCircuit() int64 {
 	if o == nil || IsNil(o.VirtualCircuit) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VirtualCircuit
@@ -61,7 +61,7 @@ func (o *PatchedWritableVirtualCircuitTerminationRequest) GetVirtualCircuit() in
 
 // GetVirtualCircuitOk returns a tuple with the VirtualCircuit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableVirtualCircuitTerminationRequest) GetVirtualCircuitOk() (*int32, bool) {
+func (o *PatchedWritableVirtualCircuitTerminationRequest) GetVirtualCircuitOk() (*int64, bool) {
 	if o == nil || IsNil(o.VirtualCircuit) {
 		return nil, false
 	}
@@ -77,8 +77,8 @@ func (o *PatchedWritableVirtualCircuitTerminationRequest) HasVirtualCircuit() bo
 	return false
 }
 
-// SetVirtualCircuit gets a reference to the given int32 and assigns it to the VirtualCircuit field.
-func (o *PatchedWritableVirtualCircuitTerminationRequest) SetVirtualCircuit(v int32) {
+// SetVirtualCircuit gets a reference to the given int64 and assigns it to the VirtualCircuit field.
+func (o *PatchedWritableVirtualCircuitTerminationRequest) SetVirtualCircuit(v int64) {
 	o.VirtualCircuit = &v
 }
 
@@ -115,9 +115,9 @@ func (o *PatchedWritableVirtualCircuitTerminationRequest) SetRole(v string) {
 }
 
 // GetInterface returns the Interface field value if set, zero value otherwise.
-func (o *PatchedWritableVirtualCircuitTerminationRequest) GetInterface() int32 {
+func (o *PatchedWritableVirtualCircuitTerminationRequest) GetInterface() int64 {
 	if o == nil || IsNil(o.Interface) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Interface
@@ -125,7 +125,7 @@ func (o *PatchedWritableVirtualCircuitTerminationRequest) GetInterface() int32 {
 
 // GetInterfaceOk returns a tuple with the Interface field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableVirtualCircuitTerminationRequest) GetInterfaceOk() (*int32, bool) {
+func (o *PatchedWritableVirtualCircuitTerminationRequest) GetInterfaceOk() (*int64, bool) {
 	if o == nil || IsNil(o.Interface) {
 		return nil, false
 	}
@@ -141,8 +141,8 @@ func (o *PatchedWritableVirtualCircuitTerminationRequest) HasInterface() bool {
 	return false
 }
 
-// SetInterface gets a reference to the given int32 and assigns it to the Interface field.
-func (o *PatchedWritableVirtualCircuitTerminationRequest) SetInterface(v int32) {
+// SetInterface gets a reference to the given int64 and assigns it to the Interface field.
+func (o *PatchedWritableVirtualCircuitTerminationRequest) SetInterface(v int64) {
 	o.Interface = &v
 }
 

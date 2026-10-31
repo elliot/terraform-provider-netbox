@@ -321,7 +321,7 @@ func (d *VirtualMachineDataSource) Read(ctx context.Context, req datasource.Read
 	}
 	var obj *netbox.VirtualMachine
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -517,7 +517,7 @@ func virtualMachineDataFromAPI(ctx context.Context, obj *netbox.VirtualMachine, 
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.PrimaryIpId = conv.BriefID(obj.GetPrimaryIpOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.InterfaceCount = conv.Int64From32(obj.GetInterfaceCountOk())
-	out.VirtualDiskCount = conv.Int64From32(obj.GetVirtualDiskCountOk())
+	out.InterfaceCount = conv.Int64From64(obj.GetInterfaceCountOk())
+	out.VirtualDiskCount = conv.Int64From64(obj.GetVirtualDiskCountOk())
 	out.ConfigContext = conv.JSONFromAPI(obj.GetConfigContext())
 }

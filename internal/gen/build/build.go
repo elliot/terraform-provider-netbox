@@ -431,6 +431,8 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 	}
 	switch {
 	case kind != "":
+		// A forced kind skips type detection; keep the client's integer width.
+		a.Int64 = rs.Type == "integer" && rs.Format == "int64"
 	case pname == "tags" && rs.Type == "array" && rs.Items != nil && openapi.RefName(rs.Items.Ref) == "NestedTagRequest":
 		kind = model.KindTags
 	case pname == "custom_fields":
@@ -441,6 +443,7 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 			switch {
 			case alt.Type == "integer":
 				ints++
+				a.Int64 = alt.Format == "int64"
 			case alt.Ref != "" || len(alt.AllOf) > 0:
 				refs++
 			case alt.Type == "string":

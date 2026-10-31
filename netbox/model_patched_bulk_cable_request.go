@@ -22,24 +22,24 @@ var _ MappedNullable = &PatchedBulkCableRequest{}
 
 // PatchedBulkCableRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkCableRequest struct {
-	Id int32 `json:"id"`
+	Id int64 `json:"id"`
 	// * `cat3` - CAT3 * `cat5` - CAT5 * `cat5e` - CAT5e * `cat6` - CAT6 * `cat6a` - CAT6a * `cat7` - CAT7 * `cat7a` - CAT7a * `cat8` - CAT8 * `mrj21-trunk` - MRJ21 Trunk * `dac-active` - Direct Attach Copper (Active) * `dac-passive` - Direct Attach Copper (Passive) * `coaxial` - Coaxial * `rg-6` - RG-6 * `rg-8` - RG-8 * `rg-11` - RG-11 * `rg-59` - RG-59 * `rg-62` - RG-62 * `rg-213` - RG-213 * `lmr-100` - LMR-100 * `lmr-200` - LMR-200 * `lmr-400` - LMR-400 * `mmf` - Multimode Fiber * `mmf-om1` - Multimode Fiber (OM1) * `mmf-om2` - Multimode Fiber (OM2) * `mmf-om3` - Multimode Fiber (OM3) * `mmf-om4` - Multimode Fiber (OM4) * `mmf-om5` - Multimode Fiber (OM5) * `smf` - Single-mode Fiber * `smf-os1` - Single-mode Fiber (OS1) * `smf-os2` - Single-mode Fiber (OS2) * `aoc` - Active Optical Cabling (AOC) * `power` - Power * `usb` - USB
 	Type          NullableString         `json:"type,omitempty"`
 	ATerminations []GenericObjectRequest `json:"a_terminations,omitempty"`
 	BTerminations []GenericObjectRequest `json:"b_terminations,omitempty"`
 	// * `connected` - Connected * `planned` - Planned * `decommissioning` - Decommissioning
 	Status *string `json:"status,omitempty"`
-	// * `single-1c1p` - 1C1P * `single-1c2p` - 1C2P * `single-1c4p` - 1C4P * `single-1c6p` - 1C6P * `single-1c8p` - 1C8P * `single-1c12p` - 1C12P * `single-1c16p` - 1C16P * `trunk-2c1p` - 2C1P trunk * `trunk-2c2p` - 2C2P trunk * `trunk-2c4p` - 2C4P trunk * `trunk-2c4p-shuffle` - 2C4P trunk (shuffle) * `trunk-2c6p` - 2C6P trunk * `trunk-2c8p` - 2C8P trunk * `trunk-2c12p` - 2C12P trunk * `trunk-4c1p` - 4C1P trunk * `trunk-4c2p` - 4C2P trunk * `trunk-4c4p` - 4C4P trunk * `trunk-4c4p-shuffle` - 4C4P trunk (shuffle) * `trunk-4c6p` - 4C6P trunk * `trunk-4c8p` - 4C8P trunk * `trunk-8c4p` - 8C4P trunk * `breakout-1c2p-2c1p` - 1C2P:2C1P breakout * `breakout-1c4p-4c1p` - 1C4P:4C1P breakout * `breakout-1c6p-6c1p` - 1C6P:6C1P breakout * `breakout-1c8p-8c1p` - 1C8P:8C1P breakout * `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)
+	// * `single-1c1p` - 1C1P * `single-1c2p` - 1C2P * `single-1c4p` - 1C4P * `single-1c6p` - 1C6P * `single-1c8p` - 1C8P * `single-1c12p` - 1C12P * `single-1c16p` - 1C16P * `trunk-2c1p` - 2C1P trunk * `trunk-2c2p` - 2C2P trunk * `trunk-2c4p` - 2C4P trunk * `trunk-2c4p-shuffle` - 2C4P trunk (shuffle) * `trunk-2c6p` - 2C6P trunk * `trunk-2c8p` - 2C8P trunk * `trunk-2c12p` - 2C12P trunk * `trunk-4c1p` - 4C1P trunk * `trunk-4c2p` - 4C2P trunk * `trunk-4c4p` - 4C4P trunk * `trunk-4c4p-shuffle` - 4C4P trunk (shuffle) * `trunk-4c6p` - 4C6P trunk * `trunk-4c8p` - 4C8P trunk * `trunk-8c1p` - 8C1P trunk * `trunk-8c4p` - 8C4P trunk * `trunk-12c1p` - 12C1P trunk * `trunk-24c1p` - 24C1P trunk * `breakout-1c2p-2c1p` - 1C2P:2C1P breakout * `breakout-1c4p-4c1p` - 1C4P:4C1P breakout * `breakout-1c6p-6c1p` - 1C6P:6C1P breakout * `breakout-1c8p-8c1p` - 1C8P:8C1P breakout * `breakout-2c4p-8c1p-shuffle` - 2C4P:8C1P breakout (shuffle)
 	Profile *string         `json:"profile,omitempty"`
-	Tenant  NullableInt32   `json:"tenant,omitempty"`
-	Bundle  NullableInt32   `json:"bundle,omitempty"`
+	Tenant  NullableInt64   `json:"tenant,omitempty"`
+	Bundle  NullableInt64   `json:"bundle,omitempty"`
 	Label   *string         `json:"label,omitempty"`
 	Color   *string         `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
 	Length  NullableFloat64 `json:"length,omitempty"`
 	// * `km` - Kilometers * `m` - Meters * `cm` - Centimeters * `mi` - Miles * `ft` - Feet * `in` - Inches
 	LengthUnit           NullableString         `json:"length_unit,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -52,7 +52,7 @@ type _PatchedBulkCableRequest PatchedBulkCableRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkCableRequest(id int32) *PatchedBulkCableRequest {
+func NewPatchedBulkCableRequest(id int64) *PatchedBulkCableRequest {
 	this := PatchedBulkCableRequest{}
 	this.Id = id
 	return &this
@@ -67,9 +67,9 @@ func NewPatchedBulkCableRequestWithDefaults() *PatchedBulkCableRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkCableRequest) GetId() int32 {
+func (o *PatchedBulkCableRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -78,7 +78,7 @@ func (o *PatchedBulkCableRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkCableRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkCableRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -86,7 +86,7 @@ func (o *PatchedBulkCableRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkCableRequest) SetId(v int32) {
+func (o *PatchedBulkCableRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -262,9 +262,9 @@ func (o *PatchedBulkCableRequest) SetProfile(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCableRequest) GetTenant() int32 {
+func (o *PatchedBulkCableRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -273,7 +273,7 @@ func (o *PatchedBulkCableRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCableRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkCableRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -289,8 +289,8 @@ func (o *PatchedBulkCableRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkCableRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkCableRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -305,9 +305,9 @@ func (o *PatchedBulkCableRequest) UnsetTenant() {
 }
 
 // GetBundle returns the Bundle field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCableRequest) GetBundle() int32 {
+func (o *PatchedBulkCableRequest) GetBundle() int64 {
 	if o == nil || IsNil(o.Bundle.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Bundle.Get()
@@ -316,7 +316,7 @@ func (o *PatchedBulkCableRequest) GetBundle() int32 {
 // GetBundleOk returns a tuple with the Bundle field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCableRequest) GetBundleOk() (*int32, bool) {
+func (o *PatchedBulkCableRequest) GetBundleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -332,8 +332,8 @@ func (o *PatchedBulkCableRequest) HasBundle() bool {
 	return false
 }
 
-// SetBundle gets a reference to the given NullableInt32 and assigns it to the Bundle field.
-func (o *PatchedBulkCableRequest) SetBundle(v int32) {
+// SetBundle gets a reference to the given NullableInt64 and assigns it to the Bundle field.
+func (o *PatchedBulkCableRequest) SetBundle(v int64) {
 	o.Bundle.Set(&v)
 }
 
@@ -530,9 +530,9 @@ func (o *PatchedBulkCableRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCableRequest) GetOwner() int32 {
+func (o *PatchedBulkCableRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -541,7 +541,7 @@ func (o *PatchedBulkCableRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCableRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkCableRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -557,8 +557,8 @@ func (o *PatchedBulkCableRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkCableRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkCableRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

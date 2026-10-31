@@ -252,7 +252,7 @@ func (r *InventoryItemResource) Read(ctx context.Context, req resource.ReadReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -283,7 +283,7 @@ func (r *InventoryItemResource) Update(ctx context.Context, req resource.UpdateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -313,7 +313,7 @@ func (r *InventoryItemResource) Delete(ctx context.Context, req resource.DeleteR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -333,9 +333,9 @@ func (r *InventoryItemResource) ImportState(ctx context.Context, req resource.Im
 // inventoryItemToCreate builds the WritableInventoryItemRequest request body from the plan.
 func inventoryItemToCreate(ctx context.Context, plan *InventoryItemModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableInventoryItemRequest {
 	const objectType = "dcim.inventoryitem"
-	body := netbox.NewWritableInventoryItemRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
+	body := netbox.NewWritableInventoryItemRequest(plan.DeviceId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.ParentId) {
-		body.SetParent(conv.Int32(plan.ParentId))
+		body.SetParent(plan.ParentId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -344,10 +344,10 @@ func inventoryItemToCreate(ctx context.Context, plan *InventoryItemModel, cf *cu
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.RoleId) {
-		body.SetRole(conv.Int32(plan.RoleId))
+		body.SetRole(plan.RoleId.ValueInt64())
 	}
 	if conv.Known(plan.ManufacturerId) {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 	}
 	if !plan.PartId.IsUnknown() {
 		body.SetPartId(plan.PartId.ValueString())
@@ -371,7 +371,7 @@ func inventoryItemToCreate(ctx context.Context, plan *InventoryItemModel, cf *cu
 		body.SetComponentId(plan.ComponentId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -388,14 +388,14 @@ func inventoryItemToPatch(ctx context.Context, plan, state *InventoryItemModel, 
 	body := netbox.NewPatchedWritableInventoryItemRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.ParentId.Equal(state.ParentId) {
 		if plan.ParentId.IsNull() {
 			body.SetParentNil()
 		} else if !plan.ParentId.IsUnknown() {
-			body.SetParent(conv.Int32(plan.ParentId))
+			body.SetParent(plan.ParentId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -417,14 +417,14 @@ func inventoryItemToPatch(ctx context.Context, plan, state *InventoryItemModel, 
 		if plan.RoleId.IsNull() {
 			body.SetRoleNil()
 		} else if !plan.RoleId.IsUnknown() {
-			body.SetRole(conv.Int32(plan.RoleId))
+			body.SetRole(plan.RoleId.ValueInt64())
 		}
 	}
 	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
 		if plan.ManufacturerId.IsNull() {
 			body.SetManufacturerNil()
 		} else if !plan.ManufacturerId.IsUnknown() {
-			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+			body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 		}
 	}
 	if !plan.PartId.Equal(state.PartId) {
@@ -470,7 +470,7 @@ func inventoryItemToPatch(ctx context.Context, plan, state *InventoryItemModel, 
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {
@@ -495,7 +495,7 @@ func inventoryItemFromAPI(ctx context.Context, obj *netbox.InventoryItem, prior 
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceId = conv.BriefID(obj.GetDeviceOk())
-	out.ParentId = conv.Int64From32(obj.GetParentOk())
+	out.ParentId = conv.Int64From64(obj.GetParentOk())
 	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *InventoryItemModel) types.String { return m.Name }), false)
 	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *InventoryItemModel) types.String { return m.Label }), false)
 	out.Status = conv.Choice(obj.GetStatusOk())

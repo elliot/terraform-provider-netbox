@@ -188,7 +188,7 @@ func (r *TenantResource) Read(ctx context.Context, req resource.ReadRequest, res
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -219,7 +219,7 @@ func (r *TenantResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -249,7 +249,7 @@ func (r *TenantResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -271,13 +271,13 @@ func tenantToCreate(ctx context.Context, plan *TenantModel, cf *customfields.Cac
 	const objectType = "tenancy.tenant"
 	body := netbox.NewTenantRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+		body.SetGroup(plan.GroupId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -309,7 +309,7 @@ func tenantToPatch(ctx context.Context, plan, state *TenantModel, cf *customfiel
 		if plan.GroupId.IsNull() {
 			body.SetGroupNil()
 		} else if !plan.GroupId.IsUnknown() {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -321,7 +321,7 @@ func tenantToPatch(ctx context.Context, plan, state *TenantModel, cf *customfiel
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

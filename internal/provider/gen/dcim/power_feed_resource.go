@@ -272,7 +272,7 @@ func (r *PowerFeedResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -303,7 +303,7 @@ func (r *PowerFeedResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -333,7 +333,7 @@ func (r *PowerFeedResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -353,9 +353,9 @@ func (r *PowerFeedResource) ImportState(ctx context.Context, req resource.Import
 // powerFeedToCreate builds the WritablePowerFeedRequest request body from the plan.
 func powerFeedToCreate(ctx context.Context, plan *PowerFeedModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritablePowerFeedRequest {
 	const objectType = "dcim.powerfeed"
-	body := netbox.NewWritablePowerFeedRequest(conv.Int32(plan.PowerPanelId), plan.Name.ValueString())
+	body := netbox.NewWritablePowerFeedRequest(plan.PowerPanelId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.RackId) {
-		body.SetRack(conv.Int32(plan.RackId))
+		body.SetRack(plan.RackId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
@@ -385,10 +385,10 @@ func powerFeedToCreate(ctx context.Context, plan *PowerFeedModel, cf *customfiel
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -408,14 +408,14 @@ func powerFeedToPatch(ctx context.Context, plan, state *PowerFeedModel, cf *cust
 	body := netbox.NewPatchedWritablePowerFeedRequest()
 	if !plan.PowerPanelId.Equal(state.PowerPanelId) {
 		if conv.Known(plan.PowerPanelId) {
-			body.SetPowerPanel(conv.Int32(plan.PowerPanelId))
+			body.SetPowerPanel(plan.PowerPanelId.ValueInt64())
 		}
 	}
 	if !plan.RackId.Equal(state.RackId) {
 		if plan.RackId.IsNull() {
 			body.SetRackNil()
 		} else if !plan.RackId.IsUnknown() {
-			body.SetRack(conv.Int32(plan.RackId))
+			body.SetRack(plan.RackId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -472,14 +472,14 @@ func powerFeedToPatch(ctx context.Context, plan, state *PowerFeedModel, cf *cust
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

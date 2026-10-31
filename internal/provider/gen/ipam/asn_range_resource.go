@@ -203,7 +203,7 @@ func (r *AsnRangeResource) Read(ctx context.Context, req resource.ReadRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -234,7 +234,7 @@ func (r *AsnRangeResource) Update(ctx context.Context, req resource.UpdateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -264,7 +264,7 @@ func (r *AsnRangeResource) Delete(ctx context.Context, req resource.DeleteReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -284,15 +284,15 @@ func (r *AsnRangeResource) ImportState(ctx context.Context, req resource.ImportS
 // asnRangeToCreate builds the ASNRangeRequest request body from the plan.
 func asnRangeToCreate(ctx context.Context, plan *AsnRangeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ASNRangeRequest {
 	const objectType = "ipam.asnrange"
-	body := netbox.NewASNRangeRequest(plan.Name.ValueString(), plan.Slug.ValueString(), conv.Int32(plan.RirId), plan.Start.ValueInt64(), plan.End.ValueInt64())
+	body := netbox.NewASNRangeRequest(plan.Name.ValueString(), plan.Slug.ValueString(), plan.RirId.ValueInt64(), plan.Start.ValueInt64(), plan.End.ValueInt64())
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -322,7 +322,7 @@ func asnRangeToPatch(ctx context.Context, plan, state *AsnRangeModel, cf *custom
 	}
 	if !plan.RirId.Equal(state.RirId) {
 		if conv.Known(plan.RirId) {
-			body.SetRir(conv.Int32(plan.RirId))
+			body.SetRir(plan.RirId.ValueInt64())
 		}
 	}
 	if !plan.Start.Equal(state.Start) {
@@ -339,7 +339,7 @@ func asnRangeToPatch(ctx context.Context, plan, state *AsnRangeModel, cf *custom
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -351,7 +351,7 @@ func asnRangeToPatch(ctx context.Context, plan, state *AsnRangeModel, cf *custom
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

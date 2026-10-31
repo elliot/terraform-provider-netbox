@@ -22,17 +22,17 @@ var _ MappedNullable = &BulkVirtualDeviceContextRequest{}
 
 // BulkVirtualDeviceContextRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkVirtualDeviceContextRequest struct {
-	Id         int32         `json:"id"`
+	Id         int64         `json:"id"`
 	Name       string        `json:"name"`
-	Device     int32         `json:"device"`
+	Device     int64         `json:"device"`
 	Identifier NullableInt32 `json:"identifier,omitempty"`
-	Tenant     NullableInt32 `json:"tenant,omitempty"`
-	PrimaryIp4 NullableInt32 `json:"primary_ip4,omitempty"`
-	PrimaryIp6 NullableInt32 `json:"primary_ip6,omitempty"`
+	Tenant     NullableInt64 `json:"tenant,omitempty"`
+	PrimaryIp4 NullableInt64 `json:"primary_ip4,omitempty"`
+	PrimaryIp6 NullableInt64 `json:"primary_ip6,omitempty"`
 	// * `active` - Active * `planned` - Planned * `offline` - Offline
 	Status               string                 `json:"status"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -45,7 +45,7 @@ type _BulkVirtualDeviceContextRequest BulkVirtualDeviceContextRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkVirtualDeviceContextRequest(id int32, name string, device int32, status string) *BulkVirtualDeviceContextRequest {
+func NewBulkVirtualDeviceContextRequest(id int64, name string, device int64, status string) *BulkVirtualDeviceContextRequest {
 	this := BulkVirtualDeviceContextRequest{}
 	this.Id = id
 	this.Name = name
@@ -63,9 +63,9 @@ func NewBulkVirtualDeviceContextRequestWithDefaults() *BulkVirtualDeviceContextR
 }
 
 // GetId returns the Id field value
-func (o *BulkVirtualDeviceContextRequest) GetId() int32 {
+func (o *BulkVirtualDeviceContextRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -74,7 +74,7 @@ func (o *BulkVirtualDeviceContextRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkVirtualDeviceContextRequest) GetIdOk() (*int32, bool) {
+func (o *BulkVirtualDeviceContextRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -82,7 +82,7 @@ func (o *BulkVirtualDeviceContextRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkVirtualDeviceContextRequest) SetId(v int32) {
+func (o *BulkVirtualDeviceContextRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -111,9 +111,9 @@ func (o *BulkVirtualDeviceContextRequest) SetName(v string) {
 }
 
 // GetDevice returns the Device field value
-func (o *BulkVirtualDeviceContextRequest) GetDevice() int32 {
+func (o *BulkVirtualDeviceContextRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -122,7 +122,7 @@ func (o *BulkVirtualDeviceContextRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *BulkVirtualDeviceContextRequest) GetDeviceOk() (*int32, bool) {
+func (o *BulkVirtualDeviceContextRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -130,7 +130,7 @@ func (o *BulkVirtualDeviceContextRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *BulkVirtualDeviceContextRequest) SetDevice(v int32) {
+func (o *BulkVirtualDeviceContextRequest) SetDevice(v int64) {
 	o.Device = v
 }
 
@@ -178,9 +178,9 @@ func (o *BulkVirtualDeviceContextRequest) UnsetIdentifier() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkVirtualDeviceContextRequest) GetTenant() int32 {
+func (o *BulkVirtualDeviceContextRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -189,7 +189,7 @@ func (o *BulkVirtualDeviceContextRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkVirtualDeviceContextRequest) GetTenantOk() (*int32, bool) {
+func (o *BulkVirtualDeviceContextRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -205,8 +205,8 @@ func (o *BulkVirtualDeviceContextRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *BulkVirtualDeviceContextRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *BulkVirtualDeviceContextRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -221,9 +221,9 @@ func (o *BulkVirtualDeviceContextRequest) UnsetTenant() {
 }
 
 // GetPrimaryIp4 returns the PrimaryIp4 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp4() int32 {
+func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp4() int64 {
 	if o == nil || IsNil(o.PrimaryIp4.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp4.Get()
@@ -232,7 +232,7 @@ func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp4() int32 {
 // GetPrimaryIp4Ok returns a tuple with the PrimaryIp4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp4Ok() (*int32, bool) {
+func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp4Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -248,8 +248,8 @@ func (o *BulkVirtualDeviceContextRequest) HasPrimaryIp4() bool {
 	return false
 }
 
-// SetPrimaryIp4 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp4 field.
-func (o *BulkVirtualDeviceContextRequest) SetPrimaryIp4(v int32) {
+// SetPrimaryIp4 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp4 field.
+func (o *BulkVirtualDeviceContextRequest) SetPrimaryIp4(v int64) {
 	o.PrimaryIp4.Set(&v)
 }
 
@@ -264,9 +264,9 @@ func (o *BulkVirtualDeviceContextRequest) UnsetPrimaryIp4() {
 }
 
 // GetPrimaryIp6 returns the PrimaryIp6 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp6() int32 {
+func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp6() int64 {
 	if o == nil || IsNil(o.PrimaryIp6.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp6.Get()
@@ -275,7 +275,7 @@ func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp6() int32 {
 // GetPrimaryIp6Ok returns a tuple with the PrimaryIp6 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp6Ok() (*int32, bool) {
+func (o *BulkVirtualDeviceContextRequest) GetPrimaryIp6Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -291,8 +291,8 @@ func (o *BulkVirtualDeviceContextRequest) HasPrimaryIp6() bool {
 	return false
 }
 
-// SetPrimaryIp6 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp6 field.
-func (o *BulkVirtualDeviceContextRequest) SetPrimaryIp6(v int32) {
+// SetPrimaryIp6 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp6 field.
+func (o *BulkVirtualDeviceContextRequest) SetPrimaryIp6(v int64) {
 	o.PrimaryIp6.Set(&v)
 }
 
@@ -363,9 +363,9 @@ func (o *BulkVirtualDeviceContextRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkVirtualDeviceContextRequest) GetOwner() int32 {
+func (o *BulkVirtualDeviceContextRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -374,7 +374,7 @@ func (o *BulkVirtualDeviceContextRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkVirtualDeviceContextRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkVirtualDeviceContextRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -390,8 +390,8 @@ func (o *BulkVirtualDeviceContextRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkVirtualDeviceContextRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkVirtualDeviceContextRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

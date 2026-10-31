@@ -214,7 +214,7 @@ func (r *VirtualDeviceContextResource) Read(ctx context.Context, req resource.Re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -245,7 +245,7 @@ func (r *VirtualDeviceContextResource) Update(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -275,7 +275,7 @@ func (r *VirtualDeviceContextResource) Delete(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -295,24 +295,24 @@ func (r *VirtualDeviceContextResource) ImportState(ctx context.Context, req reso
 // virtualDeviceContextToCreate builds the WritableVirtualDeviceContextRequest request body from the plan.
 func virtualDeviceContextToCreate(ctx context.Context, plan *VirtualDeviceContextModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVirtualDeviceContextRequest {
 	const objectType = "dcim.virtualdevicecontext"
-	body := netbox.NewWritableVirtualDeviceContextRequest(plan.Name.ValueString(), conv.Int32(plan.DeviceId), plan.Status.ValueString())
+	body := netbox.NewWritableVirtualDeviceContextRequest(plan.Name.ValueString(), plan.DeviceId.ValueInt64(), plan.Status.ValueString())
 	if conv.Known(plan.Identifier) {
 		body.SetIdentifier(conv.Int32(plan.Identifier))
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.PrimaryIp4Id) {
-		body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+		body.SetPrimaryIp4(plan.PrimaryIp4Id.ValueInt64())
 	}
 	if conv.Known(plan.PrimaryIp6Id) {
-		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+		body.SetPrimaryIp6(plan.PrimaryIp6Id.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -337,7 +337,7 @@ func virtualDeviceContextToPatch(ctx context.Context, plan, state *VirtualDevice
 	}
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.Identifier.Equal(state.Identifier) {
@@ -349,21 +349,21 @@ func virtualDeviceContextToPatch(ctx context.Context, plan, state *VirtualDevice
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.PrimaryIp4Id.Equal(state.PrimaryIp4Id) {
 		if plan.PrimaryIp4Id.IsNull() {
 			body.SetPrimaryIp4Nil()
 		} else if !plan.PrimaryIp4Id.IsUnknown() {
-			body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+			body.SetPrimaryIp4(plan.PrimaryIp4Id.ValueInt64())
 		}
 	}
 	if !plan.PrimaryIp6Id.Equal(state.PrimaryIp6Id) {
 		if plan.PrimaryIp6Id.IsNull() {
 			body.SetPrimaryIp6Nil()
 		} else if !plan.PrimaryIp6Id.IsUnknown() {
-			body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+			body.SetPrimaryIp6(plan.PrimaryIp6Id.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -380,7 +380,7 @@ func virtualDeviceContextToPatch(ctx context.Context, plan, state *VirtualDevice
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

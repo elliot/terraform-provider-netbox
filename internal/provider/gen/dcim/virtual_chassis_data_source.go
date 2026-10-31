@@ -216,7 +216,7 @@ func (d *VirtualChassisDataSource) Read(ctx context.Context, req datasource.Read
 	}
 	var obj *netbox.VirtualChassis
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -396,6 +396,6 @@ func virtualChassisDataFromAPI(ctx context.Context, obj *netbox.VirtualChassis, 
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.MemberCount = conv.Int64From32(obj.GetMemberCountOk())
+	out.MemberCount = conv.Int64From64(obj.GetMemberCountOk())
 	out.MemberIds = conv.BriefIDs(obj.GetMembers())
 }

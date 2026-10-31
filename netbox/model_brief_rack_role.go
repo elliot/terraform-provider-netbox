@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefRackRole{}
 
 // BriefRackRole Base serializer class for models inheriting from OrganizationalModel.
 type BriefRackRole struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	Display              *string `json:"display,omitempty"`
 	Name                 *string `json:"name,omitempty"`
@@ -37,7 +37,7 @@ type _BriefRackRole BriefRackRole
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefRackRole(id int32) *BriefRackRole {
+func NewBriefRackRole(id int64) *BriefRackRole {
 	this := BriefRackRole{}
 	this.Id = id
 	return &this
@@ -52,9 +52,9 @@ func NewBriefRackRoleWithDefaults() *BriefRackRole {
 }
 
 // GetId returns the Id field value
-func (o *BriefRackRole) GetId() int32 {
+func (o *BriefRackRole) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *BriefRackRole) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefRackRole) GetIdOk() (*int32, bool) {
+func (o *BriefRackRole) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *BriefRackRole) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefRackRole) SetId(v int32) {
+func (o *BriefRackRole) SetId(v int64) {
 	o.Id = v
 }
 

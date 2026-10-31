@@ -251,7 +251,7 @@ func (r *WirelessLanResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -282,7 +282,7 @@ func (r *WirelessLanResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -312,7 +312,7 @@ func (r *WirelessLanResource) Delete(ctx context.Context, req resource.DeleteReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -337,22 +337,22 @@ func wirelessLanToCreate(ctx context.Context, plan *WirelessLanModel, cf *custom
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+		body.SetGroup(plan.GroupId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.VlanId) {
-		body.SetVlan(conv.Int32(plan.VlanId))
+		body.SetVlan(plan.VlanId.ValueInt64())
 	}
 	if conv.Known(plan.ScopeType) {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
 	if conv.Known(plan.ScopeId) {
-		body.SetScopeId(conv.Int32(plan.ScopeId))
+		body.SetScopeId(plan.ScopeId.ValueInt64())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.AuthType) {
 		body.SetAuthType(plan.AuthType.ValueString())
@@ -364,7 +364,7 @@ func wirelessLanToCreate(ctx context.Context, plan *WirelessLanModel, cf *custom
 		body.SetAuthPsk(plan.AuthPsk.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -396,7 +396,7 @@ func wirelessLanToPatch(ctx context.Context, plan, state *WirelessLanModel, cf *
 		if plan.GroupId.IsNull() {
 			body.SetGroupNil()
 		} else if !plan.GroupId.IsUnknown() {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -408,7 +408,7 @@ func wirelessLanToPatch(ctx context.Context, plan, state *WirelessLanModel, cf *
 		if plan.VlanId.IsNull() {
 			body.SetVlanNil()
 		} else if !plan.VlanId.IsUnknown() {
-			body.SetVlan(conv.Int32(plan.VlanId))
+			body.SetVlan(plan.VlanId.ValueInt64())
 		}
 	}
 	if !plan.ScopeType.Equal(state.ScopeType) {
@@ -420,14 +420,14 @@ func wirelessLanToPatch(ctx context.Context, plan, state *WirelessLanModel, cf *
 	}
 	if !plan.ScopeId.Equal(state.ScopeId) {
 		if conv.Known(plan.ScopeId) {
-			body.SetScopeId(conv.Int32(plan.ScopeId))
+			body.SetScopeId(plan.ScopeId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.AuthType.Equal(state.AuthType) {
@@ -449,7 +449,7 @@ func wirelessLanToPatch(ctx context.Context, plan, state *WirelessLanModel, cf *
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -484,7 +484,7 @@ func wirelessLanFromAPI(ctx context.Context, obj *netbox.WirelessLAN, prior *Wir
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.VlanId = conv.BriefID(obj.GetVlanOk())
 	out.ScopeType = conv.StringKeep(conv.String(obj.GetScopeTypeOk()), conv.PriorString(prior, func(m *WirelessLanModel) types.String { return m.ScopeType }), false)
-	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
+	out.ScopeId = conv.Int64From64(obj.GetScopeIdOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.AuthType = conv.Choice(obj.GetAuthTypeOk())
 	out.AuthCipher = conv.Choice(obj.GetAuthCipherOk())

@@ -23,10 +23,10 @@ var _ MappedNullable = &PatchedBulkNotificationRequest{}
 
 // PatchedBulkNotificationRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedBulkNotificationRequest struct {
-	Id         int32        `json:"id"`
+	Id         int64        `json:"id"`
 	ObjectType *string      `json:"object_type,omitempty"`
 	ObjectId   *int64       `json:"object_id,omitempty"`
-	User       *int32       `json:"user,omitempty"`
+	User       *int64       `json:"user,omitempty"`
 	Read       NullableTime `json:"read,omitempty"`
 	// * `object_created` - Object created * `object_updated` - Object updated * `object_deleted` - Object deleted * `job_started` - Job started * `job_completed` - Job completed * `job_failed` - Job failed * `job_errored` - Job errored
 	EventType            *string `json:"event_type,omitempty"`
@@ -39,7 +39,7 @@ type _PatchedBulkNotificationRequest PatchedBulkNotificationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkNotificationRequest(id int32) *PatchedBulkNotificationRequest {
+func NewPatchedBulkNotificationRequest(id int64) *PatchedBulkNotificationRequest {
 	this := PatchedBulkNotificationRequest{}
 	this.Id = id
 	return &this
@@ -54,9 +54,9 @@ func NewPatchedBulkNotificationRequestWithDefaults() *PatchedBulkNotificationReq
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkNotificationRequest) GetId() int32 {
+func (o *PatchedBulkNotificationRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *PatchedBulkNotificationRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkNotificationRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkNotificationRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *PatchedBulkNotificationRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkNotificationRequest) SetId(v int32) {
+func (o *PatchedBulkNotificationRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -142,9 +142,9 @@ func (o *PatchedBulkNotificationRequest) SetObjectId(v int64) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise.
-func (o *PatchedBulkNotificationRequest) GetUser() int32 {
+func (o *PatchedBulkNotificationRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User
@@ -152,7 +152,7 @@ func (o *PatchedBulkNotificationRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkNotificationRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedBulkNotificationRequest) GetUserOk() (*int64, bool) {
 	if o == nil || IsNil(o.User) {
 		return nil, false
 	}
@@ -168,8 +168,8 @@ func (o *PatchedBulkNotificationRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given int32 and assigns it to the User field.
-func (o *PatchedBulkNotificationRequest) SetUser(v int32) {
+// SetUser gets a reference to the given int64 and assigns it to the User field.
+func (o *PatchedBulkNotificationRequest) SetUser(v int64) {
 	o.User = &v
 }
 

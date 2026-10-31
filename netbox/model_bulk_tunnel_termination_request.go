@@ -22,13 +22,13 @@ var _ MappedNullable = &BulkTunnelTerminationRequest{}
 
 // BulkTunnelTerminationRequest Adds support for custom fields and tags.
 type BulkTunnelTerminationRequest struct {
-	Id     int32 `json:"id"`
-	Tunnel int32 `json:"tunnel"`
+	Id     int64 `json:"id"`
+	Tunnel int64 `json:"tunnel"`
 	// * `peer` - Peer * `hub` - Hub * `spoke` - Spoke
 	Role                 string                 `json:"role"`
 	TerminationType      string                 `json:"termination_type"`
 	TerminationId        NullableInt64          `json:"termination_id,omitempty"`
-	OutsideIp            NullableInt32          `json:"outside_ip,omitempty"`
+	OutsideIp            NullableInt64          `json:"outside_ip,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -40,7 +40,7 @@ type _BulkTunnelTerminationRequest BulkTunnelTerminationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkTunnelTerminationRequest(id int32, tunnel int32, role string, terminationType string) *BulkTunnelTerminationRequest {
+func NewBulkTunnelTerminationRequest(id int64, tunnel int64, role string, terminationType string) *BulkTunnelTerminationRequest {
 	this := BulkTunnelTerminationRequest{}
 	this.Id = id
 	this.Tunnel = tunnel
@@ -58,9 +58,9 @@ func NewBulkTunnelTerminationRequestWithDefaults() *BulkTunnelTerminationRequest
 }
 
 // GetId returns the Id field value
-func (o *BulkTunnelTerminationRequest) GetId() int32 {
+func (o *BulkTunnelTerminationRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -69,7 +69,7 @@ func (o *BulkTunnelTerminationRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkTunnelTerminationRequest) GetIdOk() (*int32, bool) {
+func (o *BulkTunnelTerminationRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -77,14 +77,14 @@ func (o *BulkTunnelTerminationRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkTunnelTerminationRequest) SetId(v int32) {
+func (o *BulkTunnelTerminationRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetTunnel returns the Tunnel field value
-func (o *BulkTunnelTerminationRequest) GetTunnel() int32 {
+func (o *BulkTunnelTerminationRequest) GetTunnel() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -93,7 +93,7 @@ func (o *BulkTunnelTerminationRequest) GetTunnel() int32 {
 
 // GetTunnelOk returns a tuple with the Tunnel field value
 // and a boolean to check if the value has been set.
-func (o *BulkTunnelTerminationRequest) GetTunnelOk() (*int32, bool) {
+func (o *BulkTunnelTerminationRequest) GetTunnelOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -101,7 +101,7 @@ func (o *BulkTunnelTerminationRequest) GetTunnelOk() (*int32, bool) {
 }
 
 // SetTunnel sets field value
-func (o *BulkTunnelTerminationRequest) SetTunnel(v int32) {
+func (o *BulkTunnelTerminationRequest) SetTunnel(v int64) {
 	o.Tunnel = v
 }
 
@@ -197,9 +197,9 @@ func (o *BulkTunnelTerminationRequest) UnsetTerminationId() {
 }
 
 // GetOutsideIp returns the OutsideIp field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkTunnelTerminationRequest) GetOutsideIp() int32 {
+func (o *BulkTunnelTerminationRequest) GetOutsideIp() int64 {
 	if o == nil || IsNil(o.OutsideIp.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.OutsideIp.Get()
@@ -208,7 +208,7 @@ func (o *BulkTunnelTerminationRequest) GetOutsideIp() int32 {
 // GetOutsideIpOk returns a tuple with the OutsideIp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkTunnelTerminationRequest) GetOutsideIpOk() (*int32, bool) {
+func (o *BulkTunnelTerminationRequest) GetOutsideIpOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -224,8 +224,8 @@ func (o *BulkTunnelTerminationRequest) HasOutsideIp() bool {
 	return false
 }
 
-// SetOutsideIp gets a reference to the given NullableInt32 and assigns it to the OutsideIp field.
-func (o *BulkTunnelTerminationRequest) SetOutsideIp(v int32) {
+// SetOutsideIp gets a reference to the given NullableInt64 and assigns it to the OutsideIp field.
+func (o *BulkTunnelTerminationRequest) SetOutsideIp(v int64) {
 	o.OutsideIp.Set(&v)
 }
 

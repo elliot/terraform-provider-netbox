@@ -23,9 +23,9 @@ var _ MappedNullable = &PatchedWritableVirtualChassisRequest{}
 type PatchedWritableVirtualChassisRequest struct {
 	Name                 *string                `json:"name,omitempty"`
 	Domain               *string                `json:"domain,omitempty"`
-	Master               NullableInt32          `json:"master,omitempty"`
+	Master               NullableInt64          `json:"master,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -116,9 +116,9 @@ func (o *PatchedWritableVirtualChassisRequest) SetDomain(v string) {
 }
 
 // GetMaster returns the Master field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualChassisRequest) GetMaster() int32 {
+func (o *PatchedWritableVirtualChassisRequest) GetMaster() int64 {
 	if o == nil || IsNil(o.Master.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Master.Get()
@@ -127,7 +127,7 @@ func (o *PatchedWritableVirtualChassisRequest) GetMaster() int32 {
 // GetMasterOk returns a tuple with the Master field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualChassisRequest) GetMasterOk() (*int32, bool) {
+func (o *PatchedWritableVirtualChassisRequest) GetMasterOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -143,8 +143,8 @@ func (o *PatchedWritableVirtualChassisRequest) HasMaster() bool {
 	return false
 }
 
-// SetMaster gets a reference to the given NullableInt32 and assigns it to the Master field.
-func (o *PatchedWritableVirtualChassisRequest) SetMaster(v int32) {
+// SetMaster gets a reference to the given NullableInt64 and assigns it to the Master field.
+func (o *PatchedWritableVirtualChassisRequest) SetMaster(v int64) {
 	o.Master.Set(&v)
 }
 
@@ -191,9 +191,9 @@ func (o *PatchedWritableVirtualChassisRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualChassisRequest) GetOwner() int32 {
+func (o *PatchedWritableVirtualChassisRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -202,7 +202,7 @@ func (o *PatchedWritableVirtualChassisRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualChassisRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableVirtualChassisRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -218,8 +218,8 @@ func (o *PatchedWritableVirtualChassisRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableVirtualChassisRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableVirtualChassisRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

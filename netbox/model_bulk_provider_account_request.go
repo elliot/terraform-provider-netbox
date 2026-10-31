@@ -22,12 +22,12 @@ var _ MappedNullable = &BulkProviderAccountRequest{}
 
 // BulkProviderAccountRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkProviderAccountRequest struct {
-	Id                   int32                  `json:"id"`
-	Provider             int32                  `json:"provider"`
+	Id                   int64                  `json:"id"`
+	Provider             int64                  `json:"provider"`
 	Name                 *string                `json:"name,omitempty"`
 	Account              string                 `json:"account"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -40,7 +40,7 @@ type _BulkProviderAccountRequest BulkProviderAccountRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkProviderAccountRequest(id int32, provider int32, account string) *BulkProviderAccountRequest {
+func NewBulkProviderAccountRequest(id int64, provider int64, account string) *BulkProviderAccountRequest {
 	this := BulkProviderAccountRequest{}
 	this.Id = id
 	this.Provider = provider
@@ -61,9 +61,9 @@ func NewBulkProviderAccountRequestWithDefaults() *BulkProviderAccountRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkProviderAccountRequest) GetId() int32 {
+func (o *BulkProviderAccountRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -72,7 +72,7 @@ func (o *BulkProviderAccountRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkProviderAccountRequest) GetIdOk() (*int32, bool) {
+func (o *BulkProviderAccountRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -80,14 +80,14 @@ func (o *BulkProviderAccountRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkProviderAccountRequest) SetId(v int32) {
+func (o *BulkProviderAccountRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetProvider returns the Provider field value
-func (o *BulkProviderAccountRequest) GetProvider() int32 {
+func (o *BulkProviderAccountRequest) GetProvider() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -96,7 +96,7 @@ func (o *BulkProviderAccountRequest) GetProvider() int32 {
 
 // GetProviderOk returns a tuple with the Provider field value
 // and a boolean to check if the value has been set.
-func (o *BulkProviderAccountRequest) GetProviderOk() (*int32, bool) {
+func (o *BulkProviderAccountRequest) GetProviderOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -104,7 +104,7 @@ func (o *BulkProviderAccountRequest) GetProviderOk() (*int32, bool) {
 }
 
 // SetProvider sets field value
-func (o *BulkProviderAccountRequest) SetProvider(v int32) {
+func (o *BulkProviderAccountRequest) SetProvider(v int64) {
 	o.Provider = v
 }
 
@@ -197,9 +197,9 @@ func (o *BulkProviderAccountRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkProviderAccountRequest) GetOwner() int32 {
+func (o *BulkProviderAccountRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -208,7 +208,7 @@ func (o *BulkProviderAccountRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkProviderAccountRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkProviderAccountRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -224,8 +224,8 @@ func (o *BulkProviderAccountRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkProviderAccountRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkProviderAccountRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

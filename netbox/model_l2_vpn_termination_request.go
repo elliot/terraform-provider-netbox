@@ -22,7 +22,7 @@ var _ MappedNullable = &L2VPNTerminationRequest{}
 
 // L2VPNTerminationRequest Adds support for custom fields and tags.
 type L2VPNTerminationRequest struct {
-	L2vpn                int32                  `json:"l2vpn"`
+	L2vpn                int64                  `json:"l2vpn"`
 	AssignedObjectType   string                 `json:"assigned_object_type"`
 	AssignedObjectId     int64                  `json:"assigned_object_id"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
@@ -36,7 +36,7 @@ type _L2VPNTerminationRequest L2VPNTerminationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewL2VPNTerminationRequest(l2vpn int32, assignedObjectType string, assignedObjectId int64) *L2VPNTerminationRequest {
+func NewL2VPNTerminationRequest(l2vpn int64, assignedObjectType string, assignedObjectId int64) *L2VPNTerminationRequest {
 	this := L2VPNTerminationRequest{}
 	this.L2vpn = l2vpn
 	this.AssignedObjectType = assignedObjectType
@@ -53,9 +53,9 @@ func NewL2VPNTerminationRequestWithDefaults() *L2VPNTerminationRequest {
 }
 
 // GetL2vpn returns the L2vpn field value
-func (o *L2VPNTerminationRequest) GetL2vpn() int32 {
+func (o *L2VPNTerminationRequest) GetL2vpn() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -64,7 +64,7 @@ func (o *L2VPNTerminationRequest) GetL2vpn() int32 {
 
 // GetL2vpnOk returns a tuple with the L2vpn field value
 // and a boolean to check if the value has been set.
-func (o *L2VPNTerminationRequest) GetL2vpnOk() (*int32, bool) {
+func (o *L2VPNTerminationRequest) GetL2vpnOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -72,7 +72,7 @@ func (o *L2VPNTerminationRequest) GetL2vpnOk() (*int32, bool) {
 }
 
 // SetL2vpn sets field value
-func (o *L2VPNTerminationRequest) SetL2vpn(v int32) {
+func (o *L2VPNTerminationRequest) SetL2vpn(v int64) {
 	o.L2vpn = v
 }
 

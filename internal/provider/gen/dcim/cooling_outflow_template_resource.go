@@ -206,7 +206,7 @@ func (r *CoolingOutflowTemplateResource) Read(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -237,7 +237,7 @@ func (r *CoolingOutflowTemplateResource) Update(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -267,7 +267,7 @@ func (r *CoolingOutflowTemplateResource) Delete(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -288,10 +288,10 @@ func (r *CoolingOutflowTemplateResource) ImportState(ctx context.Context, req re
 func coolingOutflowTemplateToCreate(ctx context.Context, plan *CoolingOutflowTemplateModel, diags *diag.Diagnostics) *netbox.WritableCoolingOutflowTemplateRequest {
 	body := netbox.NewWritableCoolingOutflowTemplateRequest(plan.Name.ValueString())
 	if conv.Known(plan.DeviceTypeId) {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 	}
 	if conv.Known(plan.ModuleTypeId) {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -306,7 +306,7 @@ func coolingOutflowTemplateToCreate(ctx context.Context, plan *CoolingOutflowTem
 		body.SetDiameterUnit(plan.DiameterUnit.ValueString())
 	}
 	if conv.Known(plan.CoolingIntakeId) {
-		body.SetCoolingIntake(conv.Int32(plan.CoolingIntakeId))
+		body.SetCoolingIntake(plan.CoolingIntakeId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -321,14 +321,14 @@ func coolingOutflowTemplateToPatch(ctx context.Context, plan, state *CoolingOutf
 		if plan.DeviceTypeId.IsNull() {
 			body.SetDeviceTypeNil()
 		} else if !plan.DeviceTypeId.IsUnknown() {
-			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+			body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 		}
 	}
 	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
 		if plan.ModuleTypeId.IsNull() {
 			body.SetModuleTypeNil()
 		} else if !plan.ModuleTypeId.IsUnknown() {
-			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+			body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -360,7 +360,7 @@ func coolingOutflowTemplateToPatch(ctx context.Context, plan, state *CoolingOutf
 		if plan.CoolingIntakeId.IsNull() {
 			body.SetCoolingIntakeNil()
 		} else if !plan.CoolingIntakeId.IsUnknown() {
-			body.SetCoolingIntake(conv.Int32(plan.CoolingIntakeId))
+			body.SetCoolingIntake(plan.CoolingIntakeId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {

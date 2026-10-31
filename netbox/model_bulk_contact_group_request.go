@@ -22,14 +22,14 @@ var _ MappedNullable = &BulkContactGroupRequest{}
 
 // BulkContactGroupRequest Base serializer class for models inheriting from NestedGroupModel.
 type BulkContactGroupRequest struct {
-	Id                   int32                             `json:"id"`
+	Id                   int64                             `json:"id"`
 	Name                 string                            `json:"name"`
 	Slug                 string                            `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Parent               NullableNestedContactGroupRequest `json:"parent,omitempty"`
 	Description          *string                           `json:"description,omitempty"`
 	Tags                 []NestedTagRequest                `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}            `json:"custom_fields,omitempty"`
-	Owner                NullableInt32                     `json:"owner,omitempty"`
+	Owner                NullableInt64                     `json:"owner,omitempty"`
 	Comments             *string                           `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -40,7 +40,7 @@ type _BulkContactGroupRequest BulkContactGroupRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkContactGroupRequest(id int32, name string, slug string) *BulkContactGroupRequest {
+func NewBulkContactGroupRequest(id int64, name string, slug string) *BulkContactGroupRequest {
 	this := BulkContactGroupRequest{}
 	this.Id = id
 	this.Name = name
@@ -57,9 +57,9 @@ func NewBulkContactGroupRequestWithDefaults() *BulkContactGroupRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkContactGroupRequest) GetId() int32 {
+func (o *BulkContactGroupRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *BulkContactGroupRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkContactGroupRequest) GetIdOk() (*int32, bool) {
+func (o *BulkContactGroupRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *BulkContactGroupRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkContactGroupRequest) SetId(v int32) {
+func (o *BulkContactGroupRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -268,9 +268,9 @@ func (o *BulkContactGroupRequest) SetCustomFields(v map[string]interface{}) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkContactGroupRequest) GetOwner() int32 {
+func (o *BulkContactGroupRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -279,7 +279,7 @@ func (o *BulkContactGroupRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkContactGroupRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkContactGroupRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -295,8 +295,8 @@ func (o *BulkContactGroupRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkContactGroupRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkContactGroupRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

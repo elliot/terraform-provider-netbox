@@ -464,7 +464,7 @@ func (d *InterfaceDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 	var obj *netbox.Interface
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -683,7 +683,7 @@ func interfaceDataFromAPI(ctx context.Context, obj *netbox.Interface, out *Inter
 	out.ConnectedEndpointsType = conv.String(obj.GetConnectedEndpointsTypeOk())
 	out.ConnectedEndpointsReachable = conv.Bool(obj.GetConnectedEndpointsReachableOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.CountIpaddresses = conv.Int64From32(obj.GetCountIpaddressesOk())
-	out.CountFhrpGroups = conv.Int64From32(obj.GetCountFhrpGroupsOk())
+	out.CountIpaddresses = conv.Int64From64(obj.GetCountIpaddressesOk())
+	out.CountFhrpGroups = conv.Int64From64(obj.GetCountFhrpGroupsOk())
 	out.Occupied = conv.Bool(obj.GetOccupiedOk())
 }

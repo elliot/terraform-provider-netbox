@@ -237,7 +237,7 @@ func (r *IpAddressResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -268,7 +268,7 @@ func (r *IpAddressResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -298,7 +298,7 @@ func (r *IpAddressResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -320,10 +320,10 @@ func ipAddressToCreate(ctx context.Context, plan *IpAddressModel, cf *customfiel
 	const objectType = "ipam.ipaddress"
 	body := netbox.NewWritableIPAddressRequest(plan.Address.ValueString())
 	if conv.Known(plan.VrfId) {
-		body.SetVrf(conv.Int32(plan.VrfId))
+		body.SetVrf(plan.VrfId.ValueInt64())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
@@ -338,7 +338,7 @@ func ipAddressToCreate(ctx context.Context, plan *IpAddressModel, cf *customfiel
 		body.SetAssignedObjectId(plan.AssignedObjectId.ValueInt64())
 	}
 	if conv.Known(plan.NatInsideId) {
-		body.SetNatInside(conv.Int32(plan.NatInsideId))
+		body.SetNatInside(plan.NatInsideId.ValueInt64())
 	}
 	if !plan.DnsName.IsUnknown() {
 		body.SetDnsName(plan.DnsName.ValueString())
@@ -347,7 +347,7 @@ func ipAddressToCreate(ctx context.Context, plan *IpAddressModel, cf *customfiel
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -374,14 +374,14 @@ func ipAddressToPatch(ctx context.Context, plan, state *IpAddressModel, cf *cust
 		if plan.VrfId.IsNull() {
 			body.SetVrfNil()
 		} else if !plan.VrfId.IsUnknown() {
-			body.SetVrf(conv.Int32(plan.VrfId))
+			body.SetVrf(plan.VrfId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -410,7 +410,7 @@ func ipAddressToPatch(ctx context.Context, plan, state *IpAddressModel, cf *cust
 		if plan.NatInsideId.IsNull() {
 			body.SetNatInsideNil()
 		} else if !plan.NatInsideId.IsUnknown() {
-			body.SetNatInside(conv.Int32(plan.NatInsideId))
+			body.SetNatInside(plan.NatInsideId.ValueInt64())
 		}
 	}
 	if !plan.DnsName.Equal(state.DnsName) {
@@ -427,7 +427,7 @@ func ipAddressToPatch(ctx context.Context, plan, state *IpAddressModel, cf *cust
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

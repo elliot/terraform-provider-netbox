@@ -21,11 +21,11 @@ var _ MappedNullable = &PatchedCircuitTerminationRequest{}
 
 // PatchedCircuitTerminationRequest Adds support for custom fields and tags.
 type PatchedCircuitTerminationRequest struct {
-	Circuit *int32 `json:"circuit,omitempty"`
+	Circuit *int64 `json:"circuit,omitempty"`
 	// * `A` - A * `Z` - Z
 	TermSide        *string        `json:"term_side,omitempty"`
 	TerminationType NullableString `json:"termination_type,omitempty"`
-	TerminationId   NullableInt32  `json:"termination_id,omitempty"`
+	TerminationId   NullableInt64  `json:"termination_id,omitempty"`
 	// Physical circuit speed
 	PortSpeed NullableInt32 `json:"port_speed,omitempty"`
 	// Upstream speed, if different from port speed
@@ -62,9 +62,9 @@ func NewPatchedCircuitTerminationRequestWithDefaults() *PatchedCircuitTerminatio
 }
 
 // GetCircuit returns the Circuit field value if set, zero value otherwise.
-func (o *PatchedCircuitTerminationRequest) GetCircuit() int32 {
+func (o *PatchedCircuitTerminationRequest) GetCircuit() int64 {
 	if o == nil || IsNil(o.Circuit) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Circuit
@@ -72,7 +72,7 @@ func (o *PatchedCircuitTerminationRequest) GetCircuit() int32 {
 
 // GetCircuitOk returns a tuple with the Circuit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedCircuitTerminationRequest) GetCircuitOk() (*int32, bool) {
+func (o *PatchedCircuitTerminationRequest) GetCircuitOk() (*int64, bool) {
 	if o == nil || IsNil(o.Circuit) {
 		return nil, false
 	}
@@ -88,8 +88,8 @@ func (o *PatchedCircuitTerminationRequest) HasCircuit() bool {
 	return false
 }
 
-// SetCircuit gets a reference to the given int32 and assigns it to the Circuit field.
-func (o *PatchedCircuitTerminationRequest) SetCircuit(v int32) {
+// SetCircuit gets a reference to the given int64 and assigns it to the Circuit field.
+func (o *PatchedCircuitTerminationRequest) SetCircuit(v int64) {
 	o.Circuit = &v
 }
 
@@ -169,9 +169,9 @@ func (o *PatchedCircuitTerminationRequest) UnsetTerminationType() {
 }
 
 // GetTerminationId returns the TerminationId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedCircuitTerminationRequest) GetTerminationId() int32 {
+func (o *PatchedCircuitTerminationRequest) GetTerminationId() int64 {
 	if o == nil || IsNil(o.TerminationId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.TerminationId.Get()
@@ -180,7 +180,7 @@ func (o *PatchedCircuitTerminationRequest) GetTerminationId() int32 {
 // GetTerminationIdOk returns a tuple with the TerminationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedCircuitTerminationRequest) GetTerminationIdOk() (*int32, bool) {
+func (o *PatchedCircuitTerminationRequest) GetTerminationIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -196,8 +196,8 @@ func (o *PatchedCircuitTerminationRequest) HasTerminationId() bool {
 	return false
 }
 
-// SetTerminationId gets a reference to the given NullableInt32 and assigns it to the TerminationId field.
-func (o *PatchedCircuitTerminationRequest) SetTerminationId(v int32) {
+// SetTerminationId gets a reference to the given NullableInt64 and assigns it to the TerminationId field.
+func (o *PatchedCircuitTerminationRequest) SetTerminationId(v int64) {
 	o.TerminationId.Set(&v)
 }
 

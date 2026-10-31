@@ -25,7 +25,7 @@ type PatchedTableConfigRequest struct {
 	Table                *string       `json:"table,omitempty"`
 	Name                 *string       `json:"name,omitempty"`
 	Description          *string       `json:"description,omitempty"`
-	User                 NullableInt32 `json:"user,omitempty"`
+	User                 NullableInt64 `json:"user,omitempty"`
 	Weight               *int32        `json:"weight,omitempty"`
 	Enabled              *bool         `json:"enabled,omitempty"`
 	Shared               *bool         `json:"shared,omitempty"`
@@ -182,9 +182,9 @@ func (o *PatchedTableConfigRequest) SetDescription(v string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedTableConfigRequest) GetUser() int32 {
+func (o *PatchedTableConfigRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User.Get()
@@ -193,7 +193,7 @@ func (o *PatchedTableConfigRequest) GetUser() int32 {
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedTableConfigRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedTableConfigRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -209,8 +209,8 @@ func (o *PatchedTableConfigRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given NullableInt32 and assigns it to the User field.
-func (o *PatchedTableConfigRequest) SetUser(v int32) {
+// SetUser gets a reference to the given NullableInt64 and assigns it to the User field.
+func (o *PatchedTableConfigRequest) SetUser(v int64) {
 	o.User.Set(&v)
 }
 

@@ -22,32 +22,32 @@ var _ MappedNullable = &PatchedBulkVirtualMachineRequest{}
 
 // PatchedBulkVirtualMachineRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkVirtualMachineRequest struct {
-	Id                 int32         `json:"id"`
+	Id                 int64         `json:"id"`
 	Name               *string       `json:"name,omitempty"`
-	VirtualMachineType NullableInt32 `json:"virtual_machine_type,omitempty"`
-	Role               NullableInt32 `json:"role,omitempty"`
+	VirtualMachineType NullableInt64 `json:"virtual_machine_type,omitempty"`
+	Role               NullableInt64 `json:"role,omitempty"`
 	// * `offline` - Offline * `active` - Active * `planned` - Planned * `staged` - Staged * `failed` - Failed * `decommissioning` - Decommissioning * `paused` - Paused
 	Status *string `json:"status,omitempty"`
 	// * `on` - On * `off` - Off * `laststate` - Last State
 	StartOnBoot *string            `json:"start_on_boot,omitempty"`
-	Site        NullableInt32      `json:"site,omitempty"`
-	Cluster     NullableInt32      `json:"cluster,omitempty"`
-	Device      NullableInt32      `json:"device,omitempty"`
-	Platform    NullableInt32      `json:"platform,omitempty"`
-	PrimaryIp4  NullableInt32      `json:"primary_ip4,omitempty"`
-	PrimaryIp6  NullableInt32      `json:"primary_ip6,omitempty"`
+	Site        NullableInt64      `json:"site,omitempty"`
+	Cluster     NullableInt64      `json:"cluster,omitempty"`
+	Device      NullableInt64      `json:"device,omitempty"`
+	Platform    NullableInt64      `json:"platform,omitempty"`
+	PrimaryIp4  NullableInt64      `json:"primary_ip4,omitempty"`
+	PrimaryIp6  NullableInt64      `json:"primary_ip6,omitempty"`
 	Vcpus       NullableFloat64    `json:"vcpus,omitempty"`
 	Memory      NullableInt32      `json:"memory,omitempty"`
 	Disk        NullableInt32      `json:"disk,omitempty"`
 	Description *string            `json:"description,omitempty"`
 	Serial      *string            `json:"serial,omitempty"`
-	Tenant      NullableInt32      `json:"tenant,omitempty"`
-	Owner       NullableInt32      `json:"owner,omitempty"`
+	Tenant      NullableInt64      `json:"tenant,omitempty"`
+	Owner       NullableInt64      `json:"owner,omitempty"`
 	Comments    *string            `json:"comments,omitempty"`
 	Tags        []NestedTagRequest `json:"tags,omitempty"`
 	// Local config context data takes precedence over source contexts in the final rendered config context
 	LocalContextData     interface{}            `json:"local_context_data,omitempty"`
-	ConfigTemplate       NullableInt32          `json:"config_template,omitempty"`
+	ConfigTemplate       NullableInt64          `json:"config_template,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -58,7 +58,7 @@ type _PatchedBulkVirtualMachineRequest PatchedBulkVirtualMachineRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkVirtualMachineRequest(id int32) *PatchedBulkVirtualMachineRequest {
+func NewPatchedBulkVirtualMachineRequest(id int64) *PatchedBulkVirtualMachineRequest {
 	this := PatchedBulkVirtualMachineRequest{}
 	this.Id = id
 	return &this
@@ -73,9 +73,9 @@ func NewPatchedBulkVirtualMachineRequestWithDefaults() *PatchedBulkVirtualMachin
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkVirtualMachineRequest) GetId() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -84,7 +84,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkVirtualMachineRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -92,7 +92,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkVirtualMachineRequest) SetId(v int32) {
+func (o *PatchedBulkVirtualMachineRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -129,9 +129,9 @@ func (o *PatchedBulkVirtualMachineRequest) SetName(v string) {
 }
 
 // GetVirtualMachineType returns the VirtualMachineType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetVirtualMachineType() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetVirtualMachineType() int64 {
 	if o == nil || IsNil(o.VirtualMachineType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VirtualMachineType.Get()
@@ -140,7 +140,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetVirtualMachineType() int32 {
 // GetVirtualMachineTypeOk returns a tuple with the VirtualMachineType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetVirtualMachineTypeOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetVirtualMachineTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -156,8 +156,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasVirtualMachineType() bool {
 	return false
 }
 
-// SetVirtualMachineType gets a reference to the given NullableInt32 and assigns it to the VirtualMachineType field.
-func (o *PatchedBulkVirtualMachineRequest) SetVirtualMachineType(v int32) {
+// SetVirtualMachineType gets a reference to the given NullableInt64 and assigns it to the VirtualMachineType field.
+func (o *PatchedBulkVirtualMachineRequest) SetVirtualMachineType(v int64) {
 	o.VirtualMachineType.Set(&v)
 }
 
@@ -172,9 +172,9 @@ func (o *PatchedBulkVirtualMachineRequest) UnsetVirtualMachineType() {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetRole() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -183,7 +183,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -199,8 +199,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedBulkVirtualMachineRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedBulkVirtualMachineRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -279,9 +279,9 @@ func (o *PatchedBulkVirtualMachineRequest) SetStartOnBoot(v string) {
 }
 
 // GetSite returns the Site field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetSite() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetSite() int64 {
 	if o == nil || IsNil(o.Site.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Site.Get()
@@ -290,7 +290,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetSite() int32 {
 // GetSiteOk returns a tuple with the Site field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetSiteOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -306,8 +306,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasSite() bool {
 	return false
 }
 
-// SetSite gets a reference to the given NullableInt32 and assigns it to the Site field.
-func (o *PatchedBulkVirtualMachineRequest) SetSite(v int32) {
+// SetSite gets a reference to the given NullableInt64 and assigns it to the Site field.
+func (o *PatchedBulkVirtualMachineRequest) SetSite(v int64) {
 	o.Site.Set(&v)
 }
 
@@ -322,9 +322,9 @@ func (o *PatchedBulkVirtualMachineRequest) UnsetSite() {
 }
 
 // GetCluster returns the Cluster field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetCluster() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetCluster() int64 {
 	if o == nil || IsNil(o.Cluster.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Cluster.Get()
@@ -333,7 +333,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetCluster() int32 {
 // GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetClusterOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetClusterOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -349,8 +349,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasCluster() bool {
 	return false
 }
 
-// SetCluster gets a reference to the given NullableInt32 and assigns it to the Cluster field.
-func (o *PatchedBulkVirtualMachineRequest) SetCluster(v int32) {
+// SetCluster gets a reference to the given NullableInt64 and assigns it to the Cluster field.
+func (o *PatchedBulkVirtualMachineRequest) SetCluster(v int64) {
 	o.Cluster.Set(&v)
 }
 
@@ -365,9 +365,9 @@ func (o *PatchedBulkVirtualMachineRequest) UnsetCluster() {
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetDevice() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetDevice() int64 {
 	if o == nil || IsNil(o.Device.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Device.Get()
@@ -376,7 +376,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetDevice() int32 {
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetDeviceOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -392,8 +392,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasDevice() bool {
 	return false
 }
 
-// SetDevice gets a reference to the given NullableInt32 and assigns it to the Device field.
-func (o *PatchedBulkVirtualMachineRequest) SetDevice(v int32) {
+// SetDevice gets a reference to the given NullableInt64 and assigns it to the Device field.
+func (o *PatchedBulkVirtualMachineRequest) SetDevice(v int64) {
 	o.Device.Set(&v)
 }
 
@@ -408,9 +408,9 @@ func (o *PatchedBulkVirtualMachineRequest) UnsetDevice() {
 }
 
 // GetPlatform returns the Platform field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetPlatform() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetPlatform() int64 {
 	if o == nil || IsNil(o.Platform.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Platform.Get()
@@ -419,7 +419,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetPlatform() int32 {
 // GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetPlatformOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetPlatformOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -435,8 +435,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasPlatform() bool {
 	return false
 }
 
-// SetPlatform gets a reference to the given NullableInt32 and assigns it to the Platform field.
-func (o *PatchedBulkVirtualMachineRequest) SetPlatform(v int32) {
+// SetPlatform gets a reference to the given NullableInt64 and assigns it to the Platform field.
+func (o *PatchedBulkVirtualMachineRequest) SetPlatform(v int64) {
 	o.Platform.Set(&v)
 }
 
@@ -451,9 +451,9 @@ func (o *PatchedBulkVirtualMachineRequest) UnsetPlatform() {
 }
 
 // GetPrimaryIp4 returns the PrimaryIp4 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp4() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp4() int64 {
 	if o == nil || IsNil(o.PrimaryIp4.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp4.Get()
@@ -462,7 +462,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp4() int32 {
 // GetPrimaryIp4Ok returns a tuple with the PrimaryIp4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp4Ok() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp4Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -478,8 +478,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasPrimaryIp4() bool {
 	return false
 }
 
-// SetPrimaryIp4 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp4 field.
-func (o *PatchedBulkVirtualMachineRequest) SetPrimaryIp4(v int32) {
+// SetPrimaryIp4 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp4 field.
+func (o *PatchedBulkVirtualMachineRequest) SetPrimaryIp4(v int64) {
 	o.PrimaryIp4.Set(&v)
 }
 
@@ -494,9 +494,9 @@ func (o *PatchedBulkVirtualMachineRequest) UnsetPrimaryIp4() {
 }
 
 // GetPrimaryIp6 returns the PrimaryIp6 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp6() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp6() int64 {
 	if o == nil || IsNil(o.PrimaryIp6.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp6.Get()
@@ -505,7 +505,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp6() int32 {
 // GetPrimaryIp6Ok returns a tuple with the PrimaryIp6 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp6Ok() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetPrimaryIp6Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -521,8 +521,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasPrimaryIp6() bool {
 	return false
 }
 
-// SetPrimaryIp6 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp6 field.
-func (o *PatchedBulkVirtualMachineRequest) SetPrimaryIp6(v int32) {
+// SetPrimaryIp6 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp6 field.
+func (o *PatchedBulkVirtualMachineRequest) SetPrimaryIp6(v int64) {
 	o.PrimaryIp6.Set(&v)
 }
 
@@ -730,9 +730,9 @@ func (o *PatchedBulkVirtualMachineRequest) SetSerial(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetTenant() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -741,7 +741,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -757,8 +757,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkVirtualMachineRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkVirtualMachineRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -773,9 +773,9 @@ func (o *PatchedBulkVirtualMachineRequest) UnsetTenant() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetOwner() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -784,7 +784,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -800,8 +800,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkVirtualMachineRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkVirtualMachineRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -913,9 +913,9 @@ func (o *PatchedBulkVirtualMachineRequest) SetLocalContextData(v interface{}) {
 }
 
 // GetConfigTemplate returns the ConfigTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualMachineRequest) GetConfigTemplate() int32 {
+func (o *PatchedBulkVirtualMachineRequest) GetConfigTemplate() int64 {
 	if o == nil || IsNil(o.ConfigTemplate.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplate.Get()
@@ -924,7 +924,7 @@ func (o *PatchedBulkVirtualMachineRequest) GetConfigTemplate() int32 {
 // GetConfigTemplateOk returns a tuple with the ConfigTemplate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualMachineRequest) GetConfigTemplateOk() (*int32, bool) {
+func (o *PatchedBulkVirtualMachineRequest) GetConfigTemplateOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -940,8 +940,8 @@ func (o *PatchedBulkVirtualMachineRequest) HasConfigTemplate() bool {
 	return false
 }
 
-// SetConfigTemplate gets a reference to the given NullableInt32 and assigns it to the ConfigTemplate field.
-func (o *PatchedBulkVirtualMachineRequest) SetConfigTemplate(v int32) {
+// SetConfigTemplate gets a reference to the given NullableInt64 and assigns it to the ConfigTemplate field.
+func (o *PatchedBulkVirtualMachineRequest) SetConfigTemplate(v int64) {
 	o.ConfigTemplate.Set(&v)
 }
 

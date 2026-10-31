@@ -60,13 +60,13 @@ var virtualCircuitFilterNames = []string{
 	"last_updated__empty", "last_updated__gt", "last_updated__gte", "last_updated__lt", "last_updated__lte", "last_updated__n",
 	"modified_by_request", "owner", "owner__n", "owner_group", "owner_group__n", "owner_group_id",
 	"owner_group_id__n", "owner_id", "owner_id__n", "provider", "provider__n", "provider_account",
-	"provider_account__n", "provider_account_id", "provider_account_id__n", "provider_id", "provider_id__n", "provider_network_id",
-	"provider_network_id__n", "q", "status", "status__empty", "status__ic", "status__ie",
-	"status__iew", "status__iregex", "status__isw", "status__n", "status__nic", "status__nie",
-	"status__niew", "status__nisw", "status__regex", "tag", "tag__any", "tag__n",
-	"tag_id", "tag_id__any", "tag_id__n", "tenant", "tenant__n", "tenant_group",
-	"tenant_group__n", "tenant_group_id", "tenant_group_id__n", "tenant_id", "tenant_id__n", "type",
-	"type__n", "type_id", "type_id__n", "updated_by_request",
+	"provider_account__n", "provider_account_id", "provider_account_id__n", "provider_id", "provider_id__n", "provider_network",
+	"provider_network__n", "provider_network_id", "provider_network_id__n", "q", "status", "status__empty",
+	"status__ic", "status__ie", "status__iew", "status__iregex", "status__isw", "status__n",
+	"status__nic", "status__nie", "status__niew", "status__nisw", "status__regex", "tag",
+	"tag__any", "tag__n", "tag_id", "tag_id__any", "tag_id__n", "tenant",
+	"tenant__n", "tenant_group", "tenant_group__n", "tenant_group_id", "tenant_group_id__n", "tenant_id",
+	"tenant_id__n", "type", "type__n", "type_id", "type_id__n", "updated_by_request",
 }
 
 // virtualCircuitDataAttributes returns the attributes shared by the singular and list data sources.
@@ -214,7 +214,7 @@ func (d *VirtualCircuitDataSource) Read(ctx context.Context, req datasource.Read
 	}
 	var obj *netbox.VirtualCircuit
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return

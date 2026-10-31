@@ -22,12 +22,12 @@ var _ MappedNullable = &BulkVirtualChassisRequest{}
 
 // BulkVirtualChassisRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkVirtualChassisRequest struct {
-	Id                   int32                       `json:"id"`
+	Id                   int64                       `json:"id"`
 	Name                 string                      `json:"name"`
 	Domain               *string                     `json:"domain,omitempty"`
 	Master               NullableNestedDeviceRequest `json:"master,omitempty"`
 	Description          *string                     `json:"description,omitempty"`
-	Owner                NullableInt32               `json:"owner,omitempty"`
+	Owner                NullableInt64               `json:"owner,omitempty"`
 	Comments             *string                     `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest          `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}      `json:"custom_fields,omitempty"`
@@ -40,7 +40,7 @@ type _BulkVirtualChassisRequest BulkVirtualChassisRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkVirtualChassisRequest(id int32, name string) *BulkVirtualChassisRequest {
+func NewBulkVirtualChassisRequest(id int64, name string) *BulkVirtualChassisRequest {
 	this := BulkVirtualChassisRequest{}
 	this.Id = id
 	this.Name = name
@@ -56,9 +56,9 @@ func NewBulkVirtualChassisRequestWithDefaults() *BulkVirtualChassisRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkVirtualChassisRequest) GetId() int32 {
+func (o *BulkVirtualChassisRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -67,7 +67,7 @@ func (o *BulkVirtualChassisRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkVirtualChassisRequest) GetIdOk() (*int32, bool) {
+func (o *BulkVirtualChassisRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,7 +75,7 @@ func (o *BulkVirtualChassisRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkVirtualChassisRequest) SetId(v int32) {
+func (o *BulkVirtualChassisRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -211,9 +211,9 @@ func (o *BulkVirtualChassisRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkVirtualChassisRequest) GetOwner() int32 {
+func (o *BulkVirtualChassisRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -222,7 +222,7 @@ func (o *BulkVirtualChassisRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkVirtualChassisRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkVirtualChassisRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -238,8 +238,8 @@ func (o *BulkVirtualChassisRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkVirtualChassisRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkVirtualChassisRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

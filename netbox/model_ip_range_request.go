@@ -24,13 +24,13 @@ var _ MappedNullable = &IPRangeRequest{}
 type IPRangeRequest struct {
 	StartAddress string        `json:"start_address"`
 	EndAddress   string        `json:"end_address"`
-	Vrf          NullableInt32 `json:"vrf,omitempty"`
-	Tenant       NullableInt32 `json:"tenant,omitempty"`
+	Vrf          NullableInt64 `json:"vrf,omitempty"`
+	Tenant       NullableInt64 `json:"tenant,omitempty"`
 	// * `active` - Active * `reserved` - Reserved * `deprecated` - Deprecated
 	Status       *string                `json:"status,omitempty"`
-	Role         NullableInt32          `json:"role,omitempty"`
+	Role         NullableInt64          `json:"role,omitempty"`
 	Description  *string                `json:"description,omitempty"`
-	Owner        NullableInt32          `json:"owner,omitempty"`
+	Owner        NullableInt64          `json:"owner,omitempty"`
 	Comments     *string                `json:"comments,omitempty"`
 	Tags         []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields map[string]interface{} `json:"custom_fields,omitempty"`
@@ -111,9 +111,9 @@ func (o *IPRangeRequest) SetEndAddress(v string) {
 }
 
 // GetVrf returns the Vrf field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *IPRangeRequest) GetVrf() int32 {
+func (o *IPRangeRequest) GetVrf() int64 {
 	if o == nil || IsNil(o.Vrf.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vrf.Get()
@@ -122,7 +122,7 @@ func (o *IPRangeRequest) GetVrf() int32 {
 // GetVrfOk returns a tuple with the Vrf field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *IPRangeRequest) GetVrfOk() (*int32, bool) {
+func (o *IPRangeRequest) GetVrfOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -138,8 +138,8 @@ func (o *IPRangeRequest) HasVrf() bool {
 	return false
 }
 
-// SetVrf gets a reference to the given NullableInt32 and assigns it to the Vrf field.
-func (o *IPRangeRequest) SetVrf(v int32) {
+// SetVrf gets a reference to the given NullableInt64 and assigns it to the Vrf field.
+func (o *IPRangeRequest) SetVrf(v int64) {
 	o.Vrf.Set(&v)
 }
 
@@ -154,9 +154,9 @@ func (o *IPRangeRequest) UnsetVrf() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *IPRangeRequest) GetTenant() int32 {
+func (o *IPRangeRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -165,7 +165,7 @@ func (o *IPRangeRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *IPRangeRequest) GetTenantOk() (*int32, bool) {
+func (o *IPRangeRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -181,8 +181,8 @@ func (o *IPRangeRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *IPRangeRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *IPRangeRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -229,9 +229,9 @@ func (o *IPRangeRequest) SetStatus(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *IPRangeRequest) GetRole() int32 {
+func (o *IPRangeRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -240,7 +240,7 @@ func (o *IPRangeRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *IPRangeRequest) GetRoleOk() (*int32, bool) {
+func (o *IPRangeRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -256,8 +256,8 @@ func (o *IPRangeRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *IPRangeRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *IPRangeRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -304,9 +304,9 @@ func (o *IPRangeRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *IPRangeRequest) GetOwner() int32 {
+func (o *IPRangeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -315,7 +315,7 @@ func (o *IPRangeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *IPRangeRequest) GetOwnerOk() (*int32, bool) {
+func (o *IPRangeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -331,8 +331,8 @@ func (o *IPRangeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *IPRangeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *IPRangeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

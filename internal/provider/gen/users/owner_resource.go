@@ -167,7 +167,7 @@ func (r *OwnerResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -198,7 +198,7 @@ func (r *OwnerResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -228,7 +228,7 @@ func (r *OwnerResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -247,15 +247,15 @@ func (r *OwnerResource) ImportState(ctx context.Context, req resource.ImportStat
 
 // ownerToCreate builds the OwnerRequest request body from the plan.
 func ownerToCreate(ctx context.Context, plan *OwnerModel, diags *diag.Diagnostics) *netbox.OwnerRequest {
-	body := netbox.NewOwnerRequest(plan.Name.ValueString(), conv.NullableInt32(plan.GroupId))
+	body := netbox.NewOwnerRequest(plan.Name.ValueString(), conv.NullableInt64(plan.GroupId))
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.UserGroupIds) {
-		body.SetUserGroups(conv.Int32s(ctx, plan.UserGroupIds, diags))
+		body.SetUserGroups(conv.Int64s(ctx, plan.UserGroupIds, diags))
 	}
 	if conv.Known(plan.UserIds) {
-		body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+		body.SetUsers(conv.Int64s(ctx, plan.UserIds, diags))
 	}
 	return body
 }
@@ -270,7 +270,7 @@ func ownerToPatch(ctx context.Context, plan, state *OwnerModel, diags *diag.Diag
 	}
 	if !plan.GroupId.Equal(state.GroupId) {
 		if conv.Known(plan.GroupId) {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -280,12 +280,12 @@ func ownerToPatch(ctx context.Context, plan, state *OwnerModel, diags *diag.Diag
 	}
 	if !plan.UserGroupIds.Equal(state.UserGroupIds) {
 		if conv.Known(plan.UserGroupIds) {
-			body.SetUserGroups(conv.Int32s(ctx, plan.UserGroupIds, diags))
+			body.SetUserGroups(conv.Int64s(ctx, plan.UserGroupIds, diags))
 		}
 	}
 	if !plan.UserIds.Equal(state.UserIds) {
 		if conv.Known(plan.UserIds) {
-			body.SetUsers(conv.Int32s(ctx, plan.UserIds, diags))
+			body.SetUsers(conv.Int64s(ctx, plan.UserIds, diags))
 		}
 	}
 	return body

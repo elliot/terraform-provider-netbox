@@ -162,7 +162,7 @@ func (r *L2vpnTerminationResource) Read(ctx context.Context, req resource.ReadRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -193,7 +193,7 @@ func (r *L2vpnTerminationResource) Update(ctx context.Context, req resource.Upda
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -223,7 +223,7 @@ func (r *L2vpnTerminationResource) Delete(ctx context.Context, req resource.Dele
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -243,7 +243,7 @@ func (r *L2vpnTerminationResource) ImportState(ctx context.Context, req resource
 // l2vpnTerminationToCreate builds the L2VPNTerminationRequest request body from the plan.
 func l2vpnTerminationToCreate(ctx context.Context, plan *L2vpnTerminationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.L2VPNTerminationRequest {
 	const objectType = "vpn.l2vpntermination"
-	body := netbox.NewL2VPNTerminationRequest(conv.Int32(plan.L2vpnId), plan.AssignedObjectType.ValueString(), plan.AssignedObjectId.ValueInt64())
+	body := netbox.NewL2VPNTerminationRequest(plan.L2vpnId.ValueInt64(), plan.AssignedObjectType.ValueString(), plan.AssignedObjectId.ValueInt64())
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
@@ -259,7 +259,7 @@ func l2vpnTerminationToPatch(ctx context.Context, plan, state *L2vpnTerminationM
 	body := netbox.NewPatchedL2VPNTerminationRequest()
 	if !plan.L2vpnId.Equal(state.L2vpnId) {
 		if conv.Known(plan.L2vpnId) {
-			body.SetL2vpn(conv.Int32(plan.L2vpnId))
+			body.SetL2vpn(plan.L2vpnId.ValueInt64())
 		}
 	}
 	if !plan.AssignedObjectType.Equal(state.AssignedObjectType) {

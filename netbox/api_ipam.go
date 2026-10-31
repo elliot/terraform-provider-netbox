@@ -89,7 +89,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this aggregate.
 		@return ApiIpamAggregatesDestroyRequest
 	*/
-	IpamAggregatesDestroy(ctx context.Context, id int32) ApiIpamAggregatesDestroyRequest
+	IpamAggregatesDestroy(ctx context.Context, id int64) ApiIpamAggregatesDestroyRequest
 
 	// IpamAggregatesDestroyExecute executes the request
 	IpamAggregatesDestroyExecute(r ApiIpamAggregatesDestroyRequest) (*http.Response, error)
@@ -117,7 +117,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this aggregate.
 		@return ApiIpamAggregatesPartialUpdateRequest
 	*/
-	IpamAggregatesPartialUpdate(ctx context.Context, id int32) ApiIpamAggregatesPartialUpdateRequest
+	IpamAggregatesPartialUpdate(ctx context.Context, id int64) ApiIpamAggregatesPartialUpdateRequest
 
 	// IpamAggregatesPartialUpdateExecute executes the request
 	//  @return Aggregate
@@ -132,7 +132,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this aggregate.
 		@return ApiIpamAggregatesRetrieveRequest
 	*/
-	IpamAggregatesRetrieve(ctx context.Context, id int32) ApiIpamAggregatesRetrieveRequest
+	IpamAggregatesRetrieve(ctx context.Context, id int64) ApiIpamAggregatesRetrieveRequest
 
 	// IpamAggregatesRetrieveExecute executes the request
 	//  @return Aggregate
@@ -147,7 +147,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this aggregate.
 		@return ApiIpamAggregatesUpdateRequest
 	*/
-	IpamAggregatesUpdate(ctx context.Context, id int32) ApiIpamAggregatesUpdateRequest
+	IpamAggregatesUpdate(ctx context.Context, id int64) ApiIpamAggregatesUpdateRequest
 
 	// IpamAggregatesUpdateExecute executes the request
 	//  @return Aggregate
@@ -162,7 +162,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamAsnRangesAvailableAsnsCreateRequest
 	*/
-	IpamAsnRangesAvailableAsnsCreate(ctx context.Context, id int32) ApiIpamAsnRangesAvailableAsnsCreateRequest
+	IpamAsnRangesAvailableAsnsCreate(ctx context.Context, id int64) ApiIpamAsnRangesAvailableAsnsCreateRequest
 
 	// IpamAsnRangesAvailableAsnsCreateExecute executes the request
 	//  @return []ASN
@@ -177,7 +177,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamAsnRangesAvailableAsnsListRequest
 	*/
-	IpamAsnRangesAvailableAsnsList(ctx context.Context, id int32) ApiIpamAsnRangesAvailableAsnsListRequest
+	IpamAsnRangesAvailableAsnsList(ctx context.Context, id int64) ApiIpamAsnRangesAvailableAsnsListRequest
 
 	// IpamAsnRangesAvailableAsnsListExecute executes the request
 	//  @return []AvailableASN
@@ -247,7 +247,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this ASN range.
 		@return ApiIpamAsnRangesDestroyRequest
 	*/
-	IpamAsnRangesDestroy(ctx context.Context, id int32) ApiIpamAsnRangesDestroyRequest
+	IpamAsnRangesDestroy(ctx context.Context, id int64) ApiIpamAsnRangesDestroyRequest
 
 	// IpamAsnRangesDestroyExecute executes the request
 	IpamAsnRangesDestroyExecute(r ApiIpamAsnRangesDestroyRequest) (*http.Response, error)
@@ -275,7 +275,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this ASN range.
 		@return ApiIpamAsnRangesPartialUpdateRequest
 	*/
-	IpamAsnRangesPartialUpdate(ctx context.Context, id int32) ApiIpamAsnRangesPartialUpdateRequest
+	IpamAsnRangesPartialUpdate(ctx context.Context, id int64) ApiIpamAsnRangesPartialUpdateRequest
 
 	// IpamAsnRangesPartialUpdateExecute executes the request
 	//  @return ASNRange
@@ -290,7 +290,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this ASN range.
 		@return ApiIpamAsnRangesRetrieveRequest
 	*/
-	IpamAsnRangesRetrieve(ctx context.Context, id int32) ApiIpamAsnRangesRetrieveRequest
+	IpamAsnRangesRetrieve(ctx context.Context, id int64) ApiIpamAsnRangesRetrieveRequest
 
 	// IpamAsnRangesRetrieveExecute executes the request
 	//  @return ASNRange
@@ -305,7 +305,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this ASN range.
 		@return ApiIpamAsnRangesUpdateRequest
 	*/
-	IpamAsnRangesUpdate(ctx context.Context, id int32) ApiIpamAsnRangesUpdateRequest
+	IpamAsnRangesUpdate(ctx context.Context, id int64) ApiIpamAsnRangesUpdateRequest
 
 	// IpamAsnRangesUpdateExecute executes the request
 	//  @return ASNRange
@@ -375,7 +375,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this ASN.
 		@return ApiIpamAsnsDestroyRequest
 	*/
-	IpamAsnsDestroy(ctx context.Context, id int32) ApiIpamAsnsDestroyRequest
+	IpamAsnsDestroy(ctx context.Context, id int64) ApiIpamAsnsDestroyRequest
 
 	// IpamAsnsDestroyExecute executes the request
 	IpamAsnsDestroyExecute(r ApiIpamAsnsDestroyRequest) (*http.Response, error)
@@ -403,7 +403,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this ASN.
 		@return ApiIpamAsnsPartialUpdateRequest
 	*/
-	IpamAsnsPartialUpdate(ctx context.Context, id int32) ApiIpamAsnsPartialUpdateRequest
+	IpamAsnsPartialUpdate(ctx context.Context, id int64) ApiIpamAsnsPartialUpdateRequest
 
 	// IpamAsnsPartialUpdateExecute executes the request
 	//  @return ASN
@@ -418,7 +418,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this ASN.
 		@return ApiIpamAsnsRetrieveRequest
 	*/
-	IpamAsnsRetrieve(ctx context.Context, id int32) ApiIpamAsnsRetrieveRequest
+	IpamAsnsRetrieve(ctx context.Context, id int64) ApiIpamAsnsRetrieveRequest
 
 	// IpamAsnsRetrieveExecute executes the request
 	//  @return ASN
@@ -433,7 +433,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this ASN.
 		@return ApiIpamAsnsUpdateRequest
 	*/
-	IpamAsnsUpdate(ctx context.Context, id int32) ApiIpamAsnsUpdateRequest
+	IpamAsnsUpdate(ctx context.Context, id int64) ApiIpamAsnsUpdateRequest
 
 	// IpamAsnsUpdateExecute executes the request
 	//  @return ASN
@@ -503,7 +503,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this FHRP group assignment.
 		@return ApiIpamFhrpGroupAssignmentsDestroyRequest
 	*/
-	IpamFhrpGroupAssignmentsDestroy(ctx context.Context, id int32) ApiIpamFhrpGroupAssignmentsDestroyRequest
+	IpamFhrpGroupAssignmentsDestroy(ctx context.Context, id int64) ApiIpamFhrpGroupAssignmentsDestroyRequest
 
 	// IpamFhrpGroupAssignmentsDestroyExecute executes the request
 	IpamFhrpGroupAssignmentsDestroyExecute(r ApiIpamFhrpGroupAssignmentsDestroyRequest) (*http.Response, error)
@@ -531,7 +531,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this FHRP group assignment.
 		@return ApiIpamFhrpGroupAssignmentsPartialUpdateRequest
 	*/
-	IpamFhrpGroupAssignmentsPartialUpdate(ctx context.Context, id int32) ApiIpamFhrpGroupAssignmentsPartialUpdateRequest
+	IpamFhrpGroupAssignmentsPartialUpdate(ctx context.Context, id int64) ApiIpamFhrpGroupAssignmentsPartialUpdateRequest
 
 	// IpamFhrpGroupAssignmentsPartialUpdateExecute executes the request
 	//  @return FHRPGroupAssignment
@@ -546,7 +546,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this FHRP group assignment.
 		@return ApiIpamFhrpGroupAssignmentsRetrieveRequest
 	*/
-	IpamFhrpGroupAssignmentsRetrieve(ctx context.Context, id int32) ApiIpamFhrpGroupAssignmentsRetrieveRequest
+	IpamFhrpGroupAssignmentsRetrieve(ctx context.Context, id int64) ApiIpamFhrpGroupAssignmentsRetrieveRequest
 
 	// IpamFhrpGroupAssignmentsRetrieveExecute executes the request
 	//  @return FHRPGroupAssignment
@@ -561,7 +561,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this FHRP group assignment.
 		@return ApiIpamFhrpGroupAssignmentsUpdateRequest
 	*/
-	IpamFhrpGroupAssignmentsUpdate(ctx context.Context, id int32) ApiIpamFhrpGroupAssignmentsUpdateRequest
+	IpamFhrpGroupAssignmentsUpdate(ctx context.Context, id int64) ApiIpamFhrpGroupAssignmentsUpdateRequest
 
 	// IpamFhrpGroupAssignmentsUpdateExecute executes the request
 	//  @return FHRPGroupAssignment
@@ -631,7 +631,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this FHRP group.
 		@return ApiIpamFhrpGroupsDestroyRequest
 	*/
-	IpamFhrpGroupsDestroy(ctx context.Context, id int32) ApiIpamFhrpGroupsDestroyRequest
+	IpamFhrpGroupsDestroy(ctx context.Context, id int64) ApiIpamFhrpGroupsDestroyRequest
 
 	// IpamFhrpGroupsDestroyExecute executes the request
 	IpamFhrpGroupsDestroyExecute(r ApiIpamFhrpGroupsDestroyRequest) (*http.Response, error)
@@ -659,7 +659,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this FHRP group.
 		@return ApiIpamFhrpGroupsPartialUpdateRequest
 	*/
-	IpamFhrpGroupsPartialUpdate(ctx context.Context, id int32) ApiIpamFhrpGroupsPartialUpdateRequest
+	IpamFhrpGroupsPartialUpdate(ctx context.Context, id int64) ApiIpamFhrpGroupsPartialUpdateRequest
 
 	// IpamFhrpGroupsPartialUpdateExecute executes the request
 	//  @return FHRPGroup
@@ -674,7 +674,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this FHRP group.
 		@return ApiIpamFhrpGroupsRetrieveRequest
 	*/
-	IpamFhrpGroupsRetrieve(ctx context.Context, id int32) ApiIpamFhrpGroupsRetrieveRequest
+	IpamFhrpGroupsRetrieve(ctx context.Context, id int64) ApiIpamFhrpGroupsRetrieveRequest
 
 	// IpamFhrpGroupsRetrieveExecute executes the request
 	//  @return FHRPGroup
@@ -689,7 +689,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this FHRP group.
 		@return ApiIpamFhrpGroupsUpdateRequest
 	*/
-	IpamFhrpGroupsUpdate(ctx context.Context, id int32) ApiIpamFhrpGroupsUpdateRequest
+	IpamFhrpGroupsUpdate(ctx context.Context, id int64) ApiIpamFhrpGroupsUpdateRequest
 
 	// IpamFhrpGroupsUpdateExecute executes the request
 	//  @return FHRPGroup
@@ -759,7 +759,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this IP address.
 		@return ApiIpamIpAddressesDestroyRequest
 	*/
-	IpamIpAddressesDestroy(ctx context.Context, id int32) ApiIpamIpAddressesDestroyRequest
+	IpamIpAddressesDestroy(ctx context.Context, id int64) ApiIpamIpAddressesDestroyRequest
 
 	// IpamIpAddressesDestroyExecute executes the request
 	IpamIpAddressesDestroyExecute(r ApiIpamIpAddressesDestroyRequest) (*http.Response, error)
@@ -787,7 +787,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this IP address.
 		@return ApiIpamIpAddressesPartialUpdateRequest
 	*/
-	IpamIpAddressesPartialUpdate(ctx context.Context, id int32) ApiIpamIpAddressesPartialUpdateRequest
+	IpamIpAddressesPartialUpdate(ctx context.Context, id int64) ApiIpamIpAddressesPartialUpdateRequest
 
 	// IpamIpAddressesPartialUpdateExecute executes the request
 	//  @return IPAddress
@@ -802,7 +802,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this IP address.
 		@return ApiIpamIpAddressesRetrieveRequest
 	*/
-	IpamIpAddressesRetrieve(ctx context.Context, id int32) ApiIpamIpAddressesRetrieveRequest
+	IpamIpAddressesRetrieve(ctx context.Context, id int64) ApiIpamIpAddressesRetrieveRequest
 
 	// IpamIpAddressesRetrieveExecute executes the request
 	//  @return IPAddress
@@ -817,7 +817,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this IP address.
 		@return ApiIpamIpAddressesUpdateRequest
 	*/
-	IpamIpAddressesUpdate(ctx context.Context, id int32) ApiIpamIpAddressesUpdateRequest
+	IpamIpAddressesUpdate(ctx context.Context, id int64) ApiIpamIpAddressesUpdateRequest
 
 	// IpamIpAddressesUpdateExecute executes the request
 	//  @return IPAddress
@@ -832,7 +832,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamIpRangesAvailableIpsCreateRequest
 	*/
-	IpamIpRangesAvailableIpsCreate(ctx context.Context, id int32) ApiIpamIpRangesAvailableIpsCreateRequest
+	IpamIpRangesAvailableIpsCreate(ctx context.Context, id int64) ApiIpamIpRangesAvailableIpsCreateRequest
 
 	// IpamIpRangesAvailableIpsCreateExecute executes the request
 	//  @return []IPAddress
@@ -847,7 +847,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamIpRangesAvailableIpsListRequest
 	*/
-	IpamIpRangesAvailableIpsList(ctx context.Context, id int32) ApiIpamIpRangesAvailableIpsListRequest
+	IpamIpRangesAvailableIpsList(ctx context.Context, id int64) ApiIpamIpRangesAvailableIpsListRequest
 
 	// IpamIpRangesAvailableIpsListExecute executes the request
 	//  @return []AvailableIP
@@ -917,7 +917,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this IP range.
 		@return ApiIpamIpRangesDestroyRequest
 	*/
-	IpamIpRangesDestroy(ctx context.Context, id int32) ApiIpamIpRangesDestroyRequest
+	IpamIpRangesDestroy(ctx context.Context, id int64) ApiIpamIpRangesDestroyRequest
 
 	// IpamIpRangesDestroyExecute executes the request
 	IpamIpRangesDestroyExecute(r ApiIpamIpRangesDestroyRequest) (*http.Response, error)
@@ -945,7 +945,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this IP range.
 		@return ApiIpamIpRangesPartialUpdateRequest
 	*/
-	IpamIpRangesPartialUpdate(ctx context.Context, id int32) ApiIpamIpRangesPartialUpdateRequest
+	IpamIpRangesPartialUpdate(ctx context.Context, id int64) ApiIpamIpRangesPartialUpdateRequest
 
 	// IpamIpRangesPartialUpdateExecute executes the request
 	//  @return IPRange
@@ -960,7 +960,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this IP range.
 		@return ApiIpamIpRangesRetrieveRequest
 	*/
-	IpamIpRangesRetrieve(ctx context.Context, id int32) ApiIpamIpRangesRetrieveRequest
+	IpamIpRangesRetrieve(ctx context.Context, id int64) ApiIpamIpRangesRetrieveRequest
 
 	// IpamIpRangesRetrieveExecute executes the request
 	//  @return IPRange
@@ -975,7 +975,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this IP range.
 		@return ApiIpamIpRangesUpdateRequest
 	*/
-	IpamIpRangesUpdate(ctx context.Context, id int32) ApiIpamIpRangesUpdateRequest
+	IpamIpRangesUpdate(ctx context.Context, id int64) ApiIpamIpRangesUpdateRequest
 
 	// IpamIpRangesUpdateExecute executes the request
 	//  @return IPRange
@@ -990,7 +990,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamPrefixesAvailableIpsCreateRequest
 	*/
-	IpamPrefixesAvailableIpsCreate(ctx context.Context, id int32) ApiIpamPrefixesAvailableIpsCreateRequest
+	IpamPrefixesAvailableIpsCreate(ctx context.Context, id int64) ApiIpamPrefixesAvailableIpsCreateRequest
 
 	// IpamPrefixesAvailableIpsCreateExecute executes the request
 	//  @return []IPAddress
@@ -1005,7 +1005,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamPrefixesAvailableIpsListRequest
 	*/
-	IpamPrefixesAvailableIpsList(ctx context.Context, id int32) ApiIpamPrefixesAvailableIpsListRequest
+	IpamPrefixesAvailableIpsList(ctx context.Context, id int64) ApiIpamPrefixesAvailableIpsListRequest
 
 	// IpamPrefixesAvailableIpsListExecute executes the request
 	//  @return []AvailableIP
@@ -1020,7 +1020,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamPrefixesAvailablePrefixesCreateRequest
 	*/
-	IpamPrefixesAvailablePrefixesCreate(ctx context.Context, id int32) ApiIpamPrefixesAvailablePrefixesCreateRequest
+	IpamPrefixesAvailablePrefixesCreate(ctx context.Context, id int64) ApiIpamPrefixesAvailablePrefixesCreateRequest
 
 	// IpamPrefixesAvailablePrefixesCreateExecute executes the request
 	//  @return []Prefix
@@ -1035,7 +1035,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamPrefixesAvailablePrefixesListRequest
 	*/
-	IpamPrefixesAvailablePrefixesList(ctx context.Context, id int32) ApiIpamPrefixesAvailablePrefixesListRequest
+	IpamPrefixesAvailablePrefixesList(ctx context.Context, id int64) ApiIpamPrefixesAvailablePrefixesListRequest
 
 	// IpamPrefixesAvailablePrefixesListExecute executes the request
 	//  @return []AvailablePrefix
@@ -1105,7 +1105,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this prefix.
 		@return ApiIpamPrefixesDestroyRequest
 	*/
-	IpamPrefixesDestroy(ctx context.Context, id int32) ApiIpamPrefixesDestroyRequest
+	IpamPrefixesDestroy(ctx context.Context, id int64) ApiIpamPrefixesDestroyRequest
 
 	// IpamPrefixesDestroyExecute executes the request
 	IpamPrefixesDestroyExecute(r ApiIpamPrefixesDestroyRequest) (*http.Response, error)
@@ -1133,7 +1133,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this prefix.
 		@return ApiIpamPrefixesPartialUpdateRequest
 	*/
-	IpamPrefixesPartialUpdate(ctx context.Context, id int32) ApiIpamPrefixesPartialUpdateRequest
+	IpamPrefixesPartialUpdate(ctx context.Context, id int64) ApiIpamPrefixesPartialUpdateRequest
 
 	// IpamPrefixesPartialUpdateExecute executes the request
 	//  @return Prefix
@@ -1148,7 +1148,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this prefix.
 		@return ApiIpamPrefixesRetrieveRequest
 	*/
-	IpamPrefixesRetrieve(ctx context.Context, id int32) ApiIpamPrefixesRetrieveRequest
+	IpamPrefixesRetrieve(ctx context.Context, id int64) ApiIpamPrefixesRetrieveRequest
 
 	// IpamPrefixesRetrieveExecute executes the request
 	//  @return Prefix
@@ -1163,7 +1163,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this prefix.
 		@return ApiIpamPrefixesUpdateRequest
 	*/
-	IpamPrefixesUpdate(ctx context.Context, id int32) ApiIpamPrefixesUpdateRequest
+	IpamPrefixesUpdate(ctx context.Context, id int64) ApiIpamPrefixesUpdateRequest
 
 	// IpamPrefixesUpdateExecute executes the request
 	//  @return Prefix
@@ -1233,7 +1233,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this RIR.
 		@return ApiIpamRirsDestroyRequest
 	*/
-	IpamRirsDestroy(ctx context.Context, id int32) ApiIpamRirsDestroyRequest
+	IpamRirsDestroy(ctx context.Context, id int64) ApiIpamRirsDestroyRequest
 
 	// IpamRirsDestroyExecute executes the request
 	IpamRirsDestroyExecute(r ApiIpamRirsDestroyRequest) (*http.Response, error)
@@ -1261,7 +1261,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this RIR.
 		@return ApiIpamRirsPartialUpdateRequest
 	*/
-	IpamRirsPartialUpdate(ctx context.Context, id int32) ApiIpamRirsPartialUpdateRequest
+	IpamRirsPartialUpdate(ctx context.Context, id int64) ApiIpamRirsPartialUpdateRequest
 
 	// IpamRirsPartialUpdateExecute executes the request
 	//  @return RIR
@@ -1276,7 +1276,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this RIR.
 		@return ApiIpamRirsRetrieveRequest
 	*/
-	IpamRirsRetrieve(ctx context.Context, id int32) ApiIpamRirsRetrieveRequest
+	IpamRirsRetrieve(ctx context.Context, id int64) ApiIpamRirsRetrieveRequest
 
 	// IpamRirsRetrieveExecute executes the request
 	//  @return RIR
@@ -1291,7 +1291,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this RIR.
 		@return ApiIpamRirsUpdateRequest
 	*/
-	IpamRirsUpdate(ctx context.Context, id int32) ApiIpamRirsUpdateRequest
+	IpamRirsUpdate(ctx context.Context, id int64) ApiIpamRirsUpdateRequest
 
 	// IpamRirsUpdateExecute executes the request
 	//  @return RIR
@@ -1361,7 +1361,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this role.
 		@return ApiIpamRolesDestroyRequest
 	*/
-	IpamRolesDestroy(ctx context.Context, id int32) ApiIpamRolesDestroyRequest
+	IpamRolesDestroy(ctx context.Context, id int64) ApiIpamRolesDestroyRequest
 
 	// IpamRolesDestroyExecute executes the request
 	IpamRolesDestroyExecute(r ApiIpamRolesDestroyRequest) (*http.Response, error)
@@ -1389,7 +1389,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this role.
 		@return ApiIpamRolesPartialUpdateRequest
 	*/
-	IpamRolesPartialUpdate(ctx context.Context, id int32) ApiIpamRolesPartialUpdateRequest
+	IpamRolesPartialUpdate(ctx context.Context, id int64) ApiIpamRolesPartialUpdateRequest
 
 	// IpamRolesPartialUpdateExecute executes the request
 	//  @return Role
@@ -1404,7 +1404,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this role.
 		@return ApiIpamRolesRetrieveRequest
 	*/
-	IpamRolesRetrieve(ctx context.Context, id int32) ApiIpamRolesRetrieveRequest
+	IpamRolesRetrieve(ctx context.Context, id int64) ApiIpamRolesRetrieveRequest
 
 	// IpamRolesRetrieveExecute executes the request
 	//  @return Role
@@ -1419,7 +1419,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this role.
 		@return ApiIpamRolesUpdateRequest
 	*/
-	IpamRolesUpdate(ctx context.Context, id int32) ApiIpamRolesUpdateRequest
+	IpamRolesUpdate(ctx context.Context, id int64) ApiIpamRolesUpdateRequest
 
 	// IpamRolesUpdateExecute executes the request
 	//  @return Role
@@ -1489,7 +1489,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this route target.
 		@return ApiIpamRouteTargetsDestroyRequest
 	*/
-	IpamRouteTargetsDestroy(ctx context.Context, id int32) ApiIpamRouteTargetsDestroyRequest
+	IpamRouteTargetsDestroy(ctx context.Context, id int64) ApiIpamRouteTargetsDestroyRequest
 
 	// IpamRouteTargetsDestroyExecute executes the request
 	IpamRouteTargetsDestroyExecute(r ApiIpamRouteTargetsDestroyRequest) (*http.Response, error)
@@ -1517,7 +1517,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this route target.
 		@return ApiIpamRouteTargetsPartialUpdateRequest
 	*/
-	IpamRouteTargetsPartialUpdate(ctx context.Context, id int32) ApiIpamRouteTargetsPartialUpdateRequest
+	IpamRouteTargetsPartialUpdate(ctx context.Context, id int64) ApiIpamRouteTargetsPartialUpdateRequest
 
 	// IpamRouteTargetsPartialUpdateExecute executes the request
 	//  @return RouteTarget
@@ -1532,7 +1532,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this route target.
 		@return ApiIpamRouteTargetsRetrieveRequest
 	*/
-	IpamRouteTargetsRetrieve(ctx context.Context, id int32) ApiIpamRouteTargetsRetrieveRequest
+	IpamRouteTargetsRetrieve(ctx context.Context, id int64) ApiIpamRouteTargetsRetrieveRequest
 
 	// IpamRouteTargetsRetrieveExecute executes the request
 	//  @return RouteTarget
@@ -1547,7 +1547,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this route target.
 		@return ApiIpamRouteTargetsUpdateRequest
 	*/
-	IpamRouteTargetsUpdate(ctx context.Context, id int32) ApiIpamRouteTargetsUpdateRequest
+	IpamRouteTargetsUpdate(ctx context.Context, id int64) ApiIpamRouteTargetsUpdateRequest
 
 	// IpamRouteTargetsUpdateExecute executes the request
 	//  @return RouteTarget
@@ -1617,7 +1617,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this application service template.
 		@return ApiIpamServiceTemplatesDestroyRequest
 	*/
-	IpamServiceTemplatesDestroy(ctx context.Context, id int32) ApiIpamServiceTemplatesDestroyRequest
+	IpamServiceTemplatesDestroy(ctx context.Context, id int64) ApiIpamServiceTemplatesDestroyRequest
 
 	// IpamServiceTemplatesDestroyExecute executes the request
 	IpamServiceTemplatesDestroyExecute(r ApiIpamServiceTemplatesDestroyRequest) (*http.Response, error)
@@ -1645,7 +1645,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this application service template.
 		@return ApiIpamServiceTemplatesPartialUpdateRequest
 	*/
-	IpamServiceTemplatesPartialUpdate(ctx context.Context, id int32) ApiIpamServiceTemplatesPartialUpdateRequest
+	IpamServiceTemplatesPartialUpdate(ctx context.Context, id int64) ApiIpamServiceTemplatesPartialUpdateRequest
 
 	// IpamServiceTemplatesPartialUpdateExecute executes the request
 	//  @return ServiceTemplate
@@ -1660,7 +1660,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this application service template.
 		@return ApiIpamServiceTemplatesRetrieveRequest
 	*/
-	IpamServiceTemplatesRetrieve(ctx context.Context, id int32) ApiIpamServiceTemplatesRetrieveRequest
+	IpamServiceTemplatesRetrieve(ctx context.Context, id int64) ApiIpamServiceTemplatesRetrieveRequest
 
 	// IpamServiceTemplatesRetrieveExecute executes the request
 	//  @return ServiceTemplate
@@ -1675,7 +1675,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this application service template.
 		@return ApiIpamServiceTemplatesUpdateRequest
 	*/
-	IpamServiceTemplatesUpdate(ctx context.Context, id int32) ApiIpamServiceTemplatesUpdateRequest
+	IpamServiceTemplatesUpdate(ctx context.Context, id int64) ApiIpamServiceTemplatesUpdateRequest
 
 	// IpamServiceTemplatesUpdateExecute executes the request
 	//  @return ServiceTemplate
@@ -1745,7 +1745,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this application service.
 		@return ApiIpamServicesDestroyRequest
 	*/
-	IpamServicesDestroy(ctx context.Context, id int32) ApiIpamServicesDestroyRequest
+	IpamServicesDestroy(ctx context.Context, id int64) ApiIpamServicesDestroyRequest
 
 	// IpamServicesDestroyExecute executes the request
 	IpamServicesDestroyExecute(r ApiIpamServicesDestroyRequest) (*http.Response, error)
@@ -1773,7 +1773,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this application service.
 		@return ApiIpamServicesPartialUpdateRequest
 	*/
-	IpamServicesPartialUpdate(ctx context.Context, id int32) ApiIpamServicesPartialUpdateRequest
+	IpamServicesPartialUpdate(ctx context.Context, id int64) ApiIpamServicesPartialUpdateRequest
 
 	// IpamServicesPartialUpdateExecute executes the request
 	//  @return Service
@@ -1788,7 +1788,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this application service.
 		@return ApiIpamServicesRetrieveRequest
 	*/
-	IpamServicesRetrieve(ctx context.Context, id int32) ApiIpamServicesRetrieveRequest
+	IpamServicesRetrieve(ctx context.Context, id int64) ApiIpamServicesRetrieveRequest
 
 	// IpamServicesRetrieveExecute executes the request
 	//  @return Service
@@ -1803,7 +1803,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this application service.
 		@return ApiIpamServicesUpdateRequest
 	*/
-	IpamServicesUpdate(ctx context.Context, id int32) ApiIpamServicesUpdateRequest
+	IpamServicesUpdate(ctx context.Context, id int64) ApiIpamServicesUpdateRequest
 
 	// IpamServicesUpdateExecute executes the request
 	//  @return Service
@@ -1818,7 +1818,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamVlanGroupsAvailableVlansCreateRequest
 	*/
-	IpamVlanGroupsAvailableVlansCreate(ctx context.Context, id int32) ApiIpamVlanGroupsAvailableVlansCreateRequest
+	IpamVlanGroupsAvailableVlansCreate(ctx context.Context, id int64) ApiIpamVlanGroupsAvailableVlansCreateRequest
 
 	// IpamVlanGroupsAvailableVlansCreateExecute executes the request
 	//  @return []VLAN
@@ -1833,7 +1833,7 @@ type IpamAPI interface {
 		@param id
 		@return ApiIpamVlanGroupsAvailableVlansListRequest
 	*/
-	IpamVlanGroupsAvailableVlansList(ctx context.Context, id int32) ApiIpamVlanGroupsAvailableVlansListRequest
+	IpamVlanGroupsAvailableVlansList(ctx context.Context, id int64) ApiIpamVlanGroupsAvailableVlansListRequest
 
 	// IpamVlanGroupsAvailableVlansListExecute executes the request
 	//  @return []AvailableVLAN
@@ -1903,7 +1903,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN group.
 		@return ApiIpamVlanGroupsDestroyRequest
 	*/
-	IpamVlanGroupsDestroy(ctx context.Context, id int32) ApiIpamVlanGroupsDestroyRequest
+	IpamVlanGroupsDestroy(ctx context.Context, id int64) ApiIpamVlanGroupsDestroyRequest
 
 	// IpamVlanGroupsDestroyExecute executes the request
 	IpamVlanGroupsDestroyExecute(r ApiIpamVlanGroupsDestroyRequest) (*http.Response, error)
@@ -1931,7 +1931,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN group.
 		@return ApiIpamVlanGroupsPartialUpdateRequest
 	*/
-	IpamVlanGroupsPartialUpdate(ctx context.Context, id int32) ApiIpamVlanGroupsPartialUpdateRequest
+	IpamVlanGroupsPartialUpdate(ctx context.Context, id int64) ApiIpamVlanGroupsPartialUpdateRequest
 
 	// IpamVlanGroupsPartialUpdateExecute executes the request
 	//  @return VLANGroup
@@ -1946,7 +1946,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN group.
 		@return ApiIpamVlanGroupsRetrieveRequest
 	*/
-	IpamVlanGroupsRetrieve(ctx context.Context, id int32) ApiIpamVlanGroupsRetrieveRequest
+	IpamVlanGroupsRetrieve(ctx context.Context, id int64) ApiIpamVlanGroupsRetrieveRequest
 
 	// IpamVlanGroupsRetrieveExecute executes the request
 	//  @return VLANGroup
@@ -1961,7 +1961,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN group.
 		@return ApiIpamVlanGroupsUpdateRequest
 	*/
-	IpamVlanGroupsUpdate(ctx context.Context, id int32) ApiIpamVlanGroupsUpdateRequest
+	IpamVlanGroupsUpdate(ctx context.Context, id int64) ApiIpamVlanGroupsUpdateRequest
 
 	// IpamVlanGroupsUpdateExecute executes the request
 	//  @return VLANGroup
@@ -2031,7 +2031,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN translation policy.
 		@return ApiIpamVlanTranslationPoliciesDestroyRequest
 	*/
-	IpamVlanTranslationPoliciesDestroy(ctx context.Context, id int32) ApiIpamVlanTranslationPoliciesDestroyRequest
+	IpamVlanTranslationPoliciesDestroy(ctx context.Context, id int64) ApiIpamVlanTranslationPoliciesDestroyRequest
 
 	// IpamVlanTranslationPoliciesDestroyExecute executes the request
 	IpamVlanTranslationPoliciesDestroyExecute(r ApiIpamVlanTranslationPoliciesDestroyRequest) (*http.Response, error)
@@ -2059,7 +2059,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN translation policy.
 		@return ApiIpamVlanTranslationPoliciesPartialUpdateRequest
 	*/
-	IpamVlanTranslationPoliciesPartialUpdate(ctx context.Context, id int32) ApiIpamVlanTranslationPoliciesPartialUpdateRequest
+	IpamVlanTranslationPoliciesPartialUpdate(ctx context.Context, id int64) ApiIpamVlanTranslationPoliciesPartialUpdateRequest
 
 	// IpamVlanTranslationPoliciesPartialUpdateExecute executes the request
 	//  @return VLANTranslationPolicy
@@ -2074,7 +2074,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN translation policy.
 		@return ApiIpamVlanTranslationPoliciesRetrieveRequest
 	*/
-	IpamVlanTranslationPoliciesRetrieve(ctx context.Context, id int32) ApiIpamVlanTranslationPoliciesRetrieveRequest
+	IpamVlanTranslationPoliciesRetrieve(ctx context.Context, id int64) ApiIpamVlanTranslationPoliciesRetrieveRequest
 
 	// IpamVlanTranslationPoliciesRetrieveExecute executes the request
 	//  @return VLANTranslationPolicy
@@ -2089,7 +2089,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN translation policy.
 		@return ApiIpamVlanTranslationPoliciesUpdateRequest
 	*/
-	IpamVlanTranslationPoliciesUpdate(ctx context.Context, id int32) ApiIpamVlanTranslationPoliciesUpdateRequest
+	IpamVlanTranslationPoliciesUpdate(ctx context.Context, id int64) ApiIpamVlanTranslationPoliciesUpdateRequest
 
 	// IpamVlanTranslationPoliciesUpdateExecute executes the request
 	//  @return VLANTranslationPolicy
@@ -2159,7 +2159,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN translation rule.
 		@return ApiIpamVlanTranslationRulesDestroyRequest
 	*/
-	IpamVlanTranslationRulesDestroy(ctx context.Context, id int32) ApiIpamVlanTranslationRulesDestroyRequest
+	IpamVlanTranslationRulesDestroy(ctx context.Context, id int64) ApiIpamVlanTranslationRulesDestroyRequest
 
 	// IpamVlanTranslationRulesDestroyExecute executes the request
 	IpamVlanTranslationRulesDestroyExecute(r ApiIpamVlanTranslationRulesDestroyRequest) (*http.Response, error)
@@ -2187,7 +2187,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN translation rule.
 		@return ApiIpamVlanTranslationRulesPartialUpdateRequest
 	*/
-	IpamVlanTranslationRulesPartialUpdate(ctx context.Context, id int32) ApiIpamVlanTranslationRulesPartialUpdateRequest
+	IpamVlanTranslationRulesPartialUpdate(ctx context.Context, id int64) ApiIpamVlanTranslationRulesPartialUpdateRequest
 
 	// IpamVlanTranslationRulesPartialUpdateExecute executes the request
 	//  @return VLANTranslationRule
@@ -2202,7 +2202,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN translation rule.
 		@return ApiIpamVlanTranslationRulesRetrieveRequest
 	*/
-	IpamVlanTranslationRulesRetrieve(ctx context.Context, id int32) ApiIpamVlanTranslationRulesRetrieveRequest
+	IpamVlanTranslationRulesRetrieve(ctx context.Context, id int64) ApiIpamVlanTranslationRulesRetrieveRequest
 
 	// IpamVlanTranslationRulesRetrieveExecute executes the request
 	//  @return VLANTranslationRule
@@ -2217,7 +2217,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN translation rule.
 		@return ApiIpamVlanTranslationRulesUpdateRequest
 	*/
-	IpamVlanTranslationRulesUpdate(ctx context.Context, id int32) ApiIpamVlanTranslationRulesUpdateRequest
+	IpamVlanTranslationRulesUpdate(ctx context.Context, id int64) ApiIpamVlanTranslationRulesUpdateRequest
 
 	// IpamVlanTranslationRulesUpdateExecute executes the request
 	//  @return VLANTranslationRule
@@ -2287,7 +2287,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN.
 		@return ApiIpamVlansDestroyRequest
 	*/
-	IpamVlansDestroy(ctx context.Context, id int32) ApiIpamVlansDestroyRequest
+	IpamVlansDestroy(ctx context.Context, id int64) ApiIpamVlansDestroyRequest
 
 	// IpamVlansDestroyExecute executes the request
 	IpamVlansDestroyExecute(r ApiIpamVlansDestroyRequest) (*http.Response, error)
@@ -2315,7 +2315,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN.
 		@return ApiIpamVlansPartialUpdateRequest
 	*/
-	IpamVlansPartialUpdate(ctx context.Context, id int32) ApiIpamVlansPartialUpdateRequest
+	IpamVlansPartialUpdate(ctx context.Context, id int64) ApiIpamVlansPartialUpdateRequest
 
 	// IpamVlansPartialUpdateExecute executes the request
 	//  @return VLAN
@@ -2330,7 +2330,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN.
 		@return ApiIpamVlansRetrieveRequest
 	*/
-	IpamVlansRetrieve(ctx context.Context, id int32) ApiIpamVlansRetrieveRequest
+	IpamVlansRetrieve(ctx context.Context, id int64) ApiIpamVlansRetrieveRequest
 
 	// IpamVlansRetrieveExecute executes the request
 	//  @return VLAN
@@ -2345,7 +2345,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VLAN.
 		@return ApiIpamVlansUpdateRequest
 	*/
-	IpamVlansUpdate(ctx context.Context, id int32) ApiIpamVlansUpdateRequest
+	IpamVlansUpdate(ctx context.Context, id int64) ApiIpamVlansUpdateRequest
 
 	// IpamVlansUpdateExecute executes the request
 	//  @return VLAN
@@ -2415,7 +2415,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VRF.
 		@return ApiIpamVrfsDestroyRequest
 	*/
-	IpamVrfsDestroy(ctx context.Context, id int32) ApiIpamVrfsDestroyRequest
+	IpamVrfsDestroy(ctx context.Context, id int64) ApiIpamVrfsDestroyRequest
 
 	// IpamVrfsDestroyExecute executes the request
 	IpamVrfsDestroyExecute(r ApiIpamVrfsDestroyRequest) (*http.Response, error)
@@ -2443,7 +2443,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VRF.
 		@return ApiIpamVrfsPartialUpdateRequest
 	*/
-	IpamVrfsPartialUpdate(ctx context.Context, id int32) ApiIpamVrfsPartialUpdateRequest
+	IpamVrfsPartialUpdate(ctx context.Context, id int64) ApiIpamVrfsPartialUpdateRequest
 
 	// IpamVrfsPartialUpdateExecute executes the request
 	//  @return VRF
@@ -2458,7 +2458,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VRF.
 		@return ApiIpamVrfsRetrieveRequest
 	*/
-	IpamVrfsRetrieve(ctx context.Context, id int32) ApiIpamVrfsRetrieveRequest
+	IpamVrfsRetrieve(ctx context.Context, id int64) ApiIpamVrfsRetrieveRequest
 
 	// IpamVrfsRetrieveExecute executes the request
 	//  @return VRF
@@ -2473,7 +2473,7 @@ type IpamAPI interface {
 		@param id A unique integer value identifying this VRF.
 		@return ApiIpamVrfsUpdateRequest
 	*/
-	IpamVrfsUpdate(ctx context.Context, id int32) ApiIpamVrfsUpdateRequest
+	IpamVrfsUpdate(ctx context.Context, id int64) ApiIpamVrfsUpdateRequest
 
 	// IpamVrfsUpdateExecute executes the request
 	//  @return VRF
@@ -2974,7 +2974,7 @@ func (a *IpamAPIService) IpamAggregatesCreateExecute(r ApiIpamAggregatesCreateRe
 type ApiIpamAggregatesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamAggregatesDestroyRequest) Execute() (*http.Response, error) {
@@ -2990,7 +2990,7 @@ Delete a aggregate object.
 	@param id A unique integer value identifying this aggregate.
 	@return ApiIpamAggregatesDestroyRequest
 */
-func (a *IpamAPIService) IpamAggregatesDestroy(ctx context.Context, id int32) ApiIpamAggregatesDestroyRequest {
+func (a *IpamAPIService) IpamAggregatesDestroy(ctx context.Context, id int64) ApiIpamAggregatesDestroyRequest {
 	return ApiIpamAggregatesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3081,12 +3081,12 @@ type ApiIpamAggregatesListRequest struct {
 	ctx               context.Context
 	ApiService        IpamAPI
 	brief             *bool
-	contact           *[]int32
-	contactN          *[]int32
-	contactGroup      *[]string
-	contactGroupN     *[]string
-	contactRole       *[]int32
-	contactRoleN      *[]int32
+	contact           *[]int64
+	contactN          *[]int64
+	contactGroup      *[]int64
+	contactGroupN     *[]int64
+	contactRole       *[]int64
+	contactRoleN      *[]int64
 	created           *[]time.Time
 	createdEmpty      *bool
 	createdGt         *[]time.Time
@@ -3117,13 +3117,13 @@ type ApiIpamAggregatesListRequest struct {
 	descriptionRegex  *[]string
 	family            *float32
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -3140,31 +3140,31 @@ type ApiIpamAggregatesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	prefix            *string
 	q                 *string
 	rir               *[]string
 	rirN              *[]string
-	rirId             *[]int32
-	rirIdN            *[]int32
+	rirId             *[]int64
+	rirIdN            *[]int64
 	start             *int32
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
 	updatedByRequest  *string
 }
 
@@ -3175,35 +3175,37 @@ func (r ApiIpamAggregatesListRequest) Brief(brief bool) ApiIpamAggregatesListReq
 }
 
 // Contact
-func (r ApiIpamAggregatesListRequest) Contact(contact []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) Contact(contact []int64) ApiIpamAggregatesListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiIpamAggregatesListRequest) ContactN(contactN []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) ContactN(contactN []int64) ApiIpamAggregatesListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) ContactGroup(contactGroup []string) ApiIpamAggregatesListRequest {
+// Contact group
+func (r ApiIpamAggregatesListRequest) ContactGroup(contactGroup []int64) ApiIpamAggregatesListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) ContactGroupN(contactGroupN []string) ApiIpamAggregatesListRequest {
+// Contact group
+func (r ApiIpamAggregatesListRequest) ContactGroupN(contactGroupN []int64) ApiIpamAggregatesListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiIpamAggregatesListRequest) ContactRole(contactRole []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) ContactRole(contactRole []int64) ApiIpamAggregatesListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiIpamAggregatesListRequest) ContactRoleN(contactRoleN []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) ContactRoleN(contactRoleN []int64) ApiIpamAggregatesListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -3359,7 +3361,7 @@ func (r ApiIpamAggregatesListRequest) Fields(fields string) ApiIpamAggregatesLis
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) Id(id []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) Id(id []int64) ApiIpamAggregatesListRequest {
 	r.id = &id
 	return r
 }
@@ -3369,27 +3371,27 @@ func (r ApiIpamAggregatesListRequest) IdEmpty(idEmpty bool) ApiIpamAggregatesLis
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) IdGt(idGt []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) IdGt(idGt []int64) ApiIpamAggregatesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) IdGte(idGte []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) IdGte(idGte []int64) ApiIpamAggregatesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) IdLt(idLt []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) IdLt(idLt []int64) ApiIpamAggregatesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) IdLte(idLte []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) IdLte(idLte []int64) ApiIpamAggregatesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) IdN(idN []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) IdN(idN []int64) ApiIpamAggregatesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -3483,25 +3485,25 @@ func (r ApiIpamAggregatesListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamA
 }
 
 // Owner Group (ID)
-func (r ApiIpamAggregatesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamAggregatesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamAggregatesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamAggregatesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamAggregatesListRequest) OwnerId(ownerId []*int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) OwnerId(ownerId []*int64) ApiIpamAggregatesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamAggregatesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamAggregatesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -3531,13 +3533,13 @@ func (r ApiIpamAggregatesListRequest) RirN(rirN []string) ApiIpamAggregatesListR
 }
 
 // RIR (ID)
-func (r ApiIpamAggregatesListRequest) RirId(rirId []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) RirId(rirId []int64) ApiIpamAggregatesListRequest {
 	r.rirId = &rirId
 	return r
 }
 
 // RIR (ID)
-func (r ApiIpamAggregatesListRequest) RirIdN(rirIdN []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) RirIdN(rirIdN []int64) ApiIpamAggregatesListRequest {
 	r.rirIdN = &rirIdN
 	return r
 }
@@ -3563,17 +3565,17 @@ func (r ApiIpamAggregatesListRequest) TagN(tagN []string) ApiIpamAggregatesListR
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) TagId(tagId []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) TagId(tagId []int64) ApiIpamAggregatesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) TagIdAny(tagIdAny []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) TagIdAny(tagIdAny []int64) ApiIpamAggregatesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) TagIdN(tagIdN []int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) TagIdN(tagIdN []int64) ApiIpamAggregatesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -3590,34 +3592,38 @@ func (r ApiIpamAggregatesListRequest) TenantN(tenantN []string) ApiIpamAggregate
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamAggregatesListRequest) TenantGroup(tenantGroup []string) ApiIpamAggregatesListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamAggregatesListRequest) TenantGroupN(tenantGroupN []string) ApiIpamAggregatesListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) TenantGroupId(tenantGroupId []string) ApiIpamAggregatesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamAggregatesListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamAggregatesListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamAggregatesListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamAggregatesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamAggregatesListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamAggregatesListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamAggregatesListRequest) TenantId(tenantId []*int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) TenantId(tenantId []*int64) ApiIpamAggregatesListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamAggregatesListRequest) TenantIdN(tenantIdN []*int32) ApiIpamAggregatesListRequest {
+func (r ApiIpamAggregatesListRequest) TenantIdN(tenantIdN []*int64) ApiIpamAggregatesListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -4541,7 +4547,7 @@ func (a *IpamAPIService) IpamAggregatesListExecute(r ApiIpamAggregatesListReques
 type ApiIpamAggregatesPartialUpdateRequest struct {
 	ctx                             context.Context
 	ApiService                      IpamAPI
-	id                              int32
+	id                              int64
 	patchedWritableAggregateRequest *PatchedWritableAggregateRequest
 }
 
@@ -4563,7 +4569,7 @@ Patch a aggregate object.
 	@param id A unique integer value identifying this aggregate.
 	@return ApiIpamAggregatesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamAggregatesPartialUpdate(ctx context.Context, id int32) ApiIpamAggregatesPartialUpdateRequest {
+func (a *IpamAPIService) IpamAggregatesPartialUpdate(ctx context.Context, id int64) ApiIpamAggregatesPartialUpdateRequest {
 	return ApiIpamAggregatesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -4667,7 +4673,7 @@ func (a *IpamAPIService) IpamAggregatesPartialUpdateExecute(r ApiIpamAggregatesP
 type ApiIpamAggregatesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -4704,7 +4710,7 @@ Get a aggregate object.
 	@param id A unique integer value identifying this aggregate.
 	@return ApiIpamAggregatesRetrieveRequest
 */
-func (a *IpamAPIService) IpamAggregatesRetrieve(ctx context.Context, id int32) ApiIpamAggregatesRetrieveRequest {
+func (a *IpamAPIService) IpamAggregatesRetrieve(ctx context.Context, id int64) ApiIpamAggregatesRetrieveRequest {
 	return ApiIpamAggregatesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -4815,7 +4821,7 @@ func (a *IpamAPIService) IpamAggregatesRetrieveExecute(r ApiIpamAggregatesRetrie
 type ApiIpamAggregatesUpdateRequest struct {
 	ctx                      context.Context
 	ApiService               IpamAPI
-	id                       int32
+	id                       int64
 	writableAggregateRequest *WritableAggregateRequest
 }
 
@@ -4837,7 +4843,7 @@ Put a aggregate object.
 	@param id A unique integer value identifying this aggregate.
 	@return ApiIpamAggregatesUpdateRequest
 */
-func (a *IpamAPIService) IpamAggregatesUpdate(ctx context.Context, id int32) ApiIpamAggregatesUpdateRequest {
+func (a *IpamAPIService) IpamAggregatesUpdate(ctx context.Context, id int64) ApiIpamAggregatesUpdateRequest {
 	return ApiIpamAggregatesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -4944,7 +4950,7 @@ func (a *IpamAPIService) IpamAggregatesUpdateExecute(r ApiIpamAggregatesUpdateRe
 type ApiIpamAsnRangesAvailableAsnsCreateRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	aSNRequest *[]ASNRequest
 }
 
@@ -4966,7 +4972,7 @@ Post a ASN object.
 	@param id
 	@return ApiIpamAsnRangesAvailableAsnsCreateRequest
 */
-func (a *IpamAPIService) IpamAsnRangesAvailableAsnsCreate(ctx context.Context, id int32) ApiIpamAsnRangesAvailableAsnsCreateRequest {
+func (a *IpamAPIService) IpamAsnRangesAvailableAsnsCreate(ctx context.Context, id int64) ApiIpamAsnRangesAvailableAsnsCreateRequest {
 	return ApiIpamAsnRangesAvailableAsnsCreateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -5073,7 +5079,7 @@ func (a *IpamAPIService) IpamAsnRangesAvailableAsnsCreateExecute(r ApiIpamAsnRan
 type ApiIpamAsnRangesAvailableAsnsListRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -5110,7 +5116,7 @@ Get a ASN object.
 	@param id
 	@return ApiIpamAsnRangesAvailableAsnsListRequest
 */
-func (a *IpamAPIService) IpamAsnRangesAvailableAsnsList(ctx context.Context, id int32) ApiIpamAsnRangesAvailableAsnsListRequest {
+func (a *IpamAPIService) IpamAsnRangesAvailableAsnsList(ctx context.Context, id int64) ApiIpamAsnRangesAvailableAsnsListRequest {
 	return ApiIpamAsnRangesAvailableAsnsListRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -5709,7 +5715,7 @@ func (a *IpamAPIService) IpamAsnRangesCreateExecute(r ApiIpamAsnRangesCreateRequ
 type ApiIpamAsnRangesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamAsnRangesDestroyRequest) Execute() (*http.Response, error) {
@@ -5725,7 +5731,7 @@ Delete a ASN range object.
 	@param id A unique integer value identifying this ASN range.
 	@return ApiIpamAsnRangesDestroyRequest
 */
-func (a *IpamAPIService) IpamAsnRangesDestroy(ctx context.Context, id int32) ApiIpamAsnRangesDestroyRequest {
+func (a *IpamAPIService) IpamAsnRangesDestroy(ctx context.Context, id int64) ApiIpamAsnRangesDestroyRequest {
 	return ApiIpamAsnRangesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -5837,21 +5843,21 @@ type ApiIpamAsnRangesListRequest struct {
 	descriptionNiew   *[]string
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
-	end               *[]int32
+	end               *[]int64
 	endEmpty          *bool
-	endGt             *[]int32
-	endGte            *[]int32
-	endLt             *[]int32
-	endLte            *[]int32
-	endN              *[]int32
+	endGt             *[]int64
+	endGte            *[]int64
+	endLt             *[]int64
+	endLte            *[]int64
+	endN              *[]int64
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -5881,15 +5887,15 @@ type ApiIpamAsnRangesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	rir               *[]string
 	rirN              *[]string
-	rirId             *[]int32
-	rirIdN            *[]int32
+	rirId             *[]int64
+	rirIdN            *[]int64
 	slug              *[]string
 	slugEmpty         *bool
 	slugIc            *[]string
@@ -5905,25 +5911,25 @@ type ApiIpamAsnRangesListRequest struct {
 	slugRegex         *[]string
 	start             *int32
 	startEmpty        *bool
-	startGt           *[]int32
-	startGte          *[]int32
-	startLt           *[]int32
-	startLte          *[]int32
-	startN            *[]int32
+	startGt           *[]int64
+	startGte          *[]int64
+	startLt           *[]int64
+	startLte          *[]int64
+	startN            *[]int64
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
 	updatedByRequest  *string
 }
 
@@ -6038,7 +6044,7 @@ func (r ApiIpamAsnRangesListRequest) DescriptionRegex(descriptionRegex []string)
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) End(end []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) End(end []int64) ApiIpamAsnRangesListRequest {
 	r.end = &end
 	return r
 }
@@ -6048,27 +6054,27 @@ func (r ApiIpamAsnRangesListRequest) EndEmpty(endEmpty bool) ApiIpamAsnRangesLis
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) EndGt(endGt []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) EndGt(endGt []int64) ApiIpamAsnRangesListRequest {
 	r.endGt = &endGt
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) EndGte(endGte []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) EndGte(endGte []int64) ApiIpamAsnRangesListRequest {
 	r.endGte = &endGte
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) EndLt(endLt []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) EndLt(endLt []int64) ApiIpamAsnRangesListRequest {
 	r.endLt = &endLt
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) EndLte(endLte []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) EndLte(endLte []int64) ApiIpamAsnRangesListRequest {
 	r.endLte = &endLte
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) EndN(endN []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) EndN(endN []int64) ApiIpamAsnRangesListRequest {
 	r.endN = &endN
 	return r
 }
@@ -6079,7 +6085,7 @@ func (r ApiIpamAsnRangesListRequest) Fields(fields string) ApiIpamAsnRangesListR
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) Id(id []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) Id(id []int64) ApiIpamAsnRangesListRequest {
 	r.id = &id
 	return r
 }
@@ -6089,27 +6095,27 @@ func (r ApiIpamAsnRangesListRequest) IdEmpty(idEmpty bool) ApiIpamAsnRangesListR
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) IdGt(idGt []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) IdGt(idGt []int64) ApiIpamAsnRangesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) IdGte(idGte []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) IdGte(idGte []int64) ApiIpamAsnRangesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) IdLt(idLt []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) IdLt(idLt []int64) ApiIpamAsnRangesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) IdLte(idLte []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) IdLte(idLte []int64) ApiIpamAsnRangesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) IdN(idN []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) IdN(idN []int64) ApiIpamAsnRangesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -6268,25 +6274,25 @@ func (r ApiIpamAsnRangesListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamAs
 }
 
 // Owner Group (ID)
-func (r ApiIpamAsnRangesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamAsnRangesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamAsnRangesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamAsnRangesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamAsnRangesListRequest) OwnerId(ownerId []*int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) OwnerId(ownerId []*int64) ApiIpamAsnRangesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamAsnRangesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamAsnRangesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -6310,13 +6316,13 @@ func (r ApiIpamAsnRangesListRequest) RirN(rirN []string) ApiIpamAsnRangesListReq
 }
 
 // RIR (ID)
-func (r ApiIpamAsnRangesListRequest) RirId(rirId []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) RirId(rirId []int64) ApiIpamAsnRangesListRequest {
 	r.rirId = &rirId
 	return r
 }
 
 // RIR (ID)
-func (r ApiIpamAsnRangesListRequest) RirIdN(rirIdN []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) RirIdN(rirIdN []int64) ApiIpamAsnRangesListRequest {
 	r.rirIdN = &rirIdN
 	return r
 }
@@ -6397,27 +6403,27 @@ func (r ApiIpamAsnRangesListRequest) StartEmpty(startEmpty bool) ApiIpamAsnRange
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) StartGt(startGt []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) StartGt(startGt []int64) ApiIpamAsnRangesListRequest {
 	r.startGt = &startGt
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) StartGte(startGte []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) StartGte(startGte []int64) ApiIpamAsnRangesListRequest {
 	r.startGte = &startGte
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) StartLt(startLt []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) StartLt(startLt []int64) ApiIpamAsnRangesListRequest {
 	r.startLt = &startLt
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) StartLte(startLte []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) StartLte(startLte []int64) ApiIpamAsnRangesListRequest {
 	r.startLte = &startLte
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) StartN(startN []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) StartN(startN []int64) ApiIpamAsnRangesListRequest {
 	r.startN = &startN
 	return r
 }
@@ -6437,17 +6443,17 @@ func (r ApiIpamAsnRangesListRequest) TagN(tagN []string) ApiIpamAsnRangesListReq
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) TagId(tagId []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) TagId(tagId []int64) ApiIpamAsnRangesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) TagIdAny(tagIdAny []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) TagIdAny(tagIdAny []int64) ApiIpamAsnRangesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) TagIdN(tagIdN []int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) TagIdN(tagIdN []int64) ApiIpamAsnRangesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -6464,34 +6470,38 @@ func (r ApiIpamAsnRangesListRequest) TenantN(tenantN []string) ApiIpamAsnRangesL
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamAsnRangesListRequest) TenantGroup(tenantGroup []string) ApiIpamAsnRangesListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamAsnRangesListRequest) TenantGroupN(tenantGroupN []string) ApiIpamAsnRangesListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) TenantGroupId(tenantGroupId []string) ApiIpamAsnRangesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamAsnRangesListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamAsnRangesListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamAsnRangesListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamAsnRangesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamAsnRangesListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamAsnRangesListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamAsnRangesListRequest) TenantId(tenantId []*int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) TenantId(tenantId []*int64) ApiIpamAsnRangesListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamAsnRangesListRequest) TenantIdN(tenantIdN []*int32) ApiIpamAsnRangesListRequest {
+func (r ApiIpamAsnRangesListRequest) TenantIdN(tenantIdN []*int64) ApiIpamAsnRangesListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -7671,7 +7681,7 @@ func (a *IpamAPIService) IpamAsnRangesListExecute(r ApiIpamAsnRangesListRequest)
 type ApiIpamAsnRangesPartialUpdateRequest struct {
 	ctx                    context.Context
 	ApiService             IpamAPI
-	id                     int32
+	id                     int64
 	patchedASNRangeRequest *PatchedASNRangeRequest
 }
 
@@ -7693,7 +7703,7 @@ Patch a ASN range object.
 	@param id A unique integer value identifying this ASN range.
 	@return ApiIpamAsnRangesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamAsnRangesPartialUpdate(ctx context.Context, id int32) ApiIpamAsnRangesPartialUpdateRequest {
+func (a *IpamAPIService) IpamAsnRangesPartialUpdate(ctx context.Context, id int64) ApiIpamAsnRangesPartialUpdateRequest {
 	return ApiIpamAsnRangesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -7797,7 +7807,7 @@ func (a *IpamAPIService) IpamAsnRangesPartialUpdateExecute(r ApiIpamAsnRangesPar
 type ApiIpamAsnRangesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -7834,7 +7844,7 @@ Get a ASN range object.
 	@param id A unique integer value identifying this ASN range.
 	@return ApiIpamAsnRangesRetrieveRequest
 */
-func (a *IpamAPIService) IpamAsnRangesRetrieve(ctx context.Context, id int32) ApiIpamAsnRangesRetrieveRequest {
+func (a *IpamAPIService) IpamAsnRangesRetrieve(ctx context.Context, id int64) ApiIpamAsnRangesRetrieveRequest {
 	return ApiIpamAsnRangesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -7945,7 +7955,7 @@ func (a *IpamAPIService) IpamAsnRangesRetrieveExecute(r ApiIpamAsnRangesRetrieve
 type ApiIpamAsnRangesUpdateRequest struct {
 	ctx             context.Context
 	ApiService      IpamAPI
-	id              int32
+	id              int64
 	aSNRangeRequest *ASNRangeRequest
 }
 
@@ -7967,7 +7977,7 @@ Put a ASN range object.
 	@param id A unique integer value identifying this ASN range.
 	@return ApiIpamAsnRangesUpdateRequest
 */
-func (a *IpamAPIService) IpamAsnRangesUpdate(ctx context.Context, id int32) ApiIpamAsnRangesUpdateRequest {
+func (a *IpamAPIService) IpamAsnRangesUpdate(ctx context.Context, id int64) ApiIpamAsnRangesUpdateRequest {
 	return ApiIpamAsnRangesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -8562,7 +8572,7 @@ func (a *IpamAPIService) IpamAsnsCreateExecute(r ApiIpamAsnsCreateRequest) (*ASN
 type ApiIpamAsnsDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamAsnsDestroyRequest) Execute() (*http.Response, error) {
@@ -8578,7 +8588,7 @@ Delete a ASN object.
 	@param id A unique integer value identifying this ASN.
 	@return ApiIpamAsnsDestroyRequest
 */
-func (a *IpamAPIService) IpamAsnsDestroy(ctx context.Context, id int32) ApiIpamAsnsDestroyRequest {
+func (a *IpamAPIService) IpamAsnsDestroy(ctx context.Context, id int64) ApiIpamAsnsDestroyRequest {
 	return ApiIpamAsnsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -8668,13 +8678,13 @@ func (a *IpamAPIService) IpamAsnsDestroyExecute(r ApiIpamAsnsDestroyRequest) (*h
 type ApiIpamAsnsListRequest struct {
 	ctx               context.Context
 	ApiService        IpamAPI
-	asn               *[]int32
+	asn               *[]int64
 	asnEmpty          *bool
-	asnGt             *[]int32
-	asnGte            *[]int32
-	asnLt             *[]int32
-	asnLte            *[]int32
-	asnN              *[]int32
+	asnGt             *[]int64
+	asnGte            *[]int64
+	asnLt             *[]int64
+	asnLte            *[]int64
+	asnN              *[]int64
 	brief             *bool
 	created           *[]time.Time
 	createdEmpty      *bool
@@ -8698,13 +8708,13 @@ type ApiIpamAsnsListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -8721,50 +8731,50 @@ type ApiIpamAsnsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	provider          *[]string
 	providerN         *[]string
-	providerId        *[]int32
-	providerIdN       *[]int32
+	providerId        *[]int64
+	providerIdN       *[]int64
 	q                 *string
 	rir               *[]string
 	rirN              *[]string
-	rirId             *[]int32
-	rirIdN            *[]int32
+	rirId             *[]int64
+	rirIdN            *[]int64
 	role              *[]string
 	roleN             *[]string
-	roleId            *[]*int32
-	roleIdN           *[]*int32
+	roleId            *[]*int64
+	roleIdN           *[]*int64
 	site              *[]string
 	siteN             *[]string
 	siteGroup         *[]string
 	siteGroupN        *[]string
-	siteGroupId       *[]string
-	siteGroupIdN      *[]string
-	siteId            *[]int32
-	siteIdN           *[]int32
+	siteGroupId       *[]int64
+	siteGroupIdN      *[]int64
+	siteId            *[]int64
+	siteIdN           *[]int64
 	start             *int32
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
 	updatedByRequest  *string
 }
 
-func (r ApiIpamAsnsListRequest) Asn(asn []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) Asn(asn []int64) ApiIpamAsnsListRequest {
 	r.asn = &asn
 	return r
 }
@@ -8774,27 +8784,27 @@ func (r ApiIpamAsnsListRequest) AsnEmpty(asnEmpty bool) ApiIpamAsnsListRequest {
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) AsnGt(asnGt []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) AsnGt(asnGt []int64) ApiIpamAsnsListRequest {
 	r.asnGt = &asnGt
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) AsnGte(asnGte []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) AsnGte(asnGte []int64) ApiIpamAsnsListRequest {
 	r.asnGte = &asnGte
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) AsnLt(asnLt []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) AsnLt(asnLt []int64) ApiIpamAsnsListRequest {
 	r.asnLt = &asnLt
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) AsnLte(asnLte []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) AsnLte(asnLte []int64) ApiIpamAsnsListRequest {
 	r.asnLte = &asnLte
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) AsnN(asnN []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) AsnN(asnN []int64) ApiIpamAsnsListRequest {
 	r.asnN = &asnN
 	return r
 }
@@ -8916,7 +8926,7 @@ func (r ApiIpamAsnsListRequest) Fields(fields string) ApiIpamAsnsListRequest {
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) Id(id []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) Id(id []int64) ApiIpamAsnsListRequest {
 	r.id = &id
 	return r
 }
@@ -8926,27 +8936,27 @@ func (r ApiIpamAsnsListRequest) IdEmpty(idEmpty bool) ApiIpamAsnsListRequest {
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) IdGt(idGt []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) IdGt(idGt []int64) ApiIpamAsnsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) IdGte(idGte []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) IdGte(idGte []int64) ApiIpamAsnsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) IdLt(idLt []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) IdLt(idLt []int64) ApiIpamAsnsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) IdLte(idLte []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) IdLte(idLte []int64) ApiIpamAsnsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) IdN(idN []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) IdN(idN []int64) ApiIpamAsnsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -9040,25 +9050,25 @@ func (r ApiIpamAsnsListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamAsnsLis
 }
 
 // Owner Group (ID)
-func (r ApiIpamAsnsListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamAsnsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamAsnsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamAsnsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamAsnsListRequest) OwnerId(ownerId []*int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) OwnerId(ownerId []*int64) ApiIpamAsnsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamAsnsListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamAsnsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -9076,13 +9086,13 @@ func (r ApiIpamAsnsListRequest) ProviderN(providerN []string) ApiIpamAsnsListReq
 }
 
 // Provider (ID)
-func (r ApiIpamAsnsListRequest) ProviderId(providerId []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) ProviderId(providerId []int64) ApiIpamAsnsListRequest {
 	r.providerId = &providerId
 	return r
 }
 
 // Provider (ID)
-func (r ApiIpamAsnsListRequest) ProviderIdN(providerIdN []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) ProviderIdN(providerIdN []int64) ApiIpamAsnsListRequest {
 	r.providerIdN = &providerIdN
 	return r
 }
@@ -9106,13 +9116,13 @@ func (r ApiIpamAsnsListRequest) RirN(rirN []string) ApiIpamAsnsListRequest {
 }
 
 // RIR (ID)
-func (r ApiIpamAsnsListRequest) RirId(rirId []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) RirId(rirId []int64) ApiIpamAsnsListRequest {
 	r.rirId = &rirId
 	return r
 }
 
 // RIR (ID)
-func (r ApiIpamAsnsListRequest) RirIdN(rirIdN []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) RirIdN(rirIdN []int64) ApiIpamAsnsListRequest {
 	r.rirIdN = &rirIdN
 	return r
 }
@@ -9130,13 +9140,13 @@ func (r ApiIpamAsnsListRequest) RoleN(roleN []string) ApiIpamAsnsListRequest {
 }
 
 // Role (ID)
-func (r ApiIpamAsnsListRequest) RoleId(roleId []*int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) RoleId(roleId []*int64) ApiIpamAsnsListRequest {
 	r.roleId = &roleId
 	return r
 }
 
 // Role (ID)
-func (r ApiIpamAsnsListRequest) RoleIdN(roleIdN []*int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) RoleIdN(roleIdN []*int64) ApiIpamAsnsListRequest {
 	r.roleIdN = &roleIdN
 	return r
 }
@@ -9153,34 +9163,38 @@ func (r ApiIpamAsnsListRequest) SiteN(siteN []string) ApiIpamAsnsListRequest {
 	return r
 }
 
+// Site group (slug)
 func (r ApiIpamAsnsListRequest) SiteGroup(siteGroup []string) ApiIpamAsnsListRequest {
 	r.siteGroup = &siteGroup
 	return r
 }
 
+// Site group (slug)
 func (r ApiIpamAsnsListRequest) SiteGroupN(siteGroupN []string) ApiIpamAsnsListRequest {
 	r.siteGroupN = &siteGroupN
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) SiteGroupId(siteGroupId []string) ApiIpamAsnsListRequest {
+// Site group (ID)
+func (r ApiIpamAsnsListRequest) SiteGroupId(siteGroupId []int64) ApiIpamAsnsListRequest {
 	r.siteGroupId = &siteGroupId
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) SiteGroupIdN(siteGroupIdN []string) ApiIpamAsnsListRequest {
+// Site group (ID)
+func (r ApiIpamAsnsListRequest) SiteGroupIdN(siteGroupIdN []int64) ApiIpamAsnsListRequest {
 	r.siteGroupIdN = &siteGroupIdN
 	return r
 }
 
 // Site (ID)
-func (r ApiIpamAsnsListRequest) SiteId(siteId []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) SiteId(siteId []int64) ApiIpamAsnsListRequest {
 	r.siteId = &siteId
 	return r
 }
 
 // Site (ID)
-func (r ApiIpamAsnsListRequest) SiteIdN(siteIdN []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) SiteIdN(siteIdN []int64) ApiIpamAsnsListRequest {
 	r.siteIdN = &siteIdN
 	return r
 }
@@ -9206,17 +9220,17 @@ func (r ApiIpamAsnsListRequest) TagN(tagN []string) ApiIpamAsnsListRequest {
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) TagId(tagId []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) TagId(tagId []int64) ApiIpamAsnsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) TagIdAny(tagIdAny []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) TagIdAny(tagIdAny []int64) ApiIpamAsnsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) TagIdN(tagIdN []int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) TagIdN(tagIdN []int64) ApiIpamAsnsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -9233,34 +9247,38 @@ func (r ApiIpamAsnsListRequest) TenantN(tenantN []string) ApiIpamAsnsListRequest
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamAsnsListRequest) TenantGroup(tenantGroup []string) ApiIpamAsnsListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamAsnsListRequest) TenantGroupN(tenantGroupN []string) ApiIpamAsnsListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) TenantGroupId(tenantGroupId []string) ApiIpamAsnsListRequest {
+// Tenant Group (ID)
+func (r ApiIpamAsnsListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamAsnsListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamAsnsListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamAsnsListRequest {
+// Tenant Group (ID)
+func (r ApiIpamAsnsListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamAsnsListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamAsnsListRequest) TenantId(tenantId []*int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) TenantId(tenantId []*int64) ApiIpamAsnsListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamAsnsListRequest) TenantIdN(tenantIdN []*int32) ApiIpamAsnsListRequest {
+func (r ApiIpamAsnsListRequest) TenantIdN(tenantIdN []*int64) ApiIpamAsnsListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -10288,7 +10306,7 @@ func (a *IpamAPIService) IpamAsnsListExecute(r ApiIpamAsnsListRequest) (*Paginat
 type ApiIpamAsnsPartialUpdateRequest struct {
 	ctx               context.Context
 	ApiService        IpamAPI
-	id                int32
+	id                int64
 	patchedASNRequest *PatchedASNRequest
 }
 
@@ -10310,7 +10328,7 @@ Patch a ASN object.
 	@param id A unique integer value identifying this ASN.
 	@return ApiIpamAsnsPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamAsnsPartialUpdate(ctx context.Context, id int32) ApiIpamAsnsPartialUpdateRequest {
+func (a *IpamAPIService) IpamAsnsPartialUpdate(ctx context.Context, id int64) ApiIpamAsnsPartialUpdateRequest {
 	return ApiIpamAsnsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -10414,7 +10432,7 @@ func (a *IpamAPIService) IpamAsnsPartialUpdateExecute(r ApiIpamAsnsPartialUpdate
 type ApiIpamAsnsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -10451,7 +10469,7 @@ Get a ASN object.
 	@param id A unique integer value identifying this ASN.
 	@return ApiIpamAsnsRetrieveRequest
 */
-func (a *IpamAPIService) IpamAsnsRetrieve(ctx context.Context, id int32) ApiIpamAsnsRetrieveRequest {
+func (a *IpamAPIService) IpamAsnsRetrieve(ctx context.Context, id int64) ApiIpamAsnsRetrieveRequest {
 	return ApiIpamAsnsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -10562,7 +10580,7 @@ func (a *IpamAPIService) IpamAsnsRetrieveExecute(r ApiIpamAsnsRetrieveRequest) (
 type ApiIpamAsnsUpdateRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	aSNRequest *ASNRequest
 }
 
@@ -10584,7 +10602,7 @@ Put a ASN object.
 	@param id A unique integer value identifying this ASN.
 	@return ApiIpamAsnsUpdateRequest
 */
-func (a *IpamAPIService) IpamAsnsUpdate(ctx context.Context, id int32) ApiIpamAsnsUpdateRequest {
+func (a *IpamAPIService) IpamAsnsUpdate(ctx context.Context, id int64) ApiIpamAsnsUpdateRequest {
 	return ApiIpamAsnsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -11179,7 +11197,7 @@ func (a *IpamAPIService) IpamFhrpGroupAssignmentsCreateExecute(r ApiIpamFhrpGrou
 type ApiIpamFhrpGroupAssignmentsDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamFhrpGroupAssignmentsDestroyRequest) Execute() (*http.Response, error) {
@@ -11195,7 +11213,7 @@ Delete a FHRP group assignment object.
 	@param id A unique integer value identifying this FHRP group assignment.
 	@return ApiIpamFhrpGroupAssignmentsDestroyRequest
 */
-func (a *IpamAPIService) IpamFhrpGroupAssignmentsDestroy(ctx context.Context, id int32) ApiIpamFhrpGroupAssignmentsDestroyRequest {
+func (a *IpamAPIService) IpamFhrpGroupAssignmentsDestroy(ctx context.Context, id int64) ApiIpamFhrpGroupAssignmentsDestroyRequest {
 	return ApiIpamFhrpGroupAssignmentsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -11295,24 +11313,24 @@ type ApiIpamFhrpGroupAssignmentsListRequest struct {
 	createdN          *[]time.Time
 	createdByRequest  *string
 	device            *[]string
-	deviceId          *[]int32
+	deviceId          *[]int64
 	fields            *string
-	groupId           *[]int32
-	groupIdN          *[]int32
-	id                *[]int32
+	groupId           *[]int64
+	groupIdN          *[]int64
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
-	interfaceId       *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
+	interfaceId       *[]int64
 	interfaceIdEmpty  *bool
-	interfaceIdGt     *[]int32
-	interfaceIdGte    *[]int32
-	interfaceIdLt     *[]int32
-	interfaceIdLte    *[]int32
-	interfaceIdN      *[]int32
+	interfaceIdGt     *[]int64
+	interfaceIdGte    *[]int64
+	interfaceIdLt     *[]int64
+	interfaceIdLte    *[]int64
+	interfaceIdN      *[]int64
 	interfaceType     *[]string
 	interfaceTypeN    *[]string
 	lastUpdated       *[]time.Time
@@ -11337,7 +11355,7 @@ type ApiIpamFhrpGroupAssignmentsListRequest struct {
 	start             *int32
 	updatedByRequest  *string
 	virtualMachine    *[]string
-	virtualMachineId  *[]int32
+	virtualMachineId  *[]int64
 }
 
 // Return only brief fields for each object.
@@ -11391,7 +11409,7 @@ func (r ApiIpamFhrpGroupAssignmentsListRequest) Device(device []string) ApiIpamF
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) DeviceId(deviceId []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) DeviceId(deviceId []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.deviceId = &deviceId
 	return r
 }
@@ -11403,18 +11421,18 @@ func (r ApiIpamFhrpGroupAssignmentsListRequest) Fields(fields string) ApiIpamFhr
 }
 
 // Group (ID)
-func (r ApiIpamFhrpGroupAssignmentsListRequest) GroupId(groupId []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) GroupId(groupId []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.groupId = &groupId
 	return r
 }
 
 // Group (ID)
-func (r ApiIpamFhrpGroupAssignmentsListRequest) GroupIdN(groupIdN []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) GroupIdN(groupIdN []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) Id(id []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) Id(id []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.id = &id
 	return r
 }
@@ -11424,32 +11442,32 @@ func (r ApiIpamFhrpGroupAssignmentsListRequest) IdEmpty(idEmpty bool) ApiIpamFhr
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) IdGt(idGt []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) IdGt(idGt []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) IdGte(idGte []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) IdGte(idGte []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) IdLt(idLt []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) IdLt(idLt []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) IdLte(idLte []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) IdLte(idLte []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) IdN(idN []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) IdN(idN []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.idN = &idN
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceId(interfaceId []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceId(interfaceId []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.interfaceId = &interfaceId
 	return r
 }
@@ -11459,27 +11477,27 @@ func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdEmpty(interfaceIdEmpt
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdGt(interfaceIdGt []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdGt(interfaceIdGt []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.interfaceIdGt = &interfaceIdGt
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdGte(interfaceIdGte []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdGte(interfaceIdGte []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.interfaceIdGte = &interfaceIdGte
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdLt(interfaceIdLt []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdLt(interfaceIdLt []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.interfaceIdLt = &interfaceIdLt
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdLte(interfaceIdLte []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdLte(interfaceIdLte []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.interfaceIdLte = &interfaceIdLte
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdN(interfaceIdN []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) InterfaceIdN(interfaceIdN []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.interfaceIdN = &interfaceIdN
 	return r
 }
@@ -11609,7 +11627,7 @@ func (r ApiIpamFhrpGroupAssignmentsListRequest) VirtualMachine(virtualMachine []
 	return r
 }
 
-func (r ApiIpamFhrpGroupAssignmentsListRequest) VirtualMachineId(virtualMachineId []int32) ApiIpamFhrpGroupAssignmentsListRequest {
+func (r ApiIpamFhrpGroupAssignmentsListRequest) VirtualMachineId(virtualMachineId []int64) ApiIpamFhrpGroupAssignmentsListRequest {
 	r.virtualMachineId = &virtualMachineId
 	return r
 }
@@ -12189,7 +12207,7 @@ func (a *IpamAPIService) IpamFhrpGroupAssignmentsListExecute(r ApiIpamFhrpGroupA
 type ApiIpamFhrpGroupAssignmentsPartialUpdateRequest struct {
 	ctx                               context.Context
 	ApiService                        IpamAPI
-	id                                int32
+	id                                int64
 	patchedFHRPGroupAssignmentRequest *PatchedFHRPGroupAssignmentRequest
 }
 
@@ -12211,7 +12229,7 @@ Patch a FHRP group assignment object.
 	@param id A unique integer value identifying this FHRP group assignment.
 	@return ApiIpamFhrpGroupAssignmentsPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamFhrpGroupAssignmentsPartialUpdate(ctx context.Context, id int32) ApiIpamFhrpGroupAssignmentsPartialUpdateRequest {
+func (a *IpamAPIService) IpamFhrpGroupAssignmentsPartialUpdate(ctx context.Context, id int64) ApiIpamFhrpGroupAssignmentsPartialUpdateRequest {
 	return ApiIpamFhrpGroupAssignmentsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -12315,7 +12333,7 @@ func (a *IpamAPIService) IpamFhrpGroupAssignmentsPartialUpdateExecute(r ApiIpamF
 type ApiIpamFhrpGroupAssignmentsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -12352,7 +12370,7 @@ Get a FHRP group assignment object.
 	@param id A unique integer value identifying this FHRP group assignment.
 	@return ApiIpamFhrpGroupAssignmentsRetrieveRequest
 */
-func (a *IpamAPIService) IpamFhrpGroupAssignmentsRetrieve(ctx context.Context, id int32) ApiIpamFhrpGroupAssignmentsRetrieveRequest {
+func (a *IpamAPIService) IpamFhrpGroupAssignmentsRetrieve(ctx context.Context, id int64) ApiIpamFhrpGroupAssignmentsRetrieveRequest {
 	return ApiIpamFhrpGroupAssignmentsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -12463,7 +12481,7 @@ func (a *IpamAPIService) IpamFhrpGroupAssignmentsRetrieveExecute(r ApiIpamFhrpGr
 type ApiIpamFhrpGroupAssignmentsUpdateRequest struct {
 	ctx                        context.Context
 	ApiService                 IpamAPI
-	id                         int32
+	id                         int64
 	fHRPGroupAssignmentRequest *FHRPGroupAssignmentRequest
 }
 
@@ -12485,7 +12503,7 @@ Put a FHRP group assignment object.
 	@param id A unique integer value identifying this FHRP group assignment.
 	@return ApiIpamFhrpGroupAssignmentsUpdateRequest
 */
-func (a *IpamAPIService) IpamFhrpGroupAssignmentsUpdate(ctx context.Context, id int32) ApiIpamFhrpGroupAssignmentsUpdateRequest {
+func (a *IpamAPIService) IpamFhrpGroupAssignmentsUpdate(ctx context.Context, id int64) ApiIpamFhrpGroupAssignmentsUpdateRequest {
 	return ApiIpamFhrpGroupAssignmentsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -13080,7 +13098,7 @@ func (a *IpamAPIService) IpamFhrpGroupsCreateExecute(r ApiIpamFhrpGroupsCreateRe
 type ApiIpamFhrpGroupsDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamFhrpGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -13096,7 +13114,7 @@ Delete a FHRP group object.
 	@param id A unique integer value identifying this FHRP group.
 	@return ApiIpamFhrpGroupsDestroyRequest
 */
-func (a *IpamAPIService) IpamFhrpGroupsDestroy(ctx context.Context, id int32) ApiIpamFhrpGroupsDestroyRequest {
+func (a *IpamAPIService) IpamFhrpGroupsDestroy(ctx context.Context, id int64) ApiIpamFhrpGroupsDestroyRequest {
 	return ApiIpamFhrpGroupsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -13242,13 +13260,13 @@ type ApiIpamFhrpGroupsListRequest struct {
 	groupIdLt         *[]int32
 	groupIdLte        *[]int32
 	groupIdN          *[]int32
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -13278,10 +13296,10 @@ type ApiIpamFhrpGroupsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	protocol          *[]string
 	protocolEmpty     *bool
 	protocolIc        *[]string
@@ -13296,14 +13314,14 @@ type ApiIpamFhrpGroupsListRequest struct {
 	protocolNisw      *[]string
 	protocolRegex     *[]string
 	q                 *string
-	relatedIp         *[]string
+	relatedIp         *[]int64
 	start             *int32
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -13589,7 +13607,7 @@ func (r ApiIpamFhrpGroupsListRequest) GroupIdN(groupIdN []int32) ApiIpamFhrpGrou
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) Id(id []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) Id(id []int64) ApiIpamFhrpGroupsListRequest {
 	r.id = &id
 	return r
 }
@@ -13599,27 +13617,27 @@ func (r ApiIpamFhrpGroupsListRequest) IdEmpty(idEmpty bool) ApiIpamFhrpGroupsLis
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) IdGt(idGt []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) IdGt(idGt []int64) ApiIpamFhrpGroupsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) IdGte(idGte []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) IdGte(idGte []int64) ApiIpamFhrpGroupsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) IdLt(idLt []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) IdLt(idLt []int64) ApiIpamFhrpGroupsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) IdLte(idLte []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) IdLte(idLte []int64) ApiIpamFhrpGroupsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) IdN(idN []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) IdN(idN []int64) ApiIpamFhrpGroupsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -13778,25 +13796,25 @@ func (r ApiIpamFhrpGroupsListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamF
 }
 
 // Owner Group (ID)
-func (r ApiIpamFhrpGroupsListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamFhrpGroupsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamFhrpGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamFhrpGroupsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamFhrpGroupsListRequest) OwnerId(ownerId []*int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) OwnerId(ownerId []*int64) ApiIpamFhrpGroupsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamFhrpGroupsListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamFhrpGroupsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -13872,7 +13890,7 @@ func (r ApiIpamFhrpGroupsListRequest) Q(q string) ApiIpamFhrpGroupsListRequest {
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) RelatedIp(relatedIp []string) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) RelatedIp(relatedIp []int64) ApiIpamFhrpGroupsListRequest {
 	r.relatedIp = &relatedIp
 	return r
 }
@@ -13898,17 +13916,17 @@ func (r ApiIpamFhrpGroupsListRequest) TagN(tagN []string) ApiIpamFhrpGroupsListR
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) TagId(tagId []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) TagId(tagId []int64) ApiIpamFhrpGroupsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) TagIdAny(tagIdAny []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) TagIdAny(tagIdAny []int64) ApiIpamFhrpGroupsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamFhrpGroupsListRequest) TagIdN(tagIdN []int32) ApiIpamFhrpGroupsListRequest {
+func (r ApiIpamFhrpGroupsListRequest) TagIdN(tagIdN []int64) ApiIpamFhrpGroupsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -15179,7 +15197,7 @@ func (a *IpamAPIService) IpamFhrpGroupsListExecute(r ApiIpamFhrpGroupsListReques
 type ApiIpamFhrpGroupsPartialUpdateRequest struct {
 	ctx                     context.Context
 	ApiService              IpamAPI
-	id                      int32
+	id                      int64
 	patchedFHRPGroupRequest *PatchedFHRPGroupRequest
 }
 
@@ -15201,7 +15219,7 @@ Patch a FHRP group object.
 	@param id A unique integer value identifying this FHRP group.
 	@return ApiIpamFhrpGroupsPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamFhrpGroupsPartialUpdate(ctx context.Context, id int32) ApiIpamFhrpGroupsPartialUpdateRequest {
+func (a *IpamAPIService) IpamFhrpGroupsPartialUpdate(ctx context.Context, id int64) ApiIpamFhrpGroupsPartialUpdateRequest {
 	return ApiIpamFhrpGroupsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -15305,7 +15323,7 @@ func (a *IpamAPIService) IpamFhrpGroupsPartialUpdateExecute(r ApiIpamFhrpGroupsP
 type ApiIpamFhrpGroupsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -15342,7 +15360,7 @@ Get a FHRP group object.
 	@param id A unique integer value identifying this FHRP group.
 	@return ApiIpamFhrpGroupsRetrieveRequest
 */
-func (a *IpamAPIService) IpamFhrpGroupsRetrieve(ctx context.Context, id int32) ApiIpamFhrpGroupsRetrieveRequest {
+func (a *IpamAPIService) IpamFhrpGroupsRetrieve(ctx context.Context, id int64) ApiIpamFhrpGroupsRetrieveRequest {
 	return ApiIpamFhrpGroupsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -15453,7 +15471,7 @@ func (a *IpamAPIService) IpamFhrpGroupsRetrieveExecute(r ApiIpamFhrpGroupsRetrie
 type ApiIpamFhrpGroupsUpdateRequest struct {
 	ctx              context.Context
 	ApiService       IpamAPI
-	id               int32
+	id               int64
 	fHRPGroupRequest *FHRPGroupRequest
 }
 
@@ -15475,7 +15493,7 @@ Put a FHRP group object.
 	@param id A unique integer value identifying this FHRP group.
 	@return ApiIpamFhrpGroupsUpdateRequest
 */
-func (a *IpamAPIService) IpamFhrpGroupsUpdate(ctx context.Context, id int32) ApiIpamFhrpGroupsUpdateRequest {
+func (a *IpamAPIService) IpamFhrpGroupsUpdate(ctx context.Context, id int64) ApiIpamFhrpGroupsUpdateRequest {
 	return ApiIpamFhrpGroupsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -16070,7 +16088,7 @@ func (a *IpamAPIService) IpamIpAddressesCreateExecute(r ApiIpamIpAddressesCreate
 type ApiIpamIpAddressesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamIpAddressesDestroyRequest) Execute() (*http.Response, error) {
@@ -16086,7 +16104,7 @@ Delete a IP address object.
 	@param id A unique integer value identifying this IP address.
 	@return ApiIpamIpAddressesDestroyRequest
 */
-func (a *IpamAPIService) IpamIpAddressesDestroy(ctx context.Context, id int32) ApiIpamIpAddressesDestroyRequest {
+func (a *IpamAPIService) IpamIpAddressesDestroy(ctx context.Context, id int64) ApiIpamIpAddressesDestroyRequest {
 	return ApiIpamIpAddressesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -16178,23 +16196,23 @@ type ApiIpamIpAddressesListRequest struct {
 	ApiService            IpamAPI
 	address               *[]string
 	assigned              *bool
-	assignedObjectId      *[]int32
+	assignedObjectId      *[]int64
 	assignedObjectIdEmpty *bool
-	assignedObjectIdGt    *[]int32
-	assignedObjectIdGte   *[]int32
-	assignedObjectIdLt    *[]int32
-	assignedObjectIdLte   *[]int32
-	assignedObjectIdN     *[]int32
+	assignedObjectIdGt    *[]int64
+	assignedObjectIdGte   *[]int64
+	assignedObjectIdLt    *[]int64
+	assignedObjectIdLte   *[]int64
+	assignedObjectIdN     *[]int64
 	assignedObjectType    *[]string
 	assignedObjectTypeN   *[]string
 	assignedToInterface   *bool
 	brief                 *bool
-	contact               *[]int32
-	contactN              *[]int32
-	contactGroup          *[]string
-	contactGroupN         *[]string
-	contactRole           *[]int32
-	contactRoleN          *[]int32
+	contact               *[]int64
+	contactN              *[]int64
+	contactGroup          *[]int64
+	contactGroupN         *[]int64
+	contactRole           *[]int64
+	contactRoleN          *[]int64
 	created               *[]time.Time
 	createdEmpty          *bool
 	createdGt             *[]time.Time
@@ -16217,7 +16235,7 @@ type ApiIpamIpAddressesListRequest struct {
 	descriptionNisw       *[]string
 	descriptionRegex      *[]string
 	device                *[]string
-	deviceId              *[]int32
+	deviceId              *[]int64
 	dnsName               *[]string
 	dnsNameEmpty          *bool
 	dnsNameIc             *[]string
@@ -16232,20 +16250,20 @@ type ApiIpamIpAddressesListRequest struct {
 	dnsNameNisw           *[]string
 	dnsNameRegex          *[]string
 	family                *float32
-	fhrpgroupId           *[]int32
-	fhrpgroupIdN          *[]int32
+	fhrpgroupId           *[]int64
+	fhrpgroupIdN          *[]int64
 	fields                *string
-	id                    *[]int32
+	id                    *[]int64
 	idEmpty               *bool
-	idGt                  *[]int32
-	idGte                 *[]int32
-	idLt                  *[]int32
-	idLte                 *[]int32
-	idN                   *[]int32
+	idGt                  *[]int64
+	idGte                 *[]int64
+	idLt                  *[]int64
+	idLte                 *[]int64
+	idN                   *[]int64
 	interface_            *[]string
 	interfaceN            *[]string
-	interfaceId           *[]int32
-	interfaceIdN          *[]int32
+	interfaceId           *[]int64
+	interfaceIdN          *[]int64
 	lastUpdated           *[]time.Time
 	lastUpdatedEmpty      *bool
 	lastUpdatedGt         *[]time.Time
@@ -16258,8 +16276,8 @@ type ApiIpamIpAddressesListRequest struct {
 	maskLengthGte         *float32
 	maskLengthLte         *float32
 	modifiedByRequest     *string
-	natInsideId           *[]int32
-	natInsideIdN          *[]int32
+	natInsideId           *[]int64
+	natInsideIdN          *[]int64
 	offset                *int32
 	omit                  *string
 	ordering              *string
@@ -16267,13 +16285,13 @@ type ApiIpamIpAddressesListRequest struct {
 	ownerN                *[]string
 	ownerGroup            *[]string
 	ownerGroupN           *[]string
-	ownerGroupId          *[]int32
-	ownerGroupIdN         *[]int32
-	ownerId               *[]*int32
-	ownerIdN              *[]*int32
+	ownerGroupId          *[]int64
+	ownerGroupIdN         *[]int64
+	ownerId               *[]*int64
+	ownerIdN              *[]*int64
 	parent                *[]string
 	presentInVrf          *string
-	presentInVrfId        *string
+	presentInVrfId        *int64
 	q                     *string
 	role                  *[]*string
 	roleEmpty             *bool
@@ -16288,8 +16306,8 @@ type ApiIpamIpAddressesListRequest struct {
 	roleNiew              *[]*string
 	roleNisw              *[]*string
 	roleRegex             *[]*string
-	serviceId             *[]int32
-	serviceIdN            *[]int32
+	serviceId             *[]int64
+	serviceIdN            *[]int64
 	start                 *int32
 	status                *[]string
 	statusEmpty           *bool
@@ -16307,28 +16325,28 @@ type ApiIpamIpAddressesListRequest struct {
 	tag                   *[]string
 	tagAny                *[]string
 	tagN                  *[]string
-	tagId                 *[]int32
-	tagIdAny              *[]int32
-	tagIdN                *[]int32
+	tagId                 *[]int64
+	tagIdAny              *[]int64
+	tagIdN                *[]int64
 	tenant                *[]string
 	tenantN               *[]string
 	tenantGroup           *[]string
 	tenantGroupN          *[]string
-	tenantGroupId         *[]string
-	tenantGroupIdN        *[]string
-	tenantId              *[]*int32
-	tenantIdN             *[]*int32
+	tenantGroupId         *[]int64
+	tenantGroupIdN        *[]int64
+	tenantId              *[]*int64
+	tenantIdN             *[]*int64
 	updatedByRequest      *string
 	virtualMachine        *[]string
-	virtualMachineId      *[]int32
+	virtualMachineId      *[]int64
 	vminterface           *[]string
 	vminterfaceN          *[]string
-	vminterfaceId         *[]int32
-	vminterfaceIdN        *[]int32
+	vminterfaceId         *[]int64
+	vminterfaceIdN        *[]int64
 	vrf                   *[]*string
 	vrfN                  *[]*string
-	vrfId                 *[]*int32
-	vrfIdN                *[]*int32
+	vrfId                 *[]*int64
+	vrfIdN                *[]*int64
 }
 
 func (r ApiIpamIpAddressesListRequest) Address(address []string) ApiIpamIpAddressesListRequest {
@@ -16342,7 +16360,7 @@ func (r ApiIpamIpAddressesListRequest) Assigned(assigned bool) ApiIpamIpAddresse
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) AssignedObjectId(assignedObjectId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) AssignedObjectId(assignedObjectId []int64) ApiIpamIpAddressesListRequest {
 	r.assignedObjectId = &assignedObjectId
 	return r
 }
@@ -16352,27 +16370,27 @@ func (r ApiIpamIpAddressesListRequest) AssignedObjectIdEmpty(assignedObjectIdEmp
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) AssignedObjectIdGt(assignedObjectIdGt []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) AssignedObjectIdGt(assignedObjectIdGt []int64) ApiIpamIpAddressesListRequest {
 	r.assignedObjectIdGt = &assignedObjectIdGt
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) AssignedObjectIdGte(assignedObjectIdGte []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) AssignedObjectIdGte(assignedObjectIdGte []int64) ApiIpamIpAddressesListRequest {
 	r.assignedObjectIdGte = &assignedObjectIdGte
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) AssignedObjectIdLt(assignedObjectIdLt []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) AssignedObjectIdLt(assignedObjectIdLt []int64) ApiIpamIpAddressesListRequest {
 	r.assignedObjectIdLt = &assignedObjectIdLt
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) AssignedObjectIdLte(assignedObjectIdLte []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) AssignedObjectIdLte(assignedObjectIdLte []int64) ApiIpamIpAddressesListRequest {
 	r.assignedObjectIdLte = &assignedObjectIdLte
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) AssignedObjectIdN(assignedObjectIdN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) AssignedObjectIdN(assignedObjectIdN []int64) ApiIpamIpAddressesListRequest {
 	r.assignedObjectIdN = &assignedObjectIdN
 	return r
 }
@@ -16400,35 +16418,37 @@ func (r ApiIpamIpAddressesListRequest) Brief(brief bool) ApiIpamIpAddressesListR
 }
 
 // Contact
-func (r ApiIpamIpAddressesListRequest) Contact(contact []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) Contact(contact []int64) ApiIpamIpAddressesListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiIpamIpAddressesListRequest) ContactN(contactN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) ContactN(contactN []int64) ApiIpamIpAddressesListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) ContactGroup(contactGroup []string) ApiIpamIpAddressesListRequest {
+// Contact group
+func (r ApiIpamIpAddressesListRequest) ContactGroup(contactGroup []int64) ApiIpamIpAddressesListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) ContactGroupN(contactGroupN []string) ApiIpamIpAddressesListRequest {
+// Contact group
+func (r ApiIpamIpAddressesListRequest) ContactGroupN(contactGroupN []int64) ApiIpamIpAddressesListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiIpamIpAddressesListRequest) ContactRole(contactRole []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) ContactRole(contactRole []int64) ApiIpamIpAddressesListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiIpamIpAddressesListRequest) ContactRoleN(contactRoleN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) ContactRoleN(contactRoleN []int64) ApiIpamIpAddressesListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -16543,7 +16563,7 @@ func (r ApiIpamIpAddressesListRequest) Device(device []string) ApiIpamIpAddresse
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) DeviceId(deviceId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) DeviceId(deviceId []int64) ApiIpamIpAddressesListRequest {
 	r.deviceId = &deviceId
 	return r
 }
@@ -16619,13 +16639,13 @@ func (r ApiIpamIpAddressesListRequest) Family(family float32) ApiIpamIpAddresses
 }
 
 // FHRP group (ID)
-func (r ApiIpamIpAddressesListRequest) FhrpgroupId(fhrpgroupId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) FhrpgroupId(fhrpgroupId []int64) ApiIpamIpAddressesListRequest {
 	r.fhrpgroupId = &fhrpgroupId
 	return r
 }
 
 // FHRP group (ID)
-func (r ApiIpamIpAddressesListRequest) FhrpgroupIdN(fhrpgroupIdN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) FhrpgroupIdN(fhrpgroupIdN []int64) ApiIpamIpAddressesListRequest {
 	r.fhrpgroupIdN = &fhrpgroupIdN
 	return r
 }
@@ -16636,7 +16656,7 @@ func (r ApiIpamIpAddressesListRequest) Fields(fields string) ApiIpamIpAddressesL
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) Id(id []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) Id(id []int64) ApiIpamIpAddressesListRequest {
 	r.id = &id
 	return r
 }
@@ -16646,27 +16666,27 @@ func (r ApiIpamIpAddressesListRequest) IdEmpty(idEmpty bool) ApiIpamIpAddressesL
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) IdGt(idGt []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) IdGt(idGt []int64) ApiIpamIpAddressesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) IdGte(idGte []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) IdGte(idGte []int64) ApiIpamIpAddressesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) IdLt(idLt []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) IdLt(idLt []int64) ApiIpamIpAddressesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) IdLte(idLte []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) IdLte(idLte []int64) ApiIpamIpAddressesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) IdN(idN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) IdN(idN []int64) ApiIpamIpAddressesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -16684,13 +16704,13 @@ func (r ApiIpamIpAddressesListRequest) InterfaceN(interfaceN []string) ApiIpamIp
 }
 
 // Interface (ID)
-func (r ApiIpamIpAddressesListRequest) InterfaceId(interfaceId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) InterfaceId(interfaceId []int64) ApiIpamIpAddressesListRequest {
 	r.interfaceId = &interfaceId
 	return r
 }
 
 // Interface (ID)
-func (r ApiIpamIpAddressesListRequest) InterfaceIdN(interfaceIdN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) InterfaceIdN(interfaceIdN []int64) ApiIpamIpAddressesListRequest {
 	r.interfaceIdN = &interfaceIdN
 	return r
 }
@@ -16757,13 +16777,13 @@ func (r ApiIpamIpAddressesListRequest) ModifiedByRequest(modifiedByRequest strin
 }
 
 // NAT inside IP address (ID)
-func (r ApiIpamIpAddressesListRequest) NatInsideId(natInsideId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) NatInsideId(natInsideId []int64) ApiIpamIpAddressesListRequest {
 	r.natInsideId = &natInsideId
 	return r
 }
 
 // NAT inside IP address (ID)
-func (r ApiIpamIpAddressesListRequest) NatInsideIdN(natInsideIdN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) NatInsideIdN(natInsideIdN []int64) ApiIpamIpAddressesListRequest {
 	r.natInsideIdN = &natInsideIdN
 	return r
 }
@@ -16811,25 +16831,25 @@ func (r ApiIpamIpAddressesListRequest) OwnerGroupN(ownerGroupN []string) ApiIpam
 }
 
 // Owner Group (ID)
-func (r ApiIpamIpAddressesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamIpAddressesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamIpAddressesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamIpAddressesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamIpAddressesListRequest) OwnerId(ownerId []*int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) OwnerId(ownerId []*int64) ApiIpamIpAddressesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamIpAddressesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamIpAddressesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -16844,7 +16864,7 @@ func (r ApiIpamIpAddressesListRequest) PresentInVrf(presentInVrf string) ApiIpam
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) PresentInVrfId(presentInVrfId string) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) PresentInVrfId(presentInVrfId int64) ApiIpamIpAddressesListRequest {
 	r.presentInVrfId = &presentInVrfId
 	return r
 }
@@ -16933,13 +16953,13 @@ func (r ApiIpamIpAddressesListRequest) RoleRegex(roleRegex []*string) ApiIpamIpA
 }
 
 // Application Service (ID)
-func (r ApiIpamIpAddressesListRequest) ServiceId(serviceId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) ServiceId(serviceId []int64) ApiIpamIpAddressesListRequest {
 	r.serviceId = &serviceId
 	return r
 }
 
 // Application Service (ID)
-func (r ApiIpamIpAddressesListRequest) ServiceIdN(serviceIdN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) ServiceIdN(serviceIdN []int64) ApiIpamIpAddressesListRequest {
 	r.serviceIdN = &serviceIdN
 	return r
 }
@@ -17042,17 +17062,17 @@ func (r ApiIpamIpAddressesListRequest) TagN(tagN []string) ApiIpamIpAddressesLis
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) TagId(tagId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) TagId(tagId []int64) ApiIpamIpAddressesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) TagIdAny(tagIdAny []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) TagIdAny(tagIdAny []int64) ApiIpamIpAddressesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) TagIdN(tagIdN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) TagIdN(tagIdN []int64) ApiIpamIpAddressesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -17069,34 +17089,38 @@ func (r ApiIpamIpAddressesListRequest) TenantN(tenantN []string) ApiIpamIpAddres
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamIpAddressesListRequest) TenantGroup(tenantGroup []string) ApiIpamIpAddressesListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamIpAddressesListRequest) TenantGroupN(tenantGroupN []string) ApiIpamIpAddressesListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) TenantGroupId(tenantGroupId []string) ApiIpamIpAddressesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamIpAddressesListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamIpAddressesListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamIpAddressesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamIpAddressesListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamIpAddressesListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamIpAddressesListRequest) TenantId(tenantId []*int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) TenantId(tenantId []*int64) ApiIpamIpAddressesListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamIpAddressesListRequest) TenantIdN(tenantIdN []*int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) TenantIdN(tenantIdN []*int64) ApiIpamIpAddressesListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -17111,7 +17135,7 @@ func (r ApiIpamIpAddressesListRequest) VirtualMachine(virtualMachine []string) A
 	return r
 }
 
-func (r ApiIpamIpAddressesListRequest) VirtualMachineId(virtualMachineId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) VirtualMachineId(virtualMachineId []int64) ApiIpamIpAddressesListRequest {
 	r.virtualMachineId = &virtualMachineId
 	return r
 }
@@ -17129,13 +17153,13 @@ func (r ApiIpamIpAddressesListRequest) VminterfaceN(vminterfaceN []string) ApiIp
 }
 
 // VM interface (ID)
-func (r ApiIpamIpAddressesListRequest) VminterfaceId(vminterfaceId []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) VminterfaceId(vminterfaceId []int64) ApiIpamIpAddressesListRequest {
 	r.vminterfaceId = &vminterfaceId
 	return r
 }
 
 // VM interface (ID)
-func (r ApiIpamIpAddressesListRequest) VminterfaceIdN(vminterfaceIdN []int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) VminterfaceIdN(vminterfaceIdN []int64) ApiIpamIpAddressesListRequest {
 	r.vminterfaceIdN = &vminterfaceIdN
 	return r
 }
@@ -17153,13 +17177,13 @@ func (r ApiIpamIpAddressesListRequest) VrfN(vrfN []*string) ApiIpamIpAddressesLi
 }
 
 // VRF
-func (r ApiIpamIpAddressesListRequest) VrfId(vrfId []*int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) VrfId(vrfId []*int64) ApiIpamIpAddressesListRequest {
 	r.vrfId = &vrfId
 	return r
 }
 
 // VRF
-func (r ApiIpamIpAddressesListRequest) VrfIdN(vrfIdN []*int32) ApiIpamIpAddressesListRequest {
+func (r ApiIpamIpAddressesListRequest) VrfIdN(vrfIdN []*int64) ApiIpamIpAddressesListRequest {
 	r.vrfIdN = &vrfIdN
 	return r
 }
@@ -18751,7 +18775,7 @@ func (a *IpamAPIService) IpamIpAddressesListExecute(r ApiIpamIpAddressesListRequ
 type ApiIpamIpAddressesPartialUpdateRequest struct {
 	ctx                             context.Context
 	ApiService                      IpamAPI
-	id                              int32
+	id                              int64
 	patchedWritableIPAddressRequest *PatchedWritableIPAddressRequest
 }
 
@@ -18773,7 +18797,7 @@ Patch a IP address object.
 	@param id A unique integer value identifying this IP address.
 	@return ApiIpamIpAddressesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamIpAddressesPartialUpdate(ctx context.Context, id int32) ApiIpamIpAddressesPartialUpdateRequest {
+func (a *IpamAPIService) IpamIpAddressesPartialUpdate(ctx context.Context, id int64) ApiIpamIpAddressesPartialUpdateRequest {
 	return ApiIpamIpAddressesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -18877,7 +18901,7 @@ func (a *IpamAPIService) IpamIpAddressesPartialUpdateExecute(r ApiIpamIpAddresse
 type ApiIpamIpAddressesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -18914,7 +18938,7 @@ Get a IP address object.
 	@param id A unique integer value identifying this IP address.
 	@return ApiIpamIpAddressesRetrieveRequest
 */
-func (a *IpamAPIService) IpamIpAddressesRetrieve(ctx context.Context, id int32) ApiIpamIpAddressesRetrieveRequest {
+func (a *IpamAPIService) IpamIpAddressesRetrieve(ctx context.Context, id int64) ApiIpamIpAddressesRetrieveRequest {
 	return ApiIpamIpAddressesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -19025,7 +19049,7 @@ func (a *IpamAPIService) IpamIpAddressesRetrieveExecute(r ApiIpamIpAddressesRetr
 type ApiIpamIpAddressesUpdateRequest struct {
 	ctx                      context.Context
 	ApiService               IpamAPI
-	id                       int32
+	id                       int64
 	writableIPAddressRequest *WritableIPAddressRequest
 }
 
@@ -19047,7 +19071,7 @@ Put a IP address object.
 	@param id A unique integer value identifying this IP address.
 	@return ApiIpamIpAddressesUpdateRequest
 */
-func (a *IpamAPIService) IpamIpAddressesUpdate(ctx context.Context, id int32) ApiIpamIpAddressesUpdateRequest {
+func (a *IpamAPIService) IpamIpAddressesUpdate(ctx context.Context, id int64) ApiIpamIpAddressesUpdateRequest {
 	return ApiIpamIpAddressesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -19154,7 +19178,7 @@ func (a *IpamAPIService) IpamIpAddressesUpdateExecute(r ApiIpamIpAddressesUpdate
 type ApiIpamIpRangesAvailableIpsCreateRequest struct {
 	ctx                       context.Context
 	ApiService                IpamAPI
-	id                        int32
+	id                        int64
 	availableIPRequestRequest *[]AvailableIPRequestRequest
 }
 
@@ -19176,7 +19200,7 @@ Post a IP address object.
 	@param id
 	@return ApiIpamIpRangesAvailableIpsCreateRequest
 */
-func (a *IpamAPIService) IpamIpRangesAvailableIpsCreate(ctx context.Context, id int32) ApiIpamIpRangesAvailableIpsCreateRequest {
+func (a *IpamAPIService) IpamIpRangesAvailableIpsCreate(ctx context.Context, id int64) ApiIpamIpRangesAvailableIpsCreateRequest {
 	return ApiIpamIpRangesAvailableIpsCreateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -19283,7 +19307,7 @@ func (a *IpamAPIService) IpamIpRangesAvailableIpsCreateExecute(r ApiIpamIpRanges
 type ApiIpamIpRangesAvailableIpsListRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -19320,7 +19344,7 @@ Get a IP address object.
 	@param id
 	@return ApiIpamIpRangesAvailableIpsListRequest
 */
-func (a *IpamAPIService) IpamIpRangesAvailableIpsList(ctx context.Context, id int32) ApiIpamIpRangesAvailableIpsListRequest {
+func (a *IpamAPIService) IpamIpRangesAvailableIpsList(ctx context.Context, id int64) ApiIpamIpRangesAvailableIpsListRequest {
 	return ApiIpamIpRangesAvailableIpsListRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -19919,7 +19943,7 @@ func (a *IpamAPIService) IpamIpRangesCreateExecute(r ApiIpamIpRangesCreateReques
 type ApiIpamIpRangesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamIpRangesDestroyRequest) Execute() (*http.Response, error) {
@@ -19935,7 +19959,7 @@ Delete a IP range object.
 	@param id A unique integer value identifying this IP range.
 	@return ApiIpamIpRangesDestroyRequest
 */
-func (a *IpamAPIService) IpamIpRangesDestroy(ctx context.Context, id int32) ApiIpamIpRangesDestroyRequest {
+func (a *IpamAPIService) IpamIpRangesDestroy(ctx context.Context, id int64) ApiIpamIpRangesDestroyRequest {
 	return ApiIpamIpRangesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -20026,12 +20050,12 @@ type ApiIpamIpRangesListRequest struct {
 	ctx               context.Context
 	ApiService        IpamAPI
 	brief             *bool
-	contact           *[]int32
-	contactN          *[]int32
-	contactGroup      *[]string
-	contactGroupN     *[]string
-	contactRole       *[]int32
-	contactRoleN      *[]int32
+	contact           *[]int64
+	contactN          *[]int64
+	contactGroup      *[]int64
+	contactGroupN     *[]int64
+	contactRole       *[]int64
+	contactRoleN      *[]int64
 	contains          *string
 	created           *[]time.Time
 	createdEmpty      *bool
@@ -20057,13 +20081,13 @@ type ApiIpamIpRangesListRequest struct {
 	endAddress        *[]string
 	family            *float32
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -20082,16 +20106,16 @@ type ApiIpamIpRangesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	parent            *[]string
 	q                 *string
 	role              *[]string
 	roleN             *[]string
-	roleId            *[]*int32
-	roleIdN           *[]*int32
+	roleId            *[]*int64
+	roleIdN           *[]*int64
 	size              *[]int32
 	sizeEmpty         *bool
 	sizeGt            *[]int32
@@ -20117,22 +20141,22 @@ type ApiIpamIpRangesListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
 	updatedByRequest  *string
 	vrf               *[]*string
 	vrfN              *[]*string
-	vrfId             *[]*int32
-	vrfIdN            *[]*int32
+	vrfId             *[]*int64
+	vrfIdN            *[]*int64
 }
 
 // Return only brief fields for each object.
@@ -20142,35 +20166,37 @@ func (r ApiIpamIpRangesListRequest) Brief(brief bool) ApiIpamIpRangesListRequest
 }
 
 // Contact
-func (r ApiIpamIpRangesListRequest) Contact(contact []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) Contact(contact []int64) ApiIpamIpRangesListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiIpamIpRangesListRequest) ContactN(contactN []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) ContactN(contactN []int64) ApiIpamIpRangesListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) ContactGroup(contactGroup []string) ApiIpamIpRangesListRequest {
+// Contact group
+func (r ApiIpamIpRangesListRequest) ContactGroup(contactGroup []int64) ApiIpamIpRangesListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) ContactGroupN(contactGroupN []string) ApiIpamIpRangesListRequest {
+// Contact group
+func (r ApiIpamIpRangesListRequest) ContactGroupN(contactGroupN []int64) ApiIpamIpRangesListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiIpamIpRangesListRequest) ContactRole(contactRole []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) ContactRole(contactRole []int64) ApiIpamIpRangesListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiIpamIpRangesListRequest) ContactRoleN(contactRoleN []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) ContactRoleN(contactRoleN []int64) ApiIpamIpRangesListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -20302,7 +20328,7 @@ func (r ApiIpamIpRangesListRequest) Fields(fields string) ApiIpamIpRangesListReq
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) Id(id []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) Id(id []int64) ApiIpamIpRangesListRequest {
 	r.id = &id
 	return r
 }
@@ -20312,27 +20338,27 @@ func (r ApiIpamIpRangesListRequest) IdEmpty(idEmpty bool) ApiIpamIpRangesListReq
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) IdGt(idGt []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) IdGt(idGt []int64) ApiIpamIpRangesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) IdGte(idGte []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) IdGte(idGte []int64) ApiIpamIpRangesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) IdLt(idLt []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) IdLt(idLt []int64) ApiIpamIpRangesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) IdLte(idLte []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) IdLte(idLte []int64) ApiIpamIpRangesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) IdN(idN []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) IdN(idN []int64) ApiIpamIpRangesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -20436,25 +20462,25 @@ func (r ApiIpamIpRangesListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamIpR
 }
 
 // Owner Group (ID)
-func (r ApiIpamIpRangesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamIpRangesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamIpRangesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamIpRangesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamIpRangesListRequest) OwnerId(ownerId []*int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) OwnerId(ownerId []*int64) ApiIpamIpRangesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamIpRangesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamIpRangesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -20483,13 +20509,13 @@ func (r ApiIpamIpRangesListRequest) RoleN(roleN []string) ApiIpamIpRangesListReq
 }
 
 // Role (ID)
-func (r ApiIpamIpRangesListRequest) RoleId(roleId []*int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) RoleId(roleId []*int64) ApiIpamIpRangesListRequest {
 	r.roleId = &roleId
 	return r
 }
 
 // Role (ID)
-func (r ApiIpamIpRangesListRequest) RoleIdN(roleIdN []*int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) RoleIdN(roleIdN []*int64) ApiIpamIpRangesListRequest {
 	r.roleIdN = &roleIdN
 	return r
 }
@@ -20632,17 +20658,17 @@ func (r ApiIpamIpRangesListRequest) TagN(tagN []string) ApiIpamIpRangesListReque
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) TagId(tagId []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) TagId(tagId []int64) ApiIpamIpRangesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) TagIdAny(tagIdAny []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) TagIdAny(tagIdAny []int64) ApiIpamIpRangesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) TagIdN(tagIdN []int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) TagIdN(tagIdN []int64) ApiIpamIpRangesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -20659,34 +20685,38 @@ func (r ApiIpamIpRangesListRequest) TenantN(tenantN []string) ApiIpamIpRangesLis
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamIpRangesListRequest) TenantGroup(tenantGroup []string) ApiIpamIpRangesListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamIpRangesListRequest) TenantGroupN(tenantGroupN []string) ApiIpamIpRangesListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) TenantGroupId(tenantGroupId []string) ApiIpamIpRangesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamIpRangesListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamIpRangesListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamIpRangesListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamIpRangesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamIpRangesListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamIpRangesListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamIpRangesListRequest) TenantId(tenantId []*int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) TenantId(tenantId []*int64) ApiIpamIpRangesListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamIpRangesListRequest) TenantIdN(tenantIdN []*int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) TenantIdN(tenantIdN []*int64) ApiIpamIpRangesListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -20709,13 +20739,13 @@ func (r ApiIpamIpRangesListRequest) VrfN(vrfN []*string) ApiIpamIpRangesListRequ
 }
 
 // VRF
-func (r ApiIpamIpRangesListRequest) VrfId(vrfId []*int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) VrfId(vrfId []*int64) ApiIpamIpRangesListRequest {
 	r.vrfId = &vrfId
 	return r
 }
 
 // VRF
-func (r ApiIpamIpRangesListRequest) VrfIdN(vrfIdN []*int32) ApiIpamIpRangesListRequest {
+func (r ApiIpamIpRangesListRequest) VrfIdN(vrfIdN []*int64) ApiIpamIpRangesListRequest {
 	r.vrfIdN = &vrfIdN
 	return r
 }
@@ -21852,7 +21882,7 @@ func (a *IpamAPIService) IpamIpRangesListExecute(r ApiIpamIpRangesListRequest) (
 type ApiIpamIpRangesPartialUpdateRequest struct {
 	ctx                           context.Context
 	ApiService                    IpamAPI
-	id                            int32
+	id                            int64
 	patchedWritableIPRangeRequest *PatchedWritableIPRangeRequest
 }
 
@@ -21874,7 +21904,7 @@ Patch a IP range object.
 	@param id A unique integer value identifying this IP range.
 	@return ApiIpamIpRangesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamIpRangesPartialUpdate(ctx context.Context, id int32) ApiIpamIpRangesPartialUpdateRequest {
+func (a *IpamAPIService) IpamIpRangesPartialUpdate(ctx context.Context, id int64) ApiIpamIpRangesPartialUpdateRequest {
 	return ApiIpamIpRangesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -21978,7 +22008,7 @@ func (a *IpamAPIService) IpamIpRangesPartialUpdateExecute(r ApiIpamIpRangesParti
 type ApiIpamIpRangesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -22015,7 +22045,7 @@ Get a IP range object.
 	@param id A unique integer value identifying this IP range.
 	@return ApiIpamIpRangesRetrieveRequest
 */
-func (a *IpamAPIService) IpamIpRangesRetrieve(ctx context.Context, id int32) ApiIpamIpRangesRetrieveRequest {
+func (a *IpamAPIService) IpamIpRangesRetrieve(ctx context.Context, id int64) ApiIpamIpRangesRetrieveRequest {
 	return ApiIpamIpRangesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -22126,7 +22156,7 @@ func (a *IpamAPIService) IpamIpRangesRetrieveExecute(r ApiIpamIpRangesRetrieveRe
 type ApiIpamIpRangesUpdateRequest struct {
 	ctx                    context.Context
 	ApiService             IpamAPI
-	id                     int32
+	id                     int64
 	writableIPRangeRequest *WritableIPRangeRequest
 }
 
@@ -22148,7 +22178,7 @@ Put a IP range object.
 	@param id A unique integer value identifying this IP range.
 	@return ApiIpamIpRangesUpdateRequest
 */
-func (a *IpamAPIService) IpamIpRangesUpdate(ctx context.Context, id int32) ApiIpamIpRangesUpdateRequest {
+func (a *IpamAPIService) IpamIpRangesUpdate(ctx context.Context, id int64) ApiIpamIpRangesUpdateRequest {
 	return ApiIpamIpRangesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -22255,7 +22285,7 @@ func (a *IpamAPIService) IpamIpRangesUpdateExecute(r ApiIpamIpRangesUpdateReques
 type ApiIpamPrefixesAvailableIpsCreateRequest struct {
 	ctx                       context.Context
 	ApiService                IpamAPI
-	id                        int32
+	id                        int64
 	availableIPRequestRequest *[]AvailableIPRequestRequest
 }
 
@@ -22277,7 +22307,7 @@ Post a IP address object.
 	@param id
 	@return ApiIpamPrefixesAvailableIpsCreateRequest
 */
-func (a *IpamAPIService) IpamPrefixesAvailableIpsCreate(ctx context.Context, id int32) ApiIpamPrefixesAvailableIpsCreateRequest {
+func (a *IpamAPIService) IpamPrefixesAvailableIpsCreate(ctx context.Context, id int64) ApiIpamPrefixesAvailableIpsCreateRequest {
 	return ApiIpamPrefixesAvailableIpsCreateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -22384,7 +22414,7 @@ func (a *IpamAPIService) IpamPrefixesAvailableIpsCreateExecute(r ApiIpamPrefixes
 type ApiIpamPrefixesAvailableIpsListRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -22421,7 +22451,7 @@ Get a IP address object.
 	@param id
 	@return ApiIpamPrefixesAvailableIpsListRequest
 */
-func (a *IpamAPIService) IpamPrefixesAvailableIpsList(ctx context.Context, id int32) ApiIpamPrefixesAvailableIpsListRequest {
+func (a *IpamAPIService) IpamPrefixesAvailableIpsList(ctx context.Context, id int64) ApiIpamPrefixesAvailableIpsListRequest {
 	return ApiIpamPrefixesAvailableIpsListRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -22532,7 +22562,7 @@ func (a *IpamAPIService) IpamPrefixesAvailableIpsListExecute(r ApiIpamPrefixesAv
 type ApiIpamPrefixesAvailablePrefixesCreateRequest struct {
 	ctx                          context.Context
 	ApiService                   IpamAPI
-	id                           int32
+	id                           int64
 	createAvailablePrefixRequest *[]CreateAvailablePrefixRequest
 }
 
@@ -22554,7 +22584,7 @@ Post a prefix object.
 	@param id
 	@return ApiIpamPrefixesAvailablePrefixesCreateRequest
 */
-func (a *IpamAPIService) IpamPrefixesAvailablePrefixesCreate(ctx context.Context, id int32) ApiIpamPrefixesAvailablePrefixesCreateRequest {
+func (a *IpamAPIService) IpamPrefixesAvailablePrefixesCreate(ctx context.Context, id int64) ApiIpamPrefixesAvailablePrefixesCreateRequest {
 	return ApiIpamPrefixesAvailablePrefixesCreateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -22661,7 +22691,7 @@ func (a *IpamAPIService) IpamPrefixesAvailablePrefixesCreateExecute(r ApiIpamPre
 type ApiIpamPrefixesAvailablePrefixesListRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -22698,7 +22728,7 @@ Get a prefix object.
 	@param id
 	@return ApiIpamPrefixesAvailablePrefixesListRequest
 */
-func (a *IpamAPIService) IpamPrefixesAvailablePrefixesList(ctx context.Context, id int32) ApiIpamPrefixesAvailablePrefixesListRequest {
+func (a *IpamAPIService) IpamPrefixesAvailablePrefixesList(ctx context.Context, id int64) ApiIpamPrefixesAvailablePrefixesListRequest {
 	return ApiIpamPrefixesAvailablePrefixesListRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -23297,7 +23327,7 @@ func (a *IpamAPIService) IpamPrefixesCreateExecute(r ApiIpamPrefixesCreateReques
 type ApiIpamPrefixesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamPrefixesDestroyRequest) Execute() (*http.Response, error) {
@@ -23313,7 +23343,7 @@ Delete a prefix object.
 	@param id A unique integer value identifying this prefix.
 	@return ApiIpamPrefixesDestroyRequest
 */
-func (a *IpamAPIService) IpamPrefixesDestroy(ctx context.Context, id int32) ApiIpamPrefixesDestroyRequest {
+func (a *IpamAPIService) IpamPrefixesDestroy(ctx context.Context, id int64) ApiIpamPrefixesDestroyRequest {
 	return ApiIpamPrefixesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -23411,12 +23441,12 @@ type ApiIpamPrefixesListRequest struct {
 	childrenLt        *[]int32
 	childrenLte       *[]int32
 	childrenN         *[]int32
-	contact           *[]int32
-	contactN          *[]int32
-	contactGroup      *[]string
-	contactGroupN     *[]string
-	contactRole       *[]int32
-	contactRoleN      *[]int32
+	contact           *[]int64
+	contactN          *[]int64
+	contactGroup      *[]int64
+	contactGroupN     *[]int64
+	contactRole       *[]int64
+	contactRoleN      *[]int64
 	contains          *string
 	created           *[]time.Time
 	createdEmpty      *bool
@@ -23448,13 +23478,13 @@ type ApiIpamPrefixesListRequest struct {
 	descriptionRegex  *[]string
 	family            *float32
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	isPool            *bool
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
@@ -23466,8 +23496,8 @@ type ApiIpamPrefixesListRequest struct {
 	limit             *int32
 	location          *[]string
 	locationN         *[]string
-	locationId        *[]string
-	locationIdN       *[]string
+	locationId        *[]int64
+	locationIdN       *[]int64
 	markUtilized      *bool
 	maskLength        *[]int32
 	maskLengthGte     *float32
@@ -23480,39 +23510,39 @@ type ApiIpamPrefixesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	prefix            *[]string
 	presentInVrf      *string
-	presentInVrfId    *string
+	presentInVrfId    *int64
 	q                 *string
 	region            *[]string
 	regionN           *[]string
-	regionId          *[]string
-	regionIdN         *[]string
+	regionId          *[]int64
+	regionIdN         *[]int64
 	role              *[]string
 	roleN             *[]string
-	roleId            *[]*int32
-	roleIdN           *[]*int32
-	scopeId           *[]int32
+	roleId            *[]*int64
+	roleIdN           *[]*int64
+	scopeId           *[]int64
 	scopeIdEmpty      *bool
-	scopeIdGt         *[]int32
-	scopeIdGte        *[]int32
-	scopeIdLt         *[]int32
-	scopeIdLte        *[]int32
-	scopeIdN          *[]int32
+	scopeIdGt         *[]int64
+	scopeIdGte        *[]int64
+	scopeIdLt         *[]int64
+	scopeIdLte        *[]int64
+	scopeIdN          *[]int64
 	scopeType         *[]string
 	scopeTypeN        *[]string
 	site              *[]string
 	siteN             *[]string
 	siteGroup         *[]string
 	siteGroupN        *[]string
-	siteGroupId       *[]string
-	siteGroupIdN      *[]string
-	siteId            *[]int32
-	siteIdN           *[]int32
+	siteGroupId       *[]int64
+	siteGroupIdN      *[]int64
+	siteId            *[]int64
+	siteIdN           *[]int64
 	start             *int32
 	status            *[]string
 	statusEmpty       *bool
@@ -23530,24 +23560,24 @@ type ApiIpamPrefixesListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
 	updatedByRequest  *string
 	vlanGroup         *[]string
 	vlanGroupN        *[]string
-	vlanGroupId       *[]int32
-	vlanGroupIdN      *[]int32
-	vlanId            *[]*int32
-	vlanIdN           *[]*int32
+	vlanGroupId       *[]int64
+	vlanGroupIdN      *[]int64
+	vlanId            *[]*int64
+	vlanIdN           *[]*int64
 	vlanVid           *int32
 	vlanVidEmpty      *bool
 	vlanVidGt         *int32
@@ -23557,8 +23587,8 @@ type ApiIpamPrefixesListRequest struct {
 	vlanVidN          *int32
 	vrf               *[]*string
 	vrfN              *[]*string
-	vrfId             *[]*int32
-	vrfIdN            *[]*int32
+	vrfId             *[]*int64
+	vrfIdN            *[]*int64
 	within            *string
 	withinInclude     *string
 }
@@ -23605,35 +23635,37 @@ func (r ApiIpamPrefixesListRequest) ChildrenN(childrenN []int32) ApiIpamPrefixes
 }
 
 // Contact
-func (r ApiIpamPrefixesListRequest) Contact(contact []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) Contact(contact []int64) ApiIpamPrefixesListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiIpamPrefixesListRequest) ContactN(contactN []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ContactN(contactN []int64) ApiIpamPrefixesListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) ContactGroup(contactGroup []string) ApiIpamPrefixesListRequest {
+// Contact group
+func (r ApiIpamPrefixesListRequest) ContactGroup(contactGroup []int64) ApiIpamPrefixesListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) ContactGroupN(contactGroupN []string) ApiIpamPrefixesListRequest {
+// Contact group
+func (r ApiIpamPrefixesListRequest) ContactGroupN(contactGroupN []int64) ApiIpamPrefixesListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiIpamPrefixesListRequest) ContactRole(contactRole []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ContactRole(contactRole []int64) ApiIpamPrefixesListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiIpamPrefixesListRequest) ContactRoleN(contactRoleN []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ContactRoleN(contactRoleN []int64) ApiIpamPrefixesListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -23795,7 +23827,7 @@ func (r ApiIpamPrefixesListRequest) Fields(fields string) ApiIpamPrefixesListReq
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) Id(id []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) Id(id []int64) ApiIpamPrefixesListRequest {
 	r.id = &id
 	return r
 }
@@ -23805,27 +23837,27 @@ func (r ApiIpamPrefixesListRequest) IdEmpty(idEmpty bool) ApiIpamPrefixesListReq
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) IdGt(idGt []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) IdGt(idGt []int64) ApiIpamPrefixesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) IdGte(idGte []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) IdGte(idGte []int64) ApiIpamPrefixesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) IdLt(idLt []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) IdLt(idLt []int64) ApiIpamPrefixesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) IdLte(idLte []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) IdLte(idLte []int64) ApiIpamPrefixesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) IdN(idN []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) IdN(idN []int64) ApiIpamPrefixesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -23876,22 +23908,26 @@ func (r ApiIpamPrefixesListRequest) Limit(limit int32) ApiIpamPrefixesListReques
 	return r
 }
 
+// Location (slug)
 func (r ApiIpamPrefixesListRequest) Location(location []string) ApiIpamPrefixesListRequest {
 	r.location = &location
 	return r
 }
 
+// Location (slug)
 func (r ApiIpamPrefixesListRequest) LocationN(locationN []string) ApiIpamPrefixesListRequest {
 	r.locationN = &locationN
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) LocationId(locationId []string) ApiIpamPrefixesListRequest {
+// Location (ID)
+func (r ApiIpamPrefixesListRequest) LocationId(locationId []int64) ApiIpamPrefixesListRequest {
 	r.locationId = &locationId
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) LocationIdN(locationIdN []string) ApiIpamPrefixesListRequest {
+// Location (ID)
+func (r ApiIpamPrefixesListRequest) LocationIdN(locationIdN []int64) ApiIpamPrefixesListRequest {
 	r.locationIdN = &locationIdN
 	return r
 }
@@ -23964,25 +24000,25 @@ func (r ApiIpamPrefixesListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamPre
 }
 
 // Owner Group (ID)
-func (r ApiIpamPrefixesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamPrefixesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamPrefixesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamPrefixesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamPrefixesListRequest) OwnerId(ownerId []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) OwnerId(ownerId []*int64) ApiIpamPrefixesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamPrefixesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamPrefixesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -23997,7 +24033,7 @@ func (r ApiIpamPrefixesListRequest) PresentInVrf(presentInVrf string) ApiIpamPre
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) PresentInVrfId(presentInVrfId string) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) PresentInVrfId(presentInVrfId int64) ApiIpamPrefixesListRequest {
 	r.presentInVrfId = &presentInVrfId
 	return r
 }
@@ -24008,22 +24044,26 @@ func (r ApiIpamPrefixesListRequest) Q(q string) ApiIpamPrefixesListRequest {
 	return r
 }
 
+// Region (slug)
 func (r ApiIpamPrefixesListRequest) Region(region []string) ApiIpamPrefixesListRequest {
 	r.region = &region
 	return r
 }
 
+// Region (slug)
 func (r ApiIpamPrefixesListRequest) RegionN(regionN []string) ApiIpamPrefixesListRequest {
 	r.regionN = &regionN
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) RegionId(regionId []string) ApiIpamPrefixesListRequest {
+// Region (ID)
+func (r ApiIpamPrefixesListRequest) RegionId(regionId []int64) ApiIpamPrefixesListRequest {
 	r.regionId = &regionId
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) RegionIdN(regionIdN []string) ApiIpamPrefixesListRequest {
+// Region (ID)
+func (r ApiIpamPrefixesListRequest) RegionIdN(regionIdN []int64) ApiIpamPrefixesListRequest {
 	r.regionIdN = &regionIdN
 	return r
 }
@@ -24041,18 +24081,18 @@ func (r ApiIpamPrefixesListRequest) RoleN(roleN []string) ApiIpamPrefixesListReq
 }
 
 // Role (ID)
-func (r ApiIpamPrefixesListRequest) RoleId(roleId []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) RoleId(roleId []*int64) ApiIpamPrefixesListRequest {
 	r.roleId = &roleId
 	return r
 }
 
 // Role (ID)
-func (r ApiIpamPrefixesListRequest) RoleIdN(roleIdN []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) RoleIdN(roleIdN []*int64) ApiIpamPrefixesListRequest {
 	r.roleIdN = &roleIdN
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) ScopeId(scopeId []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ScopeId(scopeId []int64) ApiIpamPrefixesListRequest {
 	r.scopeId = &scopeId
 	return r
 }
@@ -24062,27 +24102,27 @@ func (r ApiIpamPrefixesListRequest) ScopeIdEmpty(scopeIdEmpty bool) ApiIpamPrefi
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) ScopeIdGt(scopeIdGt []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ScopeIdGt(scopeIdGt []int64) ApiIpamPrefixesListRequest {
 	r.scopeIdGt = &scopeIdGt
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) ScopeIdGte(scopeIdGte []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ScopeIdGte(scopeIdGte []int64) ApiIpamPrefixesListRequest {
 	r.scopeIdGte = &scopeIdGte
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) ScopeIdLt(scopeIdLt []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ScopeIdLt(scopeIdLt []int64) ApiIpamPrefixesListRequest {
 	r.scopeIdLt = &scopeIdLt
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) ScopeIdLte(scopeIdLte []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ScopeIdLte(scopeIdLte []int64) ApiIpamPrefixesListRequest {
 	r.scopeIdLte = &scopeIdLte
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) ScopeIdN(scopeIdN []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) ScopeIdN(scopeIdN []int64) ApiIpamPrefixesListRequest {
 	r.scopeIdN = &scopeIdN
 	return r
 }
@@ -24109,34 +24149,38 @@ func (r ApiIpamPrefixesListRequest) SiteN(siteN []string) ApiIpamPrefixesListReq
 	return r
 }
 
+// Site group (slug)
 func (r ApiIpamPrefixesListRequest) SiteGroup(siteGroup []string) ApiIpamPrefixesListRequest {
 	r.siteGroup = &siteGroup
 	return r
 }
 
+// Site group (slug)
 func (r ApiIpamPrefixesListRequest) SiteGroupN(siteGroupN []string) ApiIpamPrefixesListRequest {
 	r.siteGroupN = &siteGroupN
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) SiteGroupId(siteGroupId []string) ApiIpamPrefixesListRequest {
+// Site group (ID)
+func (r ApiIpamPrefixesListRequest) SiteGroupId(siteGroupId []int64) ApiIpamPrefixesListRequest {
 	r.siteGroupId = &siteGroupId
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) SiteGroupIdN(siteGroupIdN []string) ApiIpamPrefixesListRequest {
+// Site group (ID)
+func (r ApiIpamPrefixesListRequest) SiteGroupIdN(siteGroupIdN []int64) ApiIpamPrefixesListRequest {
 	r.siteGroupIdN = &siteGroupIdN
 	return r
 }
 
 // Site (ID)
-func (r ApiIpamPrefixesListRequest) SiteId(siteId []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) SiteId(siteId []int64) ApiIpamPrefixesListRequest {
 	r.siteId = &siteId
 	return r
 }
 
 // Site (ID)
-func (r ApiIpamPrefixesListRequest) SiteIdN(siteIdN []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) SiteIdN(siteIdN []int64) ApiIpamPrefixesListRequest {
 	r.siteIdN = &siteIdN
 	return r
 }
@@ -24239,17 +24283,17 @@ func (r ApiIpamPrefixesListRequest) TagN(tagN []string) ApiIpamPrefixesListReque
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) TagId(tagId []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) TagId(tagId []int64) ApiIpamPrefixesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) TagIdAny(tagIdAny []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) TagIdAny(tagIdAny []int64) ApiIpamPrefixesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) TagIdN(tagIdN []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) TagIdN(tagIdN []int64) ApiIpamPrefixesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -24266,34 +24310,38 @@ func (r ApiIpamPrefixesListRequest) TenantN(tenantN []string) ApiIpamPrefixesLis
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamPrefixesListRequest) TenantGroup(tenantGroup []string) ApiIpamPrefixesListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamPrefixesListRequest) TenantGroupN(tenantGroupN []string) ApiIpamPrefixesListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) TenantGroupId(tenantGroupId []string) ApiIpamPrefixesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamPrefixesListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamPrefixesListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamPrefixesListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamPrefixesListRequest {
+// Tenant Group (ID)
+func (r ApiIpamPrefixesListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamPrefixesListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamPrefixesListRequest) TenantId(tenantId []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) TenantId(tenantId []*int64) ApiIpamPrefixesListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamPrefixesListRequest) TenantIdN(tenantIdN []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) TenantIdN(tenantIdN []*int64) ApiIpamPrefixesListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -24316,25 +24364,25 @@ func (r ApiIpamPrefixesListRequest) VlanGroupN(vlanGroupN []string) ApiIpamPrefi
 }
 
 // VLAN Group (ID)
-func (r ApiIpamPrefixesListRequest) VlanGroupId(vlanGroupId []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) VlanGroupId(vlanGroupId []int64) ApiIpamPrefixesListRequest {
 	r.vlanGroupId = &vlanGroupId
 	return r
 }
 
 // VLAN Group (ID)
-func (r ApiIpamPrefixesListRequest) VlanGroupIdN(vlanGroupIdN []int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) VlanGroupIdN(vlanGroupIdN []int64) ApiIpamPrefixesListRequest {
 	r.vlanGroupIdN = &vlanGroupIdN
 	return r
 }
 
 // VLAN (ID)
-func (r ApiIpamPrefixesListRequest) VlanId(vlanId []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) VlanId(vlanId []*int64) ApiIpamPrefixesListRequest {
 	r.vlanId = &vlanId
 	return r
 }
 
 // VLAN (ID)
-func (r ApiIpamPrefixesListRequest) VlanIdN(vlanIdN []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) VlanIdN(vlanIdN []*int64) ApiIpamPrefixesListRequest {
 	r.vlanIdN = &vlanIdN
 	return r
 }
@@ -24394,13 +24442,13 @@ func (r ApiIpamPrefixesListRequest) VrfN(vrfN []*string) ApiIpamPrefixesListRequ
 }
 
 // VRF
-func (r ApiIpamPrefixesListRequest) VrfId(vrfId []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) VrfId(vrfId []*int64) ApiIpamPrefixesListRequest {
 	r.vrfId = &vrfId
 	return r
 }
 
 // VRF
-func (r ApiIpamPrefixesListRequest) VrfIdN(vrfIdN []*int32) ApiIpamPrefixesListRequest {
+func (r ApiIpamPrefixesListRequest) VrfIdN(vrfIdN []*int64) ApiIpamPrefixesListRequest {
 	r.vrfIdN = &vrfIdN
 	return r
 }
@@ -25979,7 +26027,7 @@ func (a *IpamAPIService) IpamPrefixesListExecute(r ApiIpamPrefixesListRequest) (
 type ApiIpamPrefixesPartialUpdateRequest struct {
 	ctx                          context.Context
 	ApiService                   IpamAPI
-	id                           int32
+	id                           int64
 	patchedWritablePrefixRequest *PatchedWritablePrefixRequest
 }
 
@@ -26001,7 +26049,7 @@ Patch a prefix object.
 	@param id A unique integer value identifying this prefix.
 	@return ApiIpamPrefixesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamPrefixesPartialUpdate(ctx context.Context, id int32) ApiIpamPrefixesPartialUpdateRequest {
+func (a *IpamAPIService) IpamPrefixesPartialUpdate(ctx context.Context, id int64) ApiIpamPrefixesPartialUpdateRequest {
 	return ApiIpamPrefixesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -26105,7 +26153,7 @@ func (a *IpamAPIService) IpamPrefixesPartialUpdateExecute(r ApiIpamPrefixesParti
 type ApiIpamPrefixesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -26142,7 +26190,7 @@ Get a prefix object.
 	@param id A unique integer value identifying this prefix.
 	@return ApiIpamPrefixesRetrieveRequest
 */
-func (a *IpamAPIService) IpamPrefixesRetrieve(ctx context.Context, id int32) ApiIpamPrefixesRetrieveRequest {
+func (a *IpamAPIService) IpamPrefixesRetrieve(ctx context.Context, id int64) ApiIpamPrefixesRetrieveRequest {
 	return ApiIpamPrefixesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -26253,7 +26301,7 @@ func (a *IpamAPIService) IpamPrefixesRetrieveExecute(r ApiIpamPrefixesRetrieveRe
 type ApiIpamPrefixesUpdateRequest struct {
 	ctx                   context.Context
 	ApiService            IpamAPI
-	id                    int32
+	id                    int64
 	writablePrefixRequest *WritablePrefixRequest
 }
 
@@ -26275,7 +26323,7 @@ Put a prefix object.
 	@param id A unique integer value identifying this prefix.
 	@return ApiIpamPrefixesUpdateRequest
 */
-func (a *IpamAPIService) IpamPrefixesUpdate(ctx context.Context, id int32) ApiIpamPrefixesUpdateRequest {
+func (a *IpamAPIService) IpamPrefixesUpdate(ctx context.Context, id int64) ApiIpamPrefixesUpdateRequest {
 	return ApiIpamPrefixesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -26870,7 +26918,7 @@ func (a *IpamAPIService) IpamRirsCreateExecute(r ApiIpamRirsCreateRequest) (*RIR
 type ApiIpamRirsDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamRirsDestroyRequest) Execute() (*http.Response, error) {
@@ -26886,7 +26934,7 @@ Delete a RIR object.
 	@param id A unique integer value identifying this RIR.
 	@return ApiIpamRirsDestroyRequest
 */
-func (a *IpamAPIService) IpamRirsDestroy(ctx context.Context, id int32) ApiIpamRirsDestroyRequest {
+func (a *IpamAPIService) IpamRirsDestroy(ctx context.Context, id int64) ApiIpamRirsDestroyRequest {
 	return ApiIpamRirsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -26999,13 +27047,13 @@ type ApiIpamRirsListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	isPrivate         *bool
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
@@ -27036,10 +27084,10 @@ type ApiIpamRirsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -27058,9 +27106,9 @@ type ApiIpamRirsListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -27181,7 +27229,7 @@ func (r ApiIpamRirsListRequest) Fields(fields string) ApiIpamRirsListRequest {
 	return r
 }
 
-func (r ApiIpamRirsListRequest) Id(id []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) Id(id []int64) ApiIpamRirsListRequest {
 	r.id = &id
 	return r
 }
@@ -27191,27 +27239,27 @@ func (r ApiIpamRirsListRequest) IdEmpty(idEmpty bool) ApiIpamRirsListRequest {
 	return r
 }
 
-func (r ApiIpamRirsListRequest) IdGt(idGt []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) IdGt(idGt []int64) ApiIpamRirsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamRirsListRequest) IdGte(idGte []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) IdGte(idGte []int64) ApiIpamRirsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamRirsListRequest) IdLt(idLt []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) IdLt(idLt []int64) ApiIpamRirsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamRirsListRequest) IdLte(idLte []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) IdLte(idLte []int64) ApiIpamRirsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamRirsListRequest) IdN(idN []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) IdN(idN []int64) ApiIpamRirsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -27375,25 +27423,25 @@ func (r ApiIpamRirsListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamRirsLis
 }
 
 // Owner Group (ID)
-func (r ApiIpamRirsListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamRirsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamRirsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamRirsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamRirsListRequest) OwnerId(ownerId []*int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) OwnerId(ownerId []*int64) ApiIpamRirsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamRirsListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamRirsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -27490,17 +27538,17 @@ func (r ApiIpamRirsListRequest) TagN(tagN []string) ApiIpamRirsListRequest {
 	return r
 }
 
-func (r ApiIpamRirsListRequest) TagId(tagId []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) TagId(tagId []int64) ApiIpamRirsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamRirsListRequest) TagIdAny(tagIdAny []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) TagIdAny(tagIdAny []int64) ApiIpamRirsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamRirsListRequest) TagIdN(tagIdN []int32) ApiIpamRirsListRequest {
+func (r ApiIpamRirsListRequest) TagIdN(tagIdN []int64) ApiIpamRirsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -28424,7 +28472,7 @@ func (a *IpamAPIService) IpamRirsListExecute(r ApiIpamRirsListRequest) (*Paginat
 type ApiIpamRirsPartialUpdateRequest struct {
 	ctx               context.Context
 	ApiService        IpamAPI
-	id                int32
+	id                int64
 	patchedRIRRequest *PatchedRIRRequest
 }
 
@@ -28446,7 +28494,7 @@ Patch a RIR object.
 	@param id A unique integer value identifying this RIR.
 	@return ApiIpamRirsPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamRirsPartialUpdate(ctx context.Context, id int32) ApiIpamRirsPartialUpdateRequest {
+func (a *IpamAPIService) IpamRirsPartialUpdate(ctx context.Context, id int64) ApiIpamRirsPartialUpdateRequest {
 	return ApiIpamRirsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -28550,7 +28598,7 @@ func (a *IpamAPIService) IpamRirsPartialUpdateExecute(r ApiIpamRirsPartialUpdate
 type ApiIpamRirsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -28587,7 +28635,7 @@ Get a RIR object.
 	@param id A unique integer value identifying this RIR.
 	@return ApiIpamRirsRetrieveRequest
 */
-func (a *IpamAPIService) IpamRirsRetrieve(ctx context.Context, id int32) ApiIpamRirsRetrieveRequest {
+func (a *IpamAPIService) IpamRirsRetrieve(ctx context.Context, id int64) ApiIpamRirsRetrieveRequest {
 	return ApiIpamRirsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -28698,7 +28746,7 @@ func (a *IpamAPIService) IpamRirsRetrieveExecute(r ApiIpamRirsRetrieveRequest) (
 type ApiIpamRirsUpdateRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	rIRRequest *RIRRequest
 }
 
@@ -28720,7 +28768,7 @@ Put a RIR object.
 	@param id A unique integer value identifying this RIR.
 	@return ApiIpamRirsUpdateRequest
 */
-func (a *IpamAPIService) IpamRirsUpdate(ctx context.Context, id int32) ApiIpamRirsUpdateRequest {
+func (a *IpamAPIService) IpamRirsUpdate(ctx context.Context, id int64) ApiIpamRirsUpdateRequest {
 	return ApiIpamRirsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -29315,7 +29363,7 @@ func (a *IpamAPIService) IpamRolesCreateExecute(r ApiIpamRolesCreateRequest) (*R
 type ApiIpamRolesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamRolesDestroyRequest) Execute() (*http.Response, error) {
@@ -29331,7 +29379,7 @@ Delete a role object.
 	@param id A unique integer value identifying this role.
 	@return ApiIpamRolesDestroyRequest
 */
-func (a *IpamAPIService) IpamRolesDestroy(ctx context.Context, id int32) ApiIpamRolesDestroyRequest {
+func (a *IpamAPIService) IpamRolesDestroy(ctx context.Context, id int64) ApiIpamRolesDestroyRequest {
 	return ApiIpamRolesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -29444,13 +29492,13 @@ type ApiIpamRolesListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -29480,10 +29528,10 @@ type ApiIpamRolesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -29502,9 +29550,9 @@ type ApiIpamRolesListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 	weight            *[]int32
 	weightEmpty       *bool
@@ -29632,7 +29680,7 @@ func (r ApiIpamRolesListRequest) Fields(fields string) ApiIpamRolesListRequest {
 	return r
 }
 
-func (r ApiIpamRolesListRequest) Id(id []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) Id(id []int64) ApiIpamRolesListRequest {
 	r.id = &id
 	return r
 }
@@ -29642,27 +29690,27 @@ func (r ApiIpamRolesListRequest) IdEmpty(idEmpty bool) ApiIpamRolesListRequest {
 	return r
 }
 
-func (r ApiIpamRolesListRequest) IdGt(idGt []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) IdGt(idGt []int64) ApiIpamRolesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamRolesListRequest) IdGte(idGte []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) IdGte(idGte []int64) ApiIpamRolesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamRolesListRequest) IdLt(idLt []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) IdLt(idLt []int64) ApiIpamRolesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamRolesListRequest) IdLte(idLte []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) IdLte(idLte []int64) ApiIpamRolesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamRolesListRequest) IdN(idN []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) IdN(idN []int64) ApiIpamRolesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -29821,25 +29869,25 @@ func (r ApiIpamRolesListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamRolesL
 }
 
 // Owner Group (ID)
-func (r ApiIpamRolesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamRolesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamRolesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamRolesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamRolesListRequest) OwnerId(ownerId []*int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) OwnerId(ownerId []*int64) ApiIpamRolesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamRolesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamRolesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -29936,17 +29984,17 @@ func (r ApiIpamRolesListRequest) TagN(tagN []string) ApiIpamRolesListRequest {
 	return r
 }
 
-func (r ApiIpamRolesListRequest) TagId(tagId []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) TagId(tagId []int64) ApiIpamRolesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamRolesListRequest) TagIdAny(tagIdAny []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) TagIdAny(tagIdAny []int64) ApiIpamRolesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamRolesListRequest) TagIdN(tagIdN []int32) ApiIpamRolesListRequest {
+func (r ApiIpamRolesListRequest) TagIdN(tagIdN []int64) ApiIpamRolesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -30971,7 +31019,7 @@ func (a *IpamAPIService) IpamRolesListExecute(r ApiIpamRolesListRequest) (*Pagin
 type ApiIpamRolesPartialUpdateRequest struct {
 	ctx                context.Context
 	ApiService         IpamAPI
-	id                 int32
+	id                 int64
 	patchedRoleRequest *PatchedRoleRequest
 }
 
@@ -30993,7 +31041,7 @@ Patch a role object.
 	@param id A unique integer value identifying this role.
 	@return ApiIpamRolesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamRolesPartialUpdate(ctx context.Context, id int32) ApiIpamRolesPartialUpdateRequest {
+func (a *IpamAPIService) IpamRolesPartialUpdate(ctx context.Context, id int64) ApiIpamRolesPartialUpdateRequest {
 	return ApiIpamRolesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -31097,7 +31145,7 @@ func (a *IpamAPIService) IpamRolesPartialUpdateExecute(r ApiIpamRolesPartialUpda
 type ApiIpamRolesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -31134,7 +31182,7 @@ Get a role object.
 	@param id A unique integer value identifying this role.
 	@return ApiIpamRolesRetrieveRequest
 */
-func (a *IpamAPIService) IpamRolesRetrieve(ctx context.Context, id int32) ApiIpamRolesRetrieveRequest {
+func (a *IpamAPIService) IpamRolesRetrieve(ctx context.Context, id int64) ApiIpamRolesRetrieveRequest {
 	return ApiIpamRolesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -31245,7 +31293,7 @@ func (a *IpamAPIService) IpamRolesRetrieveExecute(r ApiIpamRolesRetrieveRequest)
 type ApiIpamRolesUpdateRequest struct {
 	ctx         context.Context
 	ApiService  IpamAPI
-	id          int32
+	id          int64
 	roleRequest *RoleRequest
 }
 
@@ -31267,7 +31315,7 @@ Put a role object.
 	@param id A unique integer value identifying this role.
 	@return ApiIpamRolesUpdateRequest
 */
-func (a *IpamAPIService) IpamRolesUpdate(ctx context.Context, id int32) ApiIpamRolesUpdateRequest {
+func (a *IpamAPIService) IpamRolesUpdate(ctx context.Context, id int64) ApiIpamRolesUpdateRequest {
 	return ApiIpamRolesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -31862,7 +31910,7 @@ func (a *IpamAPIService) IpamRouteTargetsCreateExecute(r ApiIpamRouteTargetsCrea
 type ApiIpamRouteTargetsDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamRouteTargetsDestroyRequest) Execute() (*http.Response, error) {
@@ -31878,7 +31926,7 @@ Delete a route target object.
 	@param id A unique integer value identifying this route target.
 	@return ApiIpamRouteTargetsDestroyRequest
 */
-func (a *IpamAPIService) IpamRouteTargetsDestroy(ctx context.Context, id int32) ApiIpamRouteTargetsDestroyRequest {
+func (a *IpamAPIService) IpamRouteTargetsDestroy(ctx context.Context, id int64) ApiIpamRouteTargetsDestroyRequest {
 	return ApiIpamRouteTargetsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -31992,28 +32040,28 @@ type ApiIpamRouteTargetsListRequest struct {
 	descriptionRegex  *[]string
 	exportingL2vpn    *[]*int64
 	exportingL2vpnN   *[]*int64
-	exportingL2vpnId  *[]int32
-	exportingL2vpnIdN *[]int32
+	exportingL2vpnId  *[]int64
+	exportingL2vpnIdN *[]int64
 	exportingVrf      *[]*string
 	exportingVrfN     *[]*string
-	exportingVrfId    *[]int32
-	exportingVrfIdN   *[]int32
+	exportingVrfId    *[]int64
+	exportingVrfIdN   *[]int64
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	importingL2vpn    *[]*int64
 	importingL2vpnN   *[]*int64
-	importingL2vpnId  *[]int32
-	importingL2vpnIdN *[]int32
+	importingL2vpnId  *[]int64
+	importingL2vpnIdN *[]int64
 	importingVrf      *[]*string
 	importingVrfN     *[]*string
-	importingVrfId    *[]int32
-	importingVrfIdN   *[]int32
+	importingVrfId    *[]int64
+	importingVrfIdN   *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -32043,26 +32091,26 @@ type ApiIpamRouteTargetsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	start             *int32
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
 	updatedByRequest  *string
 }
 
@@ -32190,13 +32238,13 @@ func (r ApiIpamRouteTargetsListRequest) ExportingL2vpnN(exportingL2vpnN []*int64
 }
 
 // Exporting L2VPN
-func (r ApiIpamRouteTargetsListRequest) ExportingL2vpnId(exportingL2vpnId []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) ExportingL2vpnId(exportingL2vpnId []int64) ApiIpamRouteTargetsListRequest {
 	r.exportingL2vpnId = &exportingL2vpnId
 	return r
 }
 
 // Exporting L2VPN
-func (r ApiIpamRouteTargetsListRequest) ExportingL2vpnIdN(exportingL2vpnIdN []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) ExportingL2vpnIdN(exportingL2vpnIdN []int64) ApiIpamRouteTargetsListRequest {
 	r.exportingL2vpnIdN = &exportingL2vpnIdN
 	return r
 }
@@ -32214,13 +32262,13 @@ func (r ApiIpamRouteTargetsListRequest) ExportingVrfN(exportingVrfN []*string) A
 }
 
 // Exporting VRF
-func (r ApiIpamRouteTargetsListRequest) ExportingVrfId(exportingVrfId []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) ExportingVrfId(exportingVrfId []int64) ApiIpamRouteTargetsListRequest {
 	r.exportingVrfId = &exportingVrfId
 	return r
 }
 
 // Exporting VRF
-func (r ApiIpamRouteTargetsListRequest) ExportingVrfIdN(exportingVrfIdN []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) ExportingVrfIdN(exportingVrfIdN []int64) ApiIpamRouteTargetsListRequest {
 	r.exportingVrfIdN = &exportingVrfIdN
 	return r
 }
@@ -32231,7 +32279,7 @@ func (r ApiIpamRouteTargetsListRequest) Fields(fields string) ApiIpamRouteTarget
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) Id(id []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) Id(id []int64) ApiIpamRouteTargetsListRequest {
 	r.id = &id
 	return r
 }
@@ -32241,27 +32289,27 @@ func (r ApiIpamRouteTargetsListRequest) IdEmpty(idEmpty bool) ApiIpamRouteTarget
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) IdGt(idGt []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) IdGt(idGt []int64) ApiIpamRouteTargetsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) IdGte(idGte []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) IdGte(idGte []int64) ApiIpamRouteTargetsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) IdLt(idLt []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) IdLt(idLt []int64) ApiIpamRouteTargetsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) IdLte(idLte []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) IdLte(idLte []int64) ApiIpamRouteTargetsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) IdN(idN []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) IdN(idN []int64) ApiIpamRouteTargetsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -32279,13 +32327,13 @@ func (r ApiIpamRouteTargetsListRequest) ImportingL2vpnN(importingL2vpnN []*int64
 }
 
 // Importing L2VPN
-func (r ApiIpamRouteTargetsListRequest) ImportingL2vpnId(importingL2vpnId []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) ImportingL2vpnId(importingL2vpnId []int64) ApiIpamRouteTargetsListRequest {
 	r.importingL2vpnId = &importingL2vpnId
 	return r
 }
 
 // Importing L2VPN
-func (r ApiIpamRouteTargetsListRequest) ImportingL2vpnIdN(importingL2vpnIdN []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) ImportingL2vpnIdN(importingL2vpnIdN []int64) ApiIpamRouteTargetsListRequest {
 	r.importingL2vpnIdN = &importingL2vpnIdN
 	return r
 }
@@ -32303,13 +32351,13 @@ func (r ApiIpamRouteTargetsListRequest) ImportingVrfN(importingVrfN []*string) A
 }
 
 // Importing VRF
-func (r ApiIpamRouteTargetsListRequest) ImportingVrfId(importingVrfId []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) ImportingVrfId(importingVrfId []int64) ApiIpamRouteTargetsListRequest {
 	r.importingVrfId = &importingVrfId
 	return r
 }
 
 // Importing VRF
-func (r ApiIpamRouteTargetsListRequest) ImportingVrfIdN(importingVrfIdN []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) ImportingVrfIdN(importingVrfIdN []int64) ApiIpamRouteTargetsListRequest {
 	r.importingVrfIdN = &importingVrfIdN
 	return r
 }
@@ -32468,25 +32516,25 @@ func (r ApiIpamRouteTargetsListRequest) OwnerGroupN(ownerGroupN []string) ApiIpa
 }
 
 // Owner Group (ID)
-func (r ApiIpamRouteTargetsListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamRouteTargetsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamRouteTargetsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamRouteTargetsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamRouteTargetsListRequest) OwnerId(ownerId []*int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) OwnerId(ownerId []*int64) ApiIpamRouteTargetsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamRouteTargetsListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamRouteTargetsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -32518,17 +32566,17 @@ func (r ApiIpamRouteTargetsListRequest) TagN(tagN []string) ApiIpamRouteTargetsL
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) TagId(tagId []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) TagId(tagId []int64) ApiIpamRouteTargetsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) TagIdAny(tagIdAny []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) TagIdAny(tagIdAny []int64) ApiIpamRouteTargetsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) TagIdN(tagIdN []int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) TagIdN(tagIdN []int64) ApiIpamRouteTargetsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -32545,34 +32593,38 @@ func (r ApiIpamRouteTargetsListRequest) TenantN(tenantN []string) ApiIpamRouteTa
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamRouteTargetsListRequest) TenantGroup(tenantGroup []string) ApiIpamRouteTargetsListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamRouteTargetsListRequest) TenantGroupN(tenantGroupN []string) ApiIpamRouteTargetsListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) TenantGroupId(tenantGroupId []string) ApiIpamRouteTargetsListRequest {
+// Tenant Group (ID)
+func (r ApiIpamRouteTargetsListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamRouteTargetsListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamRouteTargetsListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamRouteTargetsListRequest {
+// Tenant Group (ID)
+func (r ApiIpamRouteTargetsListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamRouteTargetsListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamRouteTargetsListRequest) TenantId(tenantId []*int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) TenantId(tenantId []*int64) ApiIpamRouteTargetsListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamRouteTargetsListRequest) TenantIdN(tenantIdN []*int32) ApiIpamRouteTargetsListRequest {
+func (r ApiIpamRouteTargetsListRequest) TenantIdN(tenantIdN []*int64) ApiIpamRouteTargetsListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -33622,7 +33674,7 @@ func (a *IpamAPIService) IpamRouteTargetsListExecute(r ApiIpamRouteTargetsListRe
 type ApiIpamRouteTargetsPartialUpdateRequest struct {
 	ctx                       context.Context
 	ApiService                IpamAPI
-	id                        int32
+	id                        int64
 	patchedRouteTargetRequest *PatchedRouteTargetRequest
 }
 
@@ -33644,7 +33696,7 @@ Patch a route target object.
 	@param id A unique integer value identifying this route target.
 	@return ApiIpamRouteTargetsPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamRouteTargetsPartialUpdate(ctx context.Context, id int32) ApiIpamRouteTargetsPartialUpdateRequest {
+func (a *IpamAPIService) IpamRouteTargetsPartialUpdate(ctx context.Context, id int64) ApiIpamRouteTargetsPartialUpdateRequest {
 	return ApiIpamRouteTargetsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -33748,7 +33800,7 @@ func (a *IpamAPIService) IpamRouteTargetsPartialUpdateExecute(r ApiIpamRouteTarg
 type ApiIpamRouteTargetsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -33785,7 +33837,7 @@ Get a route target object.
 	@param id A unique integer value identifying this route target.
 	@return ApiIpamRouteTargetsRetrieveRequest
 */
-func (a *IpamAPIService) IpamRouteTargetsRetrieve(ctx context.Context, id int32) ApiIpamRouteTargetsRetrieveRequest {
+func (a *IpamAPIService) IpamRouteTargetsRetrieve(ctx context.Context, id int64) ApiIpamRouteTargetsRetrieveRequest {
 	return ApiIpamRouteTargetsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -33896,7 +33948,7 @@ func (a *IpamAPIService) IpamRouteTargetsRetrieveExecute(r ApiIpamRouteTargetsRe
 type ApiIpamRouteTargetsUpdateRequest struct {
 	ctx                context.Context
 	ApiService         IpamAPI
-	id                 int32
+	id                 int64
 	routeTargetRequest *RouteTargetRequest
 }
 
@@ -33918,7 +33970,7 @@ Put a route target object.
 	@param id A unique integer value identifying this route target.
 	@return ApiIpamRouteTargetsUpdateRequest
 */
-func (a *IpamAPIService) IpamRouteTargetsUpdate(ctx context.Context, id int32) ApiIpamRouteTargetsUpdateRequest {
+func (a *IpamAPIService) IpamRouteTargetsUpdate(ctx context.Context, id int64) ApiIpamRouteTargetsUpdateRequest {
 	return ApiIpamRouteTargetsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -34513,7 +34565,7 @@ func (a *IpamAPIService) IpamServiceTemplatesCreateExecute(r ApiIpamServiceTempl
 type ApiIpamServiceTemplatesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamServiceTemplatesDestroyRequest) Execute() (*http.Response, error) {
@@ -34529,7 +34581,7 @@ Delete a application service template object.
 	@param id A unique integer value identifying this application service template.
 	@return ApiIpamServiceTemplatesDestroyRequest
 */
-func (a *IpamAPIService) IpamServiceTemplatesDestroy(ctx context.Context, id int32) ApiIpamServiceTemplatesDestroyRequest {
+func (a *IpamAPIService) IpamServiceTemplatesDestroy(ctx context.Context, id int64) ApiIpamServiceTemplatesDestroyRequest {
 	return ApiIpamServiceTemplatesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -34642,13 +34694,13 @@ type ApiIpamServiceTemplatesListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -34678,10 +34730,10 @@ type ApiIpamServiceTemplatesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	port              *[]int32
 	portGt            *[]int32
 	portGte           *[]int32
@@ -34697,9 +34749,9 @@ type ApiIpamServiceTemplatesListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -34820,7 +34872,7 @@ func (r ApiIpamServiceTemplatesListRequest) Fields(fields string) ApiIpamService
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) Id(id []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) Id(id []int64) ApiIpamServiceTemplatesListRequest {
 	r.id = &id
 	return r
 }
@@ -34830,27 +34882,27 @@ func (r ApiIpamServiceTemplatesListRequest) IdEmpty(idEmpty bool) ApiIpamService
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) IdGt(idGt []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) IdGt(idGt []int64) ApiIpamServiceTemplatesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) IdGte(idGte []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) IdGte(idGte []int64) ApiIpamServiceTemplatesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) IdLt(idLt []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) IdLt(idLt []int64) ApiIpamServiceTemplatesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) IdLte(idLte []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) IdLte(idLte []int64) ApiIpamServiceTemplatesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) IdN(idN []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) IdN(idN []int64) ApiIpamServiceTemplatesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -35009,25 +35061,25 @@ func (r ApiIpamServiceTemplatesListRequest) OwnerGroupN(ownerGroupN []string) Ap
 }
 
 // Owner Group (ID)
-func (r ApiIpamServiceTemplatesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamServiceTemplatesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamServiceTemplatesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamServiceTemplatesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamServiceTemplatesListRequest) OwnerId(ownerId []*int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) OwnerId(ownerId []*int64) ApiIpamServiceTemplatesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamServiceTemplatesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamServiceTemplatesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -35109,17 +35161,17 @@ func (r ApiIpamServiceTemplatesListRequest) TagN(tagN []string) ApiIpamServiceTe
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) TagId(tagId []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) TagId(tagId []int64) ApiIpamServiceTemplatesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) TagIdAny(tagIdAny []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) TagIdAny(tagIdAny []int64) ApiIpamServiceTemplatesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamServiceTemplatesListRequest) TagIdN(tagIdN []int32) ApiIpamServiceTemplatesListRequest {
+func (r ApiIpamServiceTemplatesListRequest) TagIdN(tagIdN []int64) ApiIpamServiceTemplatesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -36015,7 +36067,7 @@ func (a *IpamAPIService) IpamServiceTemplatesListExecute(r ApiIpamServiceTemplat
 type ApiIpamServiceTemplatesPartialUpdateRequest struct {
 	ctx                                   context.Context
 	ApiService                            IpamAPI
-	id                                    int32
+	id                                    int64
 	patchedWritableServiceTemplateRequest *PatchedWritableServiceTemplateRequest
 }
 
@@ -36037,7 +36089,7 @@ Patch a application service template object.
 	@param id A unique integer value identifying this application service template.
 	@return ApiIpamServiceTemplatesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamServiceTemplatesPartialUpdate(ctx context.Context, id int32) ApiIpamServiceTemplatesPartialUpdateRequest {
+func (a *IpamAPIService) IpamServiceTemplatesPartialUpdate(ctx context.Context, id int64) ApiIpamServiceTemplatesPartialUpdateRequest {
 	return ApiIpamServiceTemplatesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -36141,7 +36193,7 @@ func (a *IpamAPIService) IpamServiceTemplatesPartialUpdateExecute(r ApiIpamServi
 type ApiIpamServiceTemplatesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -36178,7 +36230,7 @@ Get a application service template object.
 	@param id A unique integer value identifying this application service template.
 	@return ApiIpamServiceTemplatesRetrieveRequest
 */
-func (a *IpamAPIService) IpamServiceTemplatesRetrieve(ctx context.Context, id int32) ApiIpamServiceTemplatesRetrieveRequest {
+func (a *IpamAPIService) IpamServiceTemplatesRetrieve(ctx context.Context, id int64) ApiIpamServiceTemplatesRetrieveRequest {
 	return ApiIpamServiceTemplatesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -36289,7 +36341,7 @@ func (a *IpamAPIService) IpamServiceTemplatesRetrieveExecute(r ApiIpamServiceTem
 type ApiIpamServiceTemplatesUpdateRequest struct {
 	ctx                            context.Context
 	ApiService                     IpamAPI
-	id                             int32
+	id                             int64
 	writableServiceTemplateRequest *WritableServiceTemplateRequest
 }
 
@@ -36311,7 +36363,7 @@ Put a application service template object.
 	@param id A unique integer value identifying this application service template.
 	@return ApiIpamServiceTemplatesUpdateRequest
 */
-func (a *IpamAPIService) IpamServiceTemplatesUpdate(ctx context.Context, id int32) ApiIpamServiceTemplatesUpdateRequest {
+func (a *IpamAPIService) IpamServiceTemplatesUpdate(ctx context.Context, id int64) ApiIpamServiceTemplatesUpdateRequest {
 	return ApiIpamServiceTemplatesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -36906,7 +36958,7 @@ func (a *IpamAPIService) IpamServicesCreateExecute(r ApiIpamServicesCreateReques
 type ApiIpamServicesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamServicesDestroyRequest) Execute() (*http.Response, error) {
@@ -36922,7 +36974,7 @@ Delete a application service object.
 	@param id A unique integer value identifying this application service.
 	@return ApiIpamServicesDestroyRequest
 */
-func (a *IpamAPIService) IpamServicesDestroy(ctx context.Context, id int32) ApiIpamServicesDestroyRequest {
+func (a *IpamAPIService) IpamServicesDestroy(ctx context.Context, id int64) ApiIpamServicesDestroyRequest {
 	return ApiIpamServicesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -37013,12 +37065,12 @@ type ApiIpamServicesListRequest struct {
 	ctx                 context.Context
 	ApiService          IpamAPI
 	brief               *bool
-	contact             *[]int32
-	contactN            *[]int32
-	contactGroup        *[]string
-	contactGroupN       *[]string
-	contactRole         *[]int32
-	contactRoleN        *[]int32
+	contact             *[]int64
+	contactN            *[]int64
+	contactGroup        *[]int64
+	contactGroupN       *[]int64
+	contactRole         *[]int64
+	contactRoleN        *[]int64
 	created             *[]time.Time
 	createdEmpty        *bool
 	createdGt           *[]time.Time
@@ -37041,21 +37093,21 @@ type ApiIpamServicesListRequest struct {
 	descriptionNisw     *[]string
 	descriptionRegex    *[]string
 	device              *[]string
-	deviceId            *[]int32
+	deviceId            *[]int64
 	fhrpgroup           *[]string
-	fhrpgroupId         *[]int32
+	fhrpgroupId         *[]int64
 	fields              *string
-	id                  *[]int32
+	id                  *[]int64
 	idEmpty             *bool
-	idGt                *[]int32
-	idGte               *[]int32
-	idLt                *[]int32
-	idLte               *[]int32
-	idN                 *[]int32
+	idGt                *[]int64
+	idGte               *[]int64
+	idLt                *[]int64
+	idLte               *[]int64
+	idN                 *[]int64
 	ipAddress           *[]string
 	ipAddressN          *[]string
-	ipAddressId         *[]int32
-	ipAddressIdN        *[]int32
+	ipAddressId         *[]int64
+	ipAddressIdN        *[]int64
 	lastUpdated         *[]time.Time
 	lastUpdatedEmpty    *bool
 	lastUpdatedGt       *[]time.Time
@@ -37085,17 +37137,17 @@ type ApiIpamServicesListRequest struct {
 	ownerN              *[]string
 	ownerGroup          *[]string
 	ownerGroupN         *[]string
-	ownerGroupId        *[]int32
-	ownerGroupIdN       *[]int32
-	ownerId             *[]*int32
-	ownerIdN            *[]*int32
-	parentObjectId      *[]int32
+	ownerGroupId        *[]int64
+	ownerGroupIdN       *[]int64
+	ownerId             *[]*int64
+	ownerIdN            *[]*int64
+	parentObjectId      *[]int64
 	parentObjectIdEmpty *bool
-	parentObjectIdGt    *[]int32
-	parentObjectIdGte   *[]int32
-	parentObjectIdLt    *[]int32
-	parentObjectIdLte   *[]int32
-	parentObjectIdN     *[]int32
+	parentObjectIdGt    *[]int64
+	parentObjectIdGte   *[]int64
+	parentObjectIdLt    *[]int64
+	parentObjectIdLte   *[]int64
+	parentObjectIdN     *[]int64
 	parentObjectType    *[]string
 	parentObjectTypeN   *[]string
 	port                *[]int32
@@ -37113,12 +37165,12 @@ type ApiIpamServicesListRequest struct {
 	tag                 *[]string
 	tagAny              *[]string
 	tagN                *[]string
-	tagId               *[]int32
-	tagIdAny            *[]int32
-	tagIdN              *[]int32
+	tagId               *[]int64
+	tagIdAny            *[]int64
+	tagIdN              *[]int64
 	updatedByRequest    *string
 	virtualMachine      *[]string
-	virtualMachineId    *[]int32
+	virtualMachineId    *[]int64
 }
 
 // Return only brief fields for each object.
@@ -37128,35 +37180,37 @@ func (r ApiIpamServicesListRequest) Brief(brief bool) ApiIpamServicesListRequest
 }
 
 // Contact
-func (r ApiIpamServicesListRequest) Contact(contact []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) Contact(contact []int64) ApiIpamServicesListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiIpamServicesListRequest) ContactN(contactN []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ContactN(contactN []int64) ApiIpamServicesListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiIpamServicesListRequest) ContactGroup(contactGroup []string) ApiIpamServicesListRequest {
+// Contact group
+func (r ApiIpamServicesListRequest) ContactGroup(contactGroup []int64) ApiIpamServicesListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiIpamServicesListRequest) ContactGroupN(contactGroupN []string) ApiIpamServicesListRequest {
+// Contact group
+func (r ApiIpamServicesListRequest) ContactGroupN(contactGroupN []int64) ApiIpamServicesListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiIpamServicesListRequest) ContactRole(contactRole []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ContactRole(contactRole []int64) ApiIpamServicesListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiIpamServicesListRequest) ContactRoleN(contactRoleN []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ContactRoleN(contactRoleN []int64) ApiIpamServicesListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -37271,7 +37325,7 @@ func (r ApiIpamServicesListRequest) Device(device []string) ApiIpamServicesListR
 	return r
 }
 
-func (r ApiIpamServicesListRequest) DeviceId(deviceId []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) DeviceId(deviceId []int64) ApiIpamServicesListRequest {
 	r.deviceId = &deviceId
 	return r
 }
@@ -37281,7 +37335,7 @@ func (r ApiIpamServicesListRequest) Fhrpgroup(fhrpgroup []string) ApiIpamService
 	return r
 }
 
-func (r ApiIpamServicesListRequest) FhrpgroupId(fhrpgroupId []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) FhrpgroupId(fhrpgroupId []int64) ApiIpamServicesListRequest {
 	r.fhrpgroupId = &fhrpgroupId
 	return r
 }
@@ -37292,7 +37346,7 @@ func (r ApiIpamServicesListRequest) Fields(fields string) ApiIpamServicesListReq
 	return r
 }
 
-func (r ApiIpamServicesListRequest) Id(id []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) Id(id []int64) ApiIpamServicesListRequest {
 	r.id = &id
 	return r
 }
@@ -37302,27 +37356,27 @@ func (r ApiIpamServicesListRequest) IdEmpty(idEmpty bool) ApiIpamServicesListReq
 	return r
 }
 
-func (r ApiIpamServicesListRequest) IdGt(idGt []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) IdGt(idGt []int64) ApiIpamServicesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamServicesListRequest) IdGte(idGte []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) IdGte(idGte []int64) ApiIpamServicesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamServicesListRequest) IdLt(idLt []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) IdLt(idLt []int64) ApiIpamServicesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamServicesListRequest) IdLte(idLte []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) IdLte(idLte []int64) ApiIpamServicesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamServicesListRequest) IdN(idN []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) IdN(idN []int64) ApiIpamServicesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -37340,13 +37394,13 @@ func (r ApiIpamServicesListRequest) IpAddressN(ipAddressN []string) ApiIpamServi
 }
 
 // IP address (ID)
-func (r ApiIpamServicesListRequest) IpAddressId(ipAddressId []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) IpAddressId(ipAddressId []int64) ApiIpamServicesListRequest {
 	r.ipAddressId = &ipAddressId
 	return r
 }
 
 // IP address (ID)
-func (r ApiIpamServicesListRequest) IpAddressIdN(ipAddressIdN []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) IpAddressIdN(ipAddressIdN []int64) ApiIpamServicesListRequest {
 	r.ipAddressIdN = &ipAddressIdN
 	return r
 }
@@ -37505,30 +37559,30 @@ func (r ApiIpamServicesListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamSer
 }
 
 // Owner Group (ID)
-func (r ApiIpamServicesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamServicesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamServicesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamServicesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamServicesListRequest) OwnerId(ownerId []*int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) OwnerId(ownerId []*int64) ApiIpamServicesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamServicesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamServicesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
 
-func (r ApiIpamServicesListRequest) ParentObjectId(parentObjectId []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ParentObjectId(parentObjectId []int64) ApiIpamServicesListRequest {
 	r.parentObjectId = &parentObjectId
 	return r
 }
@@ -37538,27 +37592,27 @@ func (r ApiIpamServicesListRequest) ParentObjectIdEmpty(parentObjectIdEmpty bool
 	return r
 }
 
-func (r ApiIpamServicesListRequest) ParentObjectIdGt(parentObjectIdGt []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ParentObjectIdGt(parentObjectIdGt []int64) ApiIpamServicesListRequest {
 	r.parentObjectIdGt = &parentObjectIdGt
 	return r
 }
 
-func (r ApiIpamServicesListRequest) ParentObjectIdGte(parentObjectIdGte []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ParentObjectIdGte(parentObjectIdGte []int64) ApiIpamServicesListRequest {
 	r.parentObjectIdGte = &parentObjectIdGte
 	return r
 }
 
-func (r ApiIpamServicesListRequest) ParentObjectIdLt(parentObjectIdLt []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ParentObjectIdLt(parentObjectIdLt []int64) ApiIpamServicesListRequest {
 	r.parentObjectIdLt = &parentObjectIdLt
 	return r
 }
 
-func (r ApiIpamServicesListRequest) ParentObjectIdLte(parentObjectIdLte []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ParentObjectIdLte(parentObjectIdLte []int64) ApiIpamServicesListRequest {
 	r.parentObjectIdLte = &parentObjectIdLte
 	return r
 }
 
-func (r ApiIpamServicesListRequest) ParentObjectIdN(parentObjectIdN []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) ParentObjectIdN(parentObjectIdN []int64) ApiIpamServicesListRequest {
 	r.parentObjectIdN = &parentObjectIdN
 	return r
 }
@@ -37650,17 +37704,17 @@ func (r ApiIpamServicesListRequest) TagN(tagN []string) ApiIpamServicesListReque
 	return r
 }
 
-func (r ApiIpamServicesListRequest) TagId(tagId []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) TagId(tagId []int64) ApiIpamServicesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamServicesListRequest) TagIdAny(tagIdAny []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) TagIdAny(tagIdAny []int64) ApiIpamServicesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamServicesListRequest) TagIdN(tagIdN []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) TagIdN(tagIdN []int64) ApiIpamServicesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -37675,7 +37729,7 @@ func (r ApiIpamServicesListRequest) VirtualMachine(virtualMachine []string) ApiI
 	return r
 }
 
-func (r ApiIpamServicesListRequest) VirtualMachineId(virtualMachineId []int32) ApiIpamServicesListRequest {
+func (r ApiIpamServicesListRequest) VirtualMachineId(virtualMachineId []int64) ApiIpamServicesListRequest {
 	r.virtualMachineId = &virtualMachineId
 	return r
 }
@@ -38833,7 +38887,7 @@ func (a *IpamAPIService) IpamServicesListExecute(r ApiIpamServicesListRequest) (
 type ApiIpamServicesPartialUpdateRequest struct {
 	ctx                           context.Context
 	ApiService                    IpamAPI
-	id                            int32
+	id                            int64
 	patchedWritableServiceRequest *PatchedWritableServiceRequest
 }
 
@@ -38855,7 +38909,7 @@ Patch a application service object.
 	@param id A unique integer value identifying this application service.
 	@return ApiIpamServicesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamServicesPartialUpdate(ctx context.Context, id int32) ApiIpamServicesPartialUpdateRequest {
+func (a *IpamAPIService) IpamServicesPartialUpdate(ctx context.Context, id int64) ApiIpamServicesPartialUpdateRequest {
 	return ApiIpamServicesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -38959,7 +39013,7 @@ func (a *IpamAPIService) IpamServicesPartialUpdateExecute(r ApiIpamServicesParti
 type ApiIpamServicesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -38996,7 +39050,7 @@ Get a application service object.
 	@param id A unique integer value identifying this application service.
 	@return ApiIpamServicesRetrieveRequest
 */
-func (a *IpamAPIService) IpamServicesRetrieve(ctx context.Context, id int32) ApiIpamServicesRetrieveRequest {
+func (a *IpamAPIService) IpamServicesRetrieve(ctx context.Context, id int64) ApiIpamServicesRetrieveRequest {
 	return ApiIpamServicesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -39107,7 +39161,7 @@ func (a *IpamAPIService) IpamServicesRetrieveExecute(r ApiIpamServicesRetrieveRe
 type ApiIpamServicesUpdateRequest struct {
 	ctx                    context.Context
 	ApiService             IpamAPI
-	id                     int32
+	id                     int64
 	writableServiceRequest *WritableServiceRequest
 }
 
@@ -39129,7 +39183,7 @@ Put a application service object.
 	@param id A unique integer value identifying this application service.
 	@return ApiIpamServicesUpdateRequest
 */
-func (a *IpamAPIService) IpamServicesUpdate(ctx context.Context, id int32) ApiIpamServicesUpdateRequest {
+func (a *IpamAPIService) IpamServicesUpdate(ctx context.Context, id int64) ApiIpamServicesUpdateRequest {
 	return ApiIpamServicesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -39236,7 +39290,7 @@ func (a *IpamAPIService) IpamServicesUpdateExecute(r ApiIpamServicesUpdateReques
 type ApiIpamVlanGroupsAvailableVlansCreateRequest struct {
 	ctx                        context.Context
 	ApiService                 IpamAPI
-	id                         int32
+	id                         int64
 	createAvailableVLANRequest *[]CreateAvailableVLANRequest
 }
 
@@ -39258,7 +39312,7 @@ Post a VLAN object.
 	@param id
 	@return ApiIpamVlanGroupsAvailableVlansCreateRequest
 */
-func (a *IpamAPIService) IpamVlanGroupsAvailableVlansCreate(ctx context.Context, id int32) ApiIpamVlanGroupsAvailableVlansCreateRequest {
+func (a *IpamAPIService) IpamVlanGroupsAvailableVlansCreate(ctx context.Context, id int64) ApiIpamVlanGroupsAvailableVlansCreateRequest {
 	return ApiIpamVlanGroupsAvailableVlansCreateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -39365,7 +39419,7 @@ func (a *IpamAPIService) IpamVlanGroupsAvailableVlansCreateExecute(r ApiIpamVlan
 type ApiIpamVlanGroupsAvailableVlansListRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -39402,7 +39456,7 @@ Get a VLAN object.
 	@param id
 	@return ApiIpamVlanGroupsAvailableVlansListRequest
 */
-func (a *IpamAPIService) IpamVlanGroupsAvailableVlansList(ctx context.Context, id int32) ApiIpamVlanGroupsAvailableVlansListRequest {
+func (a *IpamAPIService) IpamVlanGroupsAvailableVlansList(ctx context.Context, id int64) ApiIpamVlanGroupsAvailableVlansListRequest {
 	return ApiIpamVlanGroupsAvailableVlansListRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -40001,7 +40055,7 @@ func (a *IpamAPIService) IpamVlanGroupsCreateExecute(r ApiIpamVlanGroupsCreateRe
 type ApiIpamVlanGroupsDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamVlanGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -40017,7 +40071,7 @@ Delete a VLAN group object.
 	@param id A unique integer value identifying this VLAN group.
 	@return ApiIpamVlanGroupsDestroyRequest
 */
-func (a *IpamAPIService) IpamVlanGroupsDestroy(ctx context.Context, id int32) ApiIpamVlanGroupsDestroyRequest {
+func (a *IpamAPIService) IpamVlanGroupsDestroy(ctx context.Context, id int64) ApiIpamVlanGroupsDestroyRequest {
 	return ApiIpamVlanGroupsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -40108,8 +40162,8 @@ type ApiIpamVlanGroupsListRequest struct {
 	ctx               context.Context
 	ApiService        IpamAPI
 	brief             *bool
-	cluster           *[]int32
-	clusterGroup      *[]int32
+	cluster           *[]int64
+	clusterGroup      *[]int64
 	containsVid       *float32
 	created           *[]time.Time
 	createdEmpty      *bool
@@ -40133,13 +40187,13 @@ type ApiIpamVlanGroupsListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -40148,7 +40202,7 @@ type ApiIpamVlanGroupsListRequest struct {
 	lastUpdatedLte    *[]time.Time
 	lastUpdatedN      *[]time.Time
 	limit             *int32
-	location          *[]int32
+	location          *[]int64
 	modifiedByRequest *string
 	name              *[]string
 	nameEmpty         *bool
@@ -40170,25 +40224,25 @@ type ApiIpamVlanGroupsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
-	rack              *[]int32
-	rackGroup         *[]int32
-	region            *[]int32
-	scopeId           *[]int32
+	rack              *[]int64
+	rackGroup         *[]int64
+	region            *[]int64
+	scopeId           *[]int64
 	scopeIdEmpty      *bool
-	scopeIdGt         *[]int32
-	scopeIdGte        *[]int32
-	scopeIdLt         *[]int32
-	scopeIdLte        *[]int32
-	scopeIdN          *[]int32
+	scopeIdGt         *[]int64
+	scopeIdGte        *[]int64
+	scopeIdLt         *[]int64
+	scopeIdLte        *[]int64
+	scopeIdN          *[]int64
 	scopeType         *[]string
 	scopeTypeN        *[]string
-	site              *[]int32
-	siteGroup         *[]int32
+	site              *[]int64
+	siteGroup         *[]int64
 	slug              *[]string
 	slugEmpty         *bool
 	slugIc            *[]string
@@ -40206,24 +40260,24 @@ type ApiIpamVlanGroupsListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
-	totalVlanIds      *[]int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
+	totalVlanIds      *[]int64
 	totalVlanIdsEmpty *bool
-	totalVlanIdsGt    *[]int32
-	totalVlanIdsGte   *[]int32
-	totalVlanIdsLt    *[]int32
-	totalVlanIdsLte   *[]int32
-	totalVlanIdsN     *[]int32
+	totalVlanIdsGt    *[]int64
+	totalVlanIdsGte   *[]int64
+	totalVlanIdsLt    *[]int64
+	totalVlanIdsLte   *[]int64
+	totalVlanIdsN     *[]int64
 	updatedByRequest  *string
 }
 
@@ -40233,12 +40287,12 @@ func (r ApiIpamVlanGroupsListRequest) Brief(brief bool) ApiIpamVlanGroupsListReq
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) Cluster(cluster []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) Cluster(cluster []int64) ApiIpamVlanGroupsListRequest {
 	r.cluster = &cluster
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) ClusterGroup(clusterGroup []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) ClusterGroup(clusterGroup []int64) ApiIpamVlanGroupsListRequest {
 	r.clusterGroup = &clusterGroup
 	return r
 }
@@ -40359,7 +40413,7 @@ func (r ApiIpamVlanGroupsListRequest) Fields(fields string) ApiIpamVlanGroupsLis
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) Id(id []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) Id(id []int64) ApiIpamVlanGroupsListRequest {
 	r.id = &id
 	return r
 }
@@ -40369,27 +40423,27 @@ func (r ApiIpamVlanGroupsListRequest) IdEmpty(idEmpty bool) ApiIpamVlanGroupsLis
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) IdGt(idGt []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) IdGt(idGt []int64) ApiIpamVlanGroupsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) IdGte(idGte []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) IdGte(idGte []int64) ApiIpamVlanGroupsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) IdLt(idLt []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) IdLt(idLt []int64) ApiIpamVlanGroupsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) IdLte(idLte []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) IdLte(idLte []int64) ApiIpamVlanGroupsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) IdN(idN []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) IdN(idN []int64) ApiIpamVlanGroupsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -40435,7 +40489,7 @@ func (r ApiIpamVlanGroupsListRequest) Limit(limit int32) ApiIpamVlanGroupsListRe
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) Location(location []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) Location(location []int64) ApiIpamVlanGroupsListRequest {
 	r.location = &location
 	return r
 }
@@ -40553,25 +40607,25 @@ func (r ApiIpamVlanGroupsListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamV
 }
 
 // Owner Group (ID)
-func (r ApiIpamVlanGroupsListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamVlanGroupsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamVlanGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamVlanGroupsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamVlanGroupsListRequest) OwnerId(ownerId []*int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) OwnerId(ownerId []*int64) ApiIpamVlanGroupsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamVlanGroupsListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamVlanGroupsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -40582,22 +40636,22 @@ func (r ApiIpamVlanGroupsListRequest) Q(q string) ApiIpamVlanGroupsListRequest {
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) Rack(rack []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) Rack(rack []int64) ApiIpamVlanGroupsListRequest {
 	r.rack = &rack
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) RackGroup(rackGroup []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) RackGroup(rackGroup []int64) ApiIpamVlanGroupsListRequest {
 	r.rackGroup = &rackGroup
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) Region(region []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) Region(region []int64) ApiIpamVlanGroupsListRequest {
 	r.region = &region
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) ScopeId(scopeId []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) ScopeId(scopeId []int64) ApiIpamVlanGroupsListRequest {
 	r.scopeId = &scopeId
 	return r
 }
@@ -40607,27 +40661,27 @@ func (r ApiIpamVlanGroupsListRequest) ScopeIdEmpty(scopeIdEmpty bool) ApiIpamVla
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) ScopeIdGt(scopeIdGt []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) ScopeIdGt(scopeIdGt []int64) ApiIpamVlanGroupsListRequest {
 	r.scopeIdGt = &scopeIdGt
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) ScopeIdGte(scopeIdGte []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) ScopeIdGte(scopeIdGte []int64) ApiIpamVlanGroupsListRequest {
 	r.scopeIdGte = &scopeIdGte
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) ScopeIdLt(scopeIdLt []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) ScopeIdLt(scopeIdLt []int64) ApiIpamVlanGroupsListRequest {
 	r.scopeIdLt = &scopeIdLt
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) ScopeIdLte(scopeIdLte []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) ScopeIdLte(scopeIdLte []int64) ApiIpamVlanGroupsListRequest {
 	r.scopeIdLte = &scopeIdLte
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) ScopeIdN(scopeIdN []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) ScopeIdN(scopeIdN []int64) ApiIpamVlanGroupsListRequest {
 	r.scopeIdN = &scopeIdN
 	return r
 }
@@ -40642,12 +40696,12 @@ func (r ApiIpamVlanGroupsListRequest) ScopeTypeN(scopeTypeN []string) ApiIpamVla
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) Site(site []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) Site(site []int64) ApiIpamVlanGroupsListRequest {
 	r.site = &site
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) SiteGroup(siteGroup []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) SiteGroup(siteGroup []int64) ApiIpamVlanGroupsListRequest {
 	r.siteGroup = &siteGroup
 	return r
 }
@@ -40738,17 +40792,17 @@ func (r ApiIpamVlanGroupsListRequest) TagN(tagN []string) ApiIpamVlanGroupsListR
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TagId(tagId []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TagId(tagId []int64) ApiIpamVlanGroupsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TagIdAny(tagIdAny []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TagIdAny(tagIdAny []int64) ApiIpamVlanGroupsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TagIdN(tagIdN []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TagIdN(tagIdN []int64) ApiIpamVlanGroupsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -40765,39 +40819,43 @@ func (r ApiIpamVlanGroupsListRequest) TenantN(tenantN []string) ApiIpamVlanGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamVlanGroupsListRequest) TenantGroup(tenantGroup []string) ApiIpamVlanGroupsListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamVlanGroupsListRequest) TenantGroupN(tenantGroupN []string) ApiIpamVlanGroupsListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TenantGroupId(tenantGroupId []string) ApiIpamVlanGroupsListRequest {
+// Tenant Group (ID)
+func (r ApiIpamVlanGroupsListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamVlanGroupsListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamVlanGroupsListRequest {
+// Tenant Group (ID)
+func (r ApiIpamVlanGroupsListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamVlanGroupsListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamVlanGroupsListRequest) TenantId(tenantId []*int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TenantId(tenantId []*int64) ApiIpamVlanGroupsListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamVlanGroupsListRequest) TenantIdN(tenantIdN []*int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TenantIdN(tenantIdN []*int64) ApiIpamVlanGroupsListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TotalVlanIds(totalVlanIds []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TotalVlanIds(totalVlanIds []int64) ApiIpamVlanGroupsListRequest {
 	r.totalVlanIds = &totalVlanIds
 	return r
 }
@@ -40807,27 +40865,27 @@ func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsEmpty(totalVlanIdsEmpty bool) 
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsGt(totalVlanIdsGt []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsGt(totalVlanIdsGt []int64) ApiIpamVlanGroupsListRequest {
 	r.totalVlanIdsGt = &totalVlanIdsGt
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsGte(totalVlanIdsGte []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsGte(totalVlanIdsGte []int64) ApiIpamVlanGroupsListRequest {
 	r.totalVlanIdsGte = &totalVlanIdsGte
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsLt(totalVlanIdsLt []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsLt(totalVlanIdsLt []int64) ApiIpamVlanGroupsListRequest {
 	r.totalVlanIdsLt = &totalVlanIdsLt
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsLte(totalVlanIdsLte []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsLte(totalVlanIdsLte []int64) ApiIpamVlanGroupsListRequest {
 	r.totalVlanIdsLte = &totalVlanIdsLte
 	return r
 }
 
-func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsN(totalVlanIdsN []int32) ApiIpamVlanGroupsListRequest {
+func (r ApiIpamVlanGroupsListRequest) TotalVlanIdsN(totalVlanIdsN []int64) ApiIpamVlanGroupsListRequest {
 	r.totalVlanIdsN = &totalVlanIdsN
 	return r
 }
@@ -42087,7 +42145,7 @@ func (a *IpamAPIService) IpamVlanGroupsListExecute(r ApiIpamVlanGroupsListReques
 type ApiIpamVlanGroupsPartialUpdateRequest struct {
 	ctx                     context.Context
 	ApiService              IpamAPI
-	id                      int32
+	id                      int64
 	patchedVLANGroupRequest *PatchedVLANGroupRequest
 }
 
@@ -42109,7 +42167,7 @@ Patch a VLAN group object.
 	@param id A unique integer value identifying this VLAN group.
 	@return ApiIpamVlanGroupsPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamVlanGroupsPartialUpdate(ctx context.Context, id int32) ApiIpamVlanGroupsPartialUpdateRequest {
+func (a *IpamAPIService) IpamVlanGroupsPartialUpdate(ctx context.Context, id int64) ApiIpamVlanGroupsPartialUpdateRequest {
 	return ApiIpamVlanGroupsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -42213,7 +42271,7 @@ func (a *IpamAPIService) IpamVlanGroupsPartialUpdateExecute(r ApiIpamVlanGroupsP
 type ApiIpamVlanGroupsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -42250,7 +42308,7 @@ Get a VLAN group object.
 	@param id A unique integer value identifying this VLAN group.
 	@return ApiIpamVlanGroupsRetrieveRequest
 */
-func (a *IpamAPIService) IpamVlanGroupsRetrieve(ctx context.Context, id int32) ApiIpamVlanGroupsRetrieveRequest {
+func (a *IpamAPIService) IpamVlanGroupsRetrieve(ctx context.Context, id int64) ApiIpamVlanGroupsRetrieveRequest {
 	return ApiIpamVlanGroupsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -42361,7 +42419,7 @@ func (a *IpamAPIService) IpamVlanGroupsRetrieveExecute(r ApiIpamVlanGroupsRetrie
 type ApiIpamVlanGroupsUpdateRequest struct {
 	ctx              context.Context
 	ApiService       IpamAPI
-	id               int32
+	id               int64
 	vLANGroupRequest *VLANGroupRequest
 }
 
@@ -42383,7 +42441,7 @@ Put a VLAN group object.
 	@param id A unique integer value identifying this VLAN group.
 	@return ApiIpamVlanGroupsUpdateRequest
 */
-func (a *IpamAPIService) IpamVlanGroupsUpdate(ctx context.Context, id int32) ApiIpamVlanGroupsUpdateRequest {
+func (a *IpamAPIService) IpamVlanGroupsUpdate(ctx context.Context, id int64) ApiIpamVlanGroupsUpdateRequest {
 	return ApiIpamVlanGroupsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -42978,7 +43036,7 @@ func (a *IpamAPIService) IpamVlanTranslationPoliciesCreateExecute(r ApiIpamVlanT
 type ApiIpamVlanTranslationPoliciesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamVlanTranslationPoliciesDestroyRequest) Execute() (*http.Response, error) {
@@ -42994,7 +43052,7 @@ Delete a VLAN translation policy object.
 	@param id A unique integer value identifying this VLAN translation policy.
 	@return ApiIpamVlanTranslationPoliciesDestroyRequest
 */
-func (a *IpamAPIService) IpamVlanTranslationPoliciesDestroy(ctx context.Context, id int32) ApiIpamVlanTranslationPoliciesDestroyRequest {
+func (a *IpamAPIService) IpamVlanTranslationPoliciesDestroy(ctx context.Context, id int64) ApiIpamVlanTranslationPoliciesDestroyRequest {
 	return ApiIpamVlanTranslationPoliciesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -43107,13 +43165,13 @@ type ApiIpamVlanTranslationPoliciesListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -43143,18 +43201,18 @@ type ApiIpamVlanTranslationPoliciesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	start             *int32
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -43275,7 +43333,7 @@ func (r ApiIpamVlanTranslationPoliciesListRequest) Fields(fields string) ApiIpam
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) Id(id []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) Id(id []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.id = &id
 	return r
 }
@@ -43285,27 +43343,27 @@ func (r ApiIpamVlanTranslationPoliciesListRequest) IdEmpty(idEmpty bool) ApiIpam
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) IdGt(idGt []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) IdGt(idGt []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) IdGte(idGte []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) IdGte(idGte []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) IdLt(idLt []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) IdLt(idLt []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) IdLte(idLte []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) IdLte(idLte []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) IdN(idN []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) IdN(idN []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -43464,25 +43522,25 @@ func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerGroupN(ownerGroupN []str
 }
 
 // Owner Group (ID)
-func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerId(ownerId []*int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerId(ownerId []*int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -43514,17 +43572,17 @@ func (r ApiIpamVlanTranslationPoliciesListRequest) TagN(tagN []string) ApiIpamVl
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) TagId(tagId []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) TagId(tagId []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) TagIdAny(tagIdAny []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) TagIdAny(tagIdAny []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamVlanTranslationPoliciesListRequest) TagIdN(tagIdN []int32) ApiIpamVlanTranslationPoliciesListRequest {
+func (r ApiIpamVlanTranslationPoliciesListRequest) TagIdN(tagIdN []int64) ApiIpamVlanTranslationPoliciesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -44310,7 +44368,7 @@ func (a *IpamAPIService) IpamVlanTranslationPoliciesListExecute(r ApiIpamVlanTra
 type ApiIpamVlanTranslationPoliciesPartialUpdateRequest struct {
 	ctx                                 context.Context
 	ApiService                          IpamAPI
-	id                                  int32
+	id                                  int64
 	patchedVLANTranslationPolicyRequest *PatchedVLANTranslationPolicyRequest
 }
 
@@ -44332,7 +44390,7 @@ Patch a VLAN translation policy object.
 	@param id A unique integer value identifying this VLAN translation policy.
 	@return ApiIpamVlanTranslationPoliciesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamVlanTranslationPoliciesPartialUpdate(ctx context.Context, id int32) ApiIpamVlanTranslationPoliciesPartialUpdateRequest {
+func (a *IpamAPIService) IpamVlanTranslationPoliciesPartialUpdate(ctx context.Context, id int64) ApiIpamVlanTranslationPoliciesPartialUpdateRequest {
 	return ApiIpamVlanTranslationPoliciesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -44436,7 +44494,7 @@ func (a *IpamAPIService) IpamVlanTranslationPoliciesPartialUpdateExecute(r ApiIp
 type ApiIpamVlanTranslationPoliciesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -44473,7 +44531,7 @@ Get a VLAN translation policy object.
 	@param id A unique integer value identifying this VLAN translation policy.
 	@return ApiIpamVlanTranslationPoliciesRetrieveRequest
 */
-func (a *IpamAPIService) IpamVlanTranslationPoliciesRetrieve(ctx context.Context, id int32) ApiIpamVlanTranslationPoliciesRetrieveRequest {
+func (a *IpamAPIService) IpamVlanTranslationPoliciesRetrieve(ctx context.Context, id int64) ApiIpamVlanTranslationPoliciesRetrieveRequest {
 	return ApiIpamVlanTranslationPoliciesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -44584,7 +44642,7 @@ func (a *IpamAPIService) IpamVlanTranslationPoliciesRetrieveExecute(r ApiIpamVla
 type ApiIpamVlanTranslationPoliciesUpdateRequest struct {
 	ctx                          context.Context
 	ApiService                   IpamAPI
-	id                           int32
+	id                           int64
 	vLANTranslationPolicyRequest *VLANTranslationPolicyRequest
 }
 
@@ -44606,7 +44664,7 @@ Put a VLAN translation policy object.
 	@param id A unique integer value identifying this VLAN translation policy.
 	@return ApiIpamVlanTranslationPoliciesUpdateRequest
 */
-func (a *IpamAPIService) IpamVlanTranslationPoliciesUpdate(ctx context.Context, id int32) ApiIpamVlanTranslationPoliciesUpdateRequest {
+func (a *IpamAPIService) IpamVlanTranslationPoliciesUpdate(ctx context.Context, id int64) ApiIpamVlanTranslationPoliciesUpdateRequest {
 	return ApiIpamVlanTranslationPoliciesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -45201,7 +45259,7 @@ func (a *IpamAPIService) IpamVlanTranslationRulesCreateExecute(r ApiIpamVlanTran
 type ApiIpamVlanTranslationRulesDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamVlanTranslationRulesDestroyRequest) Execute() (*http.Response, error) {
@@ -45217,7 +45275,7 @@ Delete a VLAN translation rule object.
 	@param id A unique integer value identifying this VLAN translation rule.
 	@return ApiIpamVlanTranslationRulesDestroyRequest
 */
-func (a *IpamAPIService) IpamVlanTranslationRulesDestroy(ctx context.Context, id int32) ApiIpamVlanTranslationRulesDestroyRequest {
+func (a *IpamAPIService) IpamVlanTranslationRulesDestroy(ctx context.Context, id int64) ApiIpamVlanTranslationRulesDestroyRequest {
 	return ApiIpamVlanTranslationRulesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -45330,13 +45388,13 @@ type ApiIpamVlanTranslationRulesListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -45358,8 +45416,8 @@ type ApiIpamVlanTranslationRulesListRequest struct {
 	ordering          *string
 	policy            *[]string
 	policyN           *[]string
-	policyId          *[]int32
-	policyIdN         *[]int32
+	policyId          *[]int64
+	policyIdN         *[]int64
 	q                 *string
 	remoteVid         *[]int32
 	remoteVidEmpty    *bool
@@ -45372,9 +45430,9 @@ type ApiIpamVlanTranslationRulesListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -45495,7 +45553,7 @@ func (r ApiIpamVlanTranslationRulesListRequest) Fields(fields string) ApiIpamVla
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) Id(id []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) Id(id []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.id = &id
 	return r
 }
@@ -45505,27 +45563,27 @@ func (r ApiIpamVlanTranslationRulesListRequest) IdEmpty(idEmpty bool) ApiIpamVla
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) IdGt(idGt []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) IdGt(idGt []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) IdGte(idGte []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) IdGte(idGte []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) IdLt(idLt []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) IdLt(idLt []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) IdLte(idLte []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) IdLte(idLte []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) IdN(idN []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) IdN(idN []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -45642,13 +45700,13 @@ func (r ApiIpamVlanTranslationRulesListRequest) PolicyN(policyN []string) ApiIpa
 }
 
 // VLAN Translation Policy (ID)
-func (r ApiIpamVlanTranslationRulesListRequest) PolicyId(policyId []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) PolicyId(policyId []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.policyId = &policyId
 	return r
 }
 
 // VLAN Translation Policy (ID)
-func (r ApiIpamVlanTranslationRulesListRequest) PolicyIdN(policyIdN []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) PolicyIdN(policyIdN []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.policyIdN = &policyIdN
 	return r
 }
@@ -45715,17 +45773,17 @@ func (r ApiIpamVlanTranslationRulesListRequest) TagN(tagN []string) ApiIpamVlanT
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) TagId(tagId []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) TagId(tagId []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) TagIdAny(tagIdAny []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) TagIdAny(tagIdAny []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamVlanTranslationRulesListRequest) TagIdN(tagIdN []int32) ApiIpamVlanTranslationRulesListRequest {
+func (r ApiIpamVlanTranslationRulesListRequest) TagIdN(tagIdN []int64) ApiIpamVlanTranslationRulesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -46470,7 +46528,7 @@ func (a *IpamAPIService) IpamVlanTranslationRulesListExecute(r ApiIpamVlanTransl
 type ApiIpamVlanTranslationRulesPartialUpdateRequest struct {
 	ctx                               context.Context
 	ApiService                        IpamAPI
-	id                                int32
+	id                                int64
 	patchedVLANTranslationRuleRequest *PatchedVLANTranslationRuleRequest
 }
 
@@ -46492,7 +46550,7 @@ Patch a VLAN translation rule object.
 	@param id A unique integer value identifying this VLAN translation rule.
 	@return ApiIpamVlanTranslationRulesPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamVlanTranslationRulesPartialUpdate(ctx context.Context, id int32) ApiIpamVlanTranslationRulesPartialUpdateRequest {
+func (a *IpamAPIService) IpamVlanTranslationRulesPartialUpdate(ctx context.Context, id int64) ApiIpamVlanTranslationRulesPartialUpdateRequest {
 	return ApiIpamVlanTranslationRulesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -46596,7 +46654,7 @@ func (a *IpamAPIService) IpamVlanTranslationRulesPartialUpdateExecute(r ApiIpamV
 type ApiIpamVlanTranslationRulesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -46633,7 +46691,7 @@ Get a VLAN translation rule object.
 	@param id A unique integer value identifying this VLAN translation rule.
 	@return ApiIpamVlanTranslationRulesRetrieveRequest
 */
-func (a *IpamAPIService) IpamVlanTranslationRulesRetrieve(ctx context.Context, id int32) ApiIpamVlanTranslationRulesRetrieveRequest {
+func (a *IpamAPIService) IpamVlanTranslationRulesRetrieve(ctx context.Context, id int64) ApiIpamVlanTranslationRulesRetrieveRequest {
 	return ApiIpamVlanTranslationRulesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -46744,7 +46802,7 @@ func (a *IpamAPIService) IpamVlanTranslationRulesRetrieveExecute(r ApiIpamVlanTr
 type ApiIpamVlanTranslationRulesUpdateRequest struct {
 	ctx                        context.Context
 	ApiService                 IpamAPI
-	id                         int32
+	id                         int64
 	vLANTranslationRuleRequest *VLANTranslationRuleRequest
 }
 
@@ -46766,7 +46824,7 @@ Put a VLAN translation rule object.
 	@param id A unique integer value identifying this VLAN translation rule.
 	@return ApiIpamVlanTranslationRulesUpdateRequest
 */
-func (a *IpamAPIService) IpamVlanTranslationRulesUpdate(ctx context.Context, id int32) ApiIpamVlanTranslationRulesUpdateRequest {
+func (a *IpamAPIService) IpamVlanTranslationRulesUpdate(ctx context.Context, id int64) ApiIpamVlanTranslationRulesUpdateRequest {
 	return ApiIpamVlanTranslationRulesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -47361,7 +47419,7 @@ func (a *IpamAPIService) IpamVlansCreateExecute(r ApiIpamVlansCreateRequest) (*V
 type ApiIpamVlansDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamVlansDestroyRequest) Execute() (*http.Response, error) {
@@ -47377,7 +47435,7 @@ Delete a VLAN object.
 	@param id A unique integer value identifying this VLAN.
 	@return ApiIpamVlansDestroyRequest
 */
-func (a *IpamAPIService) IpamVlansDestroy(ctx context.Context, id int32) ApiIpamVlansDestroyRequest {
+func (a *IpamAPIService) IpamVlansDestroy(ctx context.Context, id int64) ApiIpamVlansDestroyRequest {
 	return ApiIpamVlansDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -47467,10 +47525,10 @@ func (a *IpamAPIService) IpamVlansDestroyExecute(r ApiIpamVlansDestroyRequest) (
 type ApiIpamVlansListRequest struct {
 	ctx                       context.Context
 	ApiService                IpamAPI
-	availableAtSite           *string
-	availableAtSiteGroup      *string
-	availableOnDevice         *string
-	availableOnVirtualmachine *string
+	availableAtSite           *int64
+	availableAtSiteGroup      *int64
+	availableOnDevice         *int64
+	availableOnVirtualmachine *int64
 	brief                     *bool
 	created                   *[]time.Time
 	createdEmpty              *bool
@@ -47496,20 +47554,20 @@ type ApiIpamVlansListRequest struct {
 	fields                    *string
 	group                     *[]string
 	groupN                    *[]string
-	groupId                   *[]*int32
-	groupIdN                  *[]*int32
-	id                        *[]int32
+	groupId                   *[]*int64
+	groupIdN                  *[]*int64
+	id                        *[]int64
 	idEmpty                   *bool
-	idGt                      *[]int32
-	idGte                     *[]int32
-	idLt                      *[]int32
-	idLte                     *[]int32
-	idN                       *[]int32
-	interfaceId               *int32
+	idGt                      *[]int64
+	idGte                     *[]int64
+	idLt                      *[]int64
+	idLte                     *[]int64
+	idN                       *[]int64
+	interfaceId               *int64
 	l2vpn                     *[]*int64
 	l2vpnN                    *[]*int64
-	l2vpnId                   *[]int32
-	l2vpnIdN                  *[]int32
+	l2vpnId                   *[]int64
+	l2vpnIdN                  *[]int64
 	lastUpdated               *[]time.Time
 	lastUpdatedEmpty          *bool
 	lastUpdatedGt             *[]time.Time
@@ -47539,10 +47597,10 @@ type ApiIpamVlansListRequest struct {
 	ownerN                    *[]string
 	ownerGroup                *[]string
 	ownerGroupN               *[]string
-	ownerGroupId              *[]int32
-	ownerGroupIdN             *[]int32
-	ownerId                   *[]*int32
-	ownerIdN                  *[]*int32
+	ownerGroupId              *[]int64
+	ownerGroupIdN             *[]int64
+	ownerId                   *[]*int64
+	ownerIdN                  *[]*int64
 	q                         *string
 	qinqRole                  *[]*string
 	qinqRoleEmpty             *bool
@@ -47557,8 +47615,8 @@ type ApiIpamVlansListRequest struct {
 	qinqRoleNiew              *[]*string
 	qinqRoleNisw              *[]*string
 	qinqRoleRegex             *[]*string
-	qinqSvlanId               *[]*int32
-	qinqSvlanIdN              *[]*int32
+	qinqSvlanId               *[]*int64
+	qinqSvlanIdN              *[]*int64
 	qinqSvlanVid              *[]int32
 	qinqSvlanVidEmpty         *bool
 	qinqSvlanVidGt            *[]int32
@@ -47568,22 +47626,22 @@ type ApiIpamVlansListRequest struct {
 	qinqSvlanVidN             *[]int32
 	region                    *[]string
 	regionN                   *[]string
-	regionId                  *[]string
-	regionIdN                 *[]string
-	relatedToSite             *[]int32
-	relatedToSiteN            *[]int32
+	regionId                  *[]int64
+	regionIdN                 *[]int64
+	relatedToSite             *[]int64
+	relatedToSiteN            *[]int64
 	role                      *[]string
 	roleN                     *[]string
-	roleId                    *[]*int32
-	roleIdN                   *[]*int32
+	roleId                    *[]*int64
+	roleIdN                   *[]*int64
 	site                      *[]string
 	siteN                     *[]string
 	siteGroup                 *[]string
 	siteGroupN                *[]string
-	siteGroupId               *[]string
-	siteGroupIdN              *[]string
-	siteId                    *[]*int32
-	siteIdN                   *[]*int32
+	siteGroupId               *[]int64
+	siteGroupIdN              *[]int64
+	siteId                    *[]*int64
+	siteIdN                   *[]*int64
 	start                     *int32
 	status                    *[]string
 	statusEmpty               *bool
@@ -47601,17 +47659,17 @@ type ApiIpamVlansListRequest struct {
 	tag                       *[]string
 	tagAny                    *[]string
 	tagN                      *[]string
-	tagId                     *[]int32
-	tagIdAny                  *[]int32
-	tagIdN                    *[]int32
+	tagId                     *[]int64
+	tagIdAny                  *[]int64
+	tagIdN                    *[]int64
 	tenant                    *[]string
 	tenantN                   *[]string
 	tenantGroup               *[]string
 	tenantGroupN              *[]string
-	tenantGroupId             *[]string
-	tenantGroupIdN            *[]string
-	tenantId                  *[]*int32
-	tenantIdN                 *[]*int32
+	tenantGroupId             *[]int64
+	tenantGroupIdN            *[]int64
+	tenantId                  *[]*int64
+	tenantIdN                 *[]*int64
 	updatedByRequest          *string
 	vid                       *[]int32
 	vidEmpty                  *bool
@@ -47620,25 +47678,25 @@ type ApiIpamVlansListRequest struct {
 	vidLt                     *[]int32
 	vidLte                    *[]int32
 	vidN                      *[]int32
-	vminterfaceId             *int32
+	vminterfaceId             *int64
 }
 
-func (r ApiIpamVlansListRequest) AvailableAtSite(availableAtSite string) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) AvailableAtSite(availableAtSite int64) ApiIpamVlansListRequest {
 	r.availableAtSite = &availableAtSite
 	return r
 }
 
-func (r ApiIpamVlansListRequest) AvailableAtSiteGroup(availableAtSiteGroup string) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) AvailableAtSiteGroup(availableAtSiteGroup int64) ApiIpamVlansListRequest {
 	r.availableAtSiteGroup = &availableAtSiteGroup
 	return r
 }
 
-func (r ApiIpamVlansListRequest) AvailableOnDevice(availableOnDevice string) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) AvailableOnDevice(availableOnDevice int64) ApiIpamVlansListRequest {
 	r.availableOnDevice = &availableOnDevice
 	return r
 }
 
-func (r ApiIpamVlansListRequest) AvailableOnVirtualmachine(availableOnVirtualmachine string) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) AvailableOnVirtualmachine(availableOnVirtualmachine int64) ApiIpamVlansListRequest {
 	r.availableOnVirtualmachine = &availableOnVirtualmachine
 	return r
 }
@@ -47773,18 +47831,18 @@ func (r ApiIpamVlansListRequest) GroupN(groupN []string) ApiIpamVlansListRequest
 }
 
 // Group (ID)
-func (r ApiIpamVlansListRequest) GroupId(groupId []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) GroupId(groupId []*int64) ApiIpamVlansListRequest {
 	r.groupId = &groupId
 	return r
 }
 
 // Group (ID)
-func (r ApiIpamVlansListRequest) GroupIdN(groupIdN []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) GroupIdN(groupIdN []*int64) ApiIpamVlansListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiIpamVlansListRequest) Id(id []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) Id(id []int64) ApiIpamVlansListRequest {
 	r.id = &id
 	return r
 }
@@ -47794,32 +47852,32 @@ func (r ApiIpamVlansListRequest) IdEmpty(idEmpty bool) ApiIpamVlansListRequest {
 	return r
 }
 
-func (r ApiIpamVlansListRequest) IdGt(idGt []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) IdGt(idGt []int64) ApiIpamVlansListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamVlansListRequest) IdGte(idGte []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) IdGte(idGte []int64) ApiIpamVlansListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamVlansListRequest) IdLt(idLt []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) IdLt(idLt []int64) ApiIpamVlansListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamVlansListRequest) IdLte(idLte []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) IdLte(idLte []int64) ApiIpamVlansListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamVlansListRequest) IdN(idN []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) IdN(idN []int64) ApiIpamVlansListRequest {
 	r.idN = &idN
 	return r
 }
 
-func (r ApiIpamVlansListRequest) InterfaceId(interfaceId int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) InterfaceId(interfaceId int64) ApiIpamVlansListRequest {
 	r.interfaceId = &interfaceId
 	return r
 }
@@ -47837,13 +47895,13 @@ func (r ApiIpamVlansListRequest) L2vpnN(l2vpnN []*int64) ApiIpamVlansListRequest
 }
 
 // L2VPN (ID)
-func (r ApiIpamVlansListRequest) L2vpnId(l2vpnId []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) L2vpnId(l2vpnId []int64) ApiIpamVlansListRequest {
 	r.l2vpnId = &l2vpnId
 	return r
 }
 
 // L2VPN (ID)
-func (r ApiIpamVlansListRequest) L2vpnIdN(l2vpnIdN []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) L2vpnIdN(l2vpnIdN []int64) ApiIpamVlansListRequest {
 	r.l2vpnIdN = &l2vpnIdN
 	return r
 }
@@ -48002,25 +48060,25 @@ func (r ApiIpamVlansListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamVlansL
 }
 
 // Owner Group (ID)
-func (r ApiIpamVlansListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamVlansListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamVlansListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamVlansListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamVlansListRequest) OwnerId(ownerId []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) OwnerId(ownerId []*int64) ApiIpamVlansListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamVlansListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamVlansListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -48109,13 +48167,13 @@ func (r ApiIpamVlansListRequest) QinqRoleRegex(qinqRoleRegex []*string) ApiIpamV
 }
 
 // Q-in-Q SVLAN (ID)
-func (r ApiIpamVlansListRequest) QinqSvlanId(qinqSvlanId []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) QinqSvlanId(qinqSvlanId []*int64) ApiIpamVlansListRequest {
 	r.qinqSvlanId = &qinqSvlanId
 	return r
 }
 
 // Q-in-Q SVLAN (ID)
-func (r ApiIpamVlansListRequest) QinqSvlanIdN(qinqSvlanIdN []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) QinqSvlanIdN(qinqSvlanIdN []*int64) ApiIpamVlansListRequest {
 	r.qinqSvlanIdN = &qinqSvlanIdN
 	return r
 }
@@ -48156,32 +48214,36 @@ func (r ApiIpamVlansListRequest) QinqSvlanVidN(qinqSvlanVidN []int32) ApiIpamVla
 	return r
 }
 
+// Region (slug)
 func (r ApiIpamVlansListRequest) Region(region []string) ApiIpamVlansListRequest {
 	r.region = &region
 	return r
 }
 
+// Region (slug)
 func (r ApiIpamVlansListRequest) RegionN(regionN []string) ApiIpamVlansListRequest {
 	r.regionN = &regionN
 	return r
 }
 
-func (r ApiIpamVlansListRequest) RegionId(regionId []string) ApiIpamVlansListRequest {
+// Region (ID)
+func (r ApiIpamVlansListRequest) RegionId(regionId []int64) ApiIpamVlansListRequest {
 	r.regionId = &regionId
 	return r
 }
 
-func (r ApiIpamVlansListRequest) RegionIdN(regionIdN []string) ApiIpamVlansListRequest {
+// Region (ID)
+func (r ApiIpamVlansListRequest) RegionIdN(regionIdN []int64) ApiIpamVlansListRequest {
 	r.regionIdN = &regionIdN
 	return r
 }
 
-func (r ApiIpamVlansListRequest) RelatedToSite(relatedToSite []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) RelatedToSite(relatedToSite []int64) ApiIpamVlansListRequest {
 	r.relatedToSite = &relatedToSite
 	return r
 }
 
-func (r ApiIpamVlansListRequest) RelatedToSiteN(relatedToSiteN []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) RelatedToSiteN(relatedToSiteN []int64) ApiIpamVlansListRequest {
 	r.relatedToSiteN = &relatedToSiteN
 	return r
 }
@@ -48199,13 +48261,13 @@ func (r ApiIpamVlansListRequest) RoleN(roleN []string) ApiIpamVlansListRequest {
 }
 
 // Role (ID)
-func (r ApiIpamVlansListRequest) RoleId(roleId []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) RoleId(roleId []*int64) ApiIpamVlansListRequest {
 	r.roleId = &roleId
 	return r
 }
 
 // Role (ID)
-func (r ApiIpamVlansListRequest) RoleIdN(roleIdN []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) RoleIdN(roleIdN []*int64) ApiIpamVlansListRequest {
 	r.roleIdN = &roleIdN
 	return r
 }
@@ -48222,34 +48284,38 @@ func (r ApiIpamVlansListRequest) SiteN(siteN []string) ApiIpamVlansListRequest {
 	return r
 }
 
+// Site group (slug)
 func (r ApiIpamVlansListRequest) SiteGroup(siteGroup []string) ApiIpamVlansListRequest {
 	r.siteGroup = &siteGroup
 	return r
 }
 
+// Site group (slug)
 func (r ApiIpamVlansListRequest) SiteGroupN(siteGroupN []string) ApiIpamVlansListRequest {
 	r.siteGroupN = &siteGroupN
 	return r
 }
 
-func (r ApiIpamVlansListRequest) SiteGroupId(siteGroupId []string) ApiIpamVlansListRequest {
+// Site group (ID)
+func (r ApiIpamVlansListRequest) SiteGroupId(siteGroupId []int64) ApiIpamVlansListRequest {
 	r.siteGroupId = &siteGroupId
 	return r
 }
 
-func (r ApiIpamVlansListRequest) SiteGroupIdN(siteGroupIdN []string) ApiIpamVlansListRequest {
+// Site group (ID)
+func (r ApiIpamVlansListRequest) SiteGroupIdN(siteGroupIdN []int64) ApiIpamVlansListRequest {
 	r.siteGroupIdN = &siteGroupIdN
 	return r
 }
 
 // Site (ID)
-func (r ApiIpamVlansListRequest) SiteId(siteId []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) SiteId(siteId []*int64) ApiIpamVlansListRequest {
 	r.siteId = &siteId
 	return r
 }
 
 // Site (ID)
-func (r ApiIpamVlansListRequest) SiteIdN(siteIdN []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) SiteIdN(siteIdN []*int64) ApiIpamVlansListRequest {
 	r.siteIdN = &siteIdN
 	return r
 }
@@ -48352,17 +48418,17 @@ func (r ApiIpamVlansListRequest) TagN(tagN []string) ApiIpamVlansListRequest {
 	return r
 }
 
-func (r ApiIpamVlansListRequest) TagId(tagId []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) TagId(tagId []int64) ApiIpamVlansListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamVlansListRequest) TagIdAny(tagIdAny []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) TagIdAny(tagIdAny []int64) ApiIpamVlansListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamVlansListRequest) TagIdN(tagIdN []int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) TagIdN(tagIdN []int64) ApiIpamVlansListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -48379,34 +48445,38 @@ func (r ApiIpamVlansListRequest) TenantN(tenantN []string) ApiIpamVlansListReque
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamVlansListRequest) TenantGroup(tenantGroup []string) ApiIpamVlansListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamVlansListRequest) TenantGroupN(tenantGroupN []string) ApiIpamVlansListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamVlansListRequest) TenantGroupId(tenantGroupId []string) ApiIpamVlansListRequest {
+// Tenant Group (ID)
+func (r ApiIpamVlansListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamVlansListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamVlansListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamVlansListRequest {
+// Tenant Group (ID)
+func (r ApiIpamVlansListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamVlansListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamVlansListRequest) TenantId(tenantId []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) TenantId(tenantId []*int64) ApiIpamVlansListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamVlansListRequest) TenantIdN(tenantIdN []*int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) TenantIdN(tenantIdN []*int64) ApiIpamVlansListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -48451,7 +48521,7 @@ func (r ApiIpamVlansListRequest) VidN(vidN []int32) ApiIpamVlansListRequest {
 	return r
 }
 
-func (r ApiIpamVlansListRequest) VminterfaceId(vminterfaceId int32) ApiIpamVlansListRequest {
+func (r ApiIpamVlansListRequest) VminterfaceId(vminterfaceId int64) ApiIpamVlansListRequest {
 	r.vminterfaceId = &vminterfaceId
 	return r
 }
@@ -50054,7 +50124,7 @@ func (a *IpamAPIService) IpamVlansListExecute(r ApiIpamVlansListRequest) (*Pagin
 type ApiIpamVlansPartialUpdateRequest struct {
 	ctx                        context.Context
 	ApiService                 IpamAPI
-	id                         int32
+	id                         int64
 	patchedWritableVLANRequest *PatchedWritableVLANRequest
 }
 
@@ -50076,7 +50146,7 @@ Patch a VLAN object.
 	@param id A unique integer value identifying this VLAN.
 	@return ApiIpamVlansPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamVlansPartialUpdate(ctx context.Context, id int32) ApiIpamVlansPartialUpdateRequest {
+func (a *IpamAPIService) IpamVlansPartialUpdate(ctx context.Context, id int64) ApiIpamVlansPartialUpdateRequest {
 	return ApiIpamVlansPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -50180,7 +50250,7 @@ func (a *IpamAPIService) IpamVlansPartialUpdateExecute(r ApiIpamVlansPartialUpda
 type ApiIpamVlansRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -50217,7 +50287,7 @@ Get a VLAN object.
 	@param id A unique integer value identifying this VLAN.
 	@return ApiIpamVlansRetrieveRequest
 */
-func (a *IpamAPIService) IpamVlansRetrieve(ctx context.Context, id int32) ApiIpamVlansRetrieveRequest {
+func (a *IpamAPIService) IpamVlansRetrieve(ctx context.Context, id int64) ApiIpamVlansRetrieveRequest {
 	return ApiIpamVlansRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -50328,7 +50398,7 @@ func (a *IpamAPIService) IpamVlansRetrieveExecute(r ApiIpamVlansRetrieveRequest)
 type ApiIpamVlansUpdateRequest struct {
 	ctx                 context.Context
 	ApiService          IpamAPI
-	id                  int32
+	id                  int64
 	writableVLANRequest *WritableVLANRequest
 }
 
@@ -50350,7 +50420,7 @@ Put a VLAN object.
 	@param id A unique integer value identifying this VLAN.
 	@return ApiIpamVlansUpdateRequest
 */
-func (a *IpamAPIService) IpamVlansUpdate(ctx context.Context, id int32) ApiIpamVlansUpdateRequest {
+func (a *IpamAPIService) IpamVlansUpdate(ctx context.Context, id int64) ApiIpamVlansUpdateRequest {
 	return ApiIpamVlansUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -50945,7 +51015,7 @@ func (a *IpamAPIService) IpamVrfsCreateExecute(r ApiIpamVrfsCreateRequest) (*VRF
 type ApiIpamVrfsDestroyRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiIpamVrfsDestroyRequest) Execute() (*http.Response, error) {
@@ -50961,7 +51031,7 @@ Delete a VRF object.
 	@param id A unique integer value identifying this VRF.
 	@return ApiIpamVrfsDestroyRequest
 */
-func (a *IpamAPIService) IpamVrfsDestroy(ctx context.Context, id int32) ApiIpamVrfsDestroyRequest {
+func (a *IpamAPIService) IpamVrfsDestroy(ctx context.Context, id int64) ApiIpamVrfsDestroyRequest {
 	return ApiIpamVrfsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -51076,20 +51146,20 @@ type ApiIpamVrfsListRequest struct {
 	enforceUnique     *bool
 	exportTarget      *[]string
 	exportTargetN     *[]string
-	exportTargetId    *[]int32
-	exportTargetIdN   *[]int32
+	exportTargetId    *[]int64
+	exportTargetIdN   *[]int64
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	importTarget      *[]string
 	importTargetN     *[]string
-	importTargetId    *[]int32
-	importTargetIdN   *[]int32
+	importTargetId    *[]int64
+	importTargetIdN   *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -51119,10 +51189,10 @@ type ApiIpamVrfsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	rd                *[]string
 	rdEmpty           *bool
@@ -51141,17 +51211,17 @@ type ApiIpamVrfsListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
 	updatedByRequest  *string
 }
 
@@ -51284,13 +51354,13 @@ func (r ApiIpamVrfsListRequest) ExportTargetN(exportTargetN []string) ApiIpamVrf
 }
 
 // Export target
-func (r ApiIpamVrfsListRequest) ExportTargetId(exportTargetId []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) ExportTargetId(exportTargetId []int64) ApiIpamVrfsListRequest {
 	r.exportTargetId = &exportTargetId
 	return r
 }
 
 // Export target
-func (r ApiIpamVrfsListRequest) ExportTargetIdN(exportTargetIdN []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) ExportTargetIdN(exportTargetIdN []int64) ApiIpamVrfsListRequest {
 	r.exportTargetIdN = &exportTargetIdN
 	return r
 }
@@ -51301,7 +51371,7 @@ func (r ApiIpamVrfsListRequest) Fields(fields string) ApiIpamVrfsListRequest {
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) Id(id []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) Id(id []int64) ApiIpamVrfsListRequest {
 	r.id = &id
 	return r
 }
@@ -51311,27 +51381,27 @@ func (r ApiIpamVrfsListRequest) IdEmpty(idEmpty bool) ApiIpamVrfsListRequest {
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) IdGt(idGt []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) IdGt(idGt []int64) ApiIpamVrfsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) IdGte(idGte []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) IdGte(idGte []int64) ApiIpamVrfsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) IdLt(idLt []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) IdLt(idLt []int64) ApiIpamVrfsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) IdLte(idLte []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) IdLte(idLte []int64) ApiIpamVrfsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) IdN(idN []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) IdN(idN []int64) ApiIpamVrfsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -51349,13 +51419,13 @@ func (r ApiIpamVrfsListRequest) ImportTargetN(importTargetN []string) ApiIpamVrf
 }
 
 // Import target
-func (r ApiIpamVrfsListRequest) ImportTargetId(importTargetId []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) ImportTargetId(importTargetId []int64) ApiIpamVrfsListRequest {
 	r.importTargetId = &importTargetId
 	return r
 }
 
 // Import target
-func (r ApiIpamVrfsListRequest) ImportTargetIdN(importTargetIdN []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) ImportTargetIdN(importTargetIdN []int64) ApiIpamVrfsListRequest {
 	r.importTargetIdN = &importTargetIdN
 	return r
 }
@@ -51514,25 +51584,25 @@ func (r ApiIpamVrfsListRequest) OwnerGroupN(ownerGroupN []string) ApiIpamVrfsLis
 }
 
 // Owner Group (ID)
-func (r ApiIpamVrfsListRequest) OwnerGroupId(ownerGroupId []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) OwnerGroupId(ownerGroupId []int64) ApiIpamVrfsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiIpamVrfsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiIpamVrfsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamVrfsListRequest) OwnerId(ownerId []*int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) OwnerId(ownerId []*int64) ApiIpamVrfsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiIpamVrfsListRequest) OwnerIdN(ownerIdN []*int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) OwnerIdN(ownerIdN []*int64) ApiIpamVrfsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -51629,17 +51699,17 @@ func (r ApiIpamVrfsListRequest) TagN(tagN []string) ApiIpamVrfsListRequest {
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) TagId(tagId []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) TagId(tagId []int64) ApiIpamVrfsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) TagIdAny(tagIdAny []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) TagIdAny(tagIdAny []int64) ApiIpamVrfsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) TagIdN(tagIdN []int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) TagIdN(tagIdN []int64) ApiIpamVrfsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -51656,34 +51726,38 @@ func (r ApiIpamVrfsListRequest) TenantN(tenantN []string) ApiIpamVrfsListRequest
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamVrfsListRequest) TenantGroup(tenantGroup []string) ApiIpamVrfsListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiIpamVrfsListRequest) TenantGroupN(tenantGroupN []string) ApiIpamVrfsListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) TenantGroupId(tenantGroupId []string) ApiIpamVrfsListRequest {
+// Tenant Group (ID)
+func (r ApiIpamVrfsListRequest) TenantGroupId(tenantGroupId []int64) ApiIpamVrfsListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiIpamVrfsListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiIpamVrfsListRequest {
+// Tenant Group (ID)
+func (r ApiIpamVrfsListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiIpamVrfsListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamVrfsListRequest) TenantId(tenantId []*int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) TenantId(tenantId []*int64) ApiIpamVrfsListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiIpamVrfsListRequest) TenantIdN(tenantIdN []*int32) ApiIpamVrfsListRequest {
+func (r ApiIpamVrfsListRequest) TenantIdN(tenantIdN []*int64) ApiIpamVrfsListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -52783,7 +52857,7 @@ func (a *IpamAPIService) IpamVrfsListExecute(r ApiIpamVrfsListRequest) (*Paginat
 type ApiIpamVrfsPartialUpdateRequest struct {
 	ctx               context.Context
 	ApiService        IpamAPI
-	id                int32
+	id                int64
 	patchedVRFRequest *PatchedVRFRequest
 }
 
@@ -52805,7 +52879,7 @@ Patch a VRF object.
 	@param id A unique integer value identifying this VRF.
 	@return ApiIpamVrfsPartialUpdateRequest
 */
-func (a *IpamAPIService) IpamVrfsPartialUpdate(ctx context.Context, id int32) ApiIpamVrfsPartialUpdateRequest {
+func (a *IpamAPIService) IpamVrfsPartialUpdate(ctx context.Context, id int64) ApiIpamVrfsPartialUpdateRequest {
 	return ApiIpamVrfsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -52909,7 +52983,7 @@ func (a *IpamAPIService) IpamVrfsPartialUpdateExecute(r ApiIpamVrfsPartialUpdate
 type ApiIpamVrfsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -52946,7 +53020,7 @@ Get a VRF object.
 	@param id A unique integer value identifying this VRF.
 	@return ApiIpamVrfsRetrieveRequest
 */
-func (a *IpamAPIService) IpamVrfsRetrieve(ctx context.Context, id int32) ApiIpamVrfsRetrieveRequest {
+func (a *IpamAPIService) IpamVrfsRetrieve(ctx context.Context, id int64) ApiIpamVrfsRetrieveRequest {
 	return ApiIpamVrfsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -53057,7 +53131,7 @@ func (a *IpamAPIService) IpamVrfsRetrieveExecute(r ApiIpamVrfsRetrieveRequest) (
 type ApiIpamVrfsUpdateRequest struct {
 	ctx        context.Context
 	ApiService IpamAPI
-	id         int32
+	id         int64
 	vRFRequest *VRFRequest
 }
 
@@ -53079,7 +53153,7 @@ Put a VRF object.
 	@param id A unique integer value identifying this VRF.
 	@return ApiIpamVrfsUpdateRequest
 */
-func (a *IpamAPIService) IpamVrfsUpdate(ctx context.Context, id int32) ApiIpamVrfsUpdateRequest {
+func (a *IpamAPIService) IpamVrfsUpdate(ctx context.Context, id int64) ApiIpamVrfsUpdateRequest {
 	return ApiIpamVrfsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,

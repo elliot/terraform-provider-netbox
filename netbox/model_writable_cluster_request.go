@@ -23,15 +23,15 @@ var _ MappedNullable = &WritableClusterRequest{}
 // WritableClusterRequest Base serializer class for models inheriting from PrimaryModel.
 type WritableClusterRequest struct {
 	Name  string        `json:"name"`
-	Type  int32         `json:"type"`
-	Group NullableInt32 `json:"group,omitempty"`
+	Type  int64         `json:"type"`
+	Group NullableInt64 `json:"group,omitempty"`
 	// * `planned` - Planned * `staging` - Staging * `active` - Active * `decommissioning` - Decommissioning * `offline` - Offline
 	Status               *string                `json:"status,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	ScopeType            NullableString         `json:"scope_type,omitempty"`
-	ScopeId              NullableInt32          `json:"scope_id,omitempty"`
+	ScopeId              NullableInt64          `json:"scope_id,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -44,7 +44,7 @@ type _WritableClusterRequest WritableClusterRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableClusterRequest(name string, type_ int32) *WritableClusterRequest {
+func NewWritableClusterRequest(name string, type_ int64) *WritableClusterRequest {
 	this := WritableClusterRequest{}
 	this.Name = name
 	this.Type = type_
@@ -84,9 +84,9 @@ func (o *WritableClusterRequest) SetName(v string) {
 }
 
 // GetType returns the Type field value
-func (o *WritableClusterRequest) GetType() int32 {
+func (o *WritableClusterRequest) GetType() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -95,7 +95,7 @@ func (o *WritableClusterRequest) GetType() int32 {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *WritableClusterRequest) GetTypeOk() (*int32, bool) {
+func (o *WritableClusterRequest) GetTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -103,14 +103,14 @@ func (o *WritableClusterRequest) GetTypeOk() (*int32, bool) {
 }
 
 // SetType sets field value
-func (o *WritableClusterRequest) SetType(v int32) {
+func (o *WritableClusterRequest) SetType(v int64) {
 	o.Type = v
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableClusterRequest) GetGroup() int32 {
+func (o *WritableClusterRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -119,7 +119,7 @@ func (o *WritableClusterRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableClusterRequest) GetGroupOk() (*int32, bool) {
+func (o *WritableClusterRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -135,8 +135,8 @@ func (o *WritableClusterRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *WritableClusterRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *WritableClusterRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -183,9 +183,9 @@ func (o *WritableClusterRequest) SetStatus(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableClusterRequest) GetTenant() int32 {
+func (o *WritableClusterRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -194,7 +194,7 @@ func (o *WritableClusterRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableClusterRequest) GetTenantOk() (*int32, bool) {
+func (o *WritableClusterRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -210,8 +210,8 @@ func (o *WritableClusterRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *WritableClusterRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *WritableClusterRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -269,9 +269,9 @@ func (o *WritableClusterRequest) UnsetScopeType() {
 }
 
 // GetScopeId returns the ScopeId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableClusterRequest) GetScopeId() int32 {
+func (o *WritableClusterRequest) GetScopeId() int64 {
 	if o == nil || IsNil(o.ScopeId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ScopeId.Get()
@@ -280,7 +280,7 @@ func (o *WritableClusterRequest) GetScopeId() int32 {
 // GetScopeIdOk returns a tuple with the ScopeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableClusterRequest) GetScopeIdOk() (*int32, bool) {
+func (o *WritableClusterRequest) GetScopeIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -296,8 +296,8 @@ func (o *WritableClusterRequest) HasScopeId() bool {
 	return false
 }
 
-// SetScopeId gets a reference to the given NullableInt32 and assigns it to the ScopeId field.
-func (o *WritableClusterRequest) SetScopeId(v int32) {
+// SetScopeId gets a reference to the given NullableInt64 and assigns it to the ScopeId field.
+func (o *WritableClusterRequest) SetScopeId(v int64) {
 	o.ScopeId.Set(&v)
 }
 
@@ -344,9 +344,9 @@ func (o *WritableClusterRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableClusterRequest) GetOwner() int32 {
+func (o *WritableClusterRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -355,7 +355,7 @@ func (o *WritableClusterRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableClusterRequest) GetOwnerOk() (*int32, bool) {
+func (o *WritableClusterRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -371,8 +371,8 @@ func (o *WritableClusterRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *WritableClusterRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *WritableClusterRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

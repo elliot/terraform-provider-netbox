@@ -22,7 +22,7 @@ var _ MappedNullable = &BulkOwnerGroupRequest{}
 
 // BulkOwnerGroupRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkOwnerGroupRequest struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Name                 string  `json:"name"`
 	Description          *string `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -34,7 +34,7 @@ type _BulkOwnerGroupRequest BulkOwnerGroupRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkOwnerGroupRequest(id int32, name string) *BulkOwnerGroupRequest {
+func NewBulkOwnerGroupRequest(id int64, name string) *BulkOwnerGroupRequest {
 	this := BulkOwnerGroupRequest{}
 	this.Id = id
 	this.Name = name
@@ -50,9 +50,9 @@ func NewBulkOwnerGroupRequestWithDefaults() *BulkOwnerGroupRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkOwnerGroupRequest) GetId() int32 {
+func (o *BulkOwnerGroupRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -61,7 +61,7 @@ func (o *BulkOwnerGroupRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkOwnerGroupRequest) GetIdOk() (*int32, bool) {
+func (o *BulkOwnerGroupRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -69,7 +69,7 @@ func (o *BulkOwnerGroupRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkOwnerGroupRequest) SetId(v int32) {
+func (o *BulkOwnerGroupRequest) SetId(v int64) {
 	o.Id = v
 }
 

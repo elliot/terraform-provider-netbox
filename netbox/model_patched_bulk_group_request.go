@@ -22,10 +22,10 @@ var _ MappedNullable = &PatchedBulkGroupRequest{}
 
 // PatchedBulkGroupRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedBulkGroupRequest struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Name                 *string `json:"name,omitempty"`
 	Description          *string `json:"description,omitempty"`
-	Permissions          []int32 `json:"permissions,omitempty"`
+	Permissions          []int64 `json:"permissions,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -35,7 +35,7 @@ type _PatchedBulkGroupRequest PatchedBulkGroupRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkGroupRequest(id int32) *PatchedBulkGroupRequest {
+func NewPatchedBulkGroupRequest(id int64) *PatchedBulkGroupRequest {
 	this := PatchedBulkGroupRequest{}
 	this.Id = id
 	return &this
@@ -50,9 +50,9 @@ func NewPatchedBulkGroupRequestWithDefaults() *PatchedBulkGroupRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkGroupRequest) GetId() int32 {
+func (o *PatchedBulkGroupRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -61,7 +61,7 @@ func (o *PatchedBulkGroupRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkGroupRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkGroupRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -69,7 +69,7 @@ func (o *PatchedBulkGroupRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkGroupRequest) SetId(v int32) {
+func (o *PatchedBulkGroupRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -138,9 +138,9 @@ func (o *PatchedBulkGroupRequest) SetDescription(v string) {
 }
 
 // GetPermissions returns the Permissions field value if set, zero value otherwise.
-func (o *PatchedBulkGroupRequest) GetPermissions() []int32 {
+func (o *PatchedBulkGroupRequest) GetPermissions() []int64 {
 	if o == nil || IsNil(o.Permissions) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Permissions
@@ -148,7 +148,7 @@ func (o *PatchedBulkGroupRequest) GetPermissions() []int32 {
 
 // GetPermissionsOk returns a tuple with the Permissions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkGroupRequest) GetPermissionsOk() ([]int32, bool) {
+func (o *PatchedBulkGroupRequest) GetPermissionsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Permissions) {
 		return nil, false
 	}
@@ -164,8 +164,8 @@ func (o *PatchedBulkGroupRequest) HasPermissions() bool {
 	return false
 }
 
-// SetPermissions gets a reference to the given []int32 and assigns it to the Permissions field.
-func (o *PatchedBulkGroupRequest) SetPermissions(v []int32) {
+// SetPermissions gets a reference to the given []int64 and assigns it to the Permissions field.
+func (o *PatchedBulkGroupRequest) SetPermissions(v []int64) {
 	o.Permissions = v
 }
 

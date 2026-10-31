@@ -22,11 +22,11 @@ var _ MappedNullable = &CircuitTerminationRequest{}
 
 // CircuitTerminationRequest Adds support for custom fields and tags.
 type CircuitTerminationRequest struct {
-	Circuit int32 `json:"circuit"`
+	Circuit int64 `json:"circuit"`
 	// * `A` - A * `Z` - Z
 	TermSide        string         `json:"term_side"`
 	TerminationType NullableString `json:"termination_type,omitempty"`
-	TerminationId   NullableInt32  `json:"termination_id,omitempty"`
+	TerminationId   NullableInt64  `json:"termination_id,omitempty"`
 	// Physical circuit speed
 	PortSpeed NullableInt32 `json:"port_speed,omitempty"`
 	// Upstream speed, if different from port speed
@@ -49,7 +49,7 @@ type _CircuitTerminationRequest CircuitTerminationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCircuitTerminationRequest(circuit int32, termSide string) *CircuitTerminationRequest {
+func NewCircuitTerminationRequest(circuit int64, termSide string) *CircuitTerminationRequest {
 	this := CircuitTerminationRequest{}
 	this.Circuit = circuit
 	this.TermSide = termSide
@@ -65,9 +65,9 @@ func NewCircuitTerminationRequestWithDefaults() *CircuitTerminationRequest {
 }
 
 // GetCircuit returns the Circuit field value
-func (o *CircuitTerminationRequest) GetCircuit() int32 {
+func (o *CircuitTerminationRequest) GetCircuit() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -76,7 +76,7 @@ func (o *CircuitTerminationRequest) GetCircuit() int32 {
 
 // GetCircuitOk returns a tuple with the Circuit field value
 // and a boolean to check if the value has been set.
-func (o *CircuitTerminationRequest) GetCircuitOk() (*int32, bool) {
+func (o *CircuitTerminationRequest) GetCircuitOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,7 +84,7 @@ func (o *CircuitTerminationRequest) GetCircuitOk() (*int32, bool) {
 }
 
 // SetCircuit sets field value
-func (o *CircuitTerminationRequest) SetCircuit(v int32) {
+func (o *CircuitTerminationRequest) SetCircuit(v int64) {
 	o.Circuit = v
 }
 
@@ -156,9 +156,9 @@ func (o *CircuitTerminationRequest) UnsetTerminationType() {
 }
 
 // GetTerminationId returns the TerminationId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CircuitTerminationRequest) GetTerminationId() int32 {
+func (o *CircuitTerminationRequest) GetTerminationId() int64 {
 	if o == nil || IsNil(o.TerminationId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.TerminationId.Get()
@@ -167,7 +167,7 @@ func (o *CircuitTerminationRequest) GetTerminationId() int32 {
 // GetTerminationIdOk returns a tuple with the TerminationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CircuitTerminationRequest) GetTerminationIdOk() (*int32, bool) {
+func (o *CircuitTerminationRequest) GetTerminationIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -183,8 +183,8 @@ func (o *CircuitTerminationRequest) HasTerminationId() bool {
 	return false
 }
 
-// SetTerminationId gets a reference to the given NullableInt32 and assigns it to the TerminationId field.
-func (o *CircuitTerminationRequest) SetTerminationId(v int32) {
+// SetTerminationId gets a reference to the given NullableInt64 and assigns it to the TerminationId field.
+func (o *CircuitTerminationRequest) SetTerminationId(v int64) {
 	o.TerminationId.Set(&v)
 }
 

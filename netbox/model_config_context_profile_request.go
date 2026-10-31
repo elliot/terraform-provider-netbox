@@ -27,9 +27,9 @@ type ConfigContextProfileRequest struct {
 	// A JSON schema specifying the structure of the context data for this profile
 	Schema               interface{}        `json:"schema,omitempty"`
 	Tags                 []NestedTagRequest `json:"tags,omitempty"`
-	Owner                NullableInt32      `json:"owner,omitempty"`
+	Owner                NullableInt64      `json:"owner,omitempty"`
 	Comments             *string            `json:"comments,omitempty"`
-	DataSource           *int32             `json:"data_source,omitempty"`
+	DataSource           *int64             `json:"data_source,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -175,9 +175,9 @@ func (o *ConfigContextProfileRequest) SetTags(v []NestedTagRequest) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConfigContextProfileRequest) GetOwner() int32 {
+func (o *ConfigContextProfileRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -186,7 +186,7 @@ func (o *ConfigContextProfileRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConfigContextProfileRequest) GetOwnerOk() (*int32, bool) {
+func (o *ConfigContextProfileRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -202,8 +202,8 @@ func (o *ConfigContextProfileRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *ConfigContextProfileRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *ConfigContextProfileRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -250,9 +250,9 @@ func (o *ConfigContextProfileRequest) SetComments(v string) {
 }
 
 // GetDataSource returns the DataSource field value if set, zero value otherwise.
-func (o *ConfigContextProfileRequest) GetDataSource() int32 {
+func (o *ConfigContextProfileRequest) GetDataSource() int64 {
 	if o == nil || IsNil(o.DataSource) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DataSource
@@ -260,7 +260,7 @@ func (o *ConfigContextProfileRequest) GetDataSource() int32 {
 
 // GetDataSourceOk returns a tuple with the DataSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigContextProfileRequest) GetDataSourceOk() (*int32, bool) {
+func (o *ConfigContextProfileRequest) GetDataSourceOk() (*int64, bool) {
 	if o == nil || IsNil(o.DataSource) {
 		return nil, false
 	}
@@ -276,8 +276,8 @@ func (o *ConfigContextProfileRequest) HasDataSource() bool {
 	return false
 }
 
-// SetDataSource gets a reference to the given int32 and assigns it to the DataSource field.
-func (o *ConfigContextProfileRequest) SetDataSource(v int32) {
+// SetDataSource gets a reference to the given int64 and assigns it to the DataSource field.
+func (o *ConfigContextProfileRequest) SetDataSource(v int64) {
 	o.DataSource = &v
 }
 

@@ -22,7 +22,7 @@ var _ MappedNullable = &NestedInterfaceTemplate{}
 
 // NestedInterfaceTemplate Represents an object related through a ForeignKey field. On write, it accepts a primary key (PK) value or a dictionary of attributes which can be used to uniquely identify the related object. This class should be subclassed to return a full representation of the related object on read.
 type NestedInterfaceTemplate struct {
-	Id      int32   `json:"id"`
+	Id      int64   `json:"id"`
 	Url     *string `json:"url,omitempty"`
 	Display *string `json:"display,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
@@ -36,7 +36,7 @@ type _NestedInterfaceTemplate NestedInterfaceTemplate
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNestedInterfaceTemplate(id int32) *NestedInterfaceTemplate {
+func NewNestedInterfaceTemplate(id int64) *NestedInterfaceTemplate {
 	this := NestedInterfaceTemplate{}
 	this.Id = id
 	return &this
@@ -51,9 +51,9 @@ func NewNestedInterfaceTemplateWithDefaults() *NestedInterfaceTemplate {
 }
 
 // GetId returns the Id field value
-func (o *NestedInterfaceTemplate) GetId() int32 {
+func (o *NestedInterfaceTemplate) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -62,7 +62,7 @@ func (o *NestedInterfaceTemplate) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *NestedInterfaceTemplate) GetIdOk() (*int32, bool) {
+func (o *NestedInterfaceTemplate) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,7 +70,7 @@ func (o *NestedInterfaceTemplate) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *NestedInterfaceTemplate) SetId(v int32) {
+func (o *NestedInterfaceTemplate) SetId(v int64) {
 	o.Id = v
 }
 

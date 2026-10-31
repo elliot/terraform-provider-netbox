@@ -21,14 +21,14 @@ var _ MappedNullable = &PatchedWritableRackReservationRequest{}
 
 // PatchedWritableRackReservationRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedWritableRackReservationRequest struct {
-	Rack  *int32  `json:"rack,omitempty"`
+	Rack  *int64  `json:"rack,omitempty"`
 	Units []int32 `json:"units,omitempty"`
 	// * `pending` - Pending * `active` - Active * `stale` - Stale
 	Status               *string                `json:"status,omitempty"`
-	User                 *int32                 `json:"user,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	User                 *int64                 `json:"user,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -55,9 +55,9 @@ func NewPatchedWritableRackReservationRequestWithDefaults() *PatchedWritableRack
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise.
-func (o *PatchedWritableRackReservationRequest) GetRack() int32 {
+func (o *PatchedWritableRackReservationRequest) GetRack() int64 {
 	if o == nil || IsNil(o.Rack) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rack
@@ -65,7 +65,7 @@ func (o *PatchedWritableRackReservationRequest) GetRack() int32 {
 
 // GetRackOk returns a tuple with the Rack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableRackReservationRequest) GetRackOk() (*int32, bool) {
+func (o *PatchedWritableRackReservationRequest) GetRackOk() (*int64, bool) {
 	if o == nil || IsNil(o.Rack) {
 		return nil, false
 	}
@@ -81,8 +81,8 @@ func (o *PatchedWritableRackReservationRequest) HasRack() bool {
 	return false
 }
 
-// SetRack gets a reference to the given int32 and assigns it to the Rack field.
-func (o *PatchedWritableRackReservationRequest) SetRack(v int32) {
+// SetRack gets a reference to the given int64 and assigns it to the Rack field.
+func (o *PatchedWritableRackReservationRequest) SetRack(v int64) {
 	o.Rack = &v
 }
 
@@ -151,9 +151,9 @@ func (o *PatchedWritableRackReservationRequest) SetStatus(v string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise.
-func (o *PatchedWritableRackReservationRequest) GetUser() int32 {
+func (o *PatchedWritableRackReservationRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User
@@ -161,7 +161,7 @@ func (o *PatchedWritableRackReservationRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableRackReservationRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedWritableRackReservationRequest) GetUserOk() (*int64, bool) {
 	if o == nil || IsNil(o.User) {
 		return nil, false
 	}
@@ -177,15 +177,15 @@ func (o *PatchedWritableRackReservationRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given int32 and assigns it to the User field.
-func (o *PatchedWritableRackReservationRequest) SetUser(v int32) {
+// SetUser gets a reference to the given int64 and assigns it to the User field.
+func (o *PatchedWritableRackReservationRequest) SetUser(v int64) {
 	o.User = &v
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableRackReservationRequest) GetTenant() int32 {
+func (o *PatchedWritableRackReservationRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -194,7 +194,7 @@ func (o *PatchedWritableRackReservationRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableRackReservationRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableRackReservationRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -210,8 +210,8 @@ func (o *PatchedWritableRackReservationRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableRackReservationRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableRackReservationRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -258,9 +258,9 @@ func (o *PatchedWritableRackReservationRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableRackReservationRequest) GetOwner() int32 {
+func (o *PatchedWritableRackReservationRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -269,7 +269,7 @@ func (o *PatchedWritableRackReservationRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableRackReservationRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableRackReservationRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -285,8 +285,8 @@ func (o *PatchedWritableRackReservationRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableRackReservationRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableRackReservationRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

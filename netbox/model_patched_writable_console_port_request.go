@@ -21,8 +21,8 @@ var _ MappedNullable = &PatchedWritableConsolePortRequest{}
 
 // PatchedWritableConsolePortRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedWritableConsolePortRequest struct {
-	Device *int32        `json:"device,omitempty"`
-	Module NullableInt32 `json:"module,omitempty"`
+	Device *int64        `json:"device,omitempty"`
+	Module NullableInt64 `json:"module,omitempty"`
 	Name   *string       `json:"name,omitempty"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
@@ -33,7 +33,7 @@ type PatchedWritableConsolePortRequest struct {
 	Description *string       `json:"description,omitempty"`
 	// Treat as if a cable is connected
 	MarkConnected        *bool                  `json:"mark_connected,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -59,9 +59,9 @@ func NewPatchedWritableConsolePortRequestWithDefaults() *PatchedWritableConsoleP
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise.
-func (o *PatchedWritableConsolePortRequest) GetDevice() int32 {
+func (o *PatchedWritableConsolePortRequest) GetDevice() int64 {
 	if o == nil || IsNil(o.Device) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Device
@@ -69,7 +69,7 @@ func (o *PatchedWritableConsolePortRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableConsolePortRequest) GetDeviceOk() (*int32, bool) {
+func (o *PatchedWritableConsolePortRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil || IsNil(o.Device) {
 		return nil, false
 	}
@@ -85,15 +85,15 @@ func (o *PatchedWritableConsolePortRequest) HasDevice() bool {
 	return false
 }
 
-// SetDevice gets a reference to the given int32 and assigns it to the Device field.
-func (o *PatchedWritableConsolePortRequest) SetDevice(v int32) {
+// SetDevice gets a reference to the given int64 and assigns it to the Device field.
+func (o *PatchedWritableConsolePortRequest) SetDevice(v int64) {
 	o.Device = &v
 }
 
 // GetModule returns the Module field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableConsolePortRequest) GetModule() int32 {
+func (o *PatchedWritableConsolePortRequest) GetModule() int64 {
 	if o == nil || IsNil(o.Module.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module.Get()
@@ -102,7 +102,7 @@ func (o *PatchedWritableConsolePortRequest) GetModule() int32 {
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableConsolePortRequest) GetModuleOk() (*int32, bool) {
+func (o *PatchedWritableConsolePortRequest) GetModuleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -118,8 +118,8 @@ func (o *PatchedWritableConsolePortRequest) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given NullableInt32 and assigns it to the Module field.
-func (o *PatchedWritableConsolePortRequest) SetModule(v int32) {
+// SetModule gets a reference to the given NullableInt64 and assigns it to the Module field.
+func (o *PatchedWritableConsolePortRequest) SetModule(v int64) {
 	o.Module.Set(&v)
 }
 
@@ -348,9 +348,9 @@ func (o *PatchedWritableConsolePortRequest) SetMarkConnected(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableConsolePortRequest) GetOwner() int32 {
+func (o *PatchedWritableConsolePortRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -359,7 +359,7 @@ func (o *PatchedWritableConsolePortRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableConsolePortRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableConsolePortRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -375,8 +375,8 @@ func (o *PatchedWritableConsolePortRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableConsolePortRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableConsolePortRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

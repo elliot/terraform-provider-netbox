@@ -23,7 +23,7 @@ var _ MappedNullable = &Manufacturer{}
 
 // Manufacturer Base serializer class for models inheriting from OrganizationalModel.
 type Manufacturer struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Url                  *string                `json:"url,omitempty"`
 	DisplayUrl           *string                `json:"display_url,omitempty"`
 	Display              *string                `json:"display,omitempty"`
@@ -49,7 +49,7 @@ type _Manufacturer Manufacturer
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewManufacturer(id int32) *Manufacturer {
+func NewManufacturer(id int64) *Manufacturer {
 	this := Manufacturer{}
 	this.Id = id
 	return &this
@@ -64,9 +64,9 @@ func NewManufacturerWithDefaults() *Manufacturer {
 }
 
 // GetId returns the Id field value
-func (o *Manufacturer) GetId() int32 {
+func (o *Manufacturer) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *Manufacturer) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *Manufacturer) GetIdOk() (*int32, bool) {
+func (o *Manufacturer) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,7 +83,7 @@ func (o *Manufacturer) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *Manufacturer) SetId(v int32) {
+func (o *Manufacturer) SetId(v int64) {
 	o.Id = v
 }
 

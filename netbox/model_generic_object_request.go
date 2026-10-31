@@ -23,7 +23,7 @@ var _ MappedNullable = &GenericObjectRequest{}
 // GenericObjectRequest Minimal representation of some generic object identified by ContentType and PK.
 type GenericObjectRequest struct {
 	ObjectType           string `json:"object_type"`
-	ObjectId             int32  `json:"object_id"`
+	ObjectId             int64  `json:"object_id"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -33,7 +33,7 @@ type _GenericObjectRequest GenericObjectRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewGenericObjectRequest(objectType string, objectId int32) *GenericObjectRequest {
+func NewGenericObjectRequest(objectType string, objectId int64) *GenericObjectRequest {
 	this := GenericObjectRequest{}
 	this.ObjectType = objectType
 	this.ObjectId = objectId
@@ -73,9 +73,9 @@ func (o *GenericObjectRequest) SetObjectType(v string) {
 }
 
 // GetObjectId returns the ObjectId field value
-func (o *GenericObjectRequest) GetObjectId() int32 {
+func (o *GenericObjectRequest) GetObjectId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -84,7 +84,7 @@ func (o *GenericObjectRequest) GetObjectId() int32 {
 
 // GetObjectIdOk returns a tuple with the ObjectId field value
 // and a boolean to check if the value has been set.
-func (o *GenericObjectRequest) GetObjectIdOk() (*int32, bool) {
+func (o *GenericObjectRequest) GetObjectIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -92,7 +92,7 @@ func (o *GenericObjectRequest) GetObjectIdOk() (*int32, bool) {
 }
 
 // SetObjectId sets field value
-func (o *GenericObjectRequest) SetObjectId(v int32) {
+func (o *GenericObjectRequest) SetObjectId(v int64) {
 	o.ObjectId = v
 }
 

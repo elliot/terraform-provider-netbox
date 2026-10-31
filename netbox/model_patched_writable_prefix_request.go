@@ -22,20 +22,20 @@ var _ MappedNullable = &PatchedWritablePrefixRequest{}
 // PatchedWritablePrefixRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedWritablePrefixRequest struct {
 	Prefix    *string        `json:"prefix,omitempty"`
-	Vrf       NullableInt32  `json:"vrf,omitempty"`
+	Vrf       NullableInt64  `json:"vrf,omitempty"`
 	ScopeType NullableString `json:"scope_type,omitempty"`
-	ScopeId   NullableInt32  `json:"scope_id,omitempty"`
-	Tenant    NullableInt32  `json:"tenant,omitempty"`
-	Vlan      NullableInt32  `json:"vlan,omitempty"`
+	ScopeId   NullableInt64  `json:"scope_id,omitempty"`
+	Tenant    NullableInt64  `json:"tenant,omitempty"`
+	Vlan      NullableInt64  `json:"vlan,omitempty"`
 	// Operational status of this prefix  * `container` - Container * `active` - Active * `reserved` - Reserved * `deprecated` - Deprecated
 	Status *string       `json:"status,omitempty"`
-	Role   NullableInt32 `json:"role,omitempty"`
+	Role   NullableInt64 `json:"role,omitempty"`
 	// All IP addresses within this prefix are considered usable
 	IsPool *bool `json:"is_pool,omitempty"`
 	// Treat as fully utilized
 	MarkUtilized         *bool                  `json:"mark_utilized,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -94,9 +94,9 @@ func (o *PatchedWritablePrefixRequest) SetPrefix(v string) {
 }
 
 // GetVrf returns the Vrf field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePrefixRequest) GetVrf() int32 {
+func (o *PatchedWritablePrefixRequest) GetVrf() int64 {
 	if o == nil || IsNil(o.Vrf.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vrf.Get()
@@ -105,7 +105,7 @@ func (o *PatchedWritablePrefixRequest) GetVrf() int32 {
 // GetVrfOk returns a tuple with the Vrf field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePrefixRequest) GetVrfOk() (*int32, bool) {
+func (o *PatchedWritablePrefixRequest) GetVrfOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -121,8 +121,8 @@ func (o *PatchedWritablePrefixRequest) HasVrf() bool {
 	return false
 }
 
-// SetVrf gets a reference to the given NullableInt32 and assigns it to the Vrf field.
-func (o *PatchedWritablePrefixRequest) SetVrf(v int32) {
+// SetVrf gets a reference to the given NullableInt64 and assigns it to the Vrf field.
+func (o *PatchedWritablePrefixRequest) SetVrf(v int64) {
 	o.Vrf.Set(&v)
 }
 
@@ -180,9 +180,9 @@ func (o *PatchedWritablePrefixRequest) UnsetScopeType() {
 }
 
 // GetScopeId returns the ScopeId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePrefixRequest) GetScopeId() int32 {
+func (o *PatchedWritablePrefixRequest) GetScopeId() int64 {
 	if o == nil || IsNil(o.ScopeId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ScopeId.Get()
@@ -191,7 +191,7 @@ func (o *PatchedWritablePrefixRequest) GetScopeId() int32 {
 // GetScopeIdOk returns a tuple with the ScopeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePrefixRequest) GetScopeIdOk() (*int32, bool) {
+func (o *PatchedWritablePrefixRequest) GetScopeIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -207,8 +207,8 @@ func (o *PatchedWritablePrefixRequest) HasScopeId() bool {
 	return false
 }
 
-// SetScopeId gets a reference to the given NullableInt32 and assigns it to the ScopeId field.
-func (o *PatchedWritablePrefixRequest) SetScopeId(v int32) {
+// SetScopeId gets a reference to the given NullableInt64 and assigns it to the ScopeId field.
+func (o *PatchedWritablePrefixRequest) SetScopeId(v int64) {
 	o.ScopeId.Set(&v)
 }
 
@@ -223,9 +223,9 @@ func (o *PatchedWritablePrefixRequest) UnsetScopeId() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePrefixRequest) GetTenant() int32 {
+func (o *PatchedWritablePrefixRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -234,7 +234,7 @@ func (o *PatchedWritablePrefixRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePrefixRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritablePrefixRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -250,8 +250,8 @@ func (o *PatchedWritablePrefixRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritablePrefixRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritablePrefixRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -266,9 +266,9 @@ func (o *PatchedWritablePrefixRequest) UnsetTenant() {
 }
 
 // GetVlan returns the Vlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePrefixRequest) GetVlan() int32 {
+func (o *PatchedWritablePrefixRequest) GetVlan() int64 {
 	if o == nil || IsNil(o.Vlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vlan.Get()
@@ -277,7 +277,7 @@ func (o *PatchedWritablePrefixRequest) GetVlan() int32 {
 // GetVlanOk returns a tuple with the Vlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePrefixRequest) GetVlanOk() (*int32, bool) {
+func (o *PatchedWritablePrefixRequest) GetVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -293,8 +293,8 @@ func (o *PatchedWritablePrefixRequest) HasVlan() bool {
 	return false
 }
 
-// SetVlan gets a reference to the given NullableInt32 and assigns it to the Vlan field.
-func (o *PatchedWritablePrefixRequest) SetVlan(v int32) {
+// SetVlan gets a reference to the given NullableInt64 and assigns it to the Vlan field.
+func (o *PatchedWritablePrefixRequest) SetVlan(v int64) {
 	o.Vlan.Set(&v)
 }
 
@@ -341,9 +341,9 @@ func (o *PatchedWritablePrefixRequest) SetStatus(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePrefixRequest) GetRole() int32 {
+func (o *PatchedWritablePrefixRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -352,7 +352,7 @@ func (o *PatchedWritablePrefixRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePrefixRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedWritablePrefixRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -368,8 +368,8 @@ func (o *PatchedWritablePrefixRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedWritablePrefixRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedWritablePrefixRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -480,9 +480,9 @@ func (o *PatchedWritablePrefixRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritablePrefixRequest) GetOwner() int32 {
+func (o *PatchedWritablePrefixRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -491,7 +491,7 @@ func (o *PatchedWritablePrefixRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritablePrefixRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritablePrefixRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -507,8 +507,8 @@ func (o *PatchedWritablePrefixRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritablePrefixRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritablePrefixRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

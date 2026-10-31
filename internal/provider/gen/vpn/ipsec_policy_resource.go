@@ -196,7 +196,7 @@ func (r *IpsecPolicyResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -227,7 +227,7 @@ func (r *IpsecPolicyResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -257,7 +257,7 @@ func (r *IpsecPolicyResource) Delete(ctx context.Context, req resource.DeleteReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -282,13 +282,13 @@ func ipsecPolicyToCreate(ctx context.Context, plan *IpsecPolicyModel, cf *custom
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.ProposalIds) {
-		body.SetProposals(conv.Int32s(ctx, plan.ProposalIds, diags))
+		body.SetProposals(conv.Int64s(ctx, plan.ProposalIds, diags))
 	}
 	if conv.Known(plan.PfsGroup) {
 		body.SetPfsGroup(conv.Int32(plan.PfsGroup))
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -318,7 +318,7 @@ func ipsecPolicyToPatch(ctx context.Context, plan, state *IpsecPolicyModel, cf *
 	}
 	if !plan.ProposalIds.Equal(state.ProposalIds) {
 		if conv.Known(plan.ProposalIds) {
-			body.SetProposals(conv.Int32s(ctx, plan.ProposalIds, diags))
+			body.SetProposals(conv.Int64s(ctx, plan.ProposalIds, diags))
 		}
 	}
 	if !plan.PfsGroup.Equal(state.PfsGroup) {
@@ -330,7 +330,7 @@ func ipsecPolicyToPatch(ctx context.Context, plan, state *IpsecPolicyModel, cf *
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

@@ -22,9 +22,9 @@ var _ MappedNullable = &BulkCoolingFeedRequest{}
 
 // BulkCoolingFeedRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkCoolingFeedRequest struct {
-	Id            int32         `json:"id"`
-	CoolingSource int32         `json:"cooling_source"`
-	Rack          NullableInt32 `json:"rack,omitempty"`
+	Id            int64         `json:"id"`
+	CoolingSource int64         `json:"cooling_source"`
+	Rack          NullableInt64 `json:"rack,omitempty"`
 	Name          string        `json:"name"`
 	// * `offline` - Offline * `active` - Active * `planned` - Planned * `failed` - Failed
 	Status *string `json:"status,omitempty"`
@@ -34,8 +34,8 @@ type BulkCoolingFeedRequest struct {
 	// * `lpm` - Liters per minute (L/min) * `m3ph` - Cubic meters per hour (m³/h) * `gpm` - Gallons per minute (GPM)
 	MaxFlowUnit          NullableString         `json:"max_flow_unit,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -48,7 +48,7 @@ type _BulkCoolingFeedRequest BulkCoolingFeedRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkCoolingFeedRequest(id int32, coolingSource int32, name string) *BulkCoolingFeedRequest {
+func NewBulkCoolingFeedRequest(id int64, coolingSource int64, name string) *BulkCoolingFeedRequest {
 	this := BulkCoolingFeedRequest{}
 	this.Id = id
 	this.CoolingSource = coolingSource
@@ -65,9 +65,9 @@ func NewBulkCoolingFeedRequestWithDefaults() *BulkCoolingFeedRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkCoolingFeedRequest) GetId() int32 {
+func (o *BulkCoolingFeedRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -76,7 +76,7 @@ func (o *BulkCoolingFeedRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkCoolingFeedRequest) GetIdOk() (*int32, bool) {
+func (o *BulkCoolingFeedRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,14 +84,14 @@ func (o *BulkCoolingFeedRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkCoolingFeedRequest) SetId(v int32) {
+func (o *BulkCoolingFeedRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetCoolingSource returns the CoolingSource field value
-func (o *BulkCoolingFeedRequest) GetCoolingSource() int32 {
+func (o *BulkCoolingFeedRequest) GetCoolingSource() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -100,7 +100,7 @@ func (o *BulkCoolingFeedRequest) GetCoolingSource() int32 {
 
 // GetCoolingSourceOk returns a tuple with the CoolingSource field value
 // and a boolean to check if the value has been set.
-func (o *BulkCoolingFeedRequest) GetCoolingSourceOk() (*int32, bool) {
+func (o *BulkCoolingFeedRequest) GetCoolingSourceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -108,14 +108,14 @@ func (o *BulkCoolingFeedRequest) GetCoolingSourceOk() (*int32, bool) {
 }
 
 // SetCoolingSource sets field value
-func (o *BulkCoolingFeedRequest) SetCoolingSource(v int32) {
+func (o *BulkCoolingFeedRequest) SetCoolingSource(v int64) {
 	o.CoolingSource = v
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCoolingFeedRequest) GetRack() int32 {
+func (o *BulkCoolingFeedRequest) GetRack() int64 {
 	if o == nil || IsNil(o.Rack.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rack.Get()
@@ -124,7 +124,7 @@ func (o *BulkCoolingFeedRequest) GetRack() int32 {
 // GetRackOk returns a tuple with the Rack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCoolingFeedRequest) GetRackOk() (*int32, bool) {
+func (o *BulkCoolingFeedRequest) GetRackOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -140,8 +140,8 @@ func (o *BulkCoolingFeedRequest) HasRack() bool {
 	return false
 }
 
-// SetRack gets a reference to the given NullableInt32 and assigns it to the Rack field.
-func (o *BulkCoolingFeedRequest) SetRack(v int32) {
+// SetRack gets a reference to the given NullableInt64 and assigns it to the Rack field.
+func (o *BulkCoolingFeedRequest) SetRack(v int64) {
 	o.Rack.Set(&v)
 }
 
@@ -373,9 +373,9 @@ func (o *BulkCoolingFeedRequest) SetDescription(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCoolingFeedRequest) GetTenant() int32 {
+func (o *BulkCoolingFeedRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -384,7 +384,7 @@ func (o *BulkCoolingFeedRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCoolingFeedRequest) GetTenantOk() (*int32, bool) {
+func (o *BulkCoolingFeedRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -400,8 +400,8 @@ func (o *BulkCoolingFeedRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *BulkCoolingFeedRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *BulkCoolingFeedRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -416,9 +416,9 @@ func (o *BulkCoolingFeedRequest) UnsetTenant() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCoolingFeedRequest) GetOwner() int32 {
+func (o *BulkCoolingFeedRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -427,7 +427,7 @@ func (o *BulkCoolingFeedRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCoolingFeedRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkCoolingFeedRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -443,8 +443,8 @@ func (o *BulkCoolingFeedRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkCoolingFeedRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkCoolingFeedRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

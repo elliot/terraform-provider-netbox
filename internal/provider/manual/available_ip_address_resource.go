@@ -173,7 +173,7 @@ func (r *AvailableIpAddressResource) Read(ctx context.Context, req resource.Read
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -201,7 +201,7 @@ func (r *AvailableIpAddressResource) Update(ctx context.Context, req resource.Up
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -209,7 +209,7 @@ func (r *AvailableIpAddressResource) Update(ctx context.Context, req resource.Up
 	if plan.TenantId.IsNull() {
 		patch.SetTenantNil()
 	} else if !plan.TenantId.IsUnknown() {
-		patch.SetTenant(conv.Int32(plan.TenantId))
+		patch.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		patch.SetStatus(plan.Status.ValueString())
@@ -266,7 +266,7 @@ func (r *AvailableIpAddressResource) Delete(ctx context.Context, req resource.De
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -300,7 +300,7 @@ func availableIpAddressBody(ctx context.Context, b body, plan *AvailableIpAddres
 // availableIpAddressFromAPI copies the API object into out. prior carries the
 // previous state or plan (for custom field key selection).
 func availableIpAddressFromAPI(ctx context.Context, obj *netbox.IPAddress, prior, out *AvailableIpAddressModel, diags *diag.Diagnostics) {
-	out.Id = types.Int64Value(int64(obj.GetId()))
+	out.Id = types.Int64Value(obj.GetId())
 	out.Address = conv.String(obj.GetAddressOk())
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())

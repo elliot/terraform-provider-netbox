@@ -232,7 +232,7 @@ func (r *VlanResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -263,7 +263,7 @@ func (r *VlanResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -293,7 +293,7 @@ func (r *VlanResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -315,19 +315,19 @@ func vlanToCreate(ctx context.Context, plan *VlanModel, cf *customfields.Cache, 
 	const objectType = "ipam.vlan"
 	body := netbox.NewWritableVLANRequest(conv.Int32(plan.Vid), plan.Name.ValueString())
 	if conv.Known(plan.SiteId) {
-		body.SetSite(conv.Int32(plan.SiteId))
+		body.SetSite(plan.SiteId.ValueInt64())
 	}
 	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+		body.SetGroup(plan.GroupId.ValueInt64())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.RoleId) {
-		body.SetRole(conv.Int32(plan.RoleId))
+		body.SetRole(plan.RoleId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -336,10 +336,10 @@ func vlanToCreate(ctx context.Context, plan *VlanModel, cf *customfields.Cache, 
 		body.SetQinqRole(plan.QinqRole.ValueString())
 	}
 	if conv.Known(plan.QinqSvlanId) {
-		body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
+		body.SetQinqSvlan(plan.QinqSvlanId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -361,14 +361,14 @@ func vlanToPatch(ctx context.Context, plan, state *VlanModel, cf *customfields.C
 		if plan.SiteId.IsNull() {
 			body.SetSiteNil()
 		} else if !plan.SiteId.IsUnknown() {
-			body.SetSite(conv.Int32(plan.SiteId))
+			body.SetSite(plan.SiteId.ValueInt64())
 		}
 	}
 	if !plan.GroupId.Equal(state.GroupId) {
 		if plan.GroupId.IsNull() {
 			body.SetGroupNil()
 		} else if !plan.GroupId.IsUnknown() {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.Vid.Equal(state.Vid) {
@@ -385,7 +385,7 @@ func vlanToPatch(ctx context.Context, plan, state *VlanModel, cf *customfields.C
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -397,7 +397,7 @@ func vlanToPatch(ctx context.Context, plan, state *VlanModel, cf *customfields.C
 		if plan.RoleId.IsNull() {
 			body.SetRoleNil()
 		} else if !plan.RoleId.IsUnknown() {
-			body.SetRole(conv.Int32(plan.RoleId))
+			body.SetRole(plan.RoleId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -414,14 +414,14 @@ func vlanToPatch(ctx context.Context, plan, state *VlanModel, cf *customfields.C
 		if plan.QinqSvlanId.IsNull() {
 			body.SetQinqSvlanNil()
 		} else if !plan.QinqSvlanId.IsUnknown() {
-			body.SetQinqSvlan(conv.Int32(plan.QinqSvlanId))
+			body.SetQinqSvlan(plan.QinqSvlanId.ValueInt64())
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

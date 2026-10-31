@@ -21,14 +21,14 @@ var _ MappedNullable = &PatchedInventoryItemTemplateRequest{}
 
 // PatchedInventoryItemTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedInventoryItemTemplateRequest struct {
-	DeviceType *int32        `json:"device_type,omitempty"`
-	Parent     NullableInt32 `json:"parent,omitempty"`
+	DeviceType *int64        `json:"device_type,omitempty"`
+	Parent     NullableInt64 `json:"parent,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name *string `json:"name,omitempty"`
 	// Physical label
 	Label        *string       `json:"label,omitempty"`
-	Role         NullableInt32 `json:"role,omitempty"`
-	Manufacturer NullableInt32 `json:"manufacturer,omitempty"`
+	Role         NullableInt64 `json:"role,omitempty"`
+	Manufacturer NullableInt64 `json:"manufacturer,omitempty"`
 	// Manufacturer-assigned part identifier
 	PartId               *string        `json:"part_id,omitempty"`
 	Description          *string        `json:"description,omitempty"`
@@ -57,9 +57,9 @@ func NewPatchedInventoryItemTemplateRequestWithDefaults() *PatchedInventoryItemT
 }
 
 // GetDeviceType returns the DeviceType field value if set, zero value otherwise.
-func (o *PatchedInventoryItemTemplateRequest) GetDeviceType() int32 {
+func (o *PatchedInventoryItemTemplateRequest) GetDeviceType() int64 {
 	if o == nil || IsNil(o.DeviceType) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceType
@@ -67,7 +67,7 @@ func (o *PatchedInventoryItemTemplateRequest) GetDeviceType() int32 {
 
 // GetDeviceTypeOk returns a tuple with the DeviceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedInventoryItemTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *PatchedInventoryItemTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil || IsNil(o.DeviceType) {
 		return nil, false
 	}
@@ -83,15 +83,15 @@ func (o *PatchedInventoryItemTemplateRequest) HasDeviceType() bool {
 	return false
 }
 
-// SetDeviceType gets a reference to the given int32 and assigns it to the DeviceType field.
-func (o *PatchedInventoryItemTemplateRequest) SetDeviceType(v int32) {
+// SetDeviceType gets a reference to the given int64 and assigns it to the DeviceType field.
+func (o *PatchedInventoryItemTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType = &v
 }
 
 // GetParent returns the Parent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedInventoryItemTemplateRequest) GetParent() int32 {
+func (o *PatchedInventoryItemTemplateRequest) GetParent() int64 {
 	if o == nil || IsNil(o.Parent.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Parent.Get()
@@ -100,7 +100,7 @@ func (o *PatchedInventoryItemTemplateRequest) GetParent() int32 {
 // GetParentOk returns a tuple with the Parent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedInventoryItemTemplateRequest) GetParentOk() (*int32, bool) {
+func (o *PatchedInventoryItemTemplateRequest) GetParentOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -116,8 +116,8 @@ func (o *PatchedInventoryItemTemplateRequest) HasParent() bool {
 	return false
 }
 
-// SetParent gets a reference to the given NullableInt32 and assigns it to the Parent field.
-func (o *PatchedInventoryItemTemplateRequest) SetParent(v int32) {
+// SetParent gets a reference to the given NullableInt64 and assigns it to the Parent field.
+func (o *PatchedInventoryItemTemplateRequest) SetParent(v int64) {
 	o.Parent.Set(&v)
 }
 
@@ -196,9 +196,9 @@ func (o *PatchedInventoryItemTemplateRequest) SetLabel(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedInventoryItemTemplateRequest) GetRole() int32 {
+func (o *PatchedInventoryItemTemplateRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -207,7 +207,7 @@ func (o *PatchedInventoryItemTemplateRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedInventoryItemTemplateRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedInventoryItemTemplateRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -223,8 +223,8 @@ func (o *PatchedInventoryItemTemplateRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedInventoryItemTemplateRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedInventoryItemTemplateRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -239,9 +239,9 @@ func (o *PatchedInventoryItemTemplateRequest) UnsetRole() {
 }
 
 // GetManufacturer returns the Manufacturer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedInventoryItemTemplateRequest) GetManufacturer() int32 {
+func (o *PatchedInventoryItemTemplateRequest) GetManufacturer() int64 {
 	if o == nil || IsNil(o.Manufacturer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Manufacturer.Get()
@@ -250,7 +250,7 @@ func (o *PatchedInventoryItemTemplateRequest) GetManufacturer() int32 {
 // GetManufacturerOk returns a tuple with the Manufacturer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedInventoryItemTemplateRequest) GetManufacturerOk() (*int32, bool) {
+func (o *PatchedInventoryItemTemplateRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -266,8 +266,8 @@ func (o *PatchedInventoryItemTemplateRequest) HasManufacturer() bool {
 	return false
 }
 
-// SetManufacturer gets a reference to the given NullableInt32 and assigns it to the Manufacturer field.
-func (o *PatchedInventoryItemTemplateRequest) SetManufacturer(v int32) {
+// SetManufacturer gets a reference to the given NullableInt64 and assigns it to the Manufacturer field.
+func (o *PatchedInventoryItemTemplateRequest) SetManufacturer(v int64) {
 	o.Manufacturer.Set(&v)
 }
 

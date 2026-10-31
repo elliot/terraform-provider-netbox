@@ -22,14 +22,14 @@ var _ MappedNullable = &BulkWirelessLANGroupRequest{}
 
 // BulkWirelessLANGroupRequest Base serializer class for models inheriting from NestedGroupModel.
 type BulkWirelessLANGroupRequest struct {
-	Id                   int32                                 `json:"id"`
+	Id                   int64                                 `json:"id"`
 	Name                 string                                `json:"name"`
 	Slug                 string                                `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Parent               NullableNestedWirelessLANGroupRequest `json:"parent,omitempty"`
 	Description          *string                               `json:"description,omitempty"`
 	Tags                 []NestedTagRequest                    `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}                `json:"custom_fields,omitempty"`
-	Owner                NullableInt32                         `json:"owner,omitempty"`
+	Owner                NullableInt64                         `json:"owner,omitempty"`
 	Comments             *string                               `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -40,7 +40,7 @@ type _BulkWirelessLANGroupRequest BulkWirelessLANGroupRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkWirelessLANGroupRequest(id int32, name string, slug string) *BulkWirelessLANGroupRequest {
+func NewBulkWirelessLANGroupRequest(id int64, name string, slug string) *BulkWirelessLANGroupRequest {
 	this := BulkWirelessLANGroupRequest{}
 	this.Id = id
 	this.Name = name
@@ -57,9 +57,9 @@ func NewBulkWirelessLANGroupRequestWithDefaults() *BulkWirelessLANGroupRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkWirelessLANGroupRequest) GetId() int32 {
+func (o *BulkWirelessLANGroupRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *BulkWirelessLANGroupRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkWirelessLANGroupRequest) GetIdOk() (*int32, bool) {
+func (o *BulkWirelessLANGroupRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *BulkWirelessLANGroupRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkWirelessLANGroupRequest) SetId(v int32) {
+func (o *BulkWirelessLANGroupRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -268,9 +268,9 @@ func (o *BulkWirelessLANGroupRequest) SetCustomFields(v map[string]interface{}) 
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkWirelessLANGroupRequest) GetOwner() int32 {
+func (o *BulkWirelessLANGroupRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -279,7 +279,7 @@ func (o *BulkWirelessLANGroupRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkWirelessLANGroupRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkWirelessLANGroupRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -295,8 +295,8 @@ func (o *BulkWirelessLANGroupRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkWirelessLANGroupRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkWirelessLANGroupRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

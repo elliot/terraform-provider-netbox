@@ -22,17 +22,17 @@ var _ MappedNullable = &PatchedBulkVirtualCircuitRequest{}
 
 // PatchedBulkVirtualCircuitRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkVirtualCircuitRequest struct {
-	Id int32 `json:"id"`
+	Id int64 `json:"id"`
 	// Unique circuit ID
 	Cid             *string       `json:"cid,omitempty"`
-	ProviderNetwork *int32        `json:"provider_network,omitempty"`
-	ProviderAccount NullableInt32 `json:"provider_account,omitempty"`
-	Type            *int32        `json:"type,omitempty"`
+	ProviderNetwork *int64        `json:"provider_network,omitempty"`
+	ProviderAccount NullableInt64 `json:"provider_account,omitempty"`
+	Type            *int64        `json:"type,omitempty"`
 	// * `planned` - Planned * `provisioning` - Provisioning * `active` - Active * `offline` - Offline * `deprovisioning` - Deprovisioning * `decommissioned` - Decommissioned
 	Status               *string                `json:"status,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -45,7 +45,7 @@ type _PatchedBulkVirtualCircuitRequest PatchedBulkVirtualCircuitRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkVirtualCircuitRequest(id int32) *PatchedBulkVirtualCircuitRequest {
+func NewPatchedBulkVirtualCircuitRequest(id int64) *PatchedBulkVirtualCircuitRequest {
 	this := PatchedBulkVirtualCircuitRequest{}
 	this.Id = id
 	return &this
@@ -60,9 +60,9 @@ func NewPatchedBulkVirtualCircuitRequestWithDefaults() *PatchedBulkVirtualCircui
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkVirtualCircuitRequest) GetId() int32 {
+func (o *PatchedBulkVirtualCircuitRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -71,7 +71,7 @@ func (o *PatchedBulkVirtualCircuitRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkVirtualCircuitRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -79,7 +79,7 @@ func (o *PatchedBulkVirtualCircuitRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkVirtualCircuitRequest) SetId(v int32) {
+func (o *PatchedBulkVirtualCircuitRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -116,9 +116,9 @@ func (o *PatchedBulkVirtualCircuitRequest) SetCid(v string) {
 }
 
 // GetProviderNetwork returns the ProviderNetwork field value if set, zero value otherwise.
-func (o *PatchedBulkVirtualCircuitRequest) GetProviderNetwork() int32 {
+func (o *PatchedBulkVirtualCircuitRequest) GetProviderNetwork() int64 {
 	if o == nil || IsNil(o.ProviderNetwork) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ProviderNetwork
@@ -126,7 +126,7 @@ func (o *PatchedBulkVirtualCircuitRequest) GetProviderNetwork() int32 {
 
 // GetProviderNetworkOk returns a tuple with the ProviderNetwork field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkVirtualCircuitRequest) GetProviderNetworkOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitRequest) GetProviderNetworkOk() (*int64, bool) {
 	if o == nil || IsNil(o.ProviderNetwork) {
 		return nil, false
 	}
@@ -142,15 +142,15 @@ func (o *PatchedBulkVirtualCircuitRequest) HasProviderNetwork() bool {
 	return false
 }
 
-// SetProviderNetwork gets a reference to the given int32 and assigns it to the ProviderNetwork field.
-func (o *PatchedBulkVirtualCircuitRequest) SetProviderNetwork(v int32) {
+// SetProviderNetwork gets a reference to the given int64 and assigns it to the ProviderNetwork field.
+func (o *PatchedBulkVirtualCircuitRequest) SetProviderNetwork(v int64) {
 	o.ProviderNetwork = &v
 }
 
 // GetProviderAccount returns the ProviderAccount field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualCircuitRequest) GetProviderAccount() int32 {
+func (o *PatchedBulkVirtualCircuitRequest) GetProviderAccount() int64 {
 	if o == nil || IsNil(o.ProviderAccount.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ProviderAccount.Get()
@@ -159,7 +159,7 @@ func (o *PatchedBulkVirtualCircuitRequest) GetProviderAccount() int32 {
 // GetProviderAccountOk returns a tuple with the ProviderAccount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualCircuitRequest) GetProviderAccountOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitRequest) GetProviderAccountOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -175,8 +175,8 @@ func (o *PatchedBulkVirtualCircuitRequest) HasProviderAccount() bool {
 	return false
 }
 
-// SetProviderAccount gets a reference to the given NullableInt32 and assigns it to the ProviderAccount field.
-func (o *PatchedBulkVirtualCircuitRequest) SetProviderAccount(v int32) {
+// SetProviderAccount gets a reference to the given NullableInt64 and assigns it to the ProviderAccount field.
+func (o *PatchedBulkVirtualCircuitRequest) SetProviderAccount(v int64) {
 	o.ProviderAccount.Set(&v)
 }
 
@@ -191,9 +191,9 @@ func (o *PatchedBulkVirtualCircuitRequest) UnsetProviderAccount() {
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
-func (o *PatchedBulkVirtualCircuitRequest) GetType() int32 {
+func (o *PatchedBulkVirtualCircuitRequest) GetType() int64 {
 	if o == nil || IsNil(o.Type) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Type
@@ -201,7 +201,7 @@ func (o *PatchedBulkVirtualCircuitRequest) GetType() int32 {
 
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkVirtualCircuitRequest) GetTypeOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitRequest) GetTypeOk() (*int64, bool) {
 	if o == nil || IsNil(o.Type) {
 		return nil, false
 	}
@@ -217,8 +217,8 @@ func (o *PatchedBulkVirtualCircuitRequest) HasType() bool {
 	return false
 }
 
-// SetType gets a reference to the given int32 and assigns it to the Type field.
-func (o *PatchedBulkVirtualCircuitRequest) SetType(v int32) {
+// SetType gets a reference to the given int64 and assigns it to the Type field.
+func (o *PatchedBulkVirtualCircuitRequest) SetType(v int64) {
 	o.Type = &v
 }
 
@@ -255,9 +255,9 @@ func (o *PatchedBulkVirtualCircuitRequest) SetStatus(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualCircuitRequest) GetTenant() int32 {
+func (o *PatchedBulkVirtualCircuitRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -266,7 +266,7 @@ func (o *PatchedBulkVirtualCircuitRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualCircuitRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -282,8 +282,8 @@ func (o *PatchedBulkVirtualCircuitRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkVirtualCircuitRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkVirtualCircuitRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -330,9 +330,9 @@ func (o *PatchedBulkVirtualCircuitRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkVirtualCircuitRequest) GetOwner() int32 {
+func (o *PatchedBulkVirtualCircuitRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -341,7 +341,7 @@ func (o *PatchedBulkVirtualCircuitRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkVirtualCircuitRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkVirtualCircuitRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -357,8 +357,8 @@ func (o *PatchedBulkVirtualCircuitRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkVirtualCircuitRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkVirtualCircuitRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -22,11 +22,11 @@ var _ MappedNullable = &BulkNotificationGroupRequest{}
 
 // BulkNotificationGroupRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkNotificationGroupRequest struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Name                 string  `json:"name"`
 	Description          *string `json:"description,omitempty"`
-	Groups               []int32 `json:"groups,omitempty"`
-	Users                []int32 `json:"users,omitempty"`
+	Groups               []int64 `json:"groups,omitempty"`
+	Users                []int64 `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -36,7 +36,7 @@ type _BulkNotificationGroupRequest BulkNotificationGroupRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkNotificationGroupRequest(id int32, name string) *BulkNotificationGroupRequest {
+func NewBulkNotificationGroupRequest(id int64, name string) *BulkNotificationGroupRequest {
 	this := BulkNotificationGroupRequest{}
 	this.Id = id
 	this.Name = name
@@ -52,9 +52,9 @@ func NewBulkNotificationGroupRequestWithDefaults() *BulkNotificationGroupRequest
 }
 
 // GetId returns the Id field value
-func (o *BulkNotificationGroupRequest) GetId() int32 {
+func (o *BulkNotificationGroupRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *BulkNotificationGroupRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkNotificationGroupRequest) GetIdOk() (*int32, bool) {
+func (o *BulkNotificationGroupRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *BulkNotificationGroupRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkNotificationGroupRequest) SetId(v int32) {
+func (o *BulkNotificationGroupRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -132,9 +132,9 @@ func (o *BulkNotificationGroupRequest) SetDescription(v string) {
 }
 
 // GetGroups returns the Groups field value if set, zero value otherwise.
-func (o *BulkNotificationGroupRequest) GetGroups() []int32 {
+func (o *BulkNotificationGroupRequest) GetGroups() []int64 {
 	if o == nil || IsNil(o.Groups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Groups
@@ -142,7 +142,7 @@ func (o *BulkNotificationGroupRequest) GetGroups() []int32 {
 
 // GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkNotificationGroupRequest) GetGroupsOk() ([]int32, bool) {
+func (o *BulkNotificationGroupRequest) GetGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Groups) {
 		return nil, false
 	}
@@ -158,15 +158,15 @@ func (o *BulkNotificationGroupRequest) HasGroups() bool {
 	return false
 }
 
-// SetGroups gets a reference to the given []int32 and assigns it to the Groups field.
-func (o *BulkNotificationGroupRequest) SetGroups(v []int32) {
+// SetGroups gets a reference to the given []int64 and assigns it to the Groups field.
+func (o *BulkNotificationGroupRequest) SetGroups(v []int64) {
 	o.Groups = v
 }
 
 // GetUsers returns the Users field value if set, zero value otherwise.
-func (o *BulkNotificationGroupRequest) GetUsers() []int32 {
+func (o *BulkNotificationGroupRequest) GetUsers() []int64 {
 	if o == nil || IsNil(o.Users) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Users
@@ -174,7 +174,7 @@ func (o *BulkNotificationGroupRequest) GetUsers() []int32 {
 
 // GetUsersOk returns a tuple with the Users field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkNotificationGroupRequest) GetUsersOk() ([]int32, bool) {
+func (o *BulkNotificationGroupRequest) GetUsersOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Users) {
 		return nil, false
 	}
@@ -190,8 +190,8 @@ func (o *BulkNotificationGroupRequest) HasUsers() bool {
 	return false
 }
 
-// SetUsers gets a reference to the given []int32 and assigns it to the Users field.
-func (o *BulkNotificationGroupRequest) SetUsers(v []int32) {
+// SetUsers gets a reference to the given []int64 and assigns it to the Users field.
+func (o *BulkNotificationGroupRequest) SetUsers(v []int64) {
 	o.Users = v
 }
 

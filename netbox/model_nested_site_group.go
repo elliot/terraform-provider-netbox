@@ -22,7 +22,7 @@ var _ MappedNullable = &NestedSiteGroup{}
 
 // NestedSiteGroup Represents an object related through a ForeignKey field. On write, it accepts a primary key (PK) value or a dictionary of attributes which can be used to uniquely identify the related object. This class should be subclassed to return a full representation of the related object on read.
 type NestedSiteGroup struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	DisplayUrl           *string `json:"display_url,omitempty"`
 	Display              *string `json:"display,omitempty"`
@@ -38,7 +38,7 @@ type _NestedSiteGroup NestedSiteGroup
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewNestedSiteGroup(id int32) *NestedSiteGroup {
+func NewNestedSiteGroup(id int64) *NestedSiteGroup {
 	this := NestedSiteGroup{}
 	this.Id = id
 	return &this
@@ -53,9 +53,9 @@ func NewNestedSiteGroupWithDefaults() *NestedSiteGroup {
 }
 
 // GetId returns the Id field value
-func (o *NestedSiteGroup) GetId() int32 {
+func (o *NestedSiteGroup) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -64,7 +64,7 @@ func (o *NestedSiteGroup) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *NestedSiteGroup) GetIdOk() (*int32, bool) {
+func (o *NestedSiteGroup) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -72,7 +72,7 @@ func (o *NestedSiteGroup) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *NestedSiteGroup) SetId(v int32) {
+func (o *NestedSiteGroup) SetId(v int64) {
 	o.Id = v
 }
 

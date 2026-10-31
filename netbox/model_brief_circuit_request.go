@@ -24,7 +24,7 @@ var _ MappedNullable = &BriefCircuitRequest{}
 type BriefCircuitRequest struct {
 	// Unique circuit ID
 	Cid                  string  `json:"cid"`
-	Provider             int32   `json:"provider"`
+	Provider             int64   `json:"provider"`
 	Description          *string `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -35,7 +35,7 @@ type _BriefCircuitRequest BriefCircuitRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefCircuitRequest(cid string, provider int32) *BriefCircuitRequest {
+func NewBriefCircuitRequest(cid string, provider int64) *BriefCircuitRequest {
 	this := BriefCircuitRequest{}
 	this.Cid = cid
 	this.Provider = provider
@@ -75,9 +75,9 @@ func (o *BriefCircuitRequest) SetCid(v string) {
 }
 
 // GetProvider returns the Provider field value
-func (o *BriefCircuitRequest) GetProvider() int32 {
+func (o *BriefCircuitRequest) GetProvider() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -86,7 +86,7 @@ func (o *BriefCircuitRequest) GetProvider() int32 {
 
 // GetProviderOk returns a tuple with the Provider field value
 // and a boolean to check if the value has been set.
-func (o *BriefCircuitRequest) GetProviderOk() (*int32, bool) {
+func (o *BriefCircuitRequest) GetProviderOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -94,7 +94,7 @@ func (o *BriefCircuitRequest) GetProviderOk() (*int32, bool) {
 }
 
 // SetProvider sets field value
-func (o *BriefCircuitRequest) SetProvider(v int32) {
+func (o *BriefCircuitRequest) SetProvider(v int64) {
 	o.Provider = v
 }
 

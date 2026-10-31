@@ -22,17 +22,17 @@ var _ MappedNullable = &PatchedBulkModuleRequest{}
 
 // PatchedBulkModuleRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkModuleRequest struct {
-	Id         int32                   `json:"id"`
-	Device     *int32                  `json:"device,omitempty"`
+	Id         int64                   `json:"id"`
+	Device     *int64                  `json:"device,omitempty"`
 	ModuleBay  *NestedModuleBayRequest `json:"module_bay,omitempty"`
-	ModuleType *int32                  `json:"module_type,omitempty"`
+	ModuleType *int64                  `json:"module_type,omitempty"`
 	// * `offline` - Offline * `active` - Active * `planned` - Planned * `staged` - Staged * `failed` - Failed * `decommissioning` - Decommissioning
 	Status *string `json:"status,omitempty"`
 	Serial *string `json:"serial,omitempty"`
 	// A unique tag used to identify this device
 	AssetTag     NullableString         `json:"asset_tag,omitempty"`
 	Description  *string                `json:"description,omitempty"`
-	Owner        NullableInt32          `json:"owner,omitempty"`
+	Owner        NullableInt64          `json:"owner,omitempty"`
 	Comments     *string                `json:"comments,omitempty"`
 	Tags         []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields map[string]interface{} `json:"custom_fields,omitempty"`
@@ -49,7 +49,7 @@ type _PatchedBulkModuleRequest PatchedBulkModuleRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkModuleRequest(id int32) *PatchedBulkModuleRequest {
+func NewPatchedBulkModuleRequest(id int64) *PatchedBulkModuleRequest {
 	this := PatchedBulkModuleRequest{}
 	this.Id = id
 	var replicateComponents bool = true
@@ -72,9 +72,9 @@ func NewPatchedBulkModuleRequestWithDefaults() *PatchedBulkModuleRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkModuleRequest) GetId() int32 {
+func (o *PatchedBulkModuleRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -83,7 +83,7 @@ func (o *PatchedBulkModuleRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkModuleRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkModuleRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -91,14 +91,14 @@ func (o *PatchedBulkModuleRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkModuleRequest) SetId(v int32) {
+func (o *PatchedBulkModuleRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise.
-func (o *PatchedBulkModuleRequest) GetDevice() int32 {
+func (o *PatchedBulkModuleRequest) GetDevice() int64 {
 	if o == nil || IsNil(o.Device) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Device
@@ -106,7 +106,7 @@ func (o *PatchedBulkModuleRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkModuleRequest) GetDeviceOk() (*int32, bool) {
+func (o *PatchedBulkModuleRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil || IsNil(o.Device) {
 		return nil, false
 	}
@@ -122,8 +122,8 @@ func (o *PatchedBulkModuleRequest) HasDevice() bool {
 	return false
 }
 
-// SetDevice gets a reference to the given int32 and assigns it to the Device field.
-func (o *PatchedBulkModuleRequest) SetDevice(v int32) {
+// SetDevice gets a reference to the given int64 and assigns it to the Device field.
+func (o *PatchedBulkModuleRequest) SetDevice(v int64) {
 	o.Device = &v
 }
 
@@ -160,9 +160,9 @@ func (o *PatchedBulkModuleRequest) SetModuleBay(v NestedModuleBayRequest) {
 }
 
 // GetModuleType returns the ModuleType field value if set, zero value otherwise.
-func (o *PatchedBulkModuleRequest) GetModuleType() int32 {
+func (o *PatchedBulkModuleRequest) GetModuleType() int64 {
 	if o == nil || IsNil(o.ModuleType) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleType
@@ -170,7 +170,7 @@ func (o *PatchedBulkModuleRequest) GetModuleType() int32 {
 
 // GetModuleTypeOk returns a tuple with the ModuleType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkModuleRequest) GetModuleTypeOk() (*int32, bool) {
+func (o *PatchedBulkModuleRequest) GetModuleTypeOk() (*int64, bool) {
 	if o == nil || IsNil(o.ModuleType) {
 		return nil, false
 	}
@@ -186,8 +186,8 @@ func (o *PatchedBulkModuleRequest) HasModuleType() bool {
 	return false
 }
 
-// SetModuleType gets a reference to the given int32 and assigns it to the ModuleType field.
-func (o *PatchedBulkModuleRequest) SetModuleType(v int32) {
+// SetModuleType gets a reference to the given int64 and assigns it to the ModuleType field.
+func (o *PatchedBulkModuleRequest) SetModuleType(v int64) {
 	o.ModuleType = &v
 }
 
@@ -331,9 +331,9 @@ func (o *PatchedBulkModuleRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkModuleRequest) GetOwner() int32 {
+func (o *PatchedBulkModuleRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -342,7 +342,7 @@ func (o *PatchedBulkModuleRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkModuleRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkModuleRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -358,8 +358,8 @@ func (o *PatchedBulkModuleRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkModuleRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkModuleRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

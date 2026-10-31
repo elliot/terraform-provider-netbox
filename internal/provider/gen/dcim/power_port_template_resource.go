@@ -207,7 +207,7 @@ func (r *PowerPortTemplateResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -238,7 +238,7 @@ func (r *PowerPortTemplateResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -268,7 +268,7 @@ func (r *PowerPortTemplateResource) Delete(ctx context.Context, req resource.Del
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -289,10 +289,10 @@ func (r *PowerPortTemplateResource) ImportState(ctx context.Context, req resourc
 func powerPortTemplateToCreate(ctx context.Context, plan *PowerPortTemplateModel, diags *diag.Diagnostics) *netbox.WritablePowerPortTemplateRequest {
 	body := netbox.NewWritablePowerPortTemplateRequest(plan.Name.ValueString())
 	if conv.Known(plan.DeviceTypeId) {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 	}
 	if conv.Known(plan.ModuleTypeId) {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -319,14 +319,14 @@ func powerPortTemplateToPatch(ctx context.Context, plan, state *PowerPortTemplat
 		if plan.DeviceTypeId.IsNull() {
 			body.SetDeviceTypeNil()
 		} else if !plan.DeviceTypeId.IsUnknown() {
-			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+			body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 		}
 	}
 	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
 		if plan.ModuleTypeId.IsNull() {
 			body.SetModuleTypeNil()
 		} else if !plan.ModuleTypeId.IsUnknown() {
-			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+			body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {

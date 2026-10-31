@@ -22,12 +22,12 @@ var _ MappedNullable = &PatchedBulkPowerPanelRequest{}
 
 // PatchedBulkPowerPanelRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkPowerPanelRequest struct {
-	Id                   int32                  `json:"id"`
-	Site                 *int32                 `json:"site,omitempty"`
-	Location             NullableInt32          `json:"location,omitempty"`
+	Id                   int64                  `json:"id"`
+	Site                 *int64                 `json:"site,omitempty"`
+	Location             NullableInt64          `json:"location,omitempty"`
 	Name                 *string                `json:"name,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -40,7 +40,7 @@ type _PatchedBulkPowerPanelRequest PatchedBulkPowerPanelRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkPowerPanelRequest(id int32) *PatchedBulkPowerPanelRequest {
+func NewPatchedBulkPowerPanelRequest(id int64) *PatchedBulkPowerPanelRequest {
 	this := PatchedBulkPowerPanelRequest{}
 	this.Id = id
 	return &this
@@ -55,9 +55,9 @@ func NewPatchedBulkPowerPanelRequestWithDefaults() *PatchedBulkPowerPanelRequest
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkPowerPanelRequest) GetId() int32 {
+func (o *PatchedBulkPowerPanelRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -66,7 +66,7 @@ func (o *PatchedBulkPowerPanelRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkPowerPanelRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkPowerPanelRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,14 +74,14 @@ func (o *PatchedBulkPowerPanelRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkPowerPanelRequest) SetId(v int32) {
+func (o *PatchedBulkPowerPanelRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetSite returns the Site field value if set, zero value otherwise.
-func (o *PatchedBulkPowerPanelRequest) GetSite() int32 {
+func (o *PatchedBulkPowerPanelRequest) GetSite() int64 {
 	if o == nil || IsNil(o.Site) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Site
@@ -89,7 +89,7 @@ func (o *PatchedBulkPowerPanelRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkPowerPanelRequest) GetSiteOk() (*int32, bool) {
+func (o *PatchedBulkPowerPanelRequest) GetSiteOk() (*int64, bool) {
 	if o == nil || IsNil(o.Site) {
 		return nil, false
 	}
@@ -105,15 +105,15 @@ func (o *PatchedBulkPowerPanelRequest) HasSite() bool {
 	return false
 }
 
-// SetSite gets a reference to the given int32 and assigns it to the Site field.
-func (o *PatchedBulkPowerPanelRequest) SetSite(v int32) {
+// SetSite gets a reference to the given int64 and assigns it to the Site field.
+func (o *PatchedBulkPowerPanelRequest) SetSite(v int64) {
 	o.Site = &v
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkPowerPanelRequest) GetLocation() int32 {
+func (o *PatchedBulkPowerPanelRequest) GetLocation() int64 {
 	if o == nil || IsNil(o.Location.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Location.Get()
@@ -122,7 +122,7 @@ func (o *PatchedBulkPowerPanelRequest) GetLocation() int32 {
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkPowerPanelRequest) GetLocationOk() (*int32, bool) {
+func (o *PatchedBulkPowerPanelRequest) GetLocationOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -138,8 +138,8 @@ func (o *PatchedBulkPowerPanelRequest) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given NullableInt32 and assigns it to the Location field.
-func (o *PatchedBulkPowerPanelRequest) SetLocation(v int32) {
+// SetLocation gets a reference to the given NullableInt64 and assigns it to the Location field.
+func (o *PatchedBulkPowerPanelRequest) SetLocation(v int64) {
 	o.Location.Set(&v)
 }
 
@@ -218,9 +218,9 @@ func (o *PatchedBulkPowerPanelRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkPowerPanelRequest) GetOwner() int32 {
+func (o *PatchedBulkPowerPanelRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -229,7 +229,7 @@ func (o *PatchedBulkPowerPanelRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkPowerPanelRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkPowerPanelRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -245,8 +245,8 @@ func (o *PatchedBulkPowerPanelRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkPowerPanelRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkPowerPanelRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

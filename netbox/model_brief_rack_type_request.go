@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefRackTypeRequest{}
 
 // BriefRackTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type BriefRackTypeRequest struct {
-	Manufacturer         int32   `json:"manufacturer"`
+	Manufacturer         int64   `json:"manufacturer"`
 	Model                string  `json:"model"`
 	Slug                 string  `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description          *string `json:"description,omitempty"`
@@ -35,7 +35,7 @@ type _BriefRackTypeRequest BriefRackTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefRackTypeRequest(manufacturer int32, model string, slug string) *BriefRackTypeRequest {
+func NewBriefRackTypeRequest(manufacturer int64, model string, slug string) *BriefRackTypeRequest {
 	this := BriefRackTypeRequest{}
 	this.Manufacturer = manufacturer
 	this.Model = model
@@ -52,9 +52,9 @@ func NewBriefRackTypeRequestWithDefaults() *BriefRackTypeRequest {
 }
 
 // GetManufacturer returns the Manufacturer field value
-func (o *BriefRackTypeRequest) GetManufacturer() int32 {
+func (o *BriefRackTypeRequest) GetManufacturer() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *BriefRackTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value
 // and a boolean to check if the value has been set.
-func (o *BriefRackTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *BriefRackTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *BriefRackTypeRequest) GetManufacturerOk() (*int32, bool) {
 }
 
 // SetManufacturer sets field value
-func (o *BriefRackTypeRequest) SetManufacturer(v int32) {
+func (o *BriefRackTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = v
 }
 

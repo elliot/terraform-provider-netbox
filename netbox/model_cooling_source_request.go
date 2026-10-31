@@ -22,8 +22,8 @@ var _ MappedNullable = &CoolingSourceRequest{}
 
 // CoolingSourceRequest Base serializer class for models inheriting from PrimaryModel.
 type CoolingSourceRequest struct {
-	Site     int32         `json:"site"`
-	Location NullableInt32 `json:"location,omitempty"`
+	Site     int64         `json:"site"`
+	Location NullableInt64 `json:"location,omitempty"`
 	Name     string        `json:"name"`
 	// * `chiller` - Chiller * `cooling-tower` - Cooling tower * `dry-cooler` - Dry cooler * `crac` - CRAC * `crah` - CRAH
 	Type string `json:"type"`
@@ -34,7 +34,7 @@ type CoolingSourceRequest struct {
 	// Total rated cooling capacity (kW)
 	CoolingCapacity      NullableFloat64        `json:"cooling_capacity,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -47,7 +47,7 @@ type _CoolingSourceRequest CoolingSourceRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCoolingSourceRequest(site int32, name string, type_ string) *CoolingSourceRequest {
+func NewCoolingSourceRequest(site int64, name string, type_ string) *CoolingSourceRequest {
 	this := CoolingSourceRequest{}
 	this.Site = site
 	this.Name = name
@@ -64,9 +64,9 @@ func NewCoolingSourceRequestWithDefaults() *CoolingSourceRequest {
 }
 
 // GetSite returns the Site field value
-func (o *CoolingSourceRequest) GetSite() int32 {
+func (o *CoolingSourceRequest) GetSite() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *CoolingSourceRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value
 // and a boolean to check if the value has been set.
-func (o *CoolingSourceRequest) GetSiteOk() (*int32, bool) {
+func (o *CoolingSourceRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,14 +83,14 @@ func (o *CoolingSourceRequest) GetSiteOk() (*int32, bool) {
 }
 
 // SetSite sets field value
-func (o *CoolingSourceRequest) SetSite(v int32) {
+func (o *CoolingSourceRequest) SetSite(v int64) {
 	o.Site = v
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CoolingSourceRequest) GetLocation() int32 {
+func (o *CoolingSourceRequest) GetLocation() int64 {
 	if o == nil || IsNil(o.Location.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Location.Get()
@@ -99,7 +99,7 @@ func (o *CoolingSourceRequest) GetLocation() int32 {
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CoolingSourceRequest) GetLocationOk() (*int32, bool) {
+func (o *CoolingSourceRequest) GetLocationOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -115,8 +115,8 @@ func (o *CoolingSourceRequest) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given NullableInt32 and assigns it to the Location field.
-func (o *CoolingSourceRequest) SetLocation(v int32) {
+// SetLocation gets a reference to the given NullableInt64 and assigns it to the Location field.
+func (o *CoolingSourceRequest) SetLocation(v int64) {
 	o.Location.Set(&v)
 }
 
@@ -329,9 +329,9 @@ func (o *CoolingSourceRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CoolingSourceRequest) GetOwner() int32 {
+func (o *CoolingSourceRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -340,7 +340,7 @@ func (o *CoolingSourceRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CoolingSourceRequest) GetOwnerOk() (*int32, bool) {
+func (o *CoolingSourceRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -356,8 +356,8 @@ func (o *CoolingSourceRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *CoolingSourceRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *CoolingSourceRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

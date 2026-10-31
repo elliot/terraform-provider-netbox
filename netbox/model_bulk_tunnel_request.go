@@ -22,18 +22,18 @@ var _ MappedNullable = &BulkTunnelRequest{}
 
 // BulkTunnelRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkTunnelRequest struct {
-	Id   int32  `json:"id"`
+	Id   int64  `json:"id"`
 	Name string `json:"name"`
 	// * `planned` - Planned * `active` - Active * `disabled` - Disabled
 	Status string        `json:"status"`
-	Group  NullableInt32 `json:"group,omitempty"`
+	Group  NullableInt64 `json:"group,omitempty"`
 	// * `ipsec-transport` - IPsec - Transport * `ipsec-tunnel` - IPsec - Tunnel * `ip-ip` - IP-in-IP * `gre` - GRE * `wireguard` - WireGuard * `openvpn` - OpenVPN * `l2tp` - L2TP * `pptp` - PPTP
 	Encapsulation        string                 `json:"encapsulation"`
-	IpsecProfile         NullableInt32          `json:"ipsec_profile,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	IpsecProfile         NullableInt64          `json:"ipsec_profile,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	TunnelId             NullableInt64          `json:"tunnel_id,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -46,7 +46,7 @@ type _BulkTunnelRequest BulkTunnelRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkTunnelRequest(id int32, name string, status string, encapsulation string) *BulkTunnelRequest {
+func NewBulkTunnelRequest(id int64, name string, status string, encapsulation string) *BulkTunnelRequest {
 	this := BulkTunnelRequest{}
 	this.Id = id
 	this.Name = name
@@ -64,9 +64,9 @@ func NewBulkTunnelRequestWithDefaults() *BulkTunnelRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkTunnelRequest) GetId() int32 {
+func (o *BulkTunnelRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *BulkTunnelRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkTunnelRequest) GetIdOk() (*int32, bool) {
+func (o *BulkTunnelRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,7 +83,7 @@ func (o *BulkTunnelRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkTunnelRequest) SetId(v int32) {
+func (o *BulkTunnelRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -136,9 +136,9 @@ func (o *BulkTunnelRequest) SetStatus(v string) {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkTunnelRequest) GetGroup() int32 {
+func (o *BulkTunnelRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -147,7 +147,7 @@ func (o *BulkTunnelRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkTunnelRequest) GetGroupOk() (*int32, bool) {
+func (o *BulkTunnelRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -163,8 +163,8 @@ func (o *BulkTunnelRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *BulkTunnelRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *BulkTunnelRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -203,9 +203,9 @@ func (o *BulkTunnelRequest) SetEncapsulation(v string) {
 }
 
 // GetIpsecProfile returns the IpsecProfile field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkTunnelRequest) GetIpsecProfile() int32 {
+func (o *BulkTunnelRequest) GetIpsecProfile() int64 {
 	if o == nil || IsNil(o.IpsecProfile.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.IpsecProfile.Get()
@@ -214,7 +214,7 @@ func (o *BulkTunnelRequest) GetIpsecProfile() int32 {
 // GetIpsecProfileOk returns a tuple with the IpsecProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkTunnelRequest) GetIpsecProfileOk() (*int32, bool) {
+func (o *BulkTunnelRequest) GetIpsecProfileOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -230,8 +230,8 @@ func (o *BulkTunnelRequest) HasIpsecProfile() bool {
 	return false
 }
 
-// SetIpsecProfile gets a reference to the given NullableInt32 and assigns it to the IpsecProfile field.
-func (o *BulkTunnelRequest) SetIpsecProfile(v int32) {
+// SetIpsecProfile gets a reference to the given NullableInt64 and assigns it to the IpsecProfile field.
+func (o *BulkTunnelRequest) SetIpsecProfile(v int64) {
 	o.IpsecProfile.Set(&v)
 }
 
@@ -246,9 +246,9 @@ func (o *BulkTunnelRequest) UnsetIpsecProfile() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkTunnelRequest) GetTenant() int32 {
+func (o *BulkTunnelRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -257,7 +257,7 @@ func (o *BulkTunnelRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkTunnelRequest) GetTenantOk() (*int32, bool) {
+func (o *BulkTunnelRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -273,8 +273,8 @@ func (o *BulkTunnelRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *BulkTunnelRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *BulkTunnelRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -364,9 +364,9 @@ func (o *BulkTunnelRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkTunnelRequest) GetOwner() int32 {
+func (o *BulkTunnelRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -375,7 +375,7 @@ func (o *BulkTunnelRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkTunnelRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkTunnelRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -391,8 +391,8 @@ func (o *BulkTunnelRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkTunnelRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkTunnelRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -271,7 +271,7 @@ func (d *InventoryItemDataSource) Read(ctx context.Context, req datasource.ReadR
 	}
 	var obj *netbox.InventoryItem
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -439,7 +439,7 @@ func inventoryItemDataFromAPI(ctx context.Context, obj *netbox.InventoryItem, ou
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceId = conv.BriefID(obj.GetDeviceOk())
-	out.ParentId = conv.Int64From32(obj.GetParentOk())
+	out.ParentId = conv.Int64From64(obj.GetParentOk())
 	out.Name = conv.String(obj.GetNameOk())
 	out.Label = conv.StringOrEmpty(obj.GetLabelOk())
 	out.Status = conv.Choice(obj.GetStatusOk())

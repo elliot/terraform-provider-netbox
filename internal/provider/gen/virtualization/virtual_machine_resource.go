@@ -294,7 +294,7 @@ func (r *VirtualMachineResource) Read(ctx context.Context, req resource.ReadRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -325,7 +325,7 @@ func (r *VirtualMachineResource) Update(ctx context.Context, req resource.Update
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -366,7 +366,7 @@ func (r *VirtualMachineResource) Delete(ctx context.Context, req resource.Delete
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -388,10 +388,10 @@ func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, cf *
 	const objectType = "virtualization.virtualmachine"
 	body := netbox.NewWritableVirtualMachineRequest(plan.Name.ValueString())
 	if conv.Known(plan.VirtualMachineTypeId) {
-		body.SetVirtualMachineType(conv.Int32(plan.VirtualMachineTypeId))
+		body.SetVirtualMachineType(plan.VirtualMachineTypeId.ValueInt64())
 	}
 	if conv.Known(plan.RoleId) {
-		body.SetRole(conv.Int32(plan.RoleId))
+		body.SetRole(plan.RoleId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
@@ -400,22 +400,22 @@ func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, cf *
 		body.SetStartOnBoot(plan.StartOnBoot.ValueString())
 	}
 	if conv.Known(plan.SiteId) {
-		body.SetSite(conv.Int32(plan.SiteId))
+		body.SetSite(plan.SiteId.ValueInt64())
 	}
 	if conv.Known(plan.ClusterId) {
-		body.SetCluster(conv.Int32(plan.ClusterId))
+		body.SetCluster(plan.ClusterId.ValueInt64())
 	}
 	if conv.Known(plan.DeviceId) {
-		body.SetDevice(conv.Int32(plan.DeviceId))
+		body.SetDevice(plan.DeviceId.ValueInt64())
 	}
 	if conv.Known(plan.PlatformId) {
-		body.SetPlatform(conv.Int32(plan.PlatformId))
+		body.SetPlatform(plan.PlatformId.ValueInt64())
 	}
 	if conv.Known(plan.PrimaryIp4Id) {
-		body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+		body.SetPrimaryIp4(plan.PrimaryIp4Id.ValueInt64())
 	}
 	if conv.Known(plan.PrimaryIp6Id) {
-		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+		body.SetPrimaryIp6(plan.PrimaryIp6Id.ValueInt64())
 	}
 	if conv.Known(plan.Vcpus) {
 		body.SetVcpus(plan.Vcpus.ValueFloat64())
@@ -433,10 +433,10 @@ func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, cf *
 		body.SetSerial(plan.Serial.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -448,7 +448,7 @@ func virtualMachineToCreate(ctx context.Context, plan *VirtualMachineModel, cf *
 		body.SetLocalContextData(conv.JSONToAPI(plan.LocalContextData, diags))
 	}
 	if conv.Known(plan.ConfigTemplateId) {
-		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+		body.SetConfigTemplate(plan.ConfigTemplateId.ValueInt64())
 	}
 	if conv.Known(plan.CustomFields) {
 		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
@@ -469,14 +469,14 @@ func virtualMachineToPatch(ctx context.Context, plan, state *VirtualMachineModel
 		if plan.VirtualMachineTypeId.IsNull() {
 			body.SetVirtualMachineTypeNil()
 		} else if !plan.VirtualMachineTypeId.IsUnknown() {
-			body.SetVirtualMachineType(conv.Int32(plan.VirtualMachineTypeId))
+			body.SetVirtualMachineType(plan.VirtualMachineTypeId.ValueInt64())
 		}
 	}
 	if !plan.RoleId.Equal(state.RoleId) {
 		if plan.RoleId.IsNull() {
 			body.SetRoleNil()
 		} else if !plan.RoleId.IsUnknown() {
-			body.SetRole(conv.Int32(plan.RoleId))
+			body.SetRole(plan.RoleId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -493,38 +493,38 @@ func virtualMachineToPatch(ctx context.Context, plan, state *VirtualMachineModel
 		if plan.SiteId.IsNull() {
 			body.SetSiteNil()
 		} else if !plan.SiteId.IsUnknown() {
-			body.SetSite(conv.Int32(plan.SiteId))
+			body.SetSite(plan.SiteId.ValueInt64())
 		}
 	}
 	if !plan.ClusterId.Equal(state.ClusterId) {
 		if plan.ClusterId.IsNull() {
 			body.SetClusterNil()
 		} else if !plan.ClusterId.IsUnknown() {
-			body.SetCluster(conv.Int32(plan.ClusterId))
+			body.SetCluster(plan.ClusterId.ValueInt64())
 		}
 	}
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if plan.DeviceId.IsNull() {
 			body.SetDeviceNil()
 		} else if !plan.DeviceId.IsUnknown() {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.PlatformId.Equal(state.PlatformId) {
 		if plan.PlatformId.IsNull() {
 			body.SetPlatformNil()
 		} else if !plan.PlatformId.IsUnknown() {
-			body.SetPlatform(conv.Int32(plan.PlatformId))
+			body.SetPlatform(plan.PlatformId.ValueInt64())
 		}
 	}
 	if !plan.PrimaryIp4Id.Equal(state.PrimaryIp4Id) {
 		if conv.Known(plan.PrimaryIp4Id) {
-			body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+			body.SetPrimaryIp4(plan.PrimaryIp4Id.ValueInt64())
 		}
 	}
 	if !plan.PrimaryIp6Id.Equal(state.PrimaryIp6Id) {
 		if conv.Known(plan.PrimaryIp6Id) {
-			body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+			body.SetPrimaryIp6(plan.PrimaryIp6Id.ValueInt64())
 		}
 	}
 	if !plan.Vcpus.Equal(state.Vcpus) {
@@ -556,14 +556,14 @@ func virtualMachineToPatch(ctx context.Context, plan, state *VirtualMachineModel
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -585,7 +585,7 @@ func virtualMachineToPatch(ctx context.Context, plan, state *VirtualMachineModel
 		if plan.ConfigTemplateId.IsNull() {
 			body.SetConfigTemplateNil()
 		} else if !plan.ConfigTemplateId.IsUnknown() {
-			body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+			body.SetConfigTemplate(plan.ConfigTemplateId.ValueInt64())
 		}
 	}
 	if !plan.CustomFields.Equal(state.CustomFields) {

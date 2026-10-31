@@ -22,12 +22,12 @@ var _ MappedNullable = &PatchedBulkCircuitTerminationRequest{}
 
 // PatchedBulkCircuitTerminationRequest Adds support for custom fields and tags.
 type PatchedBulkCircuitTerminationRequest struct {
-	Id      int32  `json:"id"`
-	Circuit *int32 `json:"circuit,omitempty"`
+	Id      int64  `json:"id"`
+	Circuit *int64 `json:"circuit,omitempty"`
 	// * `A` - A * `Z` - Z
 	TermSide        *string        `json:"term_side,omitempty"`
 	TerminationType NullableString `json:"termination_type,omitempty"`
-	TerminationId   NullableInt32  `json:"termination_id,omitempty"`
+	TerminationId   NullableInt64  `json:"termination_id,omitempty"`
 	// Physical circuit speed
 	PortSpeed NullableInt32 `json:"port_speed,omitempty"`
 	// Upstream speed, if different from port speed
@@ -50,7 +50,7 @@ type _PatchedBulkCircuitTerminationRequest PatchedBulkCircuitTerminationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkCircuitTerminationRequest(id int32) *PatchedBulkCircuitTerminationRequest {
+func NewPatchedBulkCircuitTerminationRequest(id int64) *PatchedBulkCircuitTerminationRequest {
 	this := PatchedBulkCircuitTerminationRequest{}
 	this.Id = id
 	return &this
@@ -65,9 +65,9 @@ func NewPatchedBulkCircuitTerminationRequestWithDefaults() *PatchedBulkCircuitTe
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkCircuitTerminationRequest) GetId() int32 {
+func (o *PatchedBulkCircuitTerminationRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -76,7 +76,7 @@ func (o *PatchedBulkCircuitTerminationRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkCircuitTerminationRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkCircuitTerminationRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,14 +84,14 @@ func (o *PatchedBulkCircuitTerminationRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkCircuitTerminationRequest) SetId(v int32) {
+func (o *PatchedBulkCircuitTerminationRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetCircuit returns the Circuit field value if set, zero value otherwise.
-func (o *PatchedBulkCircuitTerminationRequest) GetCircuit() int32 {
+func (o *PatchedBulkCircuitTerminationRequest) GetCircuit() int64 {
 	if o == nil || IsNil(o.Circuit) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Circuit
@@ -99,7 +99,7 @@ func (o *PatchedBulkCircuitTerminationRequest) GetCircuit() int32 {
 
 // GetCircuitOk returns a tuple with the Circuit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkCircuitTerminationRequest) GetCircuitOk() (*int32, bool) {
+func (o *PatchedBulkCircuitTerminationRequest) GetCircuitOk() (*int64, bool) {
 	if o == nil || IsNil(o.Circuit) {
 		return nil, false
 	}
@@ -115,8 +115,8 @@ func (o *PatchedBulkCircuitTerminationRequest) HasCircuit() bool {
 	return false
 }
 
-// SetCircuit gets a reference to the given int32 and assigns it to the Circuit field.
-func (o *PatchedBulkCircuitTerminationRequest) SetCircuit(v int32) {
+// SetCircuit gets a reference to the given int64 and assigns it to the Circuit field.
+func (o *PatchedBulkCircuitTerminationRequest) SetCircuit(v int64) {
 	o.Circuit = &v
 }
 
@@ -196,9 +196,9 @@ func (o *PatchedBulkCircuitTerminationRequest) UnsetTerminationType() {
 }
 
 // GetTerminationId returns the TerminationId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCircuitTerminationRequest) GetTerminationId() int32 {
+func (o *PatchedBulkCircuitTerminationRequest) GetTerminationId() int64 {
 	if o == nil || IsNil(o.TerminationId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.TerminationId.Get()
@@ -207,7 +207,7 @@ func (o *PatchedBulkCircuitTerminationRequest) GetTerminationId() int32 {
 // GetTerminationIdOk returns a tuple with the TerminationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCircuitTerminationRequest) GetTerminationIdOk() (*int32, bool) {
+func (o *PatchedBulkCircuitTerminationRequest) GetTerminationIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -223,8 +223,8 @@ func (o *PatchedBulkCircuitTerminationRequest) HasTerminationId() bool {
 	return false
 }
 
-// SetTerminationId gets a reference to the given NullableInt32 and assigns it to the TerminationId field.
-func (o *PatchedBulkCircuitTerminationRequest) SetTerminationId(v int32) {
+// SetTerminationId gets a reference to the given NullableInt64 and assigns it to the TerminationId field.
+func (o *PatchedBulkCircuitTerminationRequest) SetTerminationId(v int64) {
 	o.TerminationId.Set(&v)
 }
 

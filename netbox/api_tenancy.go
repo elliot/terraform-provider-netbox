@@ -89,7 +89,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact assignment.
 		@return ApiTenancyContactAssignmentsDestroyRequest
 	*/
-	TenancyContactAssignmentsDestroy(ctx context.Context, id int32) ApiTenancyContactAssignmentsDestroyRequest
+	TenancyContactAssignmentsDestroy(ctx context.Context, id int64) ApiTenancyContactAssignmentsDestroyRequest
 
 	// TenancyContactAssignmentsDestroyExecute executes the request
 	TenancyContactAssignmentsDestroyExecute(r ApiTenancyContactAssignmentsDestroyRequest) (*http.Response, error)
@@ -117,7 +117,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact assignment.
 		@return ApiTenancyContactAssignmentsPartialUpdateRequest
 	*/
-	TenancyContactAssignmentsPartialUpdate(ctx context.Context, id int32) ApiTenancyContactAssignmentsPartialUpdateRequest
+	TenancyContactAssignmentsPartialUpdate(ctx context.Context, id int64) ApiTenancyContactAssignmentsPartialUpdateRequest
 
 	// TenancyContactAssignmentsPartialUpdateExecute executes the request
 	//  @return ContactAssignment
@@ -132,7 +132,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact assignment.
 		@return ApiTenancyContactAssignmentsRetrieveRequest
 	*/
-	TenancyContactAssignmentsRetrieve(ctx context.Context, id int32) ApiTenancyContactAssignmentsRetrieveRequest
+	TenancyContactAssignmentsRetrieve(ctx context.Context, id int64) ApiTenancyContactAssignmentsRetrieveRequest
 
 	// TenancyContactAssignmentsRetrieveExecute executes the request
 	//  @return ContactAssignment
@@ -147,7 +147,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact assignment.
 		@return ApiTenancyContactAssignmentsUpdateRequest
 	*/
-	TenancyContactAssignmentsUpdate(ctx context.Context, id int32) ApiTenancyContactAssignmentsUpdateRequest
+	TenancyContactAssignmentsUpdate(ctx context.Context, id int64) ApiTenancyContactAssignmentsUpdateRequest
 
 	// TenancyContactAssignmentsUpdateExecute executes the request
 	//  @return ContactAssignment
@@ -217,7 +217,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact group.
 		@return ApiTenancyContactGroupsDestroyRequest
 	*/
-	TenancyContactGroupsDestroy(ctx context.Context, id int32) ApiTenancyContactGroupsDestroyRequest
+	TenancyContactGroupsDestroy(ctx context.Context, id int64) ApiTenancyContactGroupsDestroyRequest
 
 	// TenancyContactGroupsDestroyExecute executes the request
 	TenancyContactGroupsDestroyExecute(r ApiTenancyContactGroupsDestroyRequest) (*http.Response, error)
@@ -245,7 +245,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact group.
 		@return ApiTenancyContactGroupsPartialUpdateRequest
 	*/
-	TenancyContactGroupsPartialUpdate(ctx context.Context, id int32) ApiTenancyContactGroupsPartialUpdateRequest
+	TenancyContactGroupsPartialUpdate(ctx context.Context, id int64) ApiTenancyContactGroupsPartialUpdateRequest
 
 	// TenancyContactGroupsPartialUpdateExecute executes the request
 	//  @return ContactGroup
@@ -260,7 +260,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact group.
 		@return ApiTenancyContactGroupsRetrieveRequest
 	*/
-	TenancyContactGroupsRetrieve(ctx context.Context, id int32) ApiTenancyContactGroupsRetrieveRequest
+	TenancyContactGroupsRetrieve(ctx context.Context, id int64) ApiTenancyContactGroupsRetrieveRequest
 
 	// TenancyContactGroupsRetrieveExecute executes the request
 	//  @return ContactGroup
@@ -275,7 +275,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact group.
 		@return ApiTenancyContactGroupsUpdateRequest
 	*/
-	TenancyContactGroupsUpdate(ctx context.Context, id int32) ApiTenancyContactGroupsUpdateRequest
+	TenancyContactGroupsUpdate(ctx context.Context, id int64) ApiTenancyContactGroupsUpdateRequest
 
 	// TenancyContactGroupsUpdateExecute executes the request
 	//  @return ContactGroup
@@ -345,7 +345,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact role.
 		@return ApiTenancyContactRolesDestroyRequest
 	*/
-	TenancyContactRolesDestroy(ctx context.Context, id int32) ApiTenancyContactRolesDestroyRequest
+	TenancyContactRolesDestroy(ctx context.Context, id int64) ApiTenancyContactRolesDestroyRequest
 
 	// TenancyContactRolesDestroyExecute executes the request
 	TenancyContactRolesDestroyExecute(r ApiTenancyContactRolesDestroyRequest) (*http.Response, error)
@@ -373,7 +373,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact role.
 		@return ApiTenancyContactRolesPartialUpdateRequest
 	*/
-	TenancyContactRolesPartialUpdate(ctx context.Context, id int32) ApiTenancyContactRolesPartialUpdateRequest
+	TenancyContactRolesPartialUpdate(ctx context.Context, id int64) ApiTenancyContactRolesPartialUpdateRequest
 
 	// TenancyContactRolesPartialUpdateExecute executes the request
 	//  @return ContactRole
@@ -388,7 +388,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact role.
 		@return ApiTenancyContactRolesRetrieveRequest
 	*/
-	TenancyContactRolesRetrieve(ctx context.Context, id int32) ApiTenancyContactRolesRetrieveRequest
+	TenancyContactRolesRetrieve(ctx context.Context, id int64) ApiTenancyContactRolesRetrieveRequest
 
 	// TenancyContactRolesRetrieveExecute executes the request
 	//  @return ContactRole
@@ -403,7 +403,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact role.
 		@return ApiTenancyContactRolesUpdateRequest
 	*/
-	TenancyContactRolesUpdate(ctx context.Context, id int32) ApiTenancyContactRolesUpdateRequest
+	TenancyContactRolesUpdate(ctx context.Context, id int64) ApiTenancyContactRolesUpdateRequest
 
 	// TenancyContactRolesUpdateExecute executes the request
 	//  @return ContactRole
@@ -473,7 +473,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact.
 		@return ApiTenancyContactsDestroyRequest
 	*/
-	TenancyContactsDestroy(ctx context.Context, id int32) ApiTenancyContactsDestroyRequest
+	TenancyContactsDestroy(ctx context.Context, id int64) ApiTenancyContactsDestroyRequest
 
 	// TenancyContactsDestroyExecute executes the request
 	TenancyContactsDestroyExecute(r ApiTenancyContactsDestroyRequest) (*http.Response, error)
@@ -501,7 +501,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact.
 		@return ApiTenancyContactsPartialUpdateRequest
 	*/
-	TenancyContactsPartialUpdate(ctx context.Context, id int32) ApiTenancyContactsPartialUpdateRequest
+	TenancyContactsPartialUpdate(ctx context.Context, id int64) ApiTenancyContactsPartialUpdateRequest
 
 	// TenancyContactsPartialUpdateExecute executes the request
 	//  @return Contact
@@ -516,7 +516,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact.
 		@return ApiTenancyContactsRetrieveRequest
 	*/
-	TenancyContactsRetrieve(ctx context.Context, id int32) ApiTenancyContactsRetrieveRequest
+	TenancyContactsRetrieve(ctx context.Context, id int64) ApiTenancyContactsRetrieveRequest
 
 	// TenancyContactsRetrieveExecute executes the request
 	//  @return Contact
@@ -531,7 +531,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this contact.
 		@return ApiTenancyContactsUpdateRequest
 	*/
-	TenancyContactsUpdate(ctx context.Context, id int32) ApiTenancyContactsUpdateRequest
+	TenancyContactsUpdate(ctx context.Context, id int64) ApiTenancyContactsUpdateRequest
 
 	// TenancyContactsUpdateExecute executes the request
 	//  @return Contact
@@ -601,7 +601,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this tenant group.
 		@return ApiTenancyTenantGroupsDestroyRequest
 	*/
-	TenancyTenantGroupsDestroy(ctx context.Context, id int32) ApiTenancyTenantGroupsDestroyRequest
+	TenancyTenantGroupsDestroy(ctx context.Context, id int64) ApiTenancyTenantGroupsDestroyRequest
 
 	// TenancyTenantGroupsDestroyExecute executes the request
 	TenancyTenantGroupsDestroyExecute(r ApiTenancyTenantGroupsDestroyRequest) (*http.Response, error)
@@ -629,7 +629,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this tenant group.
 		@return ApiTenancyTenantGroupsPartialUpdateRequest
 	*/
-	TenancyTenantGroupsPartialUpdate(ctx context.Context, id int32) ApiTenancyTenantGroupsPartialUpdateRequest
+	TenancyTenantGroupsPartialUpdate(ctx context.Context, id int64) ApiTenancyTenantGroupsPartialUpdateRequest
 
 	// TenancyTenantGroupsPartialUpdateExecute executes the request
 	//  @return TenantGroup
@@ -644,7 +644,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this tenant group.
 		@return ApiTenancyTenantGroupsRetrieveRequest
 	*/
-	TenancyTenantGroupsRetrieve(ctx context.Context, id int32) ApiTenancyTenantGroupsRetrieveRequest
+	TenancyTenantGroupsRetrieve(ctx context.Context, id int64) ApiTenancyTenantGroupsRetrieveRequest
 
 	// TenancyTenantGroupsRetrieveExecute executes the request
 	//  @return TenantGroup
@@ -659,7 +659,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this tenant group.
 		@return ApiTenancyTenantGroupsUpdateRequest
 	*/
-	TenancyTenantGroupsUpdate(ctx context.Context, id int32) ApiTenancyTenantGroupsUpdateRequest
+	TenancyTenantGroupsUpdate(ctx context.Context, id int64) ApiTenancyTenantGroupsUpdateRequest
 
 	// TenancyTenantGroupsUpdateExecute executes the request
 	//  @return TenantGroup
@@ -729,7 +729,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this tenant.
 		@return ApiTenancyTenantsDestroyRequest
 	*/
-	TenancyTenantsDestroy(ctx context.Context, id int32) ApiTenancyTenantsDestroyRequest
+	TenancyTenantsDestroy(ctx context.Context, id int64) ApiTenancyTenantsDestroyRequest
 
 	// TenancyTenantsDestroyExecute executes the request
 	TenancyTenantsDestroyExecute(r ApiTenancyTenantsDestroyRequest) (*http.Response, error)
@@ -757,7 +757,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this tenant.
 		@return ApiTenancyTenantsPartialUpdateRequest
 	*/
-	TenancyTenantsPartialUpdate(ctx context.Context, id int32) ApiTenancyTenantsPartialUpdateRequest
+	TenancyTenantsPartialUpdate(ctx context.Context, id int64) ApiTenancyTenantsPartialUpdateRequest
 
 	// TenancyTenantsPartialUpdateExecute executes the request
 	//  @return Tenant
@@ -772,7 +772,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this tenant.
 		@return ApiTenancyTenantsRetrieveRequest
 	*/
-	TenancyTenantsRetrieve(ctx context.Context, id int32) ApiTenancyTenantsRetrieveRequest
+	TenancyTenantsRetrieve(ctx context.Context, id int64) ApiTenancyTenantsRetrieveRequest
 
 	// TenancyTenantsRetrieveExecute executes the request
 	//  @return Tenant
@@ -787,7 +787,7 @@ type TenancyAPI interface {
 		@param id A unique integer value identifying this tenant.
 		@return ApiTenancyTenantsUpdateRequest
 	*/
-	TenancyTenantsUpdate(ctx context.Context, id int32) ApiTenancyTenantsUpdateRequest
+	TenancyTenantsUpdate(ctx context.Context, id int64) ApiTenancyTenantsUpdateRequest
 
 	// TenancyTenantsUpdateExecute executes the request
 	//  @return Tenant
@@ -1288,7 +1288,7 @@ func (a *TenancyAPIService) TenancyContactAssignmentsCreateExecute(r ApiTenancyC
 type ApiTenancyContactAssignmentsDestroyRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiTenancyContactAssignmentsDestroyRequest) Execute() (*http.Response, error) {
@@ -1304,7 +1304,7 @@ Delete a contact assignment object.
 	@param id A unique integer value identifying this contact assignment.
 	@return ApiTenancyContactAssignmentsDestroyRequest
 */
-func (a *TenancyAPIService) TenancyContactAssignmentsDestroy(ctx context.Context, id int32) ApiTenancyContactAssignmentsDestroyRequest {
+func (a *TenancyAPIService) TenancyContactAssignmentsDestroy(ctx context.Context, id int64) ApiTenancyContactAssignmentsDestroyRequest {
 	return ApiTenancyContactAssignmentsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -1395,8 +1395,8 @@ type ApiTenancyContactAssignmentsListRequest struct {
 	ctx               context.Context
 	ApiService        TenancyAPI
 	brief             *bool
-	contactId         *[]int32
-	contactIdN        *[]int32
+	contactId         *[]int64
+	contactIdN        *[]int64
 	created           *[]time.Time
 	createdEmpty      *bool
 	createdGt         *[]time.Time
@@ -1408,15 +1408,15 @@ type ApiTenancyContactAssignmentsListRequest struct {
 	fields            *string
 	group             *[]string
 	groupN            *[]string
-	groupId           *[]string
-	groupIdN          *[]string
-	id                *[]int32
+	groupId           *[]int64
+	groupIdN          *[]int64
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -1426,13 +1426,13 @@ type ApiTenancyContactAssignmentsListRequest struct {
 	lastUpdatedN      *[]time.Time
 	limit             *int32
 	modifiedByRequest *string
-	objectId          *[]int32
+	objectId          *[]int64
 	objectIdEmpty     *bool
-	objectIdGt        *[]int32
-	objectIdGte       *[]int32
-	objectIdLt        *[]int32
-	objectIdLte       *[]int32
-	objectIdN         *[]int32
+	objectIdGt        *[]int64
+	objectIdGte       *[]int64
+	objectIdLt        *[]int64
+	objectIdLte       *[]int64
+	objectIdN         *[]int64
 	objectType        *[]string
 	objectTypeN       *[]string
 	objectTypeId      *int32
@@ -1456,15 +1456,15 @@ type ApiTenancyContactAssignmentsListRequest struct {
 	q                 *string
 	role              *[]string
 	roleN             *[]string
-	roleId            *[]int32
-	roleIdN           *[]int32
+	roleId            *[]int64
+	roleIdN           *[]int64
 	start             *int32
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -1475,13 +1475,13 @@ func (r ApiTenancyContactAssignmentsListRequest) Brief(brief bool) ApiTenancyCon
 }
 
 // Contact (ID)
-func (r ApiTenancyContactAssignmentsListRequest) ContactId(contactId []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) ContactId(contactId []int64) ApiTenancyContactAssignmentsListRequest {
 	r.contactId = &contactId
 	return r
 }
 
 // Contact (ID)
-func (r ApiTenancyContactAssignmentsListRequest) ContactIdN(contactIdN []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) ContactIdN(contactIdN []int64) ApiTenancyContactAssignmentsListRequest {
 	r.contactIdN = &contactIdN
 	return r
 }
@@ -1532,27 +1532,31 @@ func (r ApiTenancyContactAssignmentsListRequest) Fields(fields string) ApiTenanc
 	return r
 }
 
+// Contact group (slug)
 func (r ApiTenancyContactAssignmentsListRequest) Group(group []string) ApiTenancyContactAssignmentsListRequest {
 	r.group = &group
 	return r
 }
 
+// Contact group (slug)
 func (r ApiTenancyContactAssignmentsListRequest) GroupN(groupN []string) ApiTenancyContactAssignmentsListRequest {
 	r.groupN = &groupN
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) GroupId(groupId []string) ApiTenancyContactAssignmentsListRequest {
+// Contact group (ID)
+func (r ApiTenancyContactAssignmentsListRequest) GroupId(groupId []int64) ApiTenancyContactAssignmentsListRequest {
 	r.groupId = &groupId
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) GroupIdN(groupIdN []string) ApiTenancyContactAssignmentsListRequest {
+// Contact group (ID)
+func (r ApiTenancyContactAssignmentsListRequest) GroupIdN(groupIdN []int64) ApiTenancyContactAssignmentsListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) Id(id []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) Id(id []int64) ApiTenancyContactAssignmentsListRequest {
 	r.id = &id
 	return r
 }
@@ -1562,27 +1566,27 @@ func (r ApiTenancyContactAssignmentsListRequest) IdEmpty(idEmpty bool) ApiTenanc
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) IdGt(idGt []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) IdGt(idGt []int64) ApiTenancyContactAssignmentsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) IdGte(idGte []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) IdGte(idGte []int64) ApiTenancyContactAssignmentsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) IdLt(idLt []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) IdLt(idLt []int64) ApiTenancyContactAssignmentsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) IdLte(idLte []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) IdLte(idLte []int64) ApiTenancyContactAssignmentsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) IdN(idN []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) IdN(idN []int64) ApiTenancyContactAssignmentsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -1633,7 +1637,7 @@ func (r ApiTenancyContactAssignmentsListRequest) ModifiedByRequest(modifiedByReq
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) ObjectId(objectId []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) ObjectId(objectId []int64) ApiTenancyContactAssignmentsListRequest {
 	r.objectId = &objectId
 	return r
 }
@@ -1643,27 +1647,27 @@ func (r ApiTenancyContactAssignmentsListRequest) ObjectIdEmpty(objectIdEmpty boo
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) ObjectIdGt(objectIdGt []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) ObjectIdGt(objectIdGt []int64) ApiTenancyContactAssignmentsListRequest {
 	r.objectIdGt = &objectIdGt
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) ObjectIdGte(objectIdGte []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) ObjectIdGte(objectIdGte []int64) ApiTenancyContactAssignmentsListRequest {
 	r.objectIdGte = &objectIdGte
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) ObjectIdLt(objectIdLt []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) ObjectIdLt(objectIdLt []int64) ApiTenancyContactAssignmentsListRequest {
 	r.objectIdLt = &objectIdLt
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) ObjectIdLte(objectIdLte []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) ObjectIdLte(objectIdLte []int64) ApiTenancyContactAssignmentsListRequest {
 	r.objectIdLte = &objectIdLte
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) ObjectIdN(objectIdN []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) ObjectIdN(objectIdN []int64) ApiTenancyContactAssignmentsListRequest {
 	r.objectIdN = &objectIdN
 	return r
 }
@@ -1792,13 +1796,13 @@ func (r ApiTenancyContactAssignmentsListRequest) RoleN(roleN []string) ApiTenanc
 }
 
 // Contact role (ID)
-func (r ApiTenancyContactAssignmentsListRequest) RoleId(roleId []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) RoleId(roleId []int64) ApiTenancyContactAssignmentsListRequest {
 	r.roleId = &roleId
 	return r
 }
 
 // Contact role (ID)
-func (r ApiTenancyContactAssignmentsListRequest) RoleIdN(roleIdN []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) RoleIdN(roleIdN []int64) ApiTenancyContactAssignmentsListRequest {
 	r.roleIdN = &roleIdN
 	return r
 }
@@ -1824,17 +1828,17 @@ func (r ApiTenancyContactAssignmentsListRequest) TagN(tagN []string) ApiTenancyC
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) TagId(tagId []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) TagId(tagId []int64) ApiTenancyContactAssignmentsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) TagIdAny(tagIdAny []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) TagIdAny(tagIdAny []int64) ApiTenancyContactAssignmentsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiTenancyContactAssignmentsListRequest) TagIdN(tagIdN []int32) ApiTenancyContactAssignmentsListRequest {
+func (r ApiTenancyContactAssignmentsListRequest) TagIdN(tagIdN []int64) ApiTenancyContactAssignmentsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -2588,7 +2592,7 @@ func (a *TenancyAPIService) TenancyContactAssignmentsListExecute(r ApiTenancyCon
 type ApiTenancyContactAssignmentsPartialUpdateRequest struct {
 	ctx                                     context.Context
 	ApiService                              TenancyAPI
-	id                                      int32
+	id                                      int64
 	patchedWritableContactAssignmentRequest *PatchedWritableContactAssignmentRequest
 }
 
@@ -2610,7 +2614,7 @@ Patch a contact assignment object.
 	@param id A unique integer value identifying this contact assignment.
 	@return ApiTenancyContactAssignmentsPartialUpdateRequest
 */
-func (a *TenancyAPIService) TenancyContactAssignmentsPartialUpdate(ctx context.Context, id int32) ApiTenancyContactAssignmentsPartialUpdateRequest {
+func (a *TenancyAPIService) TenancyContactAssignmentsPartialUpdate(ctx context.Context, id int64) ApiTenancyContactAssignmentsPartialUpdateRequest {
 	return ApiTenancyContactAssignmentsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -2714,7 +2718,7 @@ func (a *TenancyAPIService) TenancyContactAssignmentsPartialUpdateExecute(r ApiT
 type ApiTenancyContactAssignmentsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -2751,7 +2755,7 @@ Get a contact assignment object.
 	@param id A unique integer value identifying this contact assignment.
 	@return ApiTenancyContactAssignmentsRetrieveRequest
 */
-func (a *TenancyAPIService) TenancyContactAssignmentsRetrieve(ctx context.Context, id int32) ApiTenancyContactAssignmentsRetrieveRequest {
+func (a *TenancyAPIService) TenancyContactAssignmentsRetrieve(ctx context.Context, id int64) ApiTenancyContactAssignmentsRetrieveRequest {
 	return ApiTenancyContactAssignmentsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -2862,7 +2866,7 @@ func (a *TenancyAPIService) TenancyContactAssignmentsRetrieveExecute(r ApiTenanc
 type ApiTenancyContactAssignmentsUpdateRequest struct {
 	ctx                              context.Context
 	ApiService                       TenancyAPI
-	id                               int32
+	id                               int64
 	writableContactAssignmentRequest *WritableContactAssignmentRequest
 }
 
@@ -2884,7 +2888,7 @@ Put a contact assignment object.
 	@param id A unique integer value identifying this contact assignment.
 	@return ApiTenancyContactAssignmentsUpdateRequest
 */
-func (a *TenancyAPIService) TenancyContactAssignmentsUpdate(ctx context.Context, id int32) ApiTenancyContactAssignmentsUpdateRequest {
+func (a *TenancyAPIService) TenancyContactAssignmentsUpdate(ctx context.Context, id int64) ApiTenancyContactAssignmentsUpdateRequest {
 	return ApiTenancyContactAssignmentsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3479,7 +3483,7 @@ func (a *TenancyAPIService) TenancyContactGroupsCreateExecute(r ApiTenancyContac
 type ApiTenancyContactGroupsDestroyRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiTenancyContactGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -3495,7 +3499,7 @@ Delete a contact group object.
 	@param id A unique integer value identifying this contact group.
 	@return ApiTenancyContactGroupsDestroyRequest
 */
-func (a *TenancyAPIService) TenancyContactGroupsDestroy(ctx context.Context, id int32) ApiTenancyContactGroupsDestroyRequest {
+func (a *TenancyAPIService) TenancyContactGroupsDestroy(ctx context.Context, id int64) ApiTenancyContactGroupsDestroyRequest {
 	return ApiTenancyContactGroupsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3587,11 +3591,11 @@ type ApiTenancyContactGroupsListRequest struct {
 	ApiService        TenancyAPI
 	ancestor          *[]string
 	ancestorN         *[]string
-	ancestorId        *[]string
-	ancestorIdN       *[]string
+	ancestorId        *[]int64
+	ancestorIdN       *[]int64
 	brief             *bool
-	contactId         *[]int32
-	contactIdN        *[]int32
+	contactId         *[]int64
+	contactIdN        *[]int64
 	created           *[]time.Time
 	createdEmpty      *bool
 	createdGt         *[]time.Time
@@ -3614,13 +3618,13 @@ type ApiTenancyContactGroupsListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -3650,14 +3654,14 @@ type ApiTenancyContactGroupsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	parent            *[]string
 	parentN           *[]string
-	parentId          *[]*int32
-	parentIdN         *[]*int32
+	parentId          *[]*int64
+	parentIdN         *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -3676,28 +3680,32 @@ type ApiTenancyContactGroupsListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
+// Contact group (slug)
 func (r ApiTenancyContactGroupsListRequest) Ancestor(ancestor []string) ApiTenancyContactGroupsListRequest {
 	r.ancestor = &ancestor
 	return r
 }
 
+// Contact group (slug)
 func (r ApiTenancyContactGroupsListRequest) AncestorN(ancestorN []string) ApiTenancyContactGroupsListRequest {
 	r.ancestorN = &ancestorN
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) AncestorId(ancestorId []string) ApiTenancyContactGroupsListRequest {
+// Contact group (ID)
+func (r ApiTenancyContactGroupsListRequest) AncestorId(ancestorId []int64) ApiTenancyContactGroupsListRequest {
 	r.ancestorId = &ancestorId
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) AncestorIdN(ancestorIdN []string) ApiTenancyContactGroupsListRequest {
+// Contact group (ID)
+func (r ApiTenancyContactGroupsListRequest) AncestorIdN(ancestorIdN []int64) ApiTenancyContactGroupsListRequest {
 	r.ancestorIdN = &ancestorIdN
 	return r
 }
@@ -3709,13 +3717,13 @@ func (r ApiTenancyContactGroupsListRequest) Brief(brief bool) ApiTenancyContactG
 }
 
 // Contact (ID)
-func (r ApiTenancyContactGroupsListRequest) ContactId(contactId []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) ContactId(contactId []int64) ApiTenancyContactGroupsListRequest {
 	r.contactId = &contactId
 	return r
 }
 
 // Contact (ID)
-func (r ApiTenancyContactGroupsListRequest) ContactIdN(contactIdN []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) ContactIdN(contactIdN []int64) ApiTenancyContactGroupsListRequest {
 	r.contactIdN = &contactIdN
 	return r
 }
@@ -3831,7 +3839,7 @@ func (r ApiTenancyContactGroupsListRequest) Fields(fields string) ApiTenancyCont
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) Id(id []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) Id(id []int64) ApiTenancyContactGroupsListRequest {
 	r.id = &id
 	return r
 }
@@ -3841,27 +3849,27 @@ func (r ApiTenancyContactGroupsListRequest) IdEmpty(idEmpty bool) ApiTenancyCont
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) IdGt(idGt []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) IdGt(idGt []int64) ApiTenancyContactGroupsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) IdGte(idGte []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) IdGte(idGte []int64) ApiTenancyContactGroupsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) IdLt(idLt []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) IdLt(idLt []int64) ApiTenancyContactGroupsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) IdLte(idLte []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) IdLte(idLte []int64) ApiTenancyContactGroupsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) IdN(idN []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) IdN(idN []int64) ApiTenancyContactGroupsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -4020,25 +4028,25 @@ func (r ApiTenancyContactGroupsListRequest) OwnerGroupN(ownerGroupN []string) Ap
 }
 
 // Owner Group (ID)
-func (r ApiTenancyContactGroupsListRequest) OwnerGroupId(ownerGroupId []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) OwnerGroupId(ownerGroupId []int64) ApiTenancyContactGroupsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiTenancyContactGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiTenancyContactGroupsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyContactGroupsListRequest) OwnerId(ownerId []*int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) OwnerId(ownerId []*int64) ApiTenancyContactGroupsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyContactGroupsListRequest) OwnerIdN(ownerIdN []*int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) OwnerIdN(ownerIdN []*int64) ApiTenancyContactGroupsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -4056,13 +4064,13 @@ func (r ApiTenancyContactGroupsListRequest) ParentN(parentN []string) ApiTenancy
 }
 
 // Parent contact group (ID)
-func (r ApiTenancyContactGroupsListRequest) ParentId(parentId []*int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) ParentId(parentId []*int64) ApiTenancyContactGroupsListRequest {
 	r.parentId = &parentId
 	return r
 }
 
 // Parent contact group (ID)
-func (r ApiTenancyContactGroupsListRequest) ParentIdN(parentIdN []*int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) ParentIdN(parentIdN []*int64) ApiTenancyContactGroupsListRequest {
 	r.parentIdN = &parentIdN
 	return r
 }
@@ -4159,17 +4167,17 @@ func (r ApiTenancyContactGroupsListRequest) TagN(tagN []string) ApiTenancyContac
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) TagId(tagId []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) TagId(tagId []int64) ApiTenancyContactGroupsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) TagIdAny(tagIdAny []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) TagIdAny(tagIdAny []int64) ApiTenancyContactGroupsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiTenancyContactGroupsListRequest) TagIdN(tagIdN []int32) ApiTenancyContactGroupsListRequest {
+func (r ApiTenancyContactGroupsListRequest) TagIdN(tagIdN []int64) ApiTenancyContactGroupsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -5200,7 +5208,7 @@ func (a *TenancyAPIService) TenancyContactGroupsListExecute(r ApiTenancyContactG
 type ApiTenancyContactGroupsPartialUpdateRequest struct {
 	ctx                                context.Context
 	ApiService                         TenancyAPI
-	id                                 int32
+	id                                 int64
 	patchedWritableContactGroupRequest *PatchedWritableContactGroupRequest
 }
 
@@ -5222,7 +5230,7 @@ Patch a contact group object.
 	@param id A unique integer value identifying this contact group.
 	@return ApiTenancyContactGroupsPartialUpdateRequest
 */
-func (a *TenancyAPIService) TenancyContactGroupsPartialUpdate(ctx context.Context, id int32) ApiTenancyContactGroupsPartialUpdateRequest {
+func (a *TenancyAPIService) TenancyContactGroupsPartialUpdate(ctx context.Context, id int64) ApiTenancyContactGroupsPartialUpdateRequest {
 	return ApiTenancyContactGroupsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -5326,7 +5334,7 @@ func (a *TenancyAPIService) TenancyContactGroupsPartialUpdateExecute(r ApiTenanc
 type ApiTenancyContactGroupsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -5363,7 +5371,7 @@ Get a contact group object.
 	@param id A unique integer value identifying this contact group.
 	@return ApiTenancyContactGroupsRetrieveRequest
 */
-func (a *TenancyAPIService) TenancyContactGroupsRetrieve(ctx context.Context, id int32) ApiTenancyContactGroupsRetrieveRequest {
+func (a *TenancyAPIService) TenancyContactGroupsRetrieve(ctx context.Context, id int64) ApiTenancyContactGroupsRetrieveRequest {
 	return ApiTenancyContactGroupsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -5474,7 +5482,7 @@ func (a *TenancyAPIService) TenancyContactGroupsRetrieveExecute(r ApiTenancyCont
 type ApiTenancyContactGroupsUpdateRequest struct {
 	ctx                         context.Context
 	ApiService                  TenancyAPI
-	id                          int32
+	id                          int64
 	writableContactGroupRequest *WritableContactGroupRequest
 }
 
@@ -5496,7 +5504,7 @@ Put a contact group object.
 	@param id A unique integer value identifying this contact group.
 	@return ApiTenancyContactGroupsUpdateRequest
 */
-func (a *TenancyAPIService) TenancyContactGroupsUpdate(ctx context.Context, id int32) ApiTenancyContactGroupsUpdateRequest {
+func (a *TenancyAPIService) TenancyContactGroupsUpdate(ctx context.Context, id int64) ApiTenancyContactGroupsUpdateRequest {
 	return ApiTenancyContactGroupsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6091,7 +6099,7 @@ func (a *TenancyAPIService) TenancyContactRolesCreateExecute(r ApiTenancyContact
 type ApiTenancyContactRolesDestroyRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiTenancyContactRolesDestroyRequest) Execute() (*http.Response, error) {
@@ -6107,7 +6115,7 @@ Delete a contact role object.
 	@param id A unique integer value identifying this contact role.
 	@return ApiTenancyContactRolesDestroyRequest
 */
-func (a *TenancyAPIService) TenancyContactRolesDestroy(ctx context.Context, id int32) ApiTenancyContactRolesDestroyRequest {
+func (a *TenancyAPIService) TenancyContactRolesDestroy(ctx context.Context, id int64) ApiTenancyContactRolesDestroyRequest {
 	return ApiTenancyContactRolesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6220,13 +6228,13 @@ type ApiTenancyContactRolesListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -6256,10 +6264,10 @@ type ApiTenancyContactRolesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -6278,9 +6286,9 @@ type ApiTenancyContactRolesListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -6401,7 +6409,7 @@ func (r ApiTenancyContactRolesListRequest) Fields(fields string) ApiTenancyConta
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) Id(id []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) Id(id []int64) ApiTenancyContactRolesListRequest {
 	r.id = &id
 	return r
 }
@@ -6411,27 +6419,27 @@ func (r ApiTenancyContactRolesListRequest) IdEmpty(idEmpty bool) ApiTenancyConta
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) IdGt(idGt []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) IdGt(idGt []int64) ApiTenancyContactRolesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) IdGte(idGte []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) IdGte(idGte []int64) ApiTenancyContactRolesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) IdLt(idLt []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) IdLt(idLt []int64) ApiTenancyContactRolesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) IdLte(idLte []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) IdLte(idLte []int64) ApiTenancyContactRolesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) IdN(idN []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) IdN(idN []int64) ApiTenancyContactRolesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -6590,25 +6598,25 @@ func (r ApiTenancyContactRolesListRequest) OwnerGroupN(ownerGroupN []string) Api
 }
 
 // Owner Group (ID)
-func (r ApiTenancyContactRolesListRequest) OwnerGroupId(ownerGroupId []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) OwnerGroupId(ownerGroupId []int64) ApiTenancyContactRolesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiTenancyContactRolesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiTenancyContactRolesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyContactRolesListRequest) OwnerId(ownerId []*int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) OwnerId(ownerId []*int64) ApiTenancyContactRolesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyContactRolesListRequest) OwnerIdN(ownerIdN []*int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) OwnerIdN(ownerIdN []*int64) ApiTenancyContactRolesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -6705,17 +6713,17 @@ func (r ApiTenancyContactRolesListRequest) TagN(tagN []string) ApiTenancyContact
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) TagId(tagId []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) TagId(tagId []int64) ApiTenancyContactRolesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) TagIdAny(tagIdAny []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) TagIdAny(tagIdAny []int64) ApiTenancyContactRolesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiTenancyContactRolesListRequest) TagIdN(tagIdN []int32) ApiTenancyContactRolesListRequest {
+func (r ApiTenancyContactRolesListRequest) TagIdN(tagIdN []int64) ApiTenancyContactRolesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -7636,7 +7644,7 @@ func (a *TenancyAPIService) TenancyContactRolesListExecute(r ApiTenancyContactRo
 type ApiTenancyContactRolesPartialUpdateRequest struct {
 	ctx                       context.Context
 	ApiService                TenancyAPI
-	id                        int32
+	id                        int64
 	patchedContactRoleRequest *PatchedContactRoleRequest
 }
 
@@ -7658,7 +7666,7 @@ Patch a contact role object.
 	@param id A unique integer value identifying this contact role.
 	@return ApiTenancyContactRolesPartialUpdateRequest
 */
-func (a *TenancyAPIService) TenancyContactRolesPartialUpdate(ctx context.Context, id int32) ApiTenancyContactRolesPartialUpdateRequest {
+func (a *TenancyAPIService) TenancyContactRolesPartialUpdate(ctx context.Context, id int64) ApiTenancyContactRolesPartialUpdateRequest {
 	return ApiTenancyContactRolesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -7762,7 +7770,7 @@ func (a *TenancyAPIService) TenancyContactRolesPartialUpdateExecute(r ApiTenancy
 type ApiTenancyContactRolesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -7799,7 +7807,7 @@ Get a contact role object.
 	@param id A unique integer value identifying this contact role.
 	@return ApiTenancyContactRolesRetrieveRequest
 */
-func (a *TenancyAPIService) TenancyContactRolesRetrieve(ctx context.Context, id int32) ApiTenancyContactRolesRetrieveRequest {
+func (a *TenancyAPIService) TenancyContactRolesRetrieve(ctx context.Context, id int64) ApiTenancyContactRolesRetrieveRequest {
 	return ApiTenancyContactRolesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -7910,7 +7918,7 @@ func (a *TenancyAPIService) TenancyContactRolesRetrieveExecute(r ApiTenancyConta
 type ApiTenancyContactRolesUpdateRequest struct {
 	ctx                context.Context
 	ApiService         TenancyAPI
-	id                 int32
+	id                 int64
 	contactRoleRequest *ContactRoleRequest
 }
 
@@ -7932,7 +7940,7 @@ Put a contact role object.
 	@param id A unique integer value identifying this contact role.
 	@return ApiTenancyContactRolesUpdateRequest
 */
-func (a *TenancyAPIService) TenancyContactRolesUpdate(ctx context.Context, id int32) ApiTenancyContactRolesUpdateRequest {
+func (a *TenancyAPIService) TenancyContactRolesUpdate(ctx context.Context, id int64) ApiTenancyContactRolesUpdateRequest {
 	return ApiTenancyContactRolesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -8527,7 +8535,7 @@ func (a *TenancyAPIService) TenancyContactsCreateExecute(r ApiTenancyContactsCre
 type ApiTenancyContactsDestroyRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiTenancyContactsDestroyRequest) Execute() (*http.Response, error) {
@@ -8543,7 +8551,7 @@ Delete a contact object.
 	@param id A unique integer value identifying this contact.
 	@return ApiTenancyContactsDestroyRequest
 */
-func (a *TenancyAPIService) TenancyContactsDestroy(ctx context.Context, id int32) ApiTenancyContactsDestroyRequest {
+func (a *TenancyAPIService) TenancyContactsDestroy(ctx context.Context, id int64) ApiTenancyContactsDestroyRequest {
 	return ApiTenancyContactsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -8684,15 +8692,15 @@ type ApiTenancyContactsListRequest struct {
 	fields            *string
 	group             *[]string
 	groupN            *[]string
-	groupId           *[]string
-	groupIdN          *[]string
-	id                *[]int32
+	groupId           *[]int64
+	groupIdN          *[]int64
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -8735,10 +8743,10 @@ type ApiTenancyContactsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	phone             *[]string
 	phoneEmpty        *bool
 	phoneIc           *[]string
@@ -8757,9 +8765,9 @@ type ApiTenancyContactsListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	title             *[]string
 	titleEmpty        *bool
 	titleIc           *[]string
@@ -9023,27 +9031,31 @@ func (r ApiTenancyContactsListRequest) Fields(fields string) ApiTenancyContactsL
 	return r
 }
 
+// Contact group (slug)
 func (r ApiTenancyContactsListRequest) Group(group []string) ApiTenancyContactsListRequest {
 	r.group = &group
 	return r
 }
 
+// Contact group (slug)
 func (r ApiTenancyContactsListRequest) GroupN(groupN []string) ApiTenancyContactsListRequest {
 	r.groupN = &groupN
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) GroupId(groupId []string) ApiTenancyContactsListRequest {
+// Contact group (ID)
+func (r ApiTenancyContactsListRequest) GroupId(groupId []int64) ApiTenancyContactsListRequest {
 	r.groupId = &groupId
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) GroupIdN(groupIdN []string) ApiTenancyContactsListRequest {
+// Contact group (ID)
+func (r ApiTenancyContactsListRequest) GroupIdN(groupIdN []int64) ApiTenancyContactsListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) Id(id []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) Id(id []int64) ApiTenancyContactsListRequest {
 	r.id = &id
 	return r
 }
@@ -9053,27 +9065,27 @@ func (r ApiTenancyContactsListRequest) IdEmpty(idEmpty bool) ApiTenancyContactsL
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) IdGt(idGt []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) IdGt(idGt []int64) ApiTenancyContactsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) IdGte(idGte []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) IdGte(idGte []int64) ApiTenancyContactsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) IdLt(idLt []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) IdLt(idLt []int64) ApiTenancyContactsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) IdLte(idLte []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) IdLte(idLte []int64) ApiTenancyContactsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) IdN(idN []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) IdN(idN []int64) ApiTenancyContactsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -9297,25 +9309,25 @@ func (r ApiTenancyContactsListRequest) OwnerGroupN(ownerGroupN []string) ApiTena
 }
 
 // Owner Group (ID)
-func (r ApiTenancyContactsListRequest) OwnerGroupId(ownerGroupId []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) OwnerGroupId(ownerGroupId []int64) ApiTenancyContactsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiTenancyContactsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiTenancyContactsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyContactsListRequest) OwnerId(ownerId []*int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) OwnerId(ownerId []*int64) ApiTenancyContactsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyContactsListRequest) OwnerIdN(ownerIdN []*int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) OwnerIdN(ownerIdN []*int64) ApiTenancyContactsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -9412,17 +9424,17 @@ func (r ApiTenancyContactsListRequest) TagN(tagN []string) ApiTenancyContactsLis
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) TagId(tagId []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) TagId(tagId []int64) ApiTenancyContactsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) TagIdAny(tagIdAny []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) TagIdAny(tagIdAny []int64) ApiTenancyContactsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiTenancyContactsListRequest) TagIdN(tagIdN []int32) ApiTenancyContactsListRequest {
+func (r ApiTenancyContactsListRequest) TagIdN(tagIdN []int64) ApiTenancyContactsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -10992,7 +11004,7 @@ func (a *TenancyAPIService) TenancyContactsListExecute(r ApiTenancyContactsListR
 type ApiTenancyContactsPartialUpdateRequest struct {
 	ctx                   context.Context
 	ApiService            TenancyAPI
-	id                    int32
+	id                    int64
 	patchedContactRequest *PatchedContactRequest
 }
 
@@ -11014,7 +11026,7 @@ Patch a contact object.
 	@param id A unique integer value identifying this contact.
 	@return ApiTenancyContactsPartialUpdateRequest
 */
-func (a *TenancyAPIService) TenancyContactsPartialUpdate(ctx context.Context, id int32) ApiTenancyContactsPartialUpdateRequest {
+func (a *TenancyAPIService) TenancyContactsPartialUpdate(ctx context.Context, id int64) ApiTenancyContactsPartialUpdateRequest {
 	return ApiTenancyContactsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -11118,7 +11130,7 @@ func (a *TenancyAPIService) TenancyContactsPartialUpdateExecute(r ApiTenancyCont
 type ApiTenancyContactsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -11155,7 +11167,7 @@ Get a contact object.
 	@param id A unique integer value identifying this contact.
 	@return ApiTenancyContactsRetrieveRequest
 */
-func (a *TenancyAPIService) TenancyContactsRetrieve(ctx context.Context, id int32) ApiTenancyContactsRetrieveRequest {
+func (a *TenancyAPIService) TenancyContactsRetrieve(ctx context.Context, id int64) ApiTenancyContactsRetrieveRequest {
 	return ApiTenancyContactsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -11266,7 +11278,7 @@ func (a *TenancyAPIService) TenancyContactsRetrieveExecute(r ApiTenancyContactsR
 type ApiTenancyContactsUpdateRequest struct {
 	ctx            context.Context
 	ApiService     TenancyAPI
-	id             int32
+	id             int64
 	contactRequest *ContactRequest
 }
 
@@ -11288,7 +11300,7 @@ Put a contact object.
 	@param id A unique integer value identifying this contact.
 	@return ApiTenancyContactsUpdateRequest
 */
-func (a *TenancyAPIService) TenancyContactsUpdate(ctx context.Context, id int32) ApiTenancyContactsUpdateRequest {
+func (a *TenancyAPIService) TenancyContactsUpdate(ctx context.Context, id int64) ApiTenancyContactsUpdateRequest {
 	return ApiTenancyContactsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -11883,7 +11895,7 @@ func (a *TenancyAPIService) TenancyTenantGroupsCreateExecute(r ApiTenancyTenantG
 type ApiTenancyTenantGroupsDestroyRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiTenancyTenantGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -11899,7 +11911,7 @@ Delete a tenant group object.
 	@param id A unique integer value identifying this tenant group.
 	@return ApiTenancyTenantGroupsDestroyRequest
 */
-func (a *TenancyAPIService) TenancyTenantGroupsDestroy(ctx context.Context, id int32) ApiTenancyTenantGroupsDestroyRequest {
+func (a *TenancyAPIService) TenancyTenantGroupsDestroy(ctx context.Context, id int64) ApiTenancyTenantGroupsDestroyRequest {
 	return ApiTenancyTenantGroupsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -11991,8 +12003,8 @@ type ApiTenancyTenantGroupsListRequest struct {
 	ApiService        TenancyAPI
 	ancestor          *[]string
 	ancestorN         *[]string
-	ancestorId        *[]string
-	ancestorIdN       *[]string
+	ancestorId        *[]int64
+	ancestorIdN       *[]int64
 	brief             *bool
 	created           *[]time.Time
 	createdEmpty      *bool
@@ -12016,13 +12028,13 @@ type ApiTenancyTenantGroupsListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -12052,14 +12064,14 @@ type ApiTenancyTenantGroupsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	parent            *[]string
 	parentN           *[]string
-	parentId          *[]*int32
-	parentIdN         *[]*int32
+	parentId          *[]*int64
+	parentIdN         *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -12078,28 +12090,32 @@ type ApiTenancyTenantGroupsListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
+// Tenant group (slug)
 func (r ApiTenancyTenantGroupsListRequest) Ancestor(ancestor []string) ApiTenancyTenantGroupsListRequest {
 	r.ancestor = &ancestor
 	return r
 }
 
+// Tenant group (slug)
 func (r ApiTenancyTenantGroupsListRequest) AncestorN(ancestorN []string) ApiTenancyTenantGroupsListRequest {
 	r.ancestorN = &ancestorN
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) AncestorId(ancestorId []string) ApiTenancyTenantGroupsListRequest {
+// Tenant group (ID)
+func (r ApiTenancyTenantGroupsListRequest) AncestorId(ancestorId []int64) ApiTenancyTenantGroupsListRequest {
 	r.ancestorId = &ancestorId
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) AncestorIdN(ancestorIdN []string) ApiTenancyTenantGroupsListRequest {
+// Tenant group (ID)
+func (r ApiTenancyTenantGroupsListRequest) AncestorIdN(ancestorIdN []int64) ApiTenancyTenantGroupsListRequest {
 	r.ancestorIdN = &ancestorIdN
 	return r
 }
@@ -12221,7 +12237,7 @@ func (r ApiTenancyTenantGroupsListRequest) Fields(fields string) ApiTenancyTenan
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) Id(id []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) Id(id []int64) ApiTenancyTenantGroupsListRequest {
 	r.id = &id
 	return r
 }
@@ -12231,27 +12247,27 @@ func (r ApiTenancyTenantGroupsListRequest) IdEmpty(idEmpty bool) ApiTenancyTenan
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) IdGt(idGt []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) IdGt(idGt []int64) ApiTenancyTenantGroupsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) IdGte(idGte []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) IdGte(idGte []int64) ApiTenancyTenantGroupsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) IdLt(idLt []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) IdLt(idLt []int64) ApiTenancyTenantGroupsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) IdLte(idLte []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) IdLte(idLte []int64) ApiTenancyTenantGroupsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) IdN(idN []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) IdN(idN []int64) ApiTenancyTenantGroupsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -12410,25 +12426,25 @@ func (r ApiTenancyTenantGroupsListRequest) OwnerGroupN(ownerGroupN []string) Api
 }
 
 // Owner Group (ID)
-func (r ApiTenancyTenantGroupsListRequest) OwnerGroupId(ownerGroupId []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) OwnerGroupId(ownerGroupId []int64) ApiTenancyTenantGroupsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiTenancyTenantGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiTenancyTenantGroupsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyTenantGroupsListRequest) OwnerId(ownerId []*int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) OwnerId(ownerId []*int64) ApiTenancyTenantGroupsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyTenantGroupsListRequest) OwnerIdN(ownerIdN []*int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) OwnerIdN(ownerIdN []*int64) ApiTenancyTenantGroupsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -12446,13 +12462,13 @@ func (r ApiTenancyTenantGroupsListRequest) ParentN(parentN []string) ApiTenancyT
 }
 
 // Parent tenant group (ID)
-func (r ApiTenancyTenantGroupsListRequest) ParentId(parentId []*int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) ParentId(parentId []*int64) ApiTenancyTenantGroupsListRequest {
 	r.parentId = &parentId
 	return r
 }
 
 // Parent tenant group (ID)
-func (r ApiTenancyTenantGroupsListRequest) ParentIdN(parentIdN []*int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) ParentIdN(parentIdN []*int64) ApiTenancyTenantGroupsListRequest {
 	r.parentIdN = &parentIdN
 	return r
 }
@@ -12549,17 +12565,17 @@ func (r ApiTenancyTenantGroupsListRequest) TagN(tagN []string) ApiTenancyTenantG
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) TagId(tagId []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) TagId(tagId []int64) ApiTenancyTenantGroupsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) TagIdAny(tagIdAny []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) TagIdAny(tagIdAny []int64) ApiTenancyTenantGroupsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiTenancyTenantGroupsListRequest) TagIdN(tagIdN []int32) ApiTenancyTenantGroupsListRequest {
+func (r ApiTenancyTenantGroupsListRequest) TagIdN(tagIdN []int64) ApiTenancyTenantGroupsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -13568,7 +13584,7 @@ func (a *TenancyAPIService) TenancyTenantGroupsListExecute(r ApiTenancyTenantGro
 type ApiTenancyTenantGroupsPartialUpdateRequest struct {
 	ctx                               context.Context
 	ApiService                        TenancyAPI
-	id                                int32
+	id                                int64
 	patchedWritableTenantGroupRequest *PatchedWritableTenantGroupRequest
 }
 
@@ -13590,7 +13606,7 @@ Patch a tenant group object.
 	@param id A unique integer value identifying this tenant group.
 	@return ApiTenancyTenantGroupsPartialUpdateRequest
 */
-func (a *TenancyAPIService) TenancyTenantGroupsPartialUpdate(ctx context.Context, id int32) ApiTenancyTenantGroupsPartialUpdateRequest {
+func (a *TenancyAPIService) TenancyTenantGroupsPartialUpdate(ctx context.Context, id int64) ApiTenancyTenantGroupsPartialUpdateRequest {
 	return ApiTenancyTenantGroupsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -13694,7 +13710,7 @@ func (a *TenancyAPIService) TenancyTenantGroupsPartialUpdateExecute(r ApiTenancy
 type ApiTenancyTenantGroupsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -13731,7 +13747,7 @@ Get a tenant group object.
 	@param id A unique integer value identifying this tenant group.
 	@return ApiTenancyTenantGroupsRetrieveRequest
 */
-func (a *TenancyAPIService) TenancyTenantGroupsRetrieve(ctx context.Context, id int32) ApiTenancyTenantGroupsRetrieveRequest {
+func (a *TenancyAPIService) TenancyTenantGroupsRetrieve(ctx context.Context, id int64) ApiTenancyTenantGroupsRetrieveRequest {
 	return ApiTenancyTenantGroupsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -13842,7 +13858,7 @@ func (a *TenancyAPIService) TenancyTenantGroupsRetrieveExecute(r ApiTenancyTenan
 type ApiTenancyTenantGroupsUpdateRequest struct {
 	ctx                        context.Context
 	ApiService                 TenancyAPI
-	id                         int32
+	id                         int64
 	writableTenantGroupRequest *WritableTenantGroupRequest
 }
 
@@ -13864,7 +13880,7 @@ Put a tenant group object.
 	@param id A unique integer value identifying this tenant group.
 	@return ApiTenancyTenantGroupsUpdateRequest
 */
-func (a *TenancyAPIService) TenancyTenantGroupsUpdate(ctx context.Context, id int32) ApiTenancyTenantGroupsUpdateRequest {
+func (a *TenancyAPIService) TenancyTenantGroupsUpdate(ctx context.Context, id int64) ApiTenancyTenantGroupsUpdateRequest {
 	return ApiTenancyTenantGroupsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -14459,7 +14475,7 @@ func (a *TenancyAPIService) TenancyTenantsCreateExecute(r ApiTenancyTenantsCreat
 type ApiTenancyTenantsDestroyRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiTenancyTenantsDestroyRequest) Execute() (*http.Response, error) {
@@ -14475,7 +14491,7 @@ Delete a tenant object.
 	@param id A unique integer value identifying this tenant.
 	@return ApiTenancyTenantsDestroyRequest
 */
-func (a *TenancyAPIService) TenancyTenantsDestroy(ctx context.Context, id int32) ApiTenancyTenantsDestroyRequest {
+func (a *TenancyAPIService) TenancyTenantsDestroy(ctx context.Context, id int64) ApiTenancyTenantsDestroyRequest {
 	return ApiTenancyTenantsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -14566,12 +14582,12 @@ type ApiTenancyTenantsListRequest struct {
 	ctx               context.Context
 	ApiService        TenancyAPI
 	brief             *bool
-	contact           *[]int32
-	contactN          *[]int32
-	contactGroup      *[]string
-	contactGroupN     *[]string
-	contactRole       *[]int32
-	contactRoleN      *[]int32
+	contact           *[]int64
+	contactN          *[]int64
+	contactGroup      *[]int64
+	contactGroupN     *[]int64
+	contactRole       *[]int64
+	contactRoleN      *[]int64
 	created           *[]time.Time
 	createdEmpty      *bool
 	createdGt         *[]time.Time
@@ -14596,15 +14612,15 @@ type ApiTenancyTenantsListRequest struct {
 	fields            *string
 	group             *[]string
 	groupN            *[]string
-	groupId           *[]string
-	groupIdN          *[]string
-	id                *[]int32
+	groupId           *[]int64
+	groupIdN          *[]int64
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -14634,10 +14650,10 @@ type ApiTenancyTenantsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -14656,9 +14672,9 @@ type ApiTenancyTenantsListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -14669,35 +14685,37 @@ func (r ApiTenancyTenantsListRequest) Brief(brief bool) ApiTenancyTenantsListReq
 }
 
 // Contact
-func (r ApiTenancyTenantsListRequest) Contact(contact []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) Contact(contact []int64) ApiTenancyTenantsListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiTenancyTenantsListRequest) ContactN(contactN []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) ContactN(contactN []int64) ApiTenancyTenantsListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) ContactGroup(contactGroup []string) ApiTenancyTenantsListRequest {
+// Contact group
+func (r ApiTenancyTenantsListRequest) ContactGroup(contactGroup []int64) ApiTenancyTenantsListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) ContactGroupN(contactGroupN []string) ApiTenancyTenantsListRequest {
+// Contact group
+func (r ApiTenancyTenantsListRequest) ContactGroupN(contactGroupN []int64) ApiTenancyTenantsListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiTenancyTenantsListRequest) ContactRole(contactRole []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) ContactRole(contactRole []int64) ApiTenancyTenantsListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiTenancyTenantsListRequest) ContactRoleN(contactRoleN []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) ContactRoleN(contactRoleN []int64) ApiTenancyTenantsListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -14813,27 +14831,31 @@ func (r ApiTenancyTenantsListRequest) Fields(fields string) ApiTenancyTenantsLis
 	return r
 }
 
+// Tenant group (slug)
 func (r ApiTenancyTenantsListRequest) Group(group []string) ApiTenancyTenantsListRequest {
 	r.group = &group
 	return r
 }
 
+// Tenant group (slug)
 func (r ApiTenancyTenantsListRequest) GroupN(groupN []string) ApiTenancyTenantsListRequest {
 	r.groupN = &groupN
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) GroupId(groupId []string) ApiTenancyTenantsListRequest {
+// Tenant group (ID)
+func (r ApiTenancyTenantsListRequest) GroupId(groupId []int64) ApiTenancyTenantsListRequest {
 	r.groupId = &groupId
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) GroupIdN(groupIdN []string) ApiTenancyTenantsListRequest {
+// Tenant group (ID)
+func (r ApiTenancyTenantsListRequest) GroupIdN(groupIdN []int64) ApiTenancyTenantsListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) Id(id []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) Id(id []int64) ApiTenancyTenantsListRequest {
 	r.id = &id
 	return r
 }
@@ -14843,27 +14865,27 @@ func (r ApiTenancyTenantsListRequest) IdEmpty(idEmpty bool) ApiTenancyTenantsLis
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) IdGt(idGt []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) IdGt(idGt []int64) ApiTenancyTenantsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) IdGte(idGte []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) IdGte(idGte []int64) ApiTenancyTenantsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) IdLt(idLt []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) IdLt(idLt []int64) ApiTenancyTenantsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) IdLte(idLte []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) IdLte(idLte []int64) ApiTenancyTenantsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) IdN(idN []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) IdN(idN []int64) ApiTenancyTenantsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -15022,25 +15044,25 @@ func (r ApiTenancyTenantsListRequest) OwnerGroupN(ownerGroupN []string) ApiTenan
 }
 
 // Owner Group (ID)
-func (r ApiTenancyTenantsListRequest) OwnerGroupId(ownerGroupId []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) OwnerGroupId(ownerGroupId []int64) ApiTenancyTenantsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiTenancyTenantsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiTenancyTenantsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyTenantsListRequest) OwnerId(ownerId []*int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) OwnerId(ownerId []*int64) ApiTenancyTenantsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiTenancyTenantsListRequest) OwnerIdN(ownerIdN []*int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) OwnerIdN(ownerIdN []*int64) ApiTenancyTenantsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -15137,17 +15159,17 @@ func (r ApiTenancyTenantsListRequest) TagN(tagN []string) ApiTenancyTenantsListR
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) TagId(tagId []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) TagId(tagId []int64) ApiTenancyTenantsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) TagIdAny(tagIdAny []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) TagIdAny(tagIdAny []int64) ApiTenancyTenantsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiTenancyTenantsListRequest) TagIdN(tagIdN []int32) ApiTenancyTenantsListRequest {
+func (r ApiTenancyTenantsListRequest) TagIdN(tagIdN []int64) ApiTenancyTenantsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -16178,7 +16200,7 @@ func (a *TenancyAPIService) TenancyTenantsListExecute(r ApiTenancyTenantsListReq
 type ApiTenancyTenantsPartialUpdateRequest struct {
 	ctx                  context.Context
 	ApiService           TenancyAPI
-	id                   int32
+	id                   int64
 	patchedTenantRequest *PatchedTenantRequest
 }
 
@@ -16200,7 +16222,7 @@ Patch a tenant object.
 	@param id A unique integer value identifying this tenant.
 	@return ApiTenancyTenantsPartialUpdateRequest
 */
-func (a *TenancyAPIService) TenancyTenantsPartialUpdate(ctx context.Context, id int32) ApiTenancyTenantsPartialUpdateRequest {
+func (a *TenancyAPIService) TenancyTenantsPartialUpdate(ctx context.Context, id int64) ApiTenancyTenantsPartialUpdateRequest {
 	return ApiTenancyTenantsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -16304,7 +16326,7 @@ func (a *TenancyAPIService) TenancyTenantsPartialUpdateExecute(r ApiTenancyTenan
 type ApiTenancyTenantsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService TenancyAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -16341,7 +16363,7 @@ Get a tenant object.
 	@param id A unique integer value identifying this tenant.
 	@return ApiTenancyTenantsRetrieveRequest
 */
-func (a *TenancyAPIService) TenancyTenantsRetrieve(ctx context.Context, id int32) ApiTenancyTenantsRetrieveRequest {
+func (a *TenancyAPIService) TenancyTenantsRetrieve(ctx context.Context, id int64) ApiTenancyTenantsRetrieveRequest {
 	return ApiTenancyTenantsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -16452,7 +16474,7 @@ func (a *TenancyAPIService) TenancyTenantsRetrieveExecute(r ApiTenancyTenantsRet
 type ApiTenancyTenantsUpdateRequest struct {
 	ctx           context.Context
 	ApiService    TenancyAPI
-	id            int32
+	id            int64
 	tenantRequest *TenantRequest
 }
 
@@ -16474,7 +16496,7 @@ Put a tenant object.
 	@param id A unique integer value identifying this tenant.
 	@return ApiTenancyTenantsUpdateRequest
 */
-func (a *TenancyAPIService) TenancyTenantsUpdate(ctx context.Context, id int32) ApiTenancyTenantsUpdateRequest {
+func (a *TenancyAPIService) TenancyTenantsUpdate(ctx context.Context, id int64) ApiTenancyTenantsUpdateRequest {
 	return ApiTenancyTenantsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,

@@ -197,7 +197,7 @@ func (r *IpsecProfileResource) Read(ctx context.Context, req resource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -228,7 +228,7 @@ func (r *IpsecProfileResource) Update(ctx context.Context, req resource.UpdateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -258,7 +258,7 @@ func (r *IpsecProfileResource) Delete(ctx context.Context, req resource.DeleteRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -278,12 +278,12 @@ func (r *IpsecProfileResource) ImportState(ctx context.Context, req resource.Imp
 // ipsecProfileToCreate builds the WritableIPSecProfileRequest request body from the plan.
 func ipsecProfileToCreate(ctx context.Context, plan *IpsecProfileModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableIPSecProfileRequest {
 	const objectType = "vpn.ipsecprofile"
-	body := netbox.NewWritableIPSecProfileRequest(plan.Name.ValueString(), plan.Mode.ValueString(), conv.Int32(plan.IkePolicyId), conv.Int32(plan.IpsecPolicyId))
+	body := netbox.NewWritableIPSecProfileRequest(plan.Name.ValueString(), plan.Mode.ValueString(), plan.IkePolicyId.ValueInt64(), plan.IpsecPolicyId.ValueInt64())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -318,19 +318,19 @@ func ipsecProfileToPatch(ctx context.Context, plan, state *IpsecProfileModel, cf
 	}
 	if !plan.IkePolicyId.Equal(state.IkePolicyId) {
 		if conv.Known(plan.IkePolicyId) {
-			body.SetIkePolicy(conv.Int32(plan.IkePolicyId))
+			body.SetIkePolicy(plan.IkePolicyId.ValueInt64())
 		}
 	}
 	if !plan.IpsecPolicyId.Equal(state.IpsecPolicyId) {
 		if conv.Known(plan.IpsecPolicyId) {
-			body.SetIpsecPolicy(conv.Int32(plan.IpsecPolicyId))
+			body.SetIpsecPolicy(plan.IpsecPolicyId.ValueInt64())
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

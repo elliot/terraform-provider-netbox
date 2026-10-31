@@ -211,7 +211,7 @@ func (r *VrfResource) Read(ctx context.Context, req resource.ReadRequest, resp *
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -242,7 +242,7 @@ func (r *VrfResource) Update(ctx context.Context, req resource.UpdateRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -272,7 +272,7 @@ func (r *VrfResource) Delete(ctx context.Context, req resource.DeleteRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -297,7 +297,7 @@ func vrfToCreate(ctx context.Context, plan *VrfModel, cf *customfields.Cache, di
 		body.SetRd(plan.Rd.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.EnforceUnique) {
 		body.SetEnforceUnique(plan.EnforceUnique.ValueBool())
@@ -306,16 +306,16 @@ func vrfToCreate(ctx context.Context, plan *VrfModel, cf *customfields.Cache, di
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
 	}
 	if conv.Known(plan.ImportTargetIds) {
-		body.SetImportTargets(conv.Int32s(ctx, plan.ImportTargetIds, diags))
+		body.SetImportTargets(conv.Int64s(ctx, plan.ImportTargetIds, diags))
 	}
 	if conv.Known(plan.ExportTargetIds) {
-		body.SetExportTargets(conv.Int32s(ctx, plan.ExportTargetIds, diags))
+		body.SetExportTargets(conv.Int64s(ctx, plan.ExportTargetIds, diags))
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -346,7 +346,7 @@ func vrfToPatch(ctx context.Context, plan, state *VrfModel, cf *customfields.Cac
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.EnforceUnique.Equal(state.EnforceUnique) {
@@ -363,7 +363,7 @@ func vrfToPatch(ctx context.Context, plan, state *VrfModel, cf *customfields.Cac
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -373,12 +373,12 @@ func vrfToPatch(ctx context.Context, plan, state *VrfModel, cf *customfields.Cac
 	}
 	if !plan.ImportTargetIds.Equal(state.ImportTargetIds) {
 		if conv.Known(plan.ImportTargetIds) {
-			body.SetImportTargets(conv.Int32s(ctx, plan.ImportTargetIds, diags))
+			body.SetImportTargets(conv.Int64s(ctx, plan.ImportTargetIds, diags))
 		}
 	}
 	if !plan.ExportTargetIds.Equal(state.ExportTargetIds) {
 		if conv.Known(plan.ExportTargetIds) {
-			body.SetExportTargets(conv.Int32s(ctx, plan.ExportTargetIds, diags))
+			body.SetExportTargets(conv.Int64s(ctx, plan.ExportTargetIds, diags))
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

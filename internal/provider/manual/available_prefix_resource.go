@@ -167,7 +167,7 @@ func (r *AvailablePrefixResource) Read(ctx context.Context, req resource.ReadReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -195,7 +195,7 @@ func (r *AvailablePrefixResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -208,12 +208,12 @@ func (r *AvailablePrefixResource) Update(ctx context.Context, req resource.Updat
 	if plan.ScopeId.IsNull() {
 		patch.SetScopeIdNil()
 	} else if !plan.ScopeId.IsUnknown() {
-		patch.SetScopeId(conv.Int32(plan.ScopeId))
+		patch.SetScopeId(plan.ScopeId.ValueInt64())
 	}
 	if plan.TenantId.IsNull() {
 		patch.SetTenantNil()
 	} else if !plan.TenantId.IsUnknown() {
-		patch.SetTenant(conv.Int32(plan.TenantId))
+		patch.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		patch.SetStatus(plan.Status.ValueString())
@@ -221,7 +221,7 @@ func (r *AvailablePrefixResource) Update(ctx context.Context, req resource.Updat
 	if plan.RoleId.IsNull() {
 		patch.SetRoleNil()
 	} else if !plan.RoleId.IsUnknown() {
-		patch.SetRole(conv.Int32(plan.RoleId))
+		patch.SetRole(plan.RoleId.ValueInt64())
 	}
 	if conv.Known(plan.IsPool) {
 		patch.SetIsPool(plan.IsPool.ValueBool())
@@ -262,7 +262,7 @@ func (r *AvailablePrefixResource) Delete(ctx context.Context, req resource.Delet
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -296,11 +296,11 @@ func availablePrefixBody(ctx context.Context, b body, plan *AvailablePrefixModel
 
 // availablePrefixFromAPI copies the API object into out.
 func availablePrefixFromAPI(ctx context.Context, obj *netbox.Prefix, prior, out *AvailablePrefixModel, diags *diag.Diagnostics) {
-	out.Id = types.Int64Value(int64(obj.GetId()))
+	out.Id = types.Int64Value(obj.GetId())
 	out.Prefix = conv.String(obj.GetPrefixOk())
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
 	out.ScopeType = conv.String(obj.GetScopeTypeOk())
-	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
+	out.ScopeId = conv.Int64From64(obj.GetScopeIdOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.RoleId = conv.BriefID(obj.GetRoleOk())

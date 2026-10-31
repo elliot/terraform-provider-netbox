@@ -220,7 +220,7 @@ func (r *TunnelResource) Read(ctx context.Context, req resource.ReadRequest, res
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -251,7 +251,7 @@ func (r *TunnelResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -281,7 +281,7 @@ func (r *TunnelResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -303,13 +303,13 @@ func tunnelToCreate(ctx context.Context, plan *TunnelModel, cf *customfields.Cac
 	const objectType = "vpn.tunnel"
 	body := netbox.NewWritableTunnelRequest(plan.Name.ValueString(), plan.Status.ValueString(), plan.Encapsulation.ValueString())
 	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+		body.SetGroup(plan.GroupId.ValueInt64())
 	}
 	if conv.Known(plan.IpsecProfileId) {
-		body.SetIpsecProfile(conv.Int32(plan.IpsecProfileId))
+		body.SetIpsecProfile(plan.IpsecProfileId.ValueInt64())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.TunnelId) {
 		body.SetTunnelId(plan.TunnelId.ValueInt64())
@@ -318,7 +318,7 @@ func tunnelToCreate(ctx context.Context, plan *TunnelModel, cf *customfields.Cac
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -350,7 +350,7 @@ func tunnelToPatch(ctx context.Context, plan, state *TunnelModel, cf *customfiel
 		if plan.GroupId.IsNull() {
 			body.SetGroupNil()
 		} else if !plan.GroupId.IsUnknown() {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.Encapsulation.Equal(state.Encapsulation) {
@@ -362,14 +362,14 @@ func tunnelToPatch(ctx context.Context, plan, state *TunnelModel, cf *customfiel
 		if plan.IpsecProfileId.IsNull() {
 			body.SetIpsecProfileNil()
 		} else if !plan.IpsecProfileId.IsUnknown() {
-			body.SetIpsecProfile(conv.Int32(plan.IpsecProfileId))
+			body.SetIpsecProfile(plan.IpsecProfileId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.TunnelId.Equal(state.TunnelId) {
@@ -386,7 +386,7 @@ func tunnelToPatch(ctx context.Context, plan, state *TunnelModel, cf *customfiel
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

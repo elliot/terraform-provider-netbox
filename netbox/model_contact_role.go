@@ -23,7 +23,7 @@ var _ MappedNullable = &ContactRole{}
 
 // ContactRole Base serializer class for models inheriting from OrganizationalModel.
 type ContactRole struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Url                  *string                `json:"url,omitempty"`
 	DisplayUrl           *string                `json:"display_url,omitempty"`
 	Display              *string                `json:"display,omitempty"`
@@ -45,7 +45,7 @@ type _ContactRole ContactRole
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewContactRole(id int32) *ContactRole {
+func NewContactRole(id int64) *ContactRole {
 	this := ContactRole{}
 	this.Id = id
 	return &this
@@ -60,9 +60,9 @@ func NewContactRoleWithDefaults() *ContactRole {
 }
 
 // GetId returns the Id field value
-func (o *ContactRole) GetId() int32 {
+func (o *ContactRole) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -71,7 +71,7 @@ func (o *ContactRole) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ContactRole) GetIdOk() (*int32, bool) {
+func (o *ContactRole) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -79,7 +79,7 @@ func (o *ContactRole) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *ContactRole) SetId(v int32) {
+func (o *ContactRole) SetId(v int64) {
 	o.Id = v
 }
 

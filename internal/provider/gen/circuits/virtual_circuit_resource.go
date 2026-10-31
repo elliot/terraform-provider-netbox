@@ -209,7 +209,7 @@ func (r *VirtualCircuitResource) Read(ctx context.Context, req resource.ReadRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -240,7 +240,7 @@ func (r *VirtualCircuitResource) Update(ctx context.Context, req resource.Update
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -270,7 +270,7 @@ func (r *VirtualCircuitResource) Delete(ctx context.Context, req resource.Delete
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -290,21 +290,21 @@ func (r *VirtualCircuitResource) ImportState(ctx context.Context, req resource.I
 // virtualCircuitToCreate builds the WritableVirtualCircuitRequest request body from the plan.
 func virtualCircuitToCreate(ctx context.Context, plan *VirtualCircuitModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableVirtualCircuitRequest {
 	const objectType = "circuits.virtualcircuit"
-	body := netbox.NewWritableVirtualCircuitRequest(plan.Cid.ValueString(), conv.Int32(plan.ProviderNetworkId), conv.Int32(plan.TypeId))
+	body := netbox.NewWritableVirtualCircuitRequest(plan.Cid.ValueString(), plan.ProviderNetworkId.ValueInt64(), plan.TypeId.ValueInt64())
 	if conv.Known(plan.ProviderAccountId) {
-		body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
+		body.SetProviderAccount(plan.ProviderAccountId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -329,19 +329,19 @@ func virtualCircuitToPatch(ctx context.Context, plan, state *VirtualCircuitModel
 	}
 	if !plan.ProviderNetworkId.Equal(state.ProviderNetworkId) {
 		if conv.Known(plan.ProviderNetworkId) {
-			body.SetProviderNetwork(conv.Int32(plan.ProviderNetworkId))
+			body.SetProviderNetwork(plan.ProviderNetworkId.ValueInt64())
 		}
 	}
 	if !plan.ProviderAccountId.Equal(state.ProviderAccountId) {
 		if plan.ProviderAccountId.IsNull() {
 			body.SetProviderAccountNil()
 		} else if !plan.ProviderAccountId.IsUnknown() {
-			body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
+			body.SetProviderAccount(plan.ProviderAccountId.ValueInt64())
 		}
 	}
 	if !plan.TypeId.Equal(state.TypeId) {
 		if conv.Known(plan.TypeId) {
-			body.SetType(conv.Int32(plan.TypeId))
+			body.SetType(plan.TypeId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -353,7 +353,7 @@ func virtualCircuitToPatch(ctx context.Context, plan, state *VirtualCircuitModel
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -365,7 +365,7 @@ func virtualCircuitToPatch(ctx context.Context, plan, state *VirtualCircuitModel
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

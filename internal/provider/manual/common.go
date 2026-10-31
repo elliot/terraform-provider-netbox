@@ -217,9 +217,9 @@ func allocate[T any](ctx context.Context, client *netbox.APIClient, apiPath stri
 	return &out[0], nil
 }
 
-// int32ID validates a state ID for the generated client.
-func int32ID(v types.Int64, diags *diag.Diagnostics) (int32, bool) {
-	id, err := netbox.Int32ID(v.ValueInt64())
+// stateID validates a state ID for the generated client.
+func stateID(v types.Int64, diags *diag.Diagnostics) (int64, bool) {
+	id, err := netbox.Int64ID(v.ValueInt64())
 	if err != nil {
 		diags.AddError("Invalid ID", err.Error())
 		return 0, false

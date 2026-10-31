@@ -215,7 +215,7 @@ func (d *FrontPortTemplateDataSource) Read(ctx context.Context, req datasource.R
 	}
 	var obj *netbox.FrontPortTemplate
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -398,7 +398,7 @@ func frontPortTemplateDataFromAPI(ctx context.Context, obj *netbox.FrontPortTemp
 			src := &items[i]
 			vals = append(vals, FrontPortTemplateRearPortsItem{
 				Position:         conv.Int64From32(src.GetPositionOk()),
-				RearPort:         conv.Int64From32(src.GetRearPortOk()),
+				RearPort:         conv.Int64From64(src.GetRearPortOk()),
 				RearPortPosition: conv.Int64From32(src.GetRearPortPositionOk()),
 			})
 		}

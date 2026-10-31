@@ -23,7 +23,7 @@ var _ MappedNullable = &ASNRange{}
 
 // ASNRange Base serializer class for models inheriting from OrganizationalModel.
 type ASNRange struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Url                  *string                `json:"url,omitempty"`
 	DisplayUrl           *string                `json:"display_url,omitempty"`
 	Display              *string                `json:"display,omitempty"`
@@ -50,7 +50,7 @@ type _ASNRange ASNRange
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewASNRange(id int32) *ASNRange {
+func NewASNRange(id int64) *ASNRange {
 	this := ASNRange{}
 	this.Id = id
 	return &this
@@ -65,9 +65,9 @@ func NewASNRangeWithDefaults() *ASNRange {
 }
 
 // GetId returns the Id field value
-func (o *ASNRange) GetId() int32 {
+func (o *ASNRange) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -76,7 +76,7 @@ func (o *ASNRange) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ASNRange) GetIdOk() (*int32, bool) {
+func (o *ASNRange) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -84,7 +84,7 @@ func (o *ASNRange) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *ASNRange) SetId(v int32) {
+func (o *ASNRange) SetId(v int64) {
 	o.Id = v
 }
 

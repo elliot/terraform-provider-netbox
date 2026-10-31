@@ -22,7 +22,7 @@ var _ MappedNullable = &CircuitCircuitTerminationRequest{}
 // CircuitCircuitTerminationRequest Represents an object related through a ForeignKey field. On write, it accepts a primary key (PK) value or a dictionary of attributes which can be used to uniquely identify the related object. This class should be subclassed to return a full representation of the related object on read.
 type CircuitCircuitTerminationRequest struct {
 	TerminationType NullableString `json:"termination_type,omitempty"`
-	TerminationId   NullableInt32  `json:"termination_id,omitempty"`
+	TerminationId   NullableInt64  `json:"termination_id,omitempty"`
 	// Physical circuit speed
 	PortSpeed NullableInt32 `json:"port_speed,omitempty"`
 	// Upstream speed, if different from port speed
@@ -96,9 +96,9 @@ func (o *CircuitCircuitTerminationRequest) UnsetTerminationType() {
 }
 
 // GetTerminationId returns the TerminationId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CircuitCircuitTerminationRequest) GetTerminationId() int32 {
+func (o *CircuitCircuitTerminationRequest) GetTerminationId() int64 {
 	if o == nil || IsNil(o.TerminationId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.TerminationId.Get()
@@ -107,7 +107,7 @@ func (o *CircuitCircuitTerminationRequest) GetTerminationId() int32 {
 // GetTerminationIdOk returns a tuple with the TerminationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CircuitCircuitTerminationRequest) GetTerminationIdOk() (*int32, bool) {
+func (o *CircuitCircuitTerminationRequest) GetTerminationIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -123,8 +123,8 @@ func (o *CircuitCircuitTerminationRequest) HasTerminationId() bool {
 	return false
 }
 
-// SetTerminationId gets a reference to the given NullableInt32 and assigns it to the TerminationId field.
-func (o *CircuitCircuitTerminationRequest) SetTerminationId(v int32) {
+// SetTerminationId gets a reference to the given NullableInt64 and assigns it to the TerminationId field.
+func (o *CircuitCircuitTerminationRequest) SetTerminationId(v int64) {
 	o.TerminationId.Set(&v)
 }
 

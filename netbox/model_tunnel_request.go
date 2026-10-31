@@ -25,14 +25,14 @@ type TunnelRequest struct {
 	Name string `json:"name"`
 	// * `planned` - Planned * `active` - Active * `disabled` - Disabled
 	Status *string       `json:"status,omitempty"`
-	Group  NullableInt32 `json:"group,omitempty"`
+	Group  NullableInt64 `json:"group,omitempty"`
 	// * `ipsec-transport` - IPsec - Transport * `ipsec-tunnel` - IPsec - Tunnel * `ip-ip` - IP-in-IP * `gre` - GRE * `wireguard` - WireGuard * `openvpn` - OpenVPN * `l2tp` - L2TP * `pptp` - PPTP
 	Encapsulation        string                 `json:"encapsulation"`
-	IpsecProfile         NullableInt32          `json:"ipsec_profile,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	IpsecProfile         NullableInt64          `json:"ipsec_profile,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	TunnelId             NullableInt64          `json:"tunnel_id,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -117,9 +117,9 @@ func (o *TunnelRequest) SetStatus(v string) {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TunnelRequest) GetGroup() int32 {
+func (o *TunnelRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -128,7 +128,7 @@ func (o *TunnelRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TunnelRequest) GetGroupOk() (*int32, bool) {
+func (o *TunnelRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -144,8 +144,8 @@ func (o *TunnelRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *TunnelRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *TunnelRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -184,9 +184,9 @@ func (o *TunnelRequest) SetEncapsulation(v string) {
 }
 
 // GetIpsecProfile returns the IpsecProfile field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TunnelRequest) GetIpsecProfile() int32 {
+func (o *TunnelRequest) GetIpsecProfile() int64 {
 	if o == nil || IsNil(o.IpsecProfile.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.IpsecProfile.Get()
@@ -195,7 +195,7 @@ func (o *TunnelRequest) GetIpsecProfile() int32 {
 // GetIpsecProfileOk returns a tuple with the IpsecProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TunnelRequest) GetIpsecProfileOk() (*int32, bool) {
+func (o *TunnelRequest) GetIpsecProfileOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -211,8 +211,8 @@ func (o *TunnelRequest) HasIpsecProfile() bool {
 	return false
 }
 
-// SetIpsecProfile gets a reference to the given NullableInt32 and assigns it to the IpsecProfile field.
-func (o *TunnelRequest) SetIpsecProfile(v int32) {
+// SetIpsecProfile gets a reference to the given NullableInt64 and assigns it to the IpsecProfile field.
+func (o *TunnelRequest) SetIpsecProfile(v int64) {
 	o.IpsecProfile.Set(&v)
 }
 
@@ -227,9 +227,9 @@ func (o *TunnelRequest) UnsetIpsecProfile() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TunnelRequest) GetTenant() int32 {
+func (o *TunnelRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -238,7 +238,7 @@ func (o *TunnelRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TunnelRequest) GetTenantOk() (*int32, bool) {
+func (o *TunnelRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -254,8 +254,8 @@ func (o *TunnelRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *TunnelRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *TunnelRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -345,9 +345,9 @@ func (o *TunnelRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TunnelRequest) GetOwner() int32 {
+func (o *TunnelRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -356,7 +356,7 @@ func (o *TunnelRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TunnelRequest) GetOwnerOk() (*int32, bool) {
+func (o *TunnelRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -372,8 +372,8 @@ func (o *TunnelRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *TunnelRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *TunnelRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

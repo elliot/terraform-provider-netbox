@@ -228,7 +228,7 @@ func (r *ConfigTemplateResource) Read(ctx context.Context, req resource.ReadRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -259,7 +259,7 @@ func (r *ConfigTemplateResource) Update(ctx context.Context, req resource.Update
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -300,7 +300,7 @@ func (r *ConfigTemplateResource) Delete(ctx context.Context, req resource.Delete
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -342,13 +342,13 @@ func configTemplateToCreate(ctx context.Context, plan *ConfigTemplateModel, diag
 		body.SetDebug(plan.Debug.ValueBool())
 	}
 	if conv.Known(plan.DataSourceId) {
-		body.SetDataSource(conv.Int32(plan.DataSourceId))
+		body.SetDataSource(plan.DataSourceId.ValueInt64())
 	}
 	if conv.Known(plan.AutoSyncEnabled) {
 		body.SetAutoSyncEnabled(plan.AutoSyncEnabled.ValueBool())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -406,7 +406,7 @@ func configTemplateToPatch(ctx context.Context, plan, state *ConfigTemplateModel
 	}
 	if !plan.DataSourceId.Equal(state.DataSourceId) {
 		if conv.Known(plan.DataSourceId) {
-			body.SetDataSource(conv.Int32(plan.DataSourceId))
+			body.SetDataSource(plan.DataSourceId.ValueInt64())
 		}
 	}
 	if !plan.AutoSyncEnabled.Equal(state.AutoSyncEnabled) {
@@ -418,7 +418,7 @@ func configTemplateToPatch(ctx context.Context, plan, state *ConfigTemplateModel
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

@@ -23,17 +23,17 @@ var _ MappedNullable = &PatchedWritableLocationRequest{}
 type PatchedWritableLocationRequest struct {
 	Name   *string       `json:"name,omitempty"`
 	Slug   *string       `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Site   *int32        `json:"site,omitempty"`
-	Parent NullableInt32 `json:"parent,omitempty"`
+	Site   *int64        `json:"site,omitempty"`
+	Parent NullableInt64 `json:"parent,omitempty"`
 	// * `planned` - Planned * `staging` - Staging * `active` - Active * `decommissioning` - Decommissioning * `retired` - Retired
 	Status *string       `json:"status,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// Local facility ID or description
 	Facility             *string                `json:"facility,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -122,9 +122,9 @@ func (o *PatchedWritableLocationRequest) SetSlug(v string) {
 }
 
 // GetSite returns the Site field value if set, zero value otherwise.
-func (o *PatchedWritableLocationRequest) GetSite() int32 {
+func (o *PatchedWritableLocationRequest) GetSite() int64 {
 	if o == nil || IsNil(o.Site) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Site
@@ -132,7 +132,7 @@ func (o *PatchedWritableLocationRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableLocationRequest) GetSiteOk() (*int32, bool) {
+func (o *PatchedWritableLocationRequest) GetSiteOk() (*int64, bool) {
 	if o == nil || IsNil(o.Site) {
 		return nil, false
 	}
@@ -148,15 +148,15 @@ func (o *PatchedWritableLocationRequest) HasSite() bool {
 	return false
 }
 
-// SetSite gets a reference to the given int32 and assigns it to the Site field.
-func (o *PatchedWritableLocationRequest) SetSite(v int32) {
+// SetSite gets a reference to the given int64 and assigns it to the Site field.
+func (o *PatchedWritableLocationRequest) SetSite(v int64) {
 	o.Site = &v
 }
 
 // GetParent returns the Parent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableLocationRequest) GetParent() int32 {
+func (o *PatchedWritableLocationRequest) GetParent() int64 {
 	if o == nil || IsNil(o.Parent.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Parent.Get()
@@ -165,7 +165,7 @@ func (o *PatchedWritableLocationRequest) GetParent() int32 {
 // GetParentOk returns a tuple with the Parent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableLocationRequest) GetParentOk() (*int32, bool) {
+func (o *PatchedWritableLocationRequest) GetParentOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -181,8 +181,8 @@ func (o *PatchedWritableLocationRequest) HasParent() bool {
 	return false
 }
 
-// SetParent gets a reference to the given NullableInt32 and assigns it to the Parent field.
-func (o *PatchedWritableLocationRequest) SetParent(v int32) {
+// SetParent gets a reference to the given NullableInt64 and assigns it to the Parent field.
+func (o *PatchedWritableLocationRequest) SetParent(v int64) {
 	o.Parent.Set(&v)
 }
 
@@ -229,9 +229,9 @@ func (o *PatchedWritableLocationRequest) SetStatus(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableLocationRequest) GetTenant() int32 {
+func (o *PatchedWritableLocationRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -240,7 +240,7 @@ func (o *PatchedWritableLocationRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableLocationRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableLocationRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -256,8 +256,8 @@ func (o *PatchedWritableLocationRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableLocationRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableLocationRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -400,9 +400,9 @@ func (o *PatchedWritableLocationRequest) SetCustomFields(v map[string]interface{
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableLocationRequest) GetOwner() int32 {
+func (o *PatchedWritableLocationRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -411,7 +411,7 @@ func (o *PatchedWritableLocationRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableLocationRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableLocationRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -427,8 +427,8 @@ func (o *PatchedWritableLocationRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableLocationRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableLocationRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -263,7 +263,7 @@ func (d *PrefixDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 	var obj *netbox.Prefix
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -433,7 +433,7 @@ func prefixDataFromAPI(ctx context.Context, obj *netbox.Prefix, out *PrefixDataM
 	out.Prefix = conv.String(obj.GetPrefixOk())
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
 	out.ScopeType = conv.String(obj.GetScopeTypeOk())
-	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
+	out.ScopeId = conv.Int64From64(obj.GetScopeIdOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.VlanId = conv.BriefID(obj.GetVlanOk())
 	out.Status = conv.Choice(obj.GetStatusOk())

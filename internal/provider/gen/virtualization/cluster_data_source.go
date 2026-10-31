@@ -253,7 +253,7 @@ func (d *ClusterDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	}
 	var obj *netbox.Cluster
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -426,7 +426,7 @@ func clusterDataFromAPI(ctx context.Context, obj *netbox.Cluster, out *ClusterDa
 	out.Status = conv.Choice(obj.GetStatusOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.ScopeType = conv.String(obj.GetScopeTypeOk())
-	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
+	out.ScopeId = conv.Int64From64(obj.GetScopeIdOk())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

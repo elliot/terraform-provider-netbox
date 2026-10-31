@@ -146,7 +146,7 @@ func (d *TaggedObjectDataSource) Read(ctx context.Context, req datasource.ReadRe
 	}
 	var obj *netbox.TaggedItem
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -313,7 +313,7 @@ func taggedObjectDataFromAPI(ctx context.Context, obj *netbox.TaggedItem, out *T
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.ObjectType = conv.String(obj.GetObjectTypeOk())
-	out.ObjectId = conv.Int64From32(obj.GetObjectIdOk())
+	out.ObjectId = conv.Int64From64(obj.GetObjectIdOk())
 	out.Object = conv.JSONFromAPI(obj.GetObject())
 	out.TagId = conv.BriefID(obj.GetTagOk())
 }

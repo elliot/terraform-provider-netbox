@@ -26,12 +26,12 @@ type SavedFilterRequest struct {
 	Name                 string        `json:"name"`
 	Slug                 string        `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description          *string       `json:"description,omitempty"`
-	User                 NullableInt32 `json:"user,omitempty"`
+	User                 NullableInt64 `json:"user,omitempty"`
 	Weight               *int32        `json:"weight,omitempty"`
 	Enabled              *bool         `json:"enabled,omitempty"`
 	Shared               *bool         `json:"shared,omitempty"`
 	Parameters           interface{}   `json:"parameters"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -163,9 +163,9 @@ func (o *SavedFilterRequest) SetDescription(v string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SavedFilterRequest) GetUser() int32 {
+func (o *SavedFilterRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User.Get()
@@ -174,7 +174,7 @@ func (o *SavedFilterRequest) GetUser() int32 {
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SavedFilterRequest) GetUserOk() (*int32, bool) {
+func (o *SavedFilterRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -190,8 +190,8 @@ func (o *SavedFilterRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given NullableInt32 and assigns it to the User field.
-func (o *SavedFilterRequest) SetUser(v int32) {
+// SetUser gets a reference to the given NullableInt64 and assigns it to the User field.
+func (o *SavedFilterRequest) SetUser(v int64) {
 	o.User.Set(&v)
 }
 
@@ -328,9 +328,9 @@ func (o *SavedFilterRequest) SetParameters(v interface{}) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SavedFilterRequest) GetOwner() int32 {
+func (o *SavedFilterRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -339,7 +339,7 @@ func (o *SavedFilterRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SavedFilterRequest) GetOwnerOk() (*int32, bool) {
+func (o *SavedFilterRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -355,8 +355,8 @@ func (o *SavedFilterRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *SavedFilterRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *SavedFilterRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -22,9 +22,9 @@ var _ MappedNullable = &BulkPowerPortRequest{}
 
 // BulkPowerPortRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type BulkPowerPortRequest struct {
-	Id     int32         `json:"id"`
-	Device int32         `json:"device"`
-	Module NullableInt32 `json:"module,omitempty"`
+	Id     int64         `json:"id"`
+	Device int64         `json:"device"`
+	Module NullableInt64 `json:"module,omitempty"`
 	Name   string        `json:"name"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
@@ -37,7 +37,7 @@ type BulkPowerPortRequest struct {
 	Description   *string       `json:"description,omitempty"`
 	// Treat as if a cable is connected
 	MarkConnected        *bool                  `json:"mark_connected,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -49,7 +49,7 @@ type _BulkPowerPortRequest BulkPowerPortRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkPowerPortRequest(id int32, device int32, name string) *BulkPowerPortRequest {
+func NewBulkPowerPortRequest(id int64, device int64, name string) *BulkPowerPortRequest {
 	this := BulkPowerPortRequest{}
 	this.Id = id
 	this.Device = device
@@ -66,9 +66,9 @@ func NewBulkPowerPortRequestWithDefaults() *BulkPowerPortRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkPowerPortRequest) GetId() int32 {
+func (o *BulkPowerPortRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -77,7 +77,7 @@ func (o *BulkPowerPortRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkPowerPortRequest) GetIdOk() (*int32, bool) {
+func (o *BulkPowerPortRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -85,14 +85,14 @@ func (o *BulkPowerPortRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkPowerPortRequest) SetId(v int32) {
+func (o *BulkPowerPortRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetDevice returns the Device field value
-func (o *BulkPowerPortRequest) GetDevice() int32 {
+func (o *BulkPowerPortRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -101,7 +101,7 @@ func (o *BulkPowerPortRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *BulkPowerPortRequest) GetDeviceOk() (*int32, bool) {
+func (o *BulkPowerPortRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -109,14 +109,14 @@ func (o *BulkPowerPortRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *BulkPowerPortRequest) SetDevice(v int32) {
+func (o *BulkPowerPortRequest) SetDevice(v int64) {
 	o.Device = v
 }
 
 // GetModule returns the Module field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkPowerPortRequest) GetModule() int32 {
+func (o *BulkPowerPortRequest) GetModule() int64 {
 	if o == nil || IsNil(o.Module.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module.Get()
@@ -125,7 +125,7 @@ func (o *BulkPowerPortRequest) GetModule() int32 {
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkPowerPortRequest) GetModuleOk() (*int32, bool) {
+func (o *BulkPowerPortRequest) GetModuleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -141,8 +141,8 @@ func (o *BulkPowerPortRequest) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given NullableInt32 and assigns it to the Module field.
-func (o *BulkPowerPortRequest) SetModule(v int32) {
+// SetModule gets a reference to the given NullableInt64 and assigns it to the Module field.
+func (o *BulkPowerPortRequest) SetModule(v int64) {
 	o.Module.Set(&v)
 }
 
@@ -406,9 +406,9 @@ func (o *BulkPowerPortRequest) SetMarkConnected(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkPowerPortRequest) GetOwner() int32 {
+func (o *BulkPowerPortRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -417,7 +417,7 @@ func (o *BulkPowerPortRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkPowerPortRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkPowerPortRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -433,8 +433,8 @@ func (o *BulkPowerPortRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkPowerPortRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkPowerPortRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

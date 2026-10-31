@@ -23,7 +23,7 @@ var _ MappedNullable = &VirtualMachine{}
 
 // VirtualMachine Base serializer class for models inheriting from PrimaryModel.
 type VirtualMachine struct {
-	Id                 int32                           `json:"id"`
+	Id                 int64                           `json:"id"`
 	Url                *string                         `json:"url,omitempty"`
 	DisplayUrl         *string                         `json:"display_url,omitempty"`
 	Display            *string                         `json:"display,omitempty"`
@@ -54,8 +54,8 @@ type VirtualMachine struct {
 	CustomFields         map[string]interface{}      `json:"custom_fields,omitempty"`
 	Created              NullableTime                `json:"created,omitempty"`
 	LastUpdated          NullableTime                `json:"last_updated,omitempty"`
-	InterfaceCount       *int32                      `json:"interface_count,omitempty"`
-	VirtualDiskCount     *int32                      `json:"virtual_disk_count,omitempty"`
+	InterfaceCount       *int64                      `json:"interface_count,omitempty"`
+	VirtualDiskCount     *int64                      `json:"virtual_disk_count,omitempty"`
 	ConfigContext        interface{}                 `json:"config_context,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -66,7 +66,7 @@ type _VirtualMachine VirtualMachine
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVirtualMachine(id int32) *VirtualMachine {
+func NewVirtualMachine(id int64) *VirtualMachine {
 	this := VirtualMachine{}
 	this.Id = id
 	return &this
@@ -81,9 +81,9 @@ func NewVirtualMachineWithDefaults() *VirtualMachine {
 }
 
 // GetId returns the Id field value
-func (o *VirtualMachine) GetId() int32 {
+func (o *VirtualMachine) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -92,7 +92,7 @@ func (o *VirtualMachine) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *VirtualMachine) GetIdOk() (*int32, bool) {
+func (o *VirtualMachine) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -100,7 +100,7 @@ func (o *VirtualMachine) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *VirtualMachine) SetId(v int32) {
+func (o *VirtualMachine) SetId(v int64) {
 	o.Id = v
 }
 
@@ -1221,9 +1221,9 @@ func (o *VirtualMachine) UnsetLastUpdated() {
 }
 
 // GetInterfaceCount returns the InterfaceCount field value if set, zero value otherwise.
-func (o *VirtualMachine) GetInterfaceCount() int32 {
+func (o *VirtualMachine) GetInterfaceCount() int64 {
 	if o == nil || IsNil(o.InterfaceCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InterfaceCount
@@ -1231,7 +1231,7 @@ func (o *VirtualMachine) GetInterfaceCount() int32 {
 
 // GetInterfaceCountOk returns a tuple with the InterfaceCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VirtualMachine) GetInterfaceCountOk() (*int32, bool) {
+func (o *VirtualMachine) GetInterfaceCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.InterfaceCount) {
 		return nil, false
 	}
@@ -1247,15 +1247,15 @@ func (o *VirtualMachine) HasInterfaceCount() bool {
 	return false
 }
 
-// SetInterfaceCount gets a reference to the given int32 and assigns it to the InterfaceCount field.
-func (o *VirtualMachine) SetInterfaceCount(v int32) {
+// SetInterfaceCount gets a reference to the given int64 and assigns it to the InterfaceCount field.
+func (o *VirtualMachine) SetInterfaceCount(v int64) {
 	o.InterfaceCount = &v
 }
 
 // GetVirtualDiskCount returns the VirtualDiskCount field value if set, zero value otherwise.
-func (o *VirtualMachine) GetVirtualDiskCount() int32 {
+func (o *VirtualMachine) GetVirtualDiskCount() int64 {
 	if o == nil || IsNil(o.VirtualDiskCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VirtualDiskCount
@@ -1263,7 +1263,7 @@ func (o *VirtualMachine) GetVirtualDiskCount() int32 {
 
 // GetVirtualDiskCountOk returns a tuple with the VirtualDiskCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VirtualMachine) GetVirtualDiskCountOk() (*int32, bool) {
+func (o *VirtualMachine) GetVirtualDiskCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.VirtualDiskCount) {
 		return nil, false
 	}
@@ -1279,8 +1279,8 @@ func (o *VirtualMachine) HasVirtualDiskCount() bool {
 	return false
 }
 
-// SetVirtualDiskCount gets a reference to the given int32 and assigns it to the VirtualDiskCount field.
-func (o *VirtualMachine) SetVirtualDiskCount(v int32) {
+// SetVirtualDiskCount gets a reference to the given int64 and assigns it to the VirtualDiskCount field.
+func (o *VirtualMachine) SetVirtualDiskCount(v int64) {
 	o.VirtualDiskCount = &v
 }
 

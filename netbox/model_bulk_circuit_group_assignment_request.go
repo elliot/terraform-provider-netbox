@@ -22,8 +22,8 @@ var _ MappedNullable = &BulkCircuitGroupAssignmentRequest{}
 
 // BulkCircuitGroupAssignmentRequest Base serializer for group assignments under CircuitSerializer.
 type BulkCircuitGroupAssignmentRequest struct {
-	Id         int32  `json:"id"`
-	Group      int32  `json:"group"`
+	Id         int64  `json:"id"`
+	Group      int64  `json:"group"`
 	MemberType string `json:"member_type"`
 	MemberId   int64  `json:"member_id"`
 	// * `primary` - Primary * `secondary` - Secondary * `tertiary` - Tertiary * `inactive` - Inactive
@@ -39,7 +39,7 @@ type _BulkCircuitGroupAssignmentRequest BulkCircuitGroupAssignmentRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkCircuitGroupAssignmentRequest(id int32, group int32, memberType string, memberId int64) *BulkCircuitGroupAssignmentRequest {
+func NewBulkCircuitGroupAssignmentRequest(id int64, group int64, memberType string, memberId int64) *BulkCircuitGroupAssignmentRequest {
 	this := BulkCircuitGroupAssignmentRequest{}
 	this.Id = id
 	this.Group = group
@@ -57,9 +57,9 @@ func NewBulkCircuitGroupAssignmentRequestWithDefaults() *BulkCircuitGroupAssignm
 }
 
 // GetId returns the Id field value
-func (o *BulkCircuitGroupAssignmentRequest) GetId() int32 {
+func (o *BulkCircuitGroupAssignmentRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *BulkCircuitGroupAssignmentRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkCircuitGroupAssignmentRequest) GetIdOk() (*int32, bool) {
+func (o *BulkCircuitGroupAssignmentRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,14 +76,14 @@ func (o *BulkCircuitGroupAssignmentRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkCircuitGroupAssignmentRequest) SetId(v int32) {
+func (o *BulkCircuitGroupAssignmentRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetGroup returns the Group field value
-func (o *BulkCircuitGroupAssignmentRequest) GetGroup() int32 {
+func (o *BulkCircuitGroupAssignmentRequest) GetGroup() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -92,7 +92,7 @@ func (o *BulkCircuitGroupAssignmentRequest) GetGroup() int32 {
 
 // GetGroupOk returns a tuple with the Group field value
 // and a boolean to check if the value has been set.
-func (o *BulkCircuitGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
+func (o *BulkCircuitGroupAssignmentRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -100,7 +100,7 @@ func (o *BulkCircuitGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
 }
 
 // SetGroup sets field value
-func (o *BulkCircuitGroupAssignmentRequest) SetGroup(v int32) {
+func (o *BulkCircuitGroupAssignmentRequest) SetGroup(v int64) {
 	o.Group = v
 }
 

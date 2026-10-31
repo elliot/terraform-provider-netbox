@@ -22,9 +22,9 @@ var _ MappedNullable = &PatchedBulkCoolingOutflowRequest{}
 
 // PatchedBulkCoolingOutflowRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedBulkCoolingOutflowRequest struct {
-	Id     int32         `json:"id"`
-	Device *int32        `json:"device,omitempty"`
-	Module NullableInt32 `json:"module,omitempty"`
+	Id     int64         `json:"id"`
+	Device *int64        `json:"device,omitempty"`
+	Module NullableInt64 `json:"module,omitempty"`
 	Name   *string       `json:"name,omitempty"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
@@ -33,9 +33,9 @@ type PatchedBulkCoolingOutflowRequest struct {
 	Diameter NullableFloat64 `json:"diameter,omitempty"`
 	// * `mm` - Millimeters * `cm` - Centimeters * `in` - Inches
 	DiameterUnit         NullableString         `json:"diameter_unit,omitempty"`
-	CoolingIntake        NullableInt32          `json:"cooling_intake,omitempty"`
+	CoolingIntake        NullableInt64          `json:"cooling_intake,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -47,7 +47,7 @@ type _PatchedBulkCoolingOutflowRequest PatchedBulkCoolingOutflowRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkCoolingOutflowRequest(id int32) *PatchedBulkCoolingOutflowRequest {
+func NewPatchedBulkCoolingOutflowRequest(id int64) *PatchedBulkCoolingOutflowRequest {
 	this := PatchedBulkCoolingOutflowRequest{}
 	this.Id = id
 	return &this
@@ -62,9 +62,9 @@ func NewPatchedBulkCoolingOutflowRequestWithDefaults() *PatchedBulkCoolingOutflo
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkCoolingOutflowRequest) GetId() int32 {
+func (o *PatchedBulkCoolingOutflowRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -73,7 +73,7 @@ func (o *PatchedBulkCoolingOutflowRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkCoolingOutflowRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkCoolingOutflowRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -81,14 +81,14 @@ func (o *PatchedBulkCoolingOutflowRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkCoolingOutflowRequest) SetId(v int32) {
+func (o *PatchedBulkCoolingOutflowRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise.
-func (o *PatchedBulkCoolingOutflowRequest) GetDevice() int32 {
+func (o *PatchedBulkCoolingOutflowRequest) GetDevice() int64 {
 	if o == nil || IsNil(o.Device) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Device
@@ -96,7 +96,7 @@ func (o *PatchedBulkCoolingOutflowRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkCoolingOutflowRequest) GetDeviceOk() (*int32, bool) {
+func (o *PatchedBulkCoolingOutflowRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil || IsNil(o.Device) {
 		return nil, false
 	}
@@ -112,15 +112,15 @@ func (o *PatchedBulkCoolingOutflowRequest) HasDevice() bool {
 	return false
 }
 
-// SetDevice gets a reference to the given int32 and assigns it to the Device field.
-func (o *PatchedBulkCoolingOutflowRequest) SetDevice(v int32) {
+// SetDevice gets a reference to the given int64 and assigns it to the Device field.
+func (o *PatchedBulkCoolingOutflowRequest) SetDevice(v int64) {
 	o.Device = &v
 }
 
 // GetModule returns the Module field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCoolingOutflowRequest) GetModule() int32 {
+func (o *PatchedBulkCoolingOutflowRequest) GetModule() int64 {
 	if o == nil || IsNil(o.Module.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module.Get()
@@ -129,7 +129,7 @@ func (o *PatchedBulkCoolingOutflowRequest) GetModule() int32 {
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCoolingOutflowRequest) GetModuleOk() (*int32, bool) {
+func (o *PatchedBulkCoolingOutflowRequest) GetModuleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -145,8 +145,8 @@ func (o *PatchedBulkCoolingOutflowRequest) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given NullableInt32 and assigns it to the Module field.
-func (o *PatchedBulkCoolingOutflowRequest) SetModule(v int32) {
+// SetModule gets a reference to the given NullableInt64 and assigns it to the Module field.
+func (o *PatchedBulkCoolingOutflowRequest) SetModule(v int64) {
 	o.Module.Set(&v)
 }
 
@@ -354,9 +354,9 @@ func (o *PatchedBulkCoolingOutflowRequest) UnsetDiameterUnit() {
 }
 
 // GetCoolingIntake returns the CoolingIntake field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCoolingOutflowRequest) GetCoolingIntake() int32 {
+func (o *PatchedBulkCoolingOutflowRequest) GetCoolingIntake() int64 {
 	if o == nil || IsNil(o.CoolingIntake.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CoolingIntake.Get()
@@ -365,7 +365,7 @@ func (o *PatchedBulkCoolingOutflowRequest) GetCoolingIntake() int32 {
 // GetCoolingIntakeOk returns a tuple with the CoolingIntake field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCoolingOutflowRequest) GetCoolingIntakeOk() (*int32, bool) {
+func (o *PatchedBulkCoolingOutflowRequest) GetCoolingIntakeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -381,8 +381,8 @@ func (o *PatchedBulkCoolingOutflowRequest) HasCoolingIntake() bool {
 	return false
 }
 
-// SetCoolingIntake gets a reference to the given NullableInt32 and assigns it to the CoolingIntake field.
-func (o *PatchedBulkCoolingOutflowRequest) SetCoolingIntake(v int32) {
+// SetCoolingIntake gets a reference to the given NullableInt64 and assigns it to the CoolingIntake field.
+func (o *PatchedBulkCoolingOutflowRequest) SetCoolingIntake(v int64) {
 	o.CoolingIntake.Set(&v)
 }
 
@@ -429,9 +429,9 @@ func (o *PatchedBulkCoolingOutflowRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkCoolingOutflowRequest) GetOwner() int32 {
+func (o *PatchedBulkCoolingOutflowRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -440,7 +440,7 @@ func (o *PatchedBulkCoolingOutflowRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkCoolingOutflowRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkCoolingOutflowRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -456,8 +456,8 @@ func (o *PatchedBulkCoolingOutflowRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkCoolingOutflowRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkCoolingOutflowRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

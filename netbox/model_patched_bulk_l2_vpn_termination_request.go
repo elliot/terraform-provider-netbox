@@ -22,8 +22,8 @@ var _ MappedNullable = &PatchedBulkL2VPNTerminationRequest{}
 
 // PatchedBulkL2VPNTerminationRequest Adds support for custom fields and tags.
 type PatchedBulkL2VPNTerminationRequest struct {
-	Id                   int32                  `json:"id"`
-	L2vpn                *int32                 `json:"l2vpn,omitempty"`
+	Id                   int64                  `json:"id"`
+	L2vpn                *int64                 `json:"l2vpn,omitempty"`
 	AssignedObjectType   *string                `json:"assigned_object_type,omitempty"`
 	AssignedObjectId     *int64                 `json:"assigned_object_id,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
@@ -37,7 +37,7 @@ type _PatchedBulkL2VPNTerminationRequest PatchedBulkL2VPNTerminationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkL2VPNTerminationRequest(id int32) *PatchedBulkL2VPNTerminationRequest {
+func NewPatchedBulkL2VPNTerminationRequest(id int64) *PatchedBulkL2VPNTerminationRequest {
 	this := PatchedBulkL2VPNTerminationRequest{}
 	this.Id = id
 	return &this
@@ -52,9 +52,9 @@ func NewPatchedBulkL2VPNTerminationRequestWithDefaults() *PatchedBulkL2VPNTermin
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkL2VPNTerminationRequest) GetId() int32 {
+func (o *PatchedBulkL2VPNTerminationRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *PatchedBulkL2VPNTerminationRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkL2VPNTerminationRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkL2VPNTerminationRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,14 +71,14 @@ func (o *PatchedBulkL2VPNTerminationRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkL2VPNTerminationRequest) SetId(v int32) {
+func (o *PatchedBulkL2VPNTerminationRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetL2vpn returns the L2vpn field value if set, zero value otherwise.
-func (o *PatchedBulkL2VPNTerminationRequest) GetL2vpn() int32 {
+func (o *PatchedBulkL2VPNTerminationRequest) GetL2vpn() int64 {
 	if o == nil || IsNil(o.L2vpn) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.L2vpn
@@ -86,7 +86,7 @@ func (o *PatchedBulkL2VPNTerminationRequest) GetL2vpn() int32 {
 
 // GetL2vpnOk returns a tuple with the L2vpn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkL2VPNTerminationRequest) GetL2vpnOk() (*int32, bool) {
+func (o *PatchedBulkL2VPNTerminationRequest) GetL2vpnOk() (*int64, bool) {
 	if o == nil || IsNil(o.L2vpn) {
 		return nil, false
 	}
@@ -102,8 +102,8 @@ func (o *PatchedBulkL2VPNTerminationRequest) HasL2vpn() bool {
 	return false
 }
 
-// SetL2vpn gets a reference to the given int32 and assigns it to the L2vpn field.
-func (o *PatchedBulkL2VPNTerminationRequest) SetL2vpn(v int32) {
+// SetL2vpn gets a reference to the given int64 and assigns it to the L2vpn field.
+func (o *PatchedBulkL2VPNTerminationRequest) SetL2vpn(v int64) {
 	o.L2vpn = &v
 }
 

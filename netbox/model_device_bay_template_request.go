@@ -22,7 +22,7 @@ var _ MappedNullable = &DeviceBayTemplateRequest{}
 
 // DeviceBayTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type DeviceBayTemplateRequest struct {
-	DeviceType int32 `json:"device_type"`
+	DeviceType int64 `json:"device_type"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name string `json:"name"`
 	// Physical label
@@ -38,7 +38,7 @@ type _DeviceBayTemplateRequest DeviceBayTemplateRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceBayTemplateRequest(deviceType int32, name string) *DeviceBayTemplateRequest {
+func NewDeviceBayTemplateRequest(deviceType int64, name string) *DeviceBayTemplateRequest {
 	this := DeviceBayTemplateRequest{}
 	this.DeviceType = deviceType
 	this.Name = name
@@ -54,9 +54,9 @@ func NewDeviceBayTemplateRequestWithDefaults() *DeviceBayTemplateRequest {
 }
 
 // GetDeviceType returns the DeviceType field value
-func (o *DeviceBayTemplateRequest) GetDeviceType() int32 {
+func (o *DeviceBayTemplateRequest) GetDeviceType() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *DeviceBayTemplateRequest) GetDeviceType() int32 {
 
 // GetDeviceTypeOk returns a tuple with the DeviceType field value
 // and a boolean to check if the value has been set.
-func (o *DeviceBayTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *DeviceBayTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *DeviceBayTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
 }
 
 // SetDeviceType sets field value
-func (o *DeviceBayTemplateRequest) SetDeviceType(v int32) {
+func (o *DeviceBayTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType = v
 }
 

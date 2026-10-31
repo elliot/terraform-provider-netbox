@@ -23,7 +23,7 @@ var _ MappedNullable = &Tag{}
 
 // Tag Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type Tag struct {
-	Id                   int32        `json:"id"`
+	Id                   int64        `json:"id"`
 	Url                  *string      `json:"url,omitempty"`
 	DisplayUrl           *string      `json:"display_url,omitempty"`
 	Display              *string      `json:"display,omitempty"`
@@ -45,7 +45,7 @@ type _Tag Tag
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTag(id int32) *Tag {
+func NewTag(id int64) *Tag {
 	this := Tag{}
 	this.Id = id
 	return &this
@@ -60,9 +60,9 @@ func NewTagWithDefaults() *Tag {
 }
 
 // GetId returns the Id field value
-func (o *Tag) GetId() int32 {
+func (o *Tag) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -71,7 +71,7 @@ func (o *Tag) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *Tag) GetIdOk() (*int32, bool) {
+func (o *Tag) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -79,7 +79,7 @@ func (o *Tag) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *Tag) SetId(v int32) {
+func (o *Tag) SetId(v int64) {
 	o.Id = v
 }
 

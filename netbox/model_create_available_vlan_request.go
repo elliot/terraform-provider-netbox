@@ -23,11 +23,11 @@ var _ MappedNullable = &CreateAvailableVLANRequest{}
 // CreateAvailableVLANRequest Adds support for custom fields and tags.
 type CreateAvailableVLANRequest struct {
 	Name   string        `json:"name"`
-	Site   NullableInt32 `json:"site,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Site   NullableInt64 `json:"site,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// * `active` - Active * `reserved` - Reserved * `deprecated` - Deprecated
 	Status               *string                `json:"status,omitempty"`
-	Role                 NullableInt32          `json:"role,omitempty"`
+	Role                 NullableInt64          `json:"role,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -79,9 +79,9 @@ func (o *CreateAvailableVLANRequest) SetName(v string) {
 }
 
 // GetSite returns the Site field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CreateAvailableVLANRequest) GetSite() int32 {
+func (o *CreateAvailableVLANRequest) GetSite() int64 {
 	if o == nil || IsNil(o.Site.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Site.Get()
@@ -90,7 +90,7 @@ func (o *CreateAvailableVLANRequest) GetSite() int32 {
 // GetSiteOk returns a tuple with the Site field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CreateAvailableVLANRequest) GetSiteOk() (*int32, bool) {
+func (o *CreateAvailableVLANRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -106,8 +106,8 @@ func (o *CreateAvailableVLANRequest) HasSite() bool {
 	return false
 }
 
-// SetSite gets a reference to the given NullableInt32 and assigns it to the Site field.
-func (o *CreateAvailableVLANRequest) SetSite(v int32) {
+// SetSite gets a reference to the given NullableInt64 and assigns it to the Site field.
+func (o *CreateAvailableVLANRequest) SetSite(v int64) {
 	o.Site.Set(&v)
 }
 
@@ -122,9 +122,9 @@ func (o *CreateAvailableVLANRequest) UnsetSite() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CreateAvailableVLANRequest) GetTenant() int32 {
+func (o *CreateAvailableVLANRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -133,7 +133,7 @@ func (o *CreateAvailableVLANRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CreateAvailableVLANRequest) GetTenantOk() (*int32, bool) {
+func (o *CreateAvailableVLANRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -149,8 +149,8 @@ func (o *CreateAvailableVLANRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *CreateAvailableVLANRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *CreateAvailableVLANRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -197,9 +197,9 @@ func (o *CreateAvailableVLANRequest) SetStatus(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CreateAvailableVLANRequest) GetRole() int32 {
+func (o *CreateAvailableVLANRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -208,7 +208,7 @@ func (o *CreateAvailableVLANRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CreateAvailableVLANRequest) GetRoleOk() (*int32, bool) {
+func (o *CreateAvailableVLANRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -224,8 +224,8 @@ func (o *CreateAvailableVLANRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *CreateAvailableVLANRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *CreateAvailableVLANRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 

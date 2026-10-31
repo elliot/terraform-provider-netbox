@@ -189,7 +189,7 @@ func (r *ProviderAccountResource) Read(ctx context.Context, req resource.ReadReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -220,7 +220,7 @@ func (r *ProviderAccountResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -250,7 +250,7 @@ func (r *ProviderAccountResource) Delete(ctx context.Context, req resource.Delet
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -270,7 +270,7 @@ func (r *ProviderAccountResource) ImportState(ctx context.Context, req resource.
 // providerAccountToCreate builds the ProviderAccountRequest request body from the plan.
 func providerAccountToCreate(ctx context.Context, plan *ProviderAccountModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.ProviderAccountRequest {
 	const objectType = "circuits.provideraccount"
-	body := netbox.NewProviderAccountRequest(conv.Int32(plan.ProviderId), plan.Account.ValueString())
+	body := netbox.NewProviderAccountRequest(plan.ProviderId.ValueInt64(), plan.Account.ValueString())
 	if !plan.Name.IsUnknown() {
 		body.SetName(plan.Name.ValueString())
 	}
@@ -278,7 +278,7 @@ func providerAccountToCreate(ctx context.Context, plan *ProviderAccountModel, cf
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -298,7 +298,7 @@ func providerAccountToPatch(ctx context.Context, plan, state *ProviderAccountMod
 	body := netbox.NewPatchedProviderAccountRequest()
 	if !plan.ProviderId.Equal(state.ProviderId) {
 		if conv.Known(plan.ProviderId) {
-			body.SetProvider(conv.Int32(plan.ProviderId))
+			body.SetProvider(plan.ProviderId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -320,7 +320,7 @@ func providerAccountToPatch(ctx context.Context, plan, state *ProviderAccountMod
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

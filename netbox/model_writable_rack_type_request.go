@@ -22,7 +22,7 @@ var _ MappedNullable = &WritableRackTypeRequest{}
 
 // WritableRackTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type WritableRackTypeRequest struct {
-	Manufacturer int32   `json:"manufacturer"`
+	Manufacturer int64   `json:"manufacturer"`
 	Model        string  `json:"model"`
 	Slug         string  `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description  *string `json:"description,omitempty"`
@@ -55,7 +55,7 @@ type WritableRackTypeRequest struct {
 	CoolingCapability NullableString `json:"cooling_capability,omitempty"`
 	// Cooling capacity (kW)
 	CoolingCapacity      NullableFloat64        `json:"cooling_capacity,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -68,7 +68,7 @@ type _WritableRackTypeRequest WritableRackTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableRackTypeRequest(manufacturer int32, model string, slug string, formFactor string) *WritableRackTypeRequest {
+func NewWritableRackTypeRequest(manufacturer int64, model string, slug string, formFactor string) *WritableRackTypeRequest {
 	this := WritableRackTypeRequest{}
 	this.Manufacturer = manufacturer
 	this.Model = model
@@ -86,9 +86,9 @@ func NewWritableRackTypeRequestWithDefaults() *WritableRackTypeRequest {
 }
 
 // GetManufacturer returns the Manufacturer field value
-func (o *WritableRackTypeRequest) GetManufacturer() int32 {
+func (o *WritableRackTypeRequest) GetManufacturer() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -97,7 +97,7 @@ func (o *WritableRackTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value
 // and a boolean to check if the value has been set.
-func (o *WritableRackTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *WritableRackTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -105,7 +105,7 @@ func (o *WritableRackTypeRequest) GetManufacturerOk() (*int32, bool) {
 }
 
 // SetManufacturer sets field value
-func (o *WritableRackTypeRequest) SetManufacturer(v int32) {
+func (o *WritableRackTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = v
 }
 
@@ -772,9 +772,9 @@ func (o *WritableRackTypeRequest) UnsetCoolingCapacity() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableRackTypeRequest) GetOwner() int32 {
+func (o *WritableRackTypeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -783,7 +783,7 @@ func (o *WritableRackTypeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableRackTypeRequest) GetOwnerOk() (*int32, bool) {
+func (o *WritableRackTypeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -799,8 +799,8 @@ func (o *WritableRackTypeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *WritableRackTypeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *WritableRackTypeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

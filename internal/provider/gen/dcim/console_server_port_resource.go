@@ -221,7 +221,7 @@ func (r *ConsoleServerPortResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -252,7 +252,7 @@ func (r *ConsoleServerPortResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -282,7 +282,7 @@ func (r *ConsoleServerPortResource) Delete(ctx context.Context, req resource.Del
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -302,9 +302,9 @@ func (r *ConsoleServerPortResource) ImportState(ctx context.Context, req resourc
 // consoleServerPortToCreate builds the WritableConsoleServerPortRequest request body from the plan.
 func consoleServerPortToCreate(ctx context.Context, plan *ConsoleServerPortModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableConsoleServerPortRequest {
 	const objectType = "dcim.consoleserverport"
-	body := netbox.NewWritableConsoleServerPortRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
+	body := netbox.NewWritableConsoleServerPortRequest(plan.DeviceId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.ModuleId) {
-		body.SetModule(conv.Int32(plan.ModuleId))
+		body.SetModule(plan.ModuleId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -322,7 +322,7 @@ func consoleServerPortToCreate(ctx context.Context, plan *ConsoleServerPortModel
 		body.SetMarkConnected(plan.MarkConnected.ValueBool())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -339,14 +339,14 @@ func consoleServerPortToPatch(ctx context.Context, plan, state *ConsoleServerPor
 	body := netbox.NewPatchedWritableConsoleServerPortRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.ModuleId.Equal(state.ModuleId) {
 		if plan.ModuleId.IsNull() {
 			body.SetModuleNil()
 		} else if !plan.ModuleId.IsUnknown() {
-			body.SetModule(conv.Int32(plan.ModuleId))
+			body.SetModule(plan.ModuleId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -383,7 +383,7 @@ func consoleServerPortToPatch(ctx context.Context, plan, state *ConsoleServerPor
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

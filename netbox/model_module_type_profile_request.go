@@ -25,7 +25,7 @@ type ModuleTypeProfileRequest struct {
 	Name                 string                 `json:"name"`
 	Description          *string                `json:"description,omitempty"`
 	Schema               interface{}            `json:"schema,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -142,9 +142,9 @@ func (o *ModuleTypeProfileRequest) SetSchema(v interface{}) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ModuleTypeProfileRequest) GetOwner() int32 {
+func (o *ModuleTypeProfileRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -153,7 +153,7 @@ func (o *ModuleTypeProfileRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ModuleTypeProfileRequest) GetOwnerOk() (*int32, bool) {
+func (o *ModuleTypeProfileRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -169,8 +169,8 @@ func (o *ModuleTypeProfileRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *ModuleTypeProfileRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *ModuleTypeProfileRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

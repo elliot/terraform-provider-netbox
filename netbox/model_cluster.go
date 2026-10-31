@@ -23,7 +23,7 @@ var _ MappedNullable = &Cluster{}
 
 // Cluster Base serializer class for models inheriting from PrimaryModel.
 type Cluster struct {
-	Id                   int32                     `json:"id"`
+	Id                   int64                     `json:"id"`
 	Url                  *string                   `json:"url,omitempty"`
 	DisplayUrl           *string                   `json:"display_url,omitempty"`
 	Display              *string                   `json:"display,omitempty"`
@@ -33,7 +33,7 @@ type Cluster struct {
 	Status               *ChoiceString             `json:"status,omitempty"`
 	Tenant               NullableBriefTenant       `json:"tenant,omitempty"`
 	ScopeType            NullableString            `json:"scope_type,omitempty"`
-	ScopeId              NullableInt32             `json:"scope_id,omitempty"`
+	ScopeId              NullableInt64             `json:"scope_id,omitempty"`
 	Scope                interface{}               `json:"scope,omitempty"`
 	Description          *string                   `json:"description,omitempty"`
 	Owner                NullableBriefOwner        `json:"owner,omitempty"`
@@ -56,7 +56,7 @@ type _Cluster Cluster
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCluster(id int32) *Cluster {
+func NewCluster(id int64) *Cluster {
 	this := Cluster{}
 	this.Id = id
 	return &this
@@ -71,9 +71,9 @@ func NewClusterWithDefaults() *Cluster {
 }
 
 // GetId returns the Id field value
-func (o *Cluster) GetId() int32 {
+func (o *Cluster) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -82,7 +82,7 @@ func (o *Cluster) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *Cluster) GetIdOk() (*int32, bool) {
+func (o *Cluster) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -90,7 +90,7 @@ func (o *Cluster) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *Cluster) SetId(v int32) {
+func (o *Cluster) SetId(v int64) {
 	o.Id = v
 }
 
@@ -416,9 +416,9 @@ func (o *Cluster) UnsetScopeType() {
 }
 
 // GetScopeId returns the ScopeId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Cluster) GetScopeId() int32 {
+func (o *Cluster) GetScopeId() int64 {
 	if o == nil || IsNil(o.ScopeId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ScopeId.Get()
@@ -427,7 +427,7 @@ func (o *Cluster) GetScopeId() int32 {
 // GetScopeIdOk returns a tuple with the ScopeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Cluster) GetScopeIdOk() (*int32, bool) {
+func (o *Cluster) GetScopeIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -443,8 +443,8 @@ func (o *Cluster) HasScopeId() bool {
 	return false
 }
 
-// SetScopeId gets a reference to the given NullableInt32 and assigns it to the ScopeId field.
-func (o *Cluster) SetScopeId(v int32) {
+// SetScopeId gets a reference to the given NullableInt64 and assigns it to the ScopeId field.
+func (o *Cluster) SetScopeId(v int64) {
 	o.ScopeId.Set(&v)
 }
 

@@ -22,7 +22,7 @@ var _ MappedNullable = &PatchedBulkL2VPNRequest{}
 
 // PatchedBulkL2VPNRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkL2VPNRequest struct {
-	Id         int32         `json:"id"`
+	Id         int64         `json:"id"`
 	Identifier NullableInt64 `json:"identifier,omitempty"`
 	Name       *string       `json:"name,omitempty"`
 	Slug       *string       `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
@@ -30,12 +30,12 @@ type PatchedBulkL2VPNRequest struct {
 	Type *string `json:"type,omitempty"`
 	// * `active` - Active * `planned` - Planned * `decommissioning` - Decommissioning
 	Status               *string                `json:"status,omitempty"`
-	ImportTargets        []int32                `json:"import_targets,omitempty"`
-	ExportTargets        []int32                `json:"export_targets,omitempty"`
+	ImportTargets        []int64                `json:"import_targets,omitempty"`
+	ExportTargets        []int64                `json:"export_targets,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -47,7 +47,7 @@ type _PatchedBulkL2VPNRequest PatchedBulkL2VPNRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkL2VPNRequest(id int32) *PatchedBulkL2VPNRequest {
+func NewPatchedBulkL2VPNRequest(id int64) *PatchedBulkL2VPNRequest {
 	this := PatchedBulkL2VPNRequest{}
 	this.Id = id
 	return &this
@@ -62,9 +62,9 @@ func NewPatchedBulkL2VPNRequestWithDefaults() *PatchedBulkL2VPNRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkL2VPNRequest) GetId() int32 {
+func (o *PatchedBulkL2VPNRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -73,7 +73,7 @@ func (o *PatchedBulkL2VPNRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkL2VPNRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkL2VPNRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -81,7 +81,7 @@ func (o *PatchedBulkL2VPNRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkL2VPNRequest) SetId(v int32) {
+func (o *PatchedBulkL2VPNRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -257,9 +257,9 @@ func (o *PatchedBulkL2VPNRequest) SetStatus(v string) {
 }
 
 // GetImportTargets returns the ImportTargets field value if set, zero value otherwise.
-func (o *PatchedBulkL2VPNRequest) GetImportTargets() []int32 {
+func (o *PatchedBulkL2VPNRequest) GetImportTargets() []int64 {
 	if o == nil || IsNil(o.ImportTargets) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.ImportTargets
@@ -267,7 +267,7 @@ func (o *PatchedBulkL2VPNRequest) GetImportTargets() []int32 {
 
 // GetImportTargetsOk returns a tuple with the ImportTargets field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkL2VPNRequest) GetImportTargetsOk() ([]int32, bool) {
+func (o *PatchedBulkL2VPNRequest) GetImportTargetsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.ImportTargets) {
 		return nil, false
 	}
@@ -283,15 +283,15 @@ func (o *PatchedBulkL2VPNRequest) HasImportTargets() bool {
 	return false
 }
 
-// SetImportTargets gets a reference to the given []int32 and assigns it to the ImportTargets field.
-func (o *PatchedBulkL2VPNRequest) SetImportTargets(v []int32) {
+// SetImportTargets gets a reference to the given []int64 and assigns it to the ImportTargets field.
+func (o *PatchedBulkL2VPNRequest) SetImportTargets(v []int64) {
 	o.ImportTargets = v
 }
 
 // GetExportTargets returns the ExportTargets field value if set, zero value otherwise.
-func (o *PatchedBulkL2VPNRequest) GetExportTargets() []int32 {
+func (o *PatchedBulkL2VPNRequest) GetExportTargets() []int64 {
 	if o == nil || IsNil(o.ExportTargets) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.ExportTargets
@@ -299,7 +299,7 @@ func (o *PatchedBulkL2VPNRequest) GetExportTargets() []int32 {
 
 // GetExportTargetsOk returns a tuple with the ExportTargets field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkL2VPNRequest) GetExportTargetsOk() ([]int32, bool) {
+func (o *PatchedBulkL2VPNRequest) GetExportTargetsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.ExportTargets) {
 		return nil, false
 	}
@@ -315,8 +315,8 @@ func (o *PatchedBulkL2VPNRequest) HasExportTargets() bool {
 	return false
 }
 
-// SetExportTargets gets a reference to the given []int32 and assigns it to the ExportTargets field.
-func (o *PatchedBulkL2VPNRequest) SetExportTargets(v []int32) {
+// SetExportTargets gets a reference to the given []int64 and assigns it to the ExportTargets field.
+func (o *PatchedBulkL2VPNRequest) SetExportTargets(v []int64) {
 	o.ExportTargets = v
 }
 
@@ -353,9 +353,9 @@ func (o *PatchedBulkL2VPNRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkL2VPNRequest) GetOwner() int32 {
+func (o *PatchedBulkL2VPNRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -364,7 +364,7 @@ func (o *PatchedBulkL2VPNRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkL2VPNRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkL2VPNRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -380,8 +380,8 @@ func (o *PatchedBulkL2VPNRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkL2VPNRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkL2VPNRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -428,9 +428,9 @@ func (o *PatchedBulkL2VPNRequest) SetComments(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkL2VPNRequest) GetTenant() int32 {
+func (o *PatchedBulkL2VPNRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -439,7 +439,7 @@ func (o *PatchedBulkL2VPNRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkL2VPNRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkL2VPNRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -455,8 +455,8 @@ func (o *PatchedBulkL2VPNRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkL2VPNRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkL2VPNRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 

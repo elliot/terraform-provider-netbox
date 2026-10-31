@@ -22,12 +22,12 @@ var _ MappedNullable = &PatchedBulkTableConfigRequest{}
 
 // PatchedBulkTableConfigRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedBulkTableConfigRequest struct {
-	Id                   int32         `json:"id"`
+	Id                   int64         `json:"id"`
 	ObjectType           *string       `json:"object_type,omitempty"`
 	Table                *string       `json:"table,omitempty"`
 	Name                 *string       `json:"name,omitempty"`
 	Description          *string       `json:"description,omitempty"`
-	User                 NullableInt32 `json:"user,omitempty"`
+	User                 NullableInt64 `json:"user,omitempty"`
 	Weight               *int32        `json:"weight,omitempty"`
 	Enabled              *bool         `json:"enabled,omitempty"`
 	Shared               *bool         `json:"shared,omitempty"`
@@ -42,7 +42,7 @@ type _PatchedBulkTableConfigRequest PatchedBulkTableConfigRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkTableConfigRequest(id int32) *PatchedBulkTableConfigRequest {
+func NewPatchedBulkTableConfigRequest(id int64) *PatchedBulkTableConfigRequest {
 	this := PatchedBulkTableConfigRequest{}
 	this.Id = id
 	return &this
@@ -57,9 +57,9 @@ func NewPatchedBulkTableConfigRequestWithDefaults() *PatchedBulkTableConfigReque
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkTableConfigRequest) GetId() int32 {
+func (o *PatchedBulkTableConfigRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *PatchedBulkTableConfigRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkTableConfigRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkTableConfigRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *PatchedBulkTableConfigRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkTableConfigRequest) SetId(v int32) {
+func (o *PatchedBulkTableConfigRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -209,9 +209,9 @@ func (o *PatchedBulkTableConfigRequest) SetDescription(v string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkTableConfigRequest) GetUser() int32 {
+func (o *PatchedBulkTableConfigRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User.Get()
@@ -220,7 +220,7 @@ func (o *PatchedBulkTableConfigRequest) GetUser() int32 {
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkTableConfigRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedBulkTableConfigRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -236,8 +236,8 @@ func (o *PatchedBulkTableConfigRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given NullableInt32 and assigns it to the User field.
-func (o *PatchedBulkTableConfigRequest) SetUser(v int32) {
+// SetUser gets a reference to the given NullableInt64 and assigns it to the User field.
+func (o *PatchedBulkTableConfigRequest) SetUser(v int64) {
 	o.User.Set(&v)
 }
 

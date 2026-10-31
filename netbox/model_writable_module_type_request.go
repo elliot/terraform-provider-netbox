@@ -22,8 +22,8 @@ var _ MappedNullable = &WritableModuleTypeRequest{}
 
 // WritableModuleTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type WritableModuleTypeRequest struct {
-	Profile      NullableInt32 `json:"profile,omitempty"`
-	Manufacturer int32         `json:"manufacturer"`
+	Profile      NullableInt64 `json:"profile,omitempty"`
+	Manufacturer int64         `json:"manufacturer"`
 	Model        string        `json:"model"`
 	// Discrete part number (optional)
 	PartNumber *string `json:"part_number,omitempty"`
@@ -38,8 +38,8 @@ type WritableModuleTypeRequest struct {
 	EndOfLife            NullableString         `json:"end_of_life,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Attributes           interface{}            `json:"attributes,omitempty"`
-	ModuleBayTypes       []int32                `json:"module_bay_types,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	ModuleBayTypes       []int64                `json:"module_bay_types,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -52,7 +52,7 @@ type _WritableModuleTypeRequest WritableModuleTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableModuleTypeRequest(manufacturer int32, model string) *WritableModuleTypeRequest {
+func NewWritableModuleTypeRequest(manufacturer int64, model string) *WritableModuleTypeRequest {
 	this := WritableModuleTypeRequest{}
 	this.Manufacturer = manufacturer
 	this.Model = model
@@ -68,9 +68,9 @@ func NewWritableModuleTypeRequestWithDefaults() *WritableModuleTypeRequest {
 }
 
 // GetProfile returns the Profile field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableModuleTypeRequest) GetProfile() int32 {
+func (o *WritableModuleTypeRequest) GetProfile() int64 {
 	if o == nil || IsNil(o.Profile.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Profile.Get()
@@ -79,7 +79,7 @@ func (o *WritableModuleTypeRequest) GetProfile() int32 {
 // GetProfileOk returns a tuple with the Profile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableModuleTypeRequest) GetProfileOk() (*int32, bool) {
+func (o *WritableModuleTypeRequest) GetProfileOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -95,8 +95,8 @@ func (o *WritableModuleTypeRequest) HasProfile() bool {
 	return false
 }
 
-// SetProfile gets a reference to the given NullableInt32 and assigns it to the Profile field.
-func (o *WritableModuleTypeRequest) SetProfile(v int32) {
+// SetProfile gets a reference to the given NullableInt64 and assigns it to the Profile field.
+func (o *WritableModuleTypeRequest) SetProfile(v int64) {
 	o.Profile.Set(&v)
 }
 
@@ -111,9 +111,9 @@ func (o *WritableModuleTypeRequest) UnsetProfile() {
 }
 
 // GetManufacturer returns the Manufacturer field value
-func (o *WritableModuleTypeRequest) GetManufacturer() int32 {
+func (o *WritableModuleTypeRequest) GetManufacturer() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -122,7 +122,7 @@ func (o *WritableModuleTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value
 // and a boolean to check if the value has been set.
-func (o *WritableModuleTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *WritableModuleTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -130,7 +130,7 @@ func (o *WritableModuleTypeRequest) GetManufacturerOk() (*int32, bool) {
 }
 
 // SetManufacturer sets field value
-func (o *WritableModuleTypeRequest) SetManufacturer(v int32) {
+func (o *WritableModuleTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = v
 }
 
@@ -471,9 +471,9 @@ func (o *WritableModuleTypeRequest) SetAttributes(v interface{}) {
 }
 
 // GetModuleBayTypes returns the ModuleBayTypes field value if set, zero value otherwise.
-func (o *WritableModuleTypeRequest) GetModuleBayTypes() []int32 {
+func (o *WritableModuleTypeRequest) GetModuleBayTypes() []int64 {
 	if o == nil || IsNil(o.ModuleBayTypes) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.ModuleBayTypes
@@ -481,7 +481,7 @@ func (o *WritableModuleTypeRequest) GetModuleBayTypes() []int32 {
 
 // GetModuleBayTypesOk returns a tuple with the ModuleBayTypes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *WritableModuleTypeRequest) GetModuleBayTypesOk() ([]int32, bool) {
+func (o *WritableModuleTypeRequest) GetModuleBayTypesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.ModuleBayTypes) {
 		return nil, false
 	}
@@ -497,15 +497,15 @@ func (o *WritableModuleTypeRequest) HasModuleBayTypes() bool {
 	return false
 }
 
-// SetModuleBayTypes gets a reference to the given []int32 and assigns it to the ModuleBayTypes field.
-func (o *WritableModuleTypeRequest) SetModuleBayTypes(v []int32) {
+// SetModuleBayTypes gets a reference to the given []int64 and assigns it to the ModuleBayTypes field.
+func (o *WritableModuleTypeRequest) SetModuleBayTypes(v []int64) {
 	o.ModuleBayTypes = v
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableModuleTypeRequest) GetOwner() int32 {
+func (o *WritableModuleTypeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -514,7 +514,7 @@ func (o *WritableModuleTypeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableModuleTypeRequest) GetOwnerOk() (*int32, bool) {
+func (o *WritableModuleTypeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -530,8 +530,8 @@ func (o *WritableModuleTypeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *WritableModuleTypeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *WritableModuleTypeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

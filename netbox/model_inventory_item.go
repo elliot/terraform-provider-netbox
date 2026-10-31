@@ -23,12 +23,12 @@ var _ MappedNullable = &InventoryItem{}
 
 // InventoryItem Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type InventoryItem struct {
-	Id         int32         `json:"id"`
+	Id         int64         `json:"id"`
 	Url        *string       `json:"url,omitempty"`
 	DisplayUrl *string       `json:"display_url,omitempty"`
 	Display    *string       `json:"display,omitempty"`
 	Device     *BriefDevice  `json:"device,omitempty"`
-	Parent     NullableInt32 `json:"parent,omitempty"`
+	Parent     NullableInt64 `json:"parent,omitempty"`
 	Name       *string       `json:"name,omitempty"`
 	// Physical label
 	Label        *string                        `json:"label,omitempty"`
@@ -61,7 +61,7 @@ type _InventoryItem InventoryItem
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewInventoryItem(id int32) *InventoryItem {
+func NewInventoryItem(id int64) *InventoryItem {
 	this := InventoryItem{}
 	this.Id = id
 	return &this
@@ -76,9 +76,9 @@ func NewInventoryItemWithDefaults() *InventoryItem {
 }
 
 // GetId returns the Id field value
-func (o *InventoryItem) GetId() int32 {
+func (o *InventoryItem) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -87,7 +87,7 @@ func (o *InventoryItem) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *InventoryItem) GetIdOk() (*int32, bool) {
+func (o *InventoryItem) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -95,7 +95,7 @@ func (o *InventoryItem) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *InventoryItem) SetId(v int32) {
+func (o *InventoryItem) SetId(v int64) {
 	o.Id = v
 }
 
@@ -228,9 +228,9 @@ func (o *InventoryItem) SetDevice(v BriefDevice) {
 }
 
 // GetParent returns the Parent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *InventoryItem) GetParent() int32 {
+func (o *InventoryItem) GetParent() int64 {
 	if o == nil || IsNil(o.Parent.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Parent.Get()
@@ -239,7 +239,7 @@ func (o *InventoryItem) GetParent() int32 {
 // GetParentOk returns a tuple with the Parent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *InventoryItem) GetParentOk() (*int32, bool) {
+func (o *InventoryItem) GetParentOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -255,8 +255,8 @@ func (o *InventoryItem) HasParent() bool {
 	return false
 }
 
-// SetParent gets a reference to the given NullableInt32 and assigns it to the Parent field.
-func (o *InventoryItem) SetParent(v int32) {
+// SetParent gets a reference to the given NullableInt64 and assigns it to the Parent field.
+func (o *InventoryItem) SetParent(v int64) {
 	o.Parent.Set(&v)
 }
 

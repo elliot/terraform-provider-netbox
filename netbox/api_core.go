@@ -197,7 +197,7 @@ type CoreAPI interface {
 		@param id A unique integer value identifying this data file.
 		@return ApiCoreDataFilesRetrieveRequest
 	*/
-	CoreDataFilesRetrieve(ctx context.Context, id int32) ApiCoreDataFilesRetrieveRequest
+	CoreDataFilesRetrieve(ctx context.Context, id int64) ApiCoreDataFilesRetrieveRequest
 
 	// CoreDataFilesRetrieveExecute executes the request
 	//  @return DataFile
@@ -267,7 +267,7 @@ type CoreAPI interface {
 		@param id A unique integer value identifying this data source.
 		@return ApiCoreDataSourcesDestroyRequest
 	*/
-	CoreDataSourcesDestroy(ctx context.Context, id int32) ApiCoreDataSourcesDestroyRequest
+	CoreDataSourcesDestroy(ctx context.Context, id int64) ApiCoreDataSourcesDestroyRequest
 
 	// CoreDataSourcesDestroyExecute executes the request
 	CoreDataSourcesDestroyExecute(r ApiCoreDataSourcesDestroyRequest) (*http.Response, error)
@@ -295,7 +295,7 @@ type CoreAPI interface {
 		@param id A unique integer value identifying this data source.
 		@return ApiCoreDataSourcesPartialUpdateRequest
 	*/
-	CoreDataSourcesPartialUpdate(ctx context.Context, id int32) ApiCoreDataSourcesPartialUpdateRequest
+	CoreDataSourcesPartialUpdate(ctx context.Context, id int64) ApiCoreDataSourcesPartialUpdateRequest
 
 	// CoreDataSourcesPartialUpdateExecute executes the request
 	//  @return DataSource
@@ -310,7 +310,7 @@ type CoreAPI interface {
 		@param id A unique integer value identifying this data source.
 		@return ApiCoreDataSourcesRetrieveRequest
 	*/
-	CoreDataSourcesRetrieve(ctx context.Context, id int32) ApiCoreDataSourcesRetrieveRequest
+	CoreDataSourcesRetrieve(ctx context.Context, id int64) ApiCoreDataSourcesRetrieveRequest
 
 	// CoreDataSourcesRetrieveExecute executes the request
 	//  @return DataSource
@@ -326,7 +326,7 @@ type CoreAPI interface {
 			@param id A unique integer value identifying this data source.
 			@return ApiCoreDataSourcesSyncCreateRequest
 	*/
-	CoreDataSourcesSyncCreate(ctx context.Context, id int32) ApiCoreDataSourcesSyncCreateRequest
+	CoreDataSourcesSyncCreate(ctx context.Context, id int64) ApiCoreDataSourcesSyncCreateRequest
 
 	// CoreDataSourcesSyncCreateExecute executes the request
 	//  @return DataSource
@@ -341,7 +341,7 @@ type CoreAPI interface {
 		@param id A unique integer value identifying this data source.
 		@return ApiCoreDataSourcesUpdateRequest
 	*/
-	CoreDataSourcesUpdate(ctx context.Context, id int32) ApiCoreDataSourcesUpdateRequest
+	CoreDataSourcesUpdate(ctx context.Context, id int64) ApiCoreDataSourcesUpdateRequest
 
 	// CoreDataSourcesUpdateExecute executes the request
 	//  @return DataSource
@@ -370,7 +370,7 @@ type CoreAPI interface {
 		@param id A unique integer value identifying this job.
 		@return ApiCoreJobsRetrieveRequest
 	*/
-	CoreJobsRetrieve(ctx context.Context, id int32) ApiCoreJobsRetrieveRequest
+	CoreJobsRetrieve(ctx context.Context, id int64) ApiCoreJobsRetrieveRequest
 
 	// CoreJobsRetrieveExecute executes the request
 	//  @return Job
@@ -399,7 +399,7 @@ type CoreAPI interface {
 		@param id A unique integer value identifying this object change.
 		@return ApiCoreObjectChangesRetrieveRequest
 	*/
-	CoreObjectChangesRetrieve(ctx context.Context, id int32) ApiCoreObjectChangesRetrieveRequest
+	CoreObjectChangesRetrieve(ctx context.Context, id int64) ApiCoreObjectChangesRetrieveRequest
 
 	// CoreObjectChangesRetrieveExecute executes the request
 	//  @return ObjectChange
@@ -1858,13 +1858,13 @@ type ApiCoreDataFilesListRequest struct {
 	hashNiew          *[]string
 	hashNisw          *[]string
 	hashRegex         *[]string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -1900,8 +1900,8 @@ type ApiCoreDataFilesListRequest struct {
 	sizeN             *[]int32
 	source            *[]string
 	sourceN           *[]string
-	sourceId          *[]int32
-	sourceIdN         *[]int32
+	sourceId          *[]int64
+	sourceIdN         *[]int64
 	start             *int32
 	updatedByRequest  *string
 }
@@ -2023,7 +2023,7 @@ func (r ApiCoreDataFilesListRequest) HashRegex(hashRegex []string) ApiCoreDataFi
 	return r
 }
 
-func (r ApiCoreDataFilesListRequest) Id(id []int32) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) Id(id []int64) ApiCoreDataFilesListRequest {
 	r.id = &id
 	return r
 }
@@ -2033,27 +2033,27 @@ func (r ApiCoreDataFilesListRequest) IdEmpty(idEmpty bool) ApiCoreDataFilesListR
 	return r
 }
 
-func (r ApiCoreDataFilesListRequest) IdGt(idGt []int32) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) IdGt(idGt []int64) ApiCoreDataFilesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCoreDataFilesListRequest) IdGte(idGte []int32) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) IdGte(idGte []int64) ApiCoreDataFilesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCoreDataFilesListRequest) IdLt(idLt []int32) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) IdLt(idLt []int64) ApiCoreDataFilesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCoreDataFilesListRequest) IdLte(idLte []int32) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) IdLte(idLte []int64) ApiCoreDataFilesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCoreDataFilesListRequest) IdN(idN []int32) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) IdN(idN []int64) ApiCoreDataFilesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -2240,13 +2240,13 @@ func (r ApiCoreDataFilesListRequest) SourceN(sourceN []string) ApiCoreDataFilesL
 }
 
 // Data source (ID)
-func (r ApiCoreDataFilesListRequest) SourceId(sourceId []int32) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) SourceId(sourceId []int64) ApiCoreDataFilesListRequest {
 	r.sourceId = &sourceId
 	return r
 }
 
 // Data source (ID)
-func (r ApiCoreDataFilesListRequest) SourceIdN(sourceIdN []int32) ApiCoreDataFilesListRequest {
+func (r ApiCoreDataFilesListRequest) SourceIdN(sourceIdN []int64) ApiCoreDataFilesListRequest {
 	r.sourceIdN = &sourceIdN
 	return r
 }
@@ -2997,7 +2997,7 @@ func (a *CoreAPIService) CoreDataFilesListExecute(r ApiCoreDataFilesListRequest)
 type ApiCoreDataFilesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CoreAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -3034,7 +3034,7 @@ Get a data file object.
 	@param id A unique integer value identifying this data file.
 	@return ApiCoreDataFilesRetrieveRequest
 */
-func (a *CoreAPIService) CoreDataFilesRetrieve(ctx context.Context, id int32) ApiCoreDataFilesRetrieveRequest {
+func (a *CoreAPIService) CoreDataFilesRetrieve(ctx context.Context, id int64) ApiCoreDataFilesRetrieveRequest {
 	return ApiCoreDataFilesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3633,7 +3633,7 @@ func (a *CoreAPIService) CoreDataSourcesCreateExecute(r ApiCoreDataSourcesCreate
 type ApiCoreDataSourcesDestroyRequest struct {
 	ctx        context.Context
 	ApiService CoreAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCoreDataSourcesDestroyRequest) Execute() (*http.Response, error) {
@@ -3649,7 +3649,7 @@ Delete a data source object.
 	@param id A unique integer value identifying this data source.
 	@return ApiCoreDataSourcesDestroyRequest
 */
-func (a *CoreAPIService) CoreDataSourcesDestroy(ctx context.Context, id int32) ApiCoreDataSourcesDestroyRequest {
+func (a *CoreAPIService) CoreDataSourcesDestroy(ctx context.Context, id int64) ApiCoreDataSourcesDestroyRequest {
 	return ApiCoreDataSourcesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3763,13 +3763,13 @@ type ApiCoreDataSourcesListRequest struct {
 	descriptionRegex   *[]string
 	enabled            *bool
 	fields             *string
-	id                 *[]int32
+	id                 *[]int64
 	idEmpty            *bool
-	idGt               *[]int32
-	idGte              *[]int32
-	idLt               *[]int32
-	idLte              *[]int32
-	idN                *[]int32
+	idGt               *[]int64
+	idGte              *[]int64
+	idLt               *[]int64
+	idLte              *[]int64
+	idN                *[]int64
 	lastSynced         *[]time.Time
 	lastSyncedEmpty    *bool
 	lastSyncedGt       *[]time.Time
@@ -3806,10 +3806,10 @@ type ApiCoreDataSourcesListRequest struct {
 	ownerN             *[]string
 	ownerGroup         *[]string
 	ownerGroupN        *[]string
-	ownerGroupId       *[]int32
-	ownerGroupIdN      *[]int32
-	ownerId            *[]*int32
-	ownerIdN           *[]*int32
+	ownerGroupId       *[]int64
+	ownerGroupIdN      *[]int64
+	ownerId            *[]*int64
+	ownerIdN           *[]*int64
 	q                  *string
 	sourceUrl          *[]string
 	sourceUrlEmpty     *bool
@@ -3853,9 +3853,9 @@ type ApiCoreDataSourcesListRequest struct {
 	tag                *[]string
 	tagAny             *[]string
 	tagN               *[]string
-	tagId              *[]int32
-	tagIdAny           *[]int32
-	tagIdN             *[]int32
+	tagId              *[]int64
+	tagIdAny           *[]int64
+	tagIdN             *[]int64
 	type_              *[]string
 	typeEmpty          *bool
 	typeIc             *[]string
@@ -3994,7 +3994,7 @@ func (r ApiCoreDataSourcesListRequest) Fields(fields string) ApiCoreDataSourcesL
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) Id(id []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) Id(id []int64) ApiCoreDataSourcesListRequest {
 	r.id = &id
 	return r
 }
@@ -4004,27 +4004,27 @@ func (r ApiCoreDataSourcesListRequest) IdEmpty(idEmpty bool) ApiCoreDataSourcesL
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) IdGt(idGt []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) IdGt(idGt []int64) ApiCoreDataSourcesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) IdGte(idGte []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) IdGte(idGte []int64) ApiCoreDataSourcesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) IdLt(idLt []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) IdLt(idLt []int64) ApiCoreDataSourcesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) IdLte(idLte []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) IdLte(idLte []int64) ApiCoreDataSourcesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) IdN(idN []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) IdN(idN []int64) ApiCoreDataSourcesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -4218,25 +4218,25 @@ func (r ApiCoreDataSourcesListRequest) OwnerGroupN(ownerGroupN []string) ApiCore
 }
 
 // Owner Group (ID)
-func (r ApiCoreDataSourcesListRequest) OwnerGroupId(ownerGroupId []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) OwnerGroupId(ownerGroupId []int64) ApiCoreDataSourcesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCoreDataSourcesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCoreDataSourcesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCoreDataSourcesListRequest) OwnerId(ownerId []*int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) OwnerId(ownerId []*int64) ApiCoreDataSourcesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCoreDataSourcesListRequest) OwnerIdN(ownerIdN []*int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) OwnerIdN(ownerIdN []*int64) ApiCoreDataSourcesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -4458,17 +4458,17 @@ func (r ApiCoreDataSourcesListRequest) TagN(tagN []string) ApiCoreDataSourcesLis
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) TagId(tagId []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) TagId(tagId []int64) ApiCoreDataSourcesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) TagIdAny(tagIdAny []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) TagIdAny(tagIdAny []int64) ApiCoreDataSourcesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCoreDataSourcesListRequest) TagIdN(tagIdN []int32) ApiCoreDataSourcesListRequest {
+func (r ApiCoreDataSourcesListRequest) TagIdN(tagIdN []int64) ApiCoreDataSourcesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -5928,7 +5928,7 @@ func (a *CoreAPIService) CoreDataSourcesListExecute(r ApiCoreDataSourcesListRequ
 type ApiCoreDataSourcesPartialUpdateRequest struct {
 	ctx                              context.Context
 	ApiService                       CoreAPI
-	id                               int32
+	id                               int64
 	patchedWritableDataSourceRequest *PatchedWritableDataSourceRequest
 }
 
@@ -5950,7 +5950,7 @@ Patch a data source object.
 	@param id A unique integer value identifying this data source.
 	@return ApiCoreDataSourcesPartialUpdateRequest
 */
-func (a *CoreAPIService) CoreDataSourcesPartialUpdate(ctx context.Context, id int32) ApiCoreDataSourcesPartialUpdateRequest {
+func (a *CoreAPIService) CoreDataSourcesPartialUpdate(ctx context.Context, id int64) ApiCoreDataSourcesPartialUpdateRequest {
 	return ApiCoreDataSourcesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6054,7 +6054,7 @@ func (a *CoreAPIService) CoreDataSourcesPartialUpdateExecute(r ApiCoreDataSource
 type ApiCoreDataSourcesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CoreAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -6091,7 +6091,7 @@ Get a data source object.
 	@param id A unique integer value identifying this data source.
 	@return ApiCoreDataSourcesRetrieveRequest
 */
-func (a *CoreAPIService) CoreDataSourcesRetrieve(ctx context.Context, id int32) ApiCoreDataSourcesRetrieveRequest {
+func (a *CoreAPIService) CoreDataSourcesRetrieve(ctx context.Context, id int64) ApiCoreDataSourcesRetrieveRequest {
 	return ApiCoreDataSourcesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6202,7 +6202,7 @@ func (a *CoreAPIService) CoreDataSourcesRetrieveExecute(r ApiCoreDataSourcesRetr
 type ApiCoreDataSourcesSyncCreateRequest struct {
 	ctx        context.Context
 	ApiService CoreAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCoreDataSourcesSyncCreateRequest) Execute() (*DataSource, *http.Response, error) {
@@ -6219,7 +6219,7 @@ user does not have permission to view it.
 	@param id A unique integer value identifying this data source.
 	@return ApiCoreDataSourcesSyncCreateRequest
 */
-func (a *CoreAPIService) CoreDataSourcesSyncCreate(ctx context.Context, id int32) ApiCoreDataSourcesSyncCreateRequest {
+func (a *CoreAPIService) CoreDataSourcesSyncCreate(ctx context.Context, id int64) ApiCoreDataSourcesSyncCreateRequest {
 	return ApiCoreDataSourcesSyncCreateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6321,7 +6321,7 @@ func (a *CoreAPIService) CoreDataSourcesSyncCreateExecute(r ApiCoreDataSourcesSy
 type ApiCoreDataSourcesUpdateRequest struct {
 	ctx                       context.Context
 	ApiService                CoreAPI
-	id                        int32
+	id                        int64
 	writableDataSourceRequest *WritableDataSourceRequest
 }
 
@@ -6343,7 +6343,7 @@ Put a data source object.
 	@param id A unique integer value identifying this data source.
 	@return ApiCoreDataSourcesUpdateRequest
 */
-func (a *CoreAPIService) CoreDataSourcesUpdate(ctx context.Context, id int32) ApiCoreDataSourcesUpdateRequest {
+func (a *CoreAPIService) CoreDataSourcesUpdate(ctx context.Context, id int64) ApiCoreDataSourcesUpdateRequest {
 	return ApiCoreDataSourcesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6461,13 +6461,13 @@ type ApiCoreJobsListRequest struct {
 	executionTimeGte    *string
 	executionTimeLte    *string
 	fields              *string
-	id                  *[]int32
+	id                  *[]int64
 	idEmpty             *bool
-	idGt                *[]int32
-	idGte               *[]int32
-	idLt                *[]int32
-	idLte               *[]int32
-	idN                 *[]int32
+	idGt                *[]int64
+	idGte               *[]int64
+	idLt                *[]int64
+	idLte               *[]int64
+	idN                 *[]int64
 	interval            *[]int32
 	intervalEmpty       *bool
 	intervalGt          *[]int32
@@ -6503,13 +6503,13 @@ type ApiCoreJobsListRequest struct {
 	notificationsNiew   *[]string
 	notificationsNisw   *[]string
 	notificationsRegex  *[]string
-	objectId            *[]int32
+	objectId            *[]int64
 	objectIdEmpty       *bool
-	objectIdGt          *[]int32
-	objectIdGte         *[]int32
-	objectIdLt          *[]int32
-	objectIdLte         *[]int32
-	objectIdN           *[]int32
+	objectIdGt          *[]int64
+	objectIdGte         *[]int64
+	objectIdLt          *[]int64
+	objectIdLte         *[]int64
+	objectIdN           *[]int64
 	objectType          *[]string
 	objectTypeN         *[]string
 	objectTypeId        *[]*int32
@@ -6553,8 +6553,8 @@ type ApiCoreJobsListRequest struct {
 	statusRegex         *[]string
 	user                *[]string
 	userN               *[]string
-	userId              *[]*int32
-	userIdN             *[]*int32
+	userId              *[]*int64
+	userIdN             *[]*int64
 }
 
 // Return only brief fields for each object.
@@ -6617,7 +6617,7 @@ func (r ApiCoreJobsListRequest) Fields(fields string) ApiCoreJobsListRequest {
 	return r
 }
 
-func (r ApiCoreJobsListRequest) Id(id []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) Id(id []int64) ApiCoreJobsListRequest {
 	r.id = &id
 	return r
 }
@@ -6627,27 +6627,27 @@ func (r ApiCoreJobsListRequest) IdEmpty(idEmpty bool) ApiCoreJobsListRequest {
 	return r
 }
 
-func (r ApiCoreJobsListRequest) IdGt(idGt []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) IdGt(idGt []int64) ApiCoreJobsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCoreJobsListRequest) IdGte(idGte []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) IdGte(idGte []int64) ApiCoreJobsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCoreJobsListRequest) IdLt(idLt []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) IdLt(idLt []int64) ApiCoreJobsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCoreJobsListRequest) IdLte(idLte []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) IdLte(idLte []int64) ApiCoreJobsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCoreJobsListRequest) IdN(idN []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) IdN(idN []int64) ApiCoreJobsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -6828,7 +6828,7 @@ func (r ApiCoreJobsListRequest) NotificationsRegex(notificationsRegex []string) 
 	return r
 }
 
-func (r ApiCoreJobsListRequest) ObjectId(objectId []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) ObjectId(objectId []int64) ApiCoreJobsListRequest {
 	r.objectId = &objectId
 	return r
 }
@@ -6838,27 +6838,27 @@ func (r ApiCoreJobsListRequest) ObjectIdEmpty(objectIdEmpty bool) ApiCoreJobsLis
 	return r
 }
 
-func (r ApiCoreJobsListRequest) ObjectIdGt(objectIdGt []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) ObjectIdGt(objectIdGt []int64) ApiCoreJobsListRequest {
 	r.objectIdGt = &objectIdGt
 	return r
 }
 
-func (r ApiCoreJobsListRequest) ObjectIdGte(objectIdGte []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) ObjectIdGte(objectIdGte []int64) ApiCoreJobsListRequest {
 	r.objectIdGte = &objectIdGte
 	return r
 }
 
-func (r ApiCoreJobsListRequest) ObjectIdLt(objectIdLt []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) ObjectIdLt(objectIdLt []int64) ApiCoreJobsListRequest {
 	r.objectIdLt = &objectIdLt
 	return r
 }
 
-func (r ApiCoreJobsListRequest) ObjectIdLte(objectIdLte []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) ObjectIdLte(objectIdLte []int64) ApiCoreJobsListRequest {
 	r.objectIdLte = &objectIdLte
 	return r
 }
 
-func (r ApiCoreJobsListRequest) ObjectIdN(objectIdN []int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) ObjectIdN(objectIdN []int64) ApiCoreJobsListRequest {
 	r.objectIdN = &objectIdN
 	return r
 }
@@ -7086,13 +7086,13 @@ func (r ApiCoreJobsListRequest) UserN(userN []string) ApiCoreJobsListRequest {
 }
 
 // User (ID)
-func (r ApiCoreJobsListRequest) UserId(userId []*int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) UserId(userId []*int64) ApiCoreJobsListRequest {
 	r.userId = &userId
 	return r
 }
 
 // User (ID)
-func (r ApiCoreJobsListRequest) UserIdN(userIdN []*int32) ApiCoreJobsListRequest {
+func (r ApiCoreJobsListRequest) UserIdN(userIdN []*int64) ApiCoreJobsListRequest {
 	r.userIdN = &userIdN
 	return r
 }
@@ -8020,7 +8020,7 @@ func (a *CoreAPIService) CoreJobsListExecute(r ApiCoreJobsListRequest) (*Paginat
 type ApiCoreJobsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CoreAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -8057,7 +8057,7 @@ Retrieve a list of job results
 	@param id A unique integer value identifying this job.
 	@return ApiCoreJobsRetrieveRequest
 */
-func (a *CoreAPIService) CoreJobsRetrieve(ctx context.Context, id int32) ApiCoreJobsRetrieveRequest {
+func (a *CoreAPIService) CoreJobsRetrieve(ctx context.Context, id int64) ApiCoreJobsRetrieveRequest {
 	return ApiCoreJobsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -8182,25 +8182,25 @@ type ApiCoreObjectChangesListRequest struct {
 	actionNisw           *[]string
 	actionRegex          *[]string
 	brief                *bool
-	changedObjectId      *[]int32
+	changedObjectId      *[]int64
 	changedObjectIdEmpty *bool
-	changedObjectIdGt    *[]int32
-	changedObjectIdGte   *[]int32
-	changedObjectIdLt    *[]int32
-	changedObjectIdLte   *[]int32
-	changedObjectIdN     *[]int32
+	changedObjectIdGt    *[]int64
+	changedObjectIdGte   *[]int64
+	changedObjectIdLt    *[]int64
+	changedObjectIdLte   *[]int64
+	changedObjectIdN     *[]int64
 	changedObjectType    *[]string
 	changedObjectTypeN   *[]string
 	changedObjectTypeId  *[]int32
 	changedObjectTypeIdN *[]int32
 	fields               *string
-	id                   *[]int32
+	id                   *[]int64
 	idEmpty              *bool
-	idGt                 *[]int32
-	idGte                *[]int32
-	idLt                 *[]int32
-	idLte                *[]int32
-	idN                  *[]int32
+	idGt                 *[]int64
+	idGte                *[]int64
+	idLt                 *[]int64
+	idLte                *[]int64
+	idN                  *[]int64
 	limit                *int32
 	objectRepr           *[]string
 	objectReprEmpty      *bool
@@ -8219,13 +8219,13 @@ type ApiCoreObjectChangesListRequest struct {
 	omit                 *string
 	ordering             *string
 	q                    *string
-	relatedObjectId      *[]int32
+	relatedObjectId      *[]int64
 	relatedObjectIdEmpty *bool
-	relatedObjectIdGt    *[]int32
-	relatedObjectIdGte   *[]int32
-	relatedObjectIdLt    *[]int32
-	relatedObjectIdLte   *[]int32
-	relatedObjectIdN     *[]int32
+	relatedObjectIdGt    *[]int64
+	relatedObjectIdGte   *[]int64
+	relatedObjectIdLt    *[]int64
+	relatedObjectIdLte   *[]int64
+	relatedObjectIdN     *[]int64
 	relatedObjectType    *[]string
 	relatedObjectTypeN   *[]string
 	requestId            *string
@@ -8234,8 +8234,8 @@ type ApiCoreObjectChangesListRequest struct {
 	timeBefore           *time.Time
 	user                 *[]string
 	userN                *[]string
-	userId               *[]*int32
-	userIdN              *[]*int32
+	userId               *[]*int64
+	userIdN              *[]*int64
 	userName             *[]string
 	userNameEmpty        *bool
 	userNameIc           *[]string
@@ -8324,7 +8324,7 @@ func (r ApiCoreObjectChangesListRequest) Brief(brief bool) ApiCoreObjectChangesL
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) ChangedObjectId(changedObjectId []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) ChangedObjectId(changedObjectId []int64) ApiCoreObjectChangesListRequest {
 	r.changedObjectId = &changedObjectId
 	return r
 }
@@ -8334,27 +8334,27 @@ func (r ApiCoreObjectChangesListRequest) ChangedObjectIdEmpty(changedObjectIdEmp
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) ChangedObjectIdGt(changedObjectIdGt []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) ChangedObjectIdGt(changedObjectIdGt []int64) ApiCoreObjectChangesListRequest {
 	r.changedObjectIdGt = &changedObjectIdGt
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) ChangedObjectIdGte(changedObjectIdGte []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) ChangedObjectIdGte(changedObjectIdGte []int64) ApiCoreObjectChangesListRequest {
 	r.changedObjectIdGte = &changedObjectIdGte
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) ChangedObjectIdLt(changedObjectIdLt []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) ChangedObjectIdLt(changedObjectIdLt []int64) ApiCoreObjectChangesListRequest {
 	r.changedObjectIdLt = &changedObjectIdLt
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) ChangedObjectIdLte(changedObjectIdLte []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) ChangedObjectIdLte(changedObjectIdLte []int64) ApiCoreObjectChangesListRequest {
 	r.changedObjectIdLte = &changedObjectIdLte
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) ChangedObjectIdN(changedObjectIdN []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) ChangedObjectIdN(changedObjectIdN []int64) ApiCoreObjectChangesListRequest {
 	r.changedObjectIdN = &changedObjectIdN
 	return r
 }
@@ -8385,7 +8385,7 @@ func (r ApiCoreObjectChangesListRequest) Fields(fields string) ApiCoreObjectChan
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) Id(id []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) Id(id []int64) ApiCoreObjectChangesListRequest {
 	r.id = &id
 	return r
 }
@@ -8395,27 +8395,27 @@ func (r ApiCoreObjectChangesListRequest) IdEmpty(idEmpty bool) ApiCoreObjectChan
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) IdGt(idGt []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) IdGt(idGt []int64) ApiCoreObjectChangesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) IdGte(idGte []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) IdGte(idGte []int64) ApiCoreObjectChangesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) IdLt(idLt []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) IdLt(idLt []int64) ApiCoreObjectChangesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) IdLte(idLte []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) IdLte(idLte []int64) ApiCoreObjectChangesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) IdN(idN []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) IdN(idN []int64) ApiCoreObjectChangesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -8515,7 +8515,7 @@ func (r ApiCoreObjectChangesListRequest) Q(q string) ApiCoreObjectChangesListReq
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) RelatedObjectId(relatedObjectId []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) RelatedObjectId(relatedObjectId []int64) ApiCoreObjectChangesListRequest {
 	r.relatedObjectId = &relatedObjectId
 	return r
 }
@@ -8525,27 +8525,27 @@ func (r ApiCoreObjectChangesListRequest) RelatedObjectIdEmpty(relatedObjectIdEmp
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) RelatedObjectIdGt(relatedObjectIdGt []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) RelatedObjectIdGt(relatedObjectIdGt []int64) ApiCoreObjectChangesListRequest {
 	r.relatedObjectIdGt = &relatedObjectIdGt
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) RelatedObjectIdGte(relatedObjectIdGte []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) RelatedObjectIdGte(relatedObjectIdGte []int64) ApiCoreObjectChangesListRequest {
 	r.relatedObjectIdGte = &relatedObjectIdGte
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) RelatedObjectIdLt(relatedObjectIdLt []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) RelatedObjectIdLt(relatedObjectIdLt []int64) ApiCoreObjectChangesListRequest {
 	r.relatedObjectIdLt = &relatedObjectIdLt
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) RelatedObjectIdLte(relatedObjectIdLte []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) RelatedObjectIdLte(relatedObjectIdLte []int64) ApiCoreObjectChangesListRequest {
 	r.relatedObjectIdLte = &relatedObjectIdLte
 	return r
 }
 
-func (r ApiCoreObjectChangesListRequest) RelatedObjectIdN(relatedObjectIdN []int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) RelatedObjectIdN(relatedObjectIdN []int64) ApiCoreObjectChangesListRequest {
 	r.relatedObjectIdN = &relatedObjectIdN
 	return r
 }
@@ -8594,13 +8594,13 @@ func (r ApiCoreObjectChangesListRequest) UserN(userN []string) ApiCoreObjectChan
 }
 
 // User (ID)
-func (r ApiCoreObjectChangesListRequest) UserId(userId []*int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) UserId(userId []*int64) ApiCoreObjectChangesListRequest {
 	r.userId = &userId
 	return r
 }
 
 // User (ID)
-func (r ApiCoreObjectChangesListRequest) UserIdN(userIdN []*int32) ApiCoreObjectChangesListRequest {
+func (r ApiCoreObjectChangesListRequest) UserIdN(userIdN []*int64) ApiCoreObjectChangesListRequest {
 	r.userIdN = &userIdN
 	return r
 }
@@ -9521,7 +9521,7 @@ func (a *CoreAPIService) CoreObjectChangesListExecute(r ApiCoreObjectChangesList
 type ApiCoreObjectChangesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CoreAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -9558,7 +9558,7 @@ Retrieve a list of recent changes.
 	@param id A unique integer value identifying this object change.
 	@return ApiCoreObjectChangesRetrieveRequest
 */
-func (a *CoreAPIService) CoreObjectChangesRetrieve(ctx context.Context, id int32) ApiCoreObjectChangesRetrieveRequest {
+func (a *CoreAPIService) CoreObjectChangesRetrieve(ctx context.Context, id int64) ApiCoreObjectChangesRetrieveRequest {
 	return ApiCoreObjectChangesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,

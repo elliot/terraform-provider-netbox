@@ -23,7 +23,7 @@ var _ MappedNullable = &DataFile{}
 
 // DataFile Adds support for custom fields and tags.
 type DataFile struct {
-	Id         int32            `json:"id"`
+	Id         int64            `json:"id"`
 	Url        *string          `json:"url,omitempty"`
 	DisplayUrl *string          `json:"display_url,omitempty"`
 	Display    *string          `json:"display,omitempty"`
@@ -43,7 +43,7 @@ type _DataFile DataFile
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDataFile(id int32) *DataFile {
+func NewDataFile(id int64) *DataFile {
 	this := DataFile{}
 	this.Id = id
 	return &this
@@ -58,9 +58,9 @@ func NewDataFileWithDefaults() *DataFile {
 }
 
 // GetId returns the Id field value
-func (o *DataFile) GetId() int32 {
+func (o *DataFile) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -69,7 +69,7 @@ func (o *DataFile) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *DataFile) GetIdOk() (*int32, bool) {
+func (o *DataFile) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -77,7 +77,7 @@ func (o *DataFile) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *DataFile) SetId(v int32) {
+func (o *DataFile) SetId(v int64) {
 	o.Id = v
 }
 

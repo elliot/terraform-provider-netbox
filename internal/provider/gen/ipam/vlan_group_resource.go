@@ -206,7 +206,7 @@ func (r *VlanGroupResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -237,7 +237,7 @@ func (r *VlanGroupResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -267,7 +267,7 @@ func (r *VlanGroupResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -292,19 +292,19 @@ func vlanGroupToCreate(ctx context.Context, plan *VlanGroupModel, cf *customfiel
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
 	if conv.Known(plan.ScopeId) {
-		body.SetScopeId(conv.Int32(plan.ScopeId))
+		body.SetScopeId(plan.ScopeId.ValueInt64())
 	}
 	if conv.Known(plan.VidRanges) {
 		body.SetVidRanges(conv.IntRangesToAPI(ctx, plan.VidRanges, diags))
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -341,7 +341,7 @@ func vlanGroupToPatch(ctx context.Context, plan, state *VlanGroupModel, cf *cust
 	}
 	if !plan.ScopeId.Equal(state.ScopeId) {
 		if conv.Known(plan.ScopeId) {
-			body.SetScopeId(conv.Int32(plan.ScopeId))
+			body.SetScopeId(plan.ScopeId.ValueInt64())
 		}
 	}
 	if !plan.VidRanges.Equal(state.VidRanges) {
@@ -353,7 +353,7 @@ func vlanGroupToPatch(ctx context.Context, plan, state *VlanGroupModel, cf *cust
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -365,7 +365,7 @@ func vlanGroupToPatch(ctx context.Context, plan, state *VlanGroupModel, cf *cust
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -397,7 +397,7 @@ func vlanGroupFromAPI(ctx context.Context, obj *netbox.VLANGroup, prior *VlanGro
 	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.Name }), false)
 	out.Slug = conv.StringKeep(conv.String(obj.GetSlugOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.Slug }), false)
 	out.ScopeType = conv.StringKeep(conv.String(obj.GetScopeTypeOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.ScopeType }), false)
-	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
+	out.ScopeId = conv.Int64From64(obj.GetScopeIdOk())
 	out.VidRanges = conv.IntRangesFromAPI(obj.GetVidRanges())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *VlanGroupModel) types.String { return m.Description }), false)

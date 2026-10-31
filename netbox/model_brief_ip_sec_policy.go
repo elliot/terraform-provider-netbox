@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefIPSecPolicy{}
 
 // BriefIPSecPolicy Base serializer class for models inheriting from PrimaryModel.
 type BriefIPSecPolicy struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	Display              *string `json:"display,omitempty"`
 	Name                 *string `json:"name,omitempty"`
@@ -36,7 +36,7 @@ type _BriefIPSecPolicy BriefIPSecPolicy
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefIPSecPolicy(id int32) *BriefIPSecPolicy {
+func NewBriefIPSecPolicy(id int64) *BriefIPSecPolicy {
 	this := BriefIPSecPolicy{}
 	this.Id = id
 	return &this
@@ -51,9 +51,9 @@ func NewBriefIPSecPolicyWithDefaults() *BriefIPSecPolicy {
 }
 
 // GetId returns the Id field value
-func (o *BriefIPSecPolicy) GetId() int32 {
+func (o *BriefIPSecPolicy) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -62,7 +62,7 @@ func (o *BriefIPSecPolicy) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefIPSecPolicy) GetIdOk() (*int32, bool) {
+func (o *BriefIPSecPolicy) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,7 +70,7 @@ func (o *BriefIPSecPolicy) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefIPSecPolicy) SetId(v int32) {
+func (o *BriefIPSecPolicy) SetId(v int64) {
 	o.Id = v
 }
 

@@ -442,6 +442,14 @@ func scalarExpr(a model.Attr, v string) string {
 	return v
 }
 
+// nullableIntExpr wraps a required-but-nullable integer for the client.
+func nullableIntExpr(a model.Attr, v string) string {
+	if a.Int64 {
+		return "conv.NullableInt64(" + v + ")"
+	}
+	return "conv.NullableInt32(" + v + ")"
+}
+
 // collectionExpr returns the expression converting a collection field.
 func collectionExpr(a model.Attr, v string) string {
 	switch a.Kind {
@@ -504,7 +512,7 @@ func nestedListBuild(r *model.Resource, a model.Attr, src, dst string) string {
 		}
 		if isScalarKind(na.Kind) {
 			if na.Nullable {
-				args = append(args, "conv.NullableInt32(it."+field(*na)+")")
+				args = append(args, nullableIntExpr(*na, "it."+field(*na)))
 			} else {
 				args = append(args, scalarExpr(*na, "it."+field(*na)))
 			}
@@ -585,7 +593,7 @@ func ctorArgs(r *model.Resource) (pre string, args []string, err error) {
 			b.WriteString(nestedListBuild(r, *a, v, dst))
 			args = append(args, dst)
 		case isScalarKind(a.Kind) && a.Nullable:
-			args = append(args, "conv.NullableInt32("+v+")")
+			args = append(args, nullableIntExpr(*a, v))
 		case isScalarKind(a.Kind):
 			args = append(args, scalarExpr(*a, v))
 		default:

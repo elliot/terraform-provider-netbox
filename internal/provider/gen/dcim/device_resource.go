@@ -358,7 +358,7 @@ func (r *DeviceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -389,7 +389,7 @@ func (r *DeviceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -430,7 +430,7 @@ func (r *DeviceResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -450,15 +450,15 @@ func (r *DeviceResource) ImportState(ctx context.Context, req resource.ImportSta
 // deviceToCreate builds the WritableDeviceRequest request body from the plan.
 func deviceToCreate(ctx context.Context, plan *DeviceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableDeviceRequest {
 	const objectType = "dcim.device"
-	body := netbox.NewWritableDeviceRequest(conv.Int32(plan.DeviceTypeId), conv.Int32(plan.RoleId), conv.Int32(plan.SiteId))
+	body := netbox.NewWritableDeviceRequest(plan.DeviceTypeId.ValueInt64(), plan.RoleId.ValueInt64(), plan.SiteId.ValueInt64())
 	if conv.Known(plan.Name) {
 		body.SetName(plan.Name.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.PlatformId) {
-		body.SetPlatform(conv.Int32(plan.PlatformId))
+		body.SetPlatform(plan.PlatformId.ValueInt64())
 	}
 	if !plan.Serial.IsUnknown() {
 		body.SetSerial(plan.Serial.ValueString())
@@ -467,10 +467,10 @@ func deviceToCreate(ctx context.Context, plan *DeviceModel, cf *customfields.Cac
 		body.SetAssetTag(plan.AssetTag.ValueString())
 	}
 	if conv.Known(plan.LocationId) {
-		body.SetLocation(conv.Int32(plan.LocationId))
+		body.SetLocation(plan.LocationId.ValueInt64())
 	}
 	if conv.Known(plan.RackId) {
-		body.SetRack(conv.Int32(plan.RackId))
+		body.SetRack(plan.RackId.ValueInt64())
 	}
 	if conv.Known(plan.Position) {
 		body.SetPosition(plan.Position.ValueFloat64())
@@ -494,19 +494,19 @@ func deviceToCreate(ctx context.Context, plan *DeviceModel, cf *customfields.Cac
 		body.SetCoolingMethod(plan.CoolingMethod.ValueString())
 	}
 	if conv.Known(plan.PrimaryIp4Id) {
-		body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+		body.SetPrimaryIp4(plan.PrimaryIp4Id.ValueInt64())
 	}
 	if conv.Known(plan.PrimaryIp6Id) {
-		body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+		body.SetPrimaryIp6(plan.PrimaryIp6Id.ValueInt64())
 	}
 	if conv.Known(plan.OobIpId) {
-		body.SetOobIp(conv.Int32(plan.OobIpId))
+		body.SetOobIp(plan.OobIpId.ValueInt64())
 	}
 	if conv.Known(plan.ClusterId) {
-		body.SetCluster(conv.Int32(plan.ClusterId))
+		body.SetCluster(plan.ClusterId.ValueInt64())
 	}
 	if conv.Known(plan.VirtualChassisId) {
-		body.SetVirtualChassis(conv.Int32(plan.VirtualChassisId))
+		body.SetVirtualChassis(plan.VirtualChassisId.ValueInt64())
 	}
 	if conv.Known(plan.VcPosition) {
 		body.SetVcPosition(conv.Int32(plan.VcPosition))
@@ -518,13 +518,13 @@ func deviceToCreate(ctx context.Context, plan *DeviceModel, cf *customfields.Cac
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
 	}
 	if conv.Known(plan.ConfigTemplateId) {
-		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+		body.SetConfigTemplate(plan.ConfigTemplateId.ValueInt64())
 	}
 	if conv.Known(plan.LocalContextData) {
 		body.SetLocalContextData(conv.JSONToAPI(plan.LocalContextData, diags))
@@ -551,26 +551,26 @@ func deviceToPatch(ctx context.Context, plan, state *DeviceModel, cf *customfiel
 	}
 	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
 		if conv.Known(plan.DeviceTypeId) {
-			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+			body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 		}
 	}
 	if !plan.RoleId.Equal(state.RoleId) {
 		if conv.Known(plan.RoleId) {
-			body.SetRole(conv.Int32(plan.RoleId))
+			body.SetRole(plan.RoleId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.PlatformId.Equal(state.PlatformId) {
 		if plan.PlatformId.IsNull() {
 			body.SetPlatformNil()
 		} else if !plan.PlatformId.IsUnknown() {
-			body.SetPlatform(conv.Int32(plan.PlatformId))
+			body.SetPlatform(plan.PlatformId.ValueInt64())
 		}
 	}
 	if !plan.Serial.Equal(state.Serial) {
@@ -587,21 +587,21 @@ func deviceToPatch(ctx context.Context, plan, state *DeviceModel, cf *customfiel
 	}
 	if !plan.SiteId.Equal(state.SiteId) {
 		if conv.Known(plan.SiteId) {
-			body.SetSite(conv.Int32(plan.SiteId))
+			body.SetSite(plan.SiteId.ValueInt64())
 		}
 	}
 	if !plan.LocationId.Equal(state.LocationId) {
 		if plan.LocationId.IsNull() {
 			body.SetLocationNil()
 		} else if !plan.LocationId.IsUnknown() {
-			body.SetLocation(conv.Int32(plan.LocationId))
+			body.SetLocation(plan.LocationId.ValueInt64())
 		}
 	}
 	if !plan.RackId.Equal(state.RackId) {
 		if plan.RackId.IsNull() {
 			body.SetRackNil()
 		} else if !plan.RackId.IsUnknown() {
-			body.SetRack(conv.Int32(plan.RackId))
+			body.SetRack(plan.RackId.ValueInt64())
 		}
 	}
 	if !plan.Position.Equal(state.Position) {
@@ -641,33 +641,33 @@ func deviceToPatch(ctx context.Context, plan, state *DeviceModel, cf *customfiel
 	}
 	if !plan.PrimaryIp4Id.Equal(state.PrimaryIp4Id) {
 		if conv.Known(plan.PrimaryIp4Id) {
-			body.SetPrimaryIp4(conv.Int32(plan.PrimaryIp4Id))
+			body.SetPrimaryIp4(plan.PrimaryIp4Id.ValueInt64())
 		}
 	}
 	if !plan.PrimaryIp6Id.Equal(state.PrimaryIp6Id) {
 		if conv.Known(plan.PrimaryIp6Id) {
-			body.SetPrimaryIp6(conv.Int32(plan.PrimaryIp6Id))
+			body.SetPrimaryIp6(plan.PrimaryIp6Id.ValueInt64())
 		}
 	}
 	if !plan.OobIpId.Equal(state.OobIpId) {
 		if plan.OobIpId.IsNull() {
 			body.SetOobIpNil()
 		} else if !plan.OobIpId.IsUnknown() {
-			body.SetOobIp(conv.Int32(plan.OobIpId))
+			body.SetOobIp(plan.OobIpId.ValueInt64())
 		}
 	}
 	if !plan.ClusterId.Equal(state.ClusterId) {
 		if plan.ClusterId.IsNull() {
 			body.SetClusterNil()
 		} else if !plan.ClusterId.IsUnknown() {
-			body.SetCluster(conv.Int32(plan.ClusterId))
+			body.SetCluster(plan.ClusterId.ValueInt64())
 		}
 	}
 	if !plan.VirtualChassisId.Equal(state.VirtualChassisId) {
 		if plan.VirtualChassisId.IsNull() {
 			body.SetVirtualChassisNil()
 		} else if !plan.VirtualChassisId.IsUnknown() {
-			body.SetVirtualChassis(conv.Int32(plan.VirtualChassisId))
+			body.SetVirtualChassis(plan.VirtualChassisId.ValueInt64())
 		}
 	}
 	if !plan.VcPosition.Equal(state.VcPosition) {
@@ -689,7 +689,7 @@ func deviceToPatch(ctx context.Context, plan, state *DeviceModel, cf *customfiel
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -701,7 +701,7 @@ func deviceToPatch(ctx context.Context, plan, state *DeviceModel, cf *customfiel
 		if plan.ConfigTemplateId.IsNull() {
 			body.SetConfigTemplateNil()
 		} else if !plan.ConfigTemplateId.IsUnknown() {
-			body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+			body.SetConfigTemplate(plan.ConfigTemplateId.ValueInt64())
 		}
 	}
 	if !plan.LocalContextData.Equal(state.LocalContextData) {

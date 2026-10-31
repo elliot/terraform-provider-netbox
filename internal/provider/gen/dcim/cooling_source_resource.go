@@ -231,7 +231,7 @@ func (r *CoolingSourceResource) Read(ctx context.Context, req resource.ReadReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -262,7 +262,7 @@ func (r *CoolingSourceResource) Update(ctx context.Context, req resource.UpdateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -292,7 +292,7 @@ func (r *CoolingSourceResource) Delete(ctx context.Context, req resource.DeleteR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -312,9 +312,9 @@ func (r *CoolingSourceResource) ImportState(ctx context.Context, req resource.Im
 // coolingSourceToCreate builds the WritableCoolingSourceRequest request body from the plan.
 func coolingSourceToCreate(ctx context.Context, plan *CoolingSourceModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCoolingSourceRequest {
 	const objectType = "dcim.coolingsource"
-	body := netbox.NewWritableCoolingSourceRequest(conv.Int32(plan.SiteId), plan.Name.ValueString(), plan.Type.ValueString())
+	body := netbox.NewWritableCoolingSourceRequest(plan.SiteId.ValueInt64(), plan.Name.ValueString(), plan.Type.ValueString())
 	if conv.Known(plan.LocationId) {
-		body.SetLocation(conv.Int32(plan.LocationId))
+		body.SetLocation(plan.LocationId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
@@ -329,7 +329,7 @@ func coolingSourceToCreate(ctx context.Context, plan *CoolingSourceModel, cf *cu
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -349,14 +349,14 @@ func coolingSourceToPatch(ctx context.Context, plan, state *CoolingSourceModel, 
 	body := netbox.NewPatchedWritableCoolingSourceRequest()
 	if !plan.SiteId.Equal(state.SiteId) {
 		if conv.Known(plan.SiteId) {
-			body.SetSite(conv.Int32(plan.SiteId))
+			body.SetSite(plan.SiteId.ValueInt64())
 		}
 	}
 	if !plan.LocationId.Equal(state.LocationId) {
 		if plan.LocationId.IsNull() {
 			body.SetLocationNil()
 		} else if !plan.LocationId.IsUnknown() {
-			body.SetLocation(conv.Int32(plan.LocationId))
+			body.SetLocation(plan.LocationId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -393,7 +393,7 @@ func coolingSourceToPatch(ctx context.Context, plan, state *CoolingSourceModel, 
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

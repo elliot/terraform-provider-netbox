@@ -22,8 +22,8 @@ var _ MappedNullable = &BulkRackTypeRequest{}
 
 // BulkRackTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkRackTypeRequest struct {
-	Id           int32   `json:"id"`
-	Manufacturer int32   `json:"manufacturer"`
+	Id           int64   `json:"id"`
+	Manufacturer int64   `json:"manufacturer"`
 	Model        string  `json:"model"`
 	Slug         string  `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description  *string `json:"description,omitempty"`
@@ -56,7 +56,7 @@ type BulkRackTypeRequest struct {
 	CoolingCapability NullableString `json:"cooling_capability,omitempty"`
 	// Cooling capacity (kW)
 	CoolingCapacity      NullableFloat64        `json:"cooling_capacity,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -69,7 +69,7 @@ type _BulkRackTypeRequest BulkRackTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkRackTypeRequest(id int32, manufacturer int32, model string, slug string, formFactor string) *BulkRackTypeRequest {
+func NewBulkRackTypeRequest(id int64, manufacturer int64, model string, slug string, formFactor string) *BulkRackTypeRequest {
 	this := BulkRackTypeRequest{}
 	this.Id = id
 	this.Manufacturer = manufacturer
@@ -88,9 +88,9 @@ func NewBulkRackTypeRequestWithDefaults() *BulkRackTypeRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkRackTypeRequest) GetId() int32 {
+func (o *BulkRackTypeRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -99,7 +99,7 @@ func (o *BulkRackTypeRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkRackTypeRequest) GetIdOk() (*int32, bool) {
+func (o *BulkRackTypeRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -107,14 +107,14 @@ func (o *BulkRackTypeRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkRackTypeRequest) SetId(v int32) {
+func (o *BulkRackTypeRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetManufacturer returns the Manufacturer field value
-func (o *BulkRackTypeRequest) GetManufacturer() int32 {
+func (o *BulkRackTypeRequest) GetManufacturer() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -123,7 +123,7 @@ func (o *BulkRackTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value
 // and a boolean to check if the value has been set.
-func (o *BulkRackTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *BulkRackTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -131,7 +131,7 @@ func (o *BulkRackTypeRequest) GetManufacturerOk() (*int32, bool) {
 }
 
 // SetManufacturer sets field value
-func (o *BulkRackTypeRequest) SetManufacturer(v int32) {
+func (o *BulkRackTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = v
 }
 
@@ -798,9 +798,9 @@ func (o *BulkRackTypeRequest) UnsetCoolingCapacity() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkRackTypeRequest) GetOwner() int32 {
+func (o *BulkRackTypeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -809,7 +809,7 @@ func (o *BulkRackTypeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkRackTypeRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkRackTypeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -825,8 +825,8 @@ func (o *BulkRackTypeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkRackTypeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkRackTypeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

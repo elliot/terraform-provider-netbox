@@ -232,7 +232,7 @@ func (r *CoolingFeedResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -263,7 +263,7 @@ func (r *CoolingFeedResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -293,7 +293,7 @@ func (r *CoolingFeedResource) Delete(ctx context.Context, req resource.DeleteReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -313,9 +313,9 @@ func (r *CoolingFeedResource) ImportState(ctx context.Context, req resource.Impo
 // coolingFeedToCreate builds the WritableCoolingFeedRequest request body from the plan.
 func coolingFeedToCreate(ctx context.Context, plan *CoolingFeedModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCoolingFeedRequest {
 	const objectType = "dcim.coolingfeed"
-	body := netbox.NewWritableCoolingFeedRequest(conv.Int32(plan.CoolingSourceId), plan.Name.ValueString())
+	body := netbox.NewWritableCoolingFeedRequest(plan.CoolingSourceId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.RackId) {
-		body.SetRack(conv.Int32(plan.RackId))
+		body.SetRack(plan.RackId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
@@ -333,10 +333,10 @@ func coolingFeedToCreate(ctx context.Context, plan *CoolingFeedModel, cf *custom
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -356,14 +356,14 @@ func coolingFeedToPatch(ctx context.Context, plan, state *CoolingFeedModel, cf *
 	body := netbox.NewPatchedWritableCoolingFeedRequest()
 	if !plan.CoolingSourceId.Equal(state.CoolingSourceId) {
 		if conv.Known(plan.CoolingSourceId) {
-			body.SetCoolingSource(conv.Int32(plan.CoolingSourceId))
+			body.SetCoolingSource(plan.CoolingSourceId.ValueInt64())
 		}
 	}
 	if !plan.RackId.Equal(state.RackId) {
 		if plan.RackId.IsNull() {
 			body.SetRackNil()
 		} else if !plan.RackId.IsUnknown() {
-			body.SetRack(conv.Int32(plan.RackId))
+			body.SetRack(plan.RackId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -400,14 +400,14 @@ func coolingFeedToPatch(ctx context.Context, plan, state *CoolingFeedModel, cf *
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

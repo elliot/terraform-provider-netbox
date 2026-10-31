@@ -33,8 +33,8 @@ type UserRequest struct {
 	IsActive             *bool        `json:"is_active,omitempty"`
 	DateJoined           *time.Time   `json:"date_joined,omitempty"`
 	LastLogin            NullableTime `json:"last_login,omitempty"`
-	Groups               []int32      `json:"groups,omitempty"`
-	Permissions          []int32      `json:"permissions,omitempty"`
+	Groups               []int64      `json:"groups,omitempty"`
+	Permissions          []int64      `json:"permissions,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -311,9 +311,9 @@ func (o *UserRequest) UnsetLastLogin() {
 }
 
 // GetGroups returns the Groups field value if set, zero value otherwise.
-func (o *UserRequest) GetGroups() []int32 {
+func (o *UserRequest) GetGroups() []int64 {
 	if o == nil || IsNil(o.Groups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Groups
@@ -321,7 +321,7 @@ func (o *UserRequest) GetGroups() []int32 {
 
 // GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserRequest) GetGroupsOk() ([]int32, bool) {
+func (o *UserRequest) GetGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Groups) {
 		return nil, false
 	}
@@ -337,15 +337,15 @@ func (o *UserRequest) HasGroups() bool {
 	return false
 }
 
-// SetGroups gets a reference to the given []int32 and assigns it to the Groups field.
-func (o *UserRequest) SetGroups(v []int32) {
+// SetGroups gets a reference to the given []int64 and assigns it to the Groups field.
+func (o *UserRequest) SetGroups(v []int64) {
 	o.Groups = v
 }
 
 // GetPermissions returns the Permissions field value if set, zero value otherwise.
-func (o *UserRequest) GetPermissions() []int32 {
+func (o *UserRequest) GetPermissions() []int64 {
 	if o == nil || IsNil(o.Permissions) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Permissions
@@ -353,7 +353,7 @@ func (o *UserRequest) GetPermissions() []int32 {
 
 // GetPermissionsOk returns a tuple with the Permissions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserRequest) GetPermissionsOk() ([]int32, bool) {
+func (o *UserRequest) GetPermissionsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Permissions) {
 		return nil, false
 	}
@@ -369,8 +369,8 @@ func (o *UserRequest) HasPermissions() bool {
 	return false
 }
 
-// SetPermissions gets a reference to the given []int32 and assigns it to the Permissions field.
-func (o *UserRequest) SetPermissions(v []int32) {
+// SetPermissions gets a reference to the given []int64 and assigns it to the Permissions field.
+func (o *UserRequest) SetPermissions(v []int64) {
 	o.Permissions = v
 }
 

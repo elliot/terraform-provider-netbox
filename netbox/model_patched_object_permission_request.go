@@ -29,8 +29,8 @@ type PatchedObjectPermissionRequest struct {
 	Actions []string `json:"actions,omitempty"`
 	// Queryset filter matching the applicable objects of the selected type(s)
 	Constraints          interface{} `json:"constraints,omitempty"`
-	Groups               []int32     `json:"groups,omitempty"`
-	Users                []int32     `json:"users,omitempty"`
+	Groups               []int64     `json:"groups,omitempty"`
+	Users                []int64     `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -247,9 +247,9 @@ func (o *PatchedObjectPermissionRequest) SetConstraints(v interface{}) {
 }
 
 // GetGroups returns the Groups field value if set, zero value otherwise.
-func (o *PatchedObjectPermissionRequest) GetGroups() []int32 {
+func (o *PatchedObjectPermissionRequest) GetGroups() []int64 {
 	if o == nil || IsNil(o.Groups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Groups
@@ -257,7 +257,7 @@ func (o *PatchedObjectPermissionRequest) GetGroups() []int32 {
 
 // GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedObjectPermissionRequest) GetGroupsOk() ([]int32, bool) {
+func (o *PatchedObjectPermissionRequest) GetGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Groups) {
 		return nil, false
 	}
@@ -273,15 +273,15 @@ func (o *PatchedObjectPermissionRequest) HasGroups() bool {
 	return false
 }
 
-// SetGroups gets a reference to the given []int32 and assigns it to the Groups field.
-func (o *PatchedObjectPermissionRequest) SetGroups(v []int32) {
+// SetGroups gets a reference to the given []int64 and assigns it to the Groups field.
+func (o *PatchedObjectPermissionRequest) SetGroups(v []int64) {
 	o.Groups = v
 }
 
 // GetUsers returns the Users field value if set, zero value otherwise.
-func (o *PatchedObjectPermissionRequest) GetUsers() []int32 {
+func (o *PatchedObjectPermissionRequest) GetUsers() []int64 {
 	if o == nil || IsNil(o.Users) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Users
@@ -289,7 +289,7 @@ func (o *PatchedObjectPermissionRequest) GetUsers() []int32 {
 
 // GetUsersOk returns a tuple with the Users field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedObjectPermissionRequest) GetUsersOk() ([]int32, bool) {
+func (o *PatchedObjectPermissionRequest) GetUsersOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Users) {
 		return nil, false
 	}
@@ -305,8 +305,8 @@ func (o *PatchedObjectPermissionRequest) HasUsers() bool {
 	return false
 }
 
-// SetUsers gets a reference to the given []int32 and assigns it to the Users field.
-func (o *PatchedObjectPermissionRequest) SetUsers(v []int32) {
+// SetUsers gets a reference to the given []int64 and assigns it to the Users field.
+func (o *PatchedObjectPermissionRequest) SetUsers(v []int64) {
 	o.Users = v
 }
 

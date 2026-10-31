@@ -197,7 +197,7 @@ func (r *InventoryItemTemplateResource) Read(ctx context.Context, req resource.R
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -228,7 +228,7 @@ func (r *InventoryItemTemplateResource) Update(ctx context.Context, req resource
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -258,7 +258,7 @@ func (r *InventoryItemTemplateResource) Delete(ctx context.Context, req resource
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -277,18 +277,18 @@ func (r *InventoryItemTemplateResource) ImportState(ctx context.Context, req res
 
 // inventoryItemTemplateToCreate builds the InventoryItemTemplateRequest request body from the plan.
 func inventoryItemTemplateToCreate(ctx context.Context, plan *InventoryItemTemplateModel, diags *diag.Diagnostics) *netbox.InventoryItemTemplateRequest {
-	body := netbox.NewInventoryItemTemplateRequest(conv.Int32(plan.DeviceTypeId), plan.Name.ValueString())
+	body := netbox.NewInventoryItemTemplateRequest(plan.DeviceTypeId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.ParentId) {
-		body.SetParent(conv.Int32(plan.ParentId))
+		body.SetParent(plan.ParentId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
 	if conv.Known(plan.RoleId) {
-		body.SetRole(conv.Int32(plan.RoleId))
+		body.SetRole(plan.RoleId.ValueInt64())
 	}
 	if conv.Known(plan.ManufacturerId) {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 	}
 	if !plan.PartId.IsUnknown() {
 		body.SetPartId(plan.PartId.ValueString())
@@ -310,14 +310,14 @@ func inventoryItemTemplateToPatch(ctx context.Context, plan, state *InventoryIte
 	body := netbox.NewPatchedInventoryItemTemplateRequest()
 	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
 		if conv.Known(plan.DeviceTypeId) {
-			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+			body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 		}
 	}
 	if !plan.ParentId.Equal(state.ParentId) {
 		if plan.ParentId.IsNull() {
 			body.SetParentNil()
 		} else if !plan.ParentId.IsUnknown() {
-			body.SetParent(conv.Int32(plan.ParentId))
+			body.SetParent(plan.ParentId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -334,14 +334,14 @@ func inventoryItemTemplateToPatch(ctx context.Context, plan, state *InventoryIte
 		if plan.RoleId.IsNull() {
 			body.SetRoleNil()
 		} else if !plan.RoleId.IsUnknown() {
-			body.SetRole(conv.Int32(plan.RoleId))
+			body.SetRole(plan.RoleId.ValueInt64())
 		}
 	}
 	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
 		if plan.ManufacturerId.IsNull() {
 			body.SetManufacturerNil()
 		} else if !plan.ManufacturerId.IsUnknown() {
-			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+			body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 		}
 	}
 	if !plan.PartId.Equal(state.PartId) {
@@ -374,7 +374,7 @@ func inventoryItemTemplateFromAPI(ctx context.Context, obj *netbox.InventoryItem
 	_ = ctx
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.DeviceTypeId = conv.BriefID(obj.GetDeviceTypeOk())
-	out.ParentId = conv.Int64From32(obj.GetParentOk())
+	out.ParentId = conv.Int64From64(obj.GetParentOk())
 	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *InventoryItemTemplateModel) types.String { return m.Name }), false)
 	out.Label = conv.StringKeep(conv.StringOrEmpty(obj.GetLabelOk()), conv.PriorString(prior, func(m *InventoryItemTemplateModel) types.String { return m.Label }), false)
 	out.RoleId = conv.BriefID(obj.GetRoleOk())

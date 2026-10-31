@@ -21,12 +21,12 @@ var _ MappedNullable = &PatchedWritableTunnelTerminationRequest{}
 
 // PatchedWritableTunnelTerminationRequest Adds support for custom fields and tags.
 type PatchedWritableTunnelTerminationRequest struct {
-	Tunnel *int32 `json:"tunnel,omitempty"`
+	Tunnel *int64 `json:"tunnel,omitempty"`
 	// * `peer` - Peer * `hub` - Hub * `spoke` - Spoke
 	Role                 *string                `json:"role,omitempty"`
 	TerminationType      *string                `json:"termination_type,omitempty"`
 	TerminationId        NullableInt64          `json:"termination_id,omitempty"`
-	OutsideIp            NullableInt32          `json:"outside_ip,omitempty"`
+	OutsideIp            NullableInt64          `json:"outside_ip,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -52,9 +52,9 @@ func NewPatchedWritableTunnelTerminationRequestWithDefaults() *PatchedWritableTu
 }
 
 // GetTunnel returns the Tunnel field value if set, zero value otherwise.
-func (o *PatchedWritableTunnelTerminationRequest) GetTunnel() int32 {
+func (o *PatchedWritableTunnelTerminationRequest) GetTunnel() int64 {
 	if o == nil || IsNil(o.Tunnel) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tunnel
@@ -62,7 +62,7 @@ func (o *PatchedWritableTunnelTerminationRequest) GetTunnel() int32 {
 
 // GetTunnelOk returns a tuple with the Tunnel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableTunnelTerminationRequest) GetTunnelOk() (*int32, bool) {
+func (o *PatchedWritableTunnelTerminationRequest) GetTunnelOk() (*int64, bool) {
 	if o == nil || IsNil(o.Tunnel) {
 		return nil, false
 	}
@@ -78,8 +78,8 @@ func (o *PatchedWritableTunnelTerminationRequest) HasTunnel() bool {
 	return false
 }
 
-// SetTunnel gets a reference to the given int32 and assigns it to the Tunnel field.
-func (o *PatchedWritableTunnelTerminationRequest) SetTunnel(v int32) {
+// SetTunnel gets a reference to the given int64 and assigns it to the Tunnel field.
+func (o *PatchedWritableTunnelTerminationRequest) SetTunnel(v int64) {
 	o.Tunnel = &v
 }
 
@@ -191,9 +191,9 @@ func (o *PatchedWritableTunnelTerminationRequest) UnsetTerminationId() {
 }
 
 // GetOutsideIp returns the OutsideIp field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableTunnelTerminationRequest) GetOutsideIp() int32 {
+func (o *PatchedWritableTunnelTerminationRequest) GetOutsideIp() int64 {
 	if o == nil || IsNil(o.OutsideIp.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.OutsideIp.Get()
@@ -202,7 +202,7 @@ func (o *PatchedWritableTunnelTerminationRequest) GetOutsideIp() int32 {
 // GetOutsideIpOk returns a tuple with the OutsideIp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableTunnelTerminationRequest) GetOutsideIpOk() (*int32, bool) {
+func (o *PatchedWritableTunnelTerminationRequest) GetOutsideIpOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -218,8 +218,8 @@ func (o *PatchedWritableTunnelTerminationRequest) HasOutsideIp() bool {
 	return false
 }
 
-// SetOutsideIp gets a reference to the given NullableInt32 and assigns it to the OutsideIp field.
-func (o *PatchedWritableTunnelTerminationRequest) SetOutsideIp(v int32) {
+// SetOutsideIp gets a reference to the given NullableInt64 and assigns it to the OutsideIp field.
+func (o *PatchedWritableTunnelTerminationRequest) SetOutsideIp(v int64) {
 	o.OutsideIp.Set(&v)
 }
 

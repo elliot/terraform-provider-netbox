@@ -22,14 +22,14 @@ var _ MappedNullable = &BulkPlatformRequest{}
 
 // BulkPlatformRequest Base serializer class for models inheriting from NestedGroupModel.
 type BulkPlatformRequest struct {
-	Id                   int32                         `json:"id"`
+	Id                   int64                         `json:"id"`
 	Parent               NullableNestedPlatformRequest `json:"parent,omitempty"`
 	Name                 string                        `json:"name"`
 	Slug                 string                        `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Manufacturer         NullableInt32                 `json:"manufacturer,omitempty"`
-	ConfigTemplate       NullableInt32                 `json:"config_template,omitempty"`
+	Manufacturer         NullableInt64                 `json:"manufacturer,omitempty"`
+	ConfigTemplate       NullableInt64                 `json:"config_template,omitempty"`
 	Description          *string                       `json:"description,omitempty"`
-	Owner                NullableInt32                 `json:"owner,omitempty"`
+	Owner                NullableInt64                 `json:"owner,omitempty"`
 	Comments             *string                       `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest            `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}        `json:"custom_fields,omitempty"`
@@ -42,7 +42,7 @@ type _BulkPlatformRequest BulkPlatformRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkPlatformRequest(id int32, name string, slug string) *BulkPlatformRequest {
+func NewBulkPlatformRequest(id int64, name string, slug string) *BulkPlatformRequest {
 	this := BulkPlatformRequest{}
 	this.Id = id
 	this.Name = name
@@ -59,9 +59,9 @@ func NewBulkPlatformRequestWithDefaults() *BulkPlatformRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkPlatformRequest) GetId() int32 {
+func (o *BulkPlatformRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -70,7 +70,7 @@ func (o *BulkPlatformRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkPlatformRequest) GetIdOk() (*int32, bool) {
+func (o *BulkPlatformRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -78,7 +78,7 @@ func (o *BulkPlatformRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkPlatformRequest) SetId(v int32) {
+func (o *BulkPlatformRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -174,9 +174,9 @@ func (o *BulkPlatformRequest) SetSlug(v string) {
 }
 
 // GetManufacturer returns the Manufacturer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkPlatformRequest) GetManufacturer() int32 {
+func (o *BulkPlatformRequest) GetManufacturer() int64 {
 	if o == nil || IsNil(o.Manufacturer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Manufacturer.Get()
@@ -185,7 +185,7 @@ func (o *BulkPlatformRequest) GetManufacturer() int32 {
 // GetManufacturerOk returns a tuple with the Manufacturer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkPlatformRequest) GetManufacturerOk() (*int32, bool) {
+func (o *BulkPlatformRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -201,8 +201,8 @@ func (o *BulkPlatformRequest) HasManufacturer() bool {
 	return false
 }
 
-// SetManufacturer gets a reference to the given NullableInt32 and assigns it to the Manufacturer field.
-func (o *BulkPlatformRequest) SetManufacturer(v int32) {
+// SetManufacturer gets a reference to the given NullableInt64 and assigns it to the Manufacturer field.
+func (o *BulkPlatformRequest) SetManufacturer(v int64) {
 	o.Manufacturer.Set(&v)
 }
 
@@ -217,9 +217,9 @@ func (o *BulkPlatformRequest) UnsetManufacturer() {
 }
 
 // GetConfigTemplate returns the ConfigTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkPlatformRequest) GetConfigTemplate() int32 {
+func (o *BulkPlatformRequest) GetConfigTemplate() int64 {
 	if o == nil || IsNil(o.ConfigTemplate.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplate.Get()
@@ -228,7 +228,7 @@ func (o *BulkPlatformRequest) GetConfigTemplate() int32 {
 // GetConfigTemplateOk returns a tuple with the ConfigTemplate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkPlatformRequest) GetConfigTemplateOk() (*int32, bool) {
+func (o *BulkPlatformRequest) GetConfigTemplateOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -244,8 +244,8 @@ func (o *BulkPlatformRequest) HasConfigTemplate() bool {
 	return false
 }
 
-// SetConfigTemplate gets a reference to the given NullableInt32 and assigns it to the ConfigTemplate field.
-func (o *BulkPlatformRequest) SetConfigTemplate(v int32) {
+// SetConfigTemplate gets a reference to the given NullableInt64 and assigns it to the ConfigTemplate field.
+func (o *BulkPlatformRequest) SetConfigTemplate(v int64) {
 	o.ConfigTemplate.Set(&v)
 }
 
@@ -292,9 +292,9 @@ func (o *BulkPlatformRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkPlatformRequest) GetOwner() int32 {
+func (o *BulkPlatformRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -303,7 +303,7 @@ func (o *BulkPlatformRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkPlatformRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkPlatformRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -319,8 +319,8 @@ func (o *BulkPlatformRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkPlatformRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkPlatformRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

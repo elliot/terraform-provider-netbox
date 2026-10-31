@@ -24,7 +24,7 @@ var _ MappedNullable = &BriefVirtualCircuitRequest{}
 type BriefVirtualCircuitRequest struct {
 	// Unique circuit ID
 	Cid                  string  `json:"cid"`
-	ProviderNetwork      int32   `json:"provider_network"`
+	ProviderNetwork      int64   `json:"provider_network"`
 	Description          *string `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -35,7 +35,7 @@ type _BriefVirtualCircuitRequest BriefVirtualCircuitRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefVirtualCircuitRequest(cid string, providerNetwork int32) *BriefVirtualCircuitRequest {
+func NewBriefVirtualCircuitRequest(cid string, providerNetwork int64) *BriefVirtualCircuitRequest {
 	this := BriefVirtualCircuitRequest{}
 	this.Cid = cid
 	this.ProviderNetwork = providerNetwork
@@ -75,9 +75,9 @@ func (o *BriefVirtualCircuitRequest) SetCid(v string) {
 }
 
 // GetProviderNetwork returns the ProviderNetwork field value
-func (o *BriefVirtualCircuitRequest) GetProviderNetwork() int32 {
+func (o *BriefVirtualCircuitRequest) GetProviderNetwork() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -86,7 +86,7 @@ func (o *BriefVirtualCircuitRequest) GetProviderNetwork() int32 {
 
 // GetProviderNetworkOk returns a tuple with the ProviderNetwork field value
 // and a boolean to check if the value has been set.
-func (o *BriefVirtualCircuitRequest) GetProviderNetworkOk() (*int32, bool) {
+func (o *BriefVirtualCircuitRequest) GetProviderNetworkOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -94,7 +94,7 @@ func (o *BriefVirtualCircuitRequest) GetProviderNetworkOk() (*int32, bool) {
 }
 
 // SetProviderNetwork sets field value
-func (o *BriefVirtualCircuitRequest) SetProviderNetwork(v int32) {
+func (o *BriefVirtualCircuitRequest) SetProviderNetwork(v int64) {
 	o.ProviderNetwork = v
 }
 

@@ -21,12 +21,12 @@ var _ MappedNullable = &PatchedWritableWirelessLinkRequest{}
 
 // PatchedWritableWirelessLinkRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedWritableWirelessLinkRequest struct {
-	InterfaceA *int32  `json:"interface_a,omitempty"`
-	InterfaceB *int32  `json:"interface_b,omitempty"`
+	InterfaceA *int64  `json:"interface_a,omitempty"`
+	InterfaceB *int64  `json:"interface_b,omitempty"`
 	Ssid       *string `json:"ssid,omitempty"`
 	// * `connected` - Connected * `planned` - Planned * `decommissioning` - Decommissioning
 	Status *string       `json:"status,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// * `open` - Open * `wep` - WEP * `wpa-personal` - WPA Personal (PSK) * `wpa-enterprise` - WPA Enterprise
 	AuthType NullableString `json:"auth_type,omitempty"`
 	// * `auto` - Auto * `tkip` - TKIP * `aes` - AES
@@ -36,7 +36,7 @@ type PatchedWritableWirelessLinkRequest struct {
 	// * `km` - Kilometers * `m` - Meters * `mi` - Miles * `ft` - Feet
 	DistanceUnit         NullableString         `json:"distance_unit,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -63,9 +63,9 @@ func NewPatchedWritableWirelessLinkRequestWithDefaults() *PatchedWritableWireles
 }
 
 // GetInterfaceA returns the InterfaceA field value if set, zero value otherwise.
-func (o *PatchedWritableWirelessLinkRequest) GetInterfaceA() int32 {
+func (o *PatchedWritableWirelessLinkRequest) GetInterfaceA() int64 {
 	if o == nil || IsNil(o.InterfaceA) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InterfaceA
@@ -73,7 +73,7 @@ func (o *PatchedWritableWirelessLinkRequest) GetInterfaceA() int32 {
 
 // GetInterfaceAOk returns a tuple with the InterfaceA field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableWirelessLinkRequest) GetInterfaceAOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLinkRequest) GetInterfaceAOk() (*int64, bool) {
 	if o == nil || IsNil(o.InterfaceA) {
 		return nil, false
 	}
@@ -89,15 +89,15 @@ func (o *PatchedWritableWirelessLinkRequest) HasInterfaceA() bool {
 	return false
 }
 
-// SetInterfaceA gets a reference to the given int32 and assigns it to the InterfaceA field.
-func (o *PatchedWritableWirelessLinkRequest) SetInterfaceA(v int32) {
+// SetInterfaceA gets a reference to the given int64 and assigns it to the InterfaceA field.
+func (o *PatchedWritableWirelessLinkRequest) SetInterfaceA(v int64) {
 	o.InterfaceA = &v
 }
 
 // GetInterfaceB returns the InterfaceB field value if set, zero value otherwise.
-func (o *PatchedWritableWirelessLinkRequest) GetInterfaceB() int32 {
+func (o *PatchedWritableWirelessLinkRequest) GetInterfaceB() int64 {
 	if o == nil || IsNil(o.InterfaceB) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InterfaceB
@@ -105,7 +105,7 @@ func (o *PatchedWritableWirelessLinkRequest) GetInterfaceB() int32 {
 
 // GetInterfaceBOk returns a tuple with the InterfaceB field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableWirelessLinkRequest) GetInterfaceBOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLinkRequest) GetInterfaceBOk() (*int64, bool) {
 	if o == nil || IsNil(o.InterfaceB) {
 		return nil, false
 	}
@@ -121,8 +121,8 @@ func (o *PatchedWritableWirelessLinkRequest) HasInterfaceB() bool {
 	return false
 }
 
-// SetInterfaceB gets a reference to the given int32 and assigns it to the InterfaceB field.
-func (o *PatchedWritableWirelessLinkRequest) SetInterfaceB(v int32) {
+// SetInterfaceB gets a reference to the given int64 and assigns it to the InterfaceB field.
+func (o *PatchedWritableWirelessLinkRequest) SetInterfaceB(v int64) {
 	o.InterfaceB = &v
 }
 
@@ -191,9 +191,9 @@ func (o *PatchedWritableWirelessLinkRequest) SetStatus(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableWirelessLinkRequest) GetTenant() int32 {
+func (o *PatchedWritableWirelessLinkRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -202,7 +202,7 @@ func (o *PatchedWritableWirelessLinkRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableWirelessLinkRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLinkRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -218,8 +218,8 @@ func (o *PatchedWritableWirelessLinkRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableWirelessLinkRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableWirelessLinkRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -470,9 +470,9 @@ func (o *PatchedWritableWirelessLinkRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableWirelessLinkRequest) GetOwner() int32 {
+func (o *PatchedWritableWirelessLinkRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -481,7 +481,7 @@ func (o *PatchedWritableWirelessLinkRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableWirelessLinkRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLinkRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -497,8 +497,8 @@ func (o *PatchedWritableWirelessLinkRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableWirelessLinkRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableWirelessLinkRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

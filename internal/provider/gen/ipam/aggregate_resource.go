@@ -190,7 +190,7 @@ func (r *AggregateResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -221,7 +221,7 @@ func (r *AggregateResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -251,7 +251,7 @@ func (r *AggregateResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -271,9 +271,9 @@ func (r *AggregateResource) ImportState(ctx context.Context, req resource.Import
 // aggregateToCreate builds the WritableAggregateRequest request body from the plan.
 func aggregateToCreate(ctx context.Context, plan *AggregateModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableAggregateRequest {
 	const objectType = "ipam.aggregate"
-	body := netbox.NewWritableAggregateRequest(plan.Prefix.ValueString(), conv.Int32(plan.RirId))
+	body := netbox.NewWritableAggregateRequest(plan.Prefix.ValueString(), plan.RirId.ValueInt64())
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.DateAdded) {
 		body.SetDateAdded(plan.DateAdded.ValueString())
@@ -282,7 +282,7 @@ func aggregateToCreate(ctx context.Context, plan *AggregateModel, cf *customfiel
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -307,14 +307,14 @@ func aggregateToPatch(ctx context.Context, plan, state *AggregateModel, cf *cust
 	}
 	if !plan.RirId.Equal(state.RirId) {
 		if conv.Known(plan.RirId) {
-			body.SetRir(conv.Int32(plan.RirId))
+			body.SetRir(plan.RirId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.DateAdded.Equal(state.DateAdded) {
@@ -333,7 +333,7 @@ func aggregateToPatch(ctx context.Context, plan, state *AggregateModel, cf *cust
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

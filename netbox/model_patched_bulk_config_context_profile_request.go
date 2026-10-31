@@ -22,15 +22,15 @@ var _ MappedNullable = &PatchedBulkConfigContextProfileRequest{}
 
 // PatchedBulkConfigContextProfileRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkConfigContextProfileRequest struct {
-	Id          int32   `json:"id"`
+	Id          int64   `json:"id"`
 	Name        *string `json:"name,omitempty"`
 	Description *string `json:"description,omitempty"`
 	// A JSON schema specifying the structure of the context data for this profile
 	Schema               interface{}        `json:"schema,omitempty"`
 	Tags                 []NestedTagRequest `json:"tags,omitempty"`
-	Owner                NullableInt32      `json:"owner,omitempty"`
+	Owner                NullableInt64      `json:"owner,omitempty"`
 	Comments             *string            `json:"comments,omitempty"`
-	DataSource           *int32             `json:"data_source,omitempty"`
+	DataSource           *int64             `json:"data_source,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -40,7 +40,7 @@ type _PatchedBulkConfigContextProfileRequest PatchedBulkConfigContextProfileRequ
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkConfigContextProfileRequest(id int32) *PatchedBulkConfigContextProfileRequest {
+func NewPatchedBulkConfigContextProfileRequest(id int64) *PatchedBulkConfigContextProfileRequest {
 	this := PatchedBulkConfigContextProfileRequest{}
 	this.Id = id
 	return &this
@@ -55,9 +55,9 @@ func NewPatchedBulkConfigContextProfileRequestWithDefaults() *PatchedBulkConfigC
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkConfigContextProfileRequest) GetId() int32 {
+func (o *PatchedBulkConfigContextProfileRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -66,7 +66,7 @@ func (o *PatchedBulkConfigContextProfileRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextProfileRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkConfigContextProfileRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,7 +74,7 @@ func (o *PatchedBulkConfigContextProfileRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkConfigContextProfileRequest) SetId(v int32) {
+func (o *PatchedBulkConfigContextProfileRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -208,9 +208,9 @@ func (o *PatchedBulkConfigContextProfileRequest) SetTags(v []NestedTagRequest) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkConfigContextProfileRequest) GetOwner() int32 {
+func (o *PatchedBulkConfigContextProfileRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -219,7 +219,7 @@ func (o *PatchedBulkConfigContextProfileRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkConfigContextProfileRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkConfigContextProfileRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -235,8 +235,8 @@ func (o *PatchedBulkConfigContextProfileRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkConfigContextProfileRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkConfigContextProfileRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -283,9 +283,9 @@ func (o *PatchedBulkConfigContextProfileRequest) SetComments(v string) {
 }
 
 // GetDataSource returns the DataSource field value if set, zero value otherwise.
-func (o *PatchedBulkConfigContextProfileRequest) GetDataSource() int32 {
+func (o *PatchedBulkConfigContextProfileRequest) GetDataSource() int64 {
 	if o == nil || IsNil(o.DataSource) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DataSource
@@ -293,7 +293,7 @@ func (o *PatchedBulkConfigContextProfileRequest) GetDataSource() int32 {
 
 // GetDataSourceOk returns a tuple with the DataSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkConfigContextProfileRequest) GetDataSourceOk() (*int32, bool) {
+func (o *PatchedBulkConfigContextProfileRequest) GetDataSourceOk() (*int64, bool) {
 	if o == nil || IsNil(o.DataSource) {
 		return nil, false
 	}
@@ -309,8 +309,8 @@ func (o *PatchedBulkConfigContextProfileRequest) HasDataSource() bool {
 	return false
 }
 
-// SetDataSource gets a reference to the given int32 and assigns it to the DataSource field.
-func (o *PatchedBulkConfigContextProfileRequest) SetDataSource(v int32) {
+// SetDataSource gets a reference to the given int64 and assigns it to the DataSource field.
+func (o *PatchedBulkConfigContextProfileRequest) SetDataSource(v int64) {
 	o.DataSource = &v
 }
 

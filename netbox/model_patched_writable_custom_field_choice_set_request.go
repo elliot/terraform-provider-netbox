@@ -29,7 +29,7 @@ type PatchedWritableCustomFieldChoiceSetRequest struct {
 	ChoiceColors *map[string]string `json:"choice_colors,omitempty"`
 	// Choices are automatically ordered alphabetically
 	OrderAlphabetically  *bool         `json:"order_alphabetically,omitempty"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -256,9 +256,9 @@ func (o *PatchedWritableCustomFieldChoiceSetRequest) SetOrderAlphabetically(v bo
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableCustomFieldChoiceSetRequest) GetOwner() int32 {
+func (o *PatchedWritableCustomFieldChoiceSetRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -267,7 +267,7 @@ func (o *PatchedWritableCustomFieldChoiceSetRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableCustomFieldChoiceSetRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableCustomFieldChoiceSetRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -283,8 +283,8 @@ func (o *PatchedWritableCustomFieldChoiceSetRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableCustomFieldChoiceSetRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableCustomFieldChoiceSetRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

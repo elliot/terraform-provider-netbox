@@ -22,15 +22,15 @@ var _ MappedNullable = &PatchedBulkSiteRequest{}
 
 // PatchedBulkSiteRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkSiteRequest struct {
-	Id int32 `json:"id"`
+	Id int64 `json:"id"`
 	// Full name of the site
 	Name *string `json:"name,omitempty"`
 	Slug *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	// * `planned` - Planned * `staging` - Staging * `active` - Active * `decommissioning` - Decommissioning * `retired` - Retired
 	Status *string       `json:"status,omitempty"`
-	Region NullableInt32 `json:"region,omitempty"`
-	Group  NullableInt32 `json:"group,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Region NullableInt64 `json:"region,omitempty"`
+	Group  NullableInt64 `json:"group,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// Local facility ID or description
 	Facility    *string        `json:"facility,omitempty"`
 	TimeZone    NullableString `json:"time_zone,omitempty"`
@@ -43,9 +43,9 @@ type PatchedBulkSiteRequest struct {
 	Latitude NullableFloat64 `json:"latitude,omitempty"`
 	// GPS coordinate in decimal format (xx.yyyyyy)
 	Longitude            NullableFloat64        `json:"longitude,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
-	Asns                 []int32                `json:"asns,omitempty"`
+	Asns                 []int64                `json:"asns,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -57,7 +57,7 @@ type _PatchedBulkSiteRequest PatchedBulkSiteRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkSiteRequest(id int32) *PatchedBulkSiteRequest {
+func NewPatchedBulkSiteRequest(id int64) *PatchedBulkSiteRequest {
 	this := PatchedBulkSiteRequest{}
 	this.Id = id
 	return &this
@@ -72,9 +72,9 @@ func NewPatchedBulkSiteRequestWithDefaults() *PatchedBulkSiteRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkSiteRequest) GetId() int32 {
+func (o *PatchedBulkSiteRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -83,7 +83,7 @@ func (o *PatchedBulkSiteRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkSiteRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkSiteRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -91,7 +91,7 @@ func (o *PatchedBulkSiteRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkSiteRequest) SetId(v int32) {
+func (o *PatchedBulkSiteRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -192,9 +192,9 @@ func (o *PatchedBulkSiteRequest) SetStatus(v string) {
 }
 
 // GetRegion returns the Region field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkSiteRequest) GetRegion() int32 {
+func (o *PatchedBulkSiteRequest) GetRegion() int64 {
 	if o == nil || IsNil(o.Region.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Region.Get()
@@ -203,7 +203,7 @@ func (o *PatchedBulkSiteRequest) GetRegion() int32 {
 // GetRegionOk returns a tuple with the Region field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkSiteRequest) GetRegionOk() (*int32, bool) {
+func (o *PatchedBulkSiteRequest) GetRegionOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -219,8 +219,8 @@ func (o *PatchedBulkSiteRequest) HasRegion() bool {
 	return false
 }
 
-// SetRegion gets a reference to the given NullableInt32 and assigns it to the Region field.
-func (o *PatchedBulkSiteRequest) SetRegion(v int32) {
+// SetRegion gets a reference to the given NullableInt64 and assigns it to the Region field.
+func (o *PatchedBulkSiteRequest) SetRegion(v int64) {
 	o.Region.Set(&v)
 }
 
@@ -235,9 +235,9 @@ func (o *PatchedBulkSiteRequest) UnsetRegion() {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkSiteRequest) GetGroup() int32 {
+func (o *PatchedBulkSiteRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -246,7 +246,7 @@ func (o *PatchedBulkSiteRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkSiteRequest) GetGroupOk() (*int32, bool) {
+func (o *PatchedBulkSiteRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -262,8 +262,8 @@ func (o *PatchedBulkSiteRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *PatchedBulkSiteRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *PatchedBulkSiteRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -278,9 +278,9 @@ func (o *PatchedBulkSiteRequest) UnsetGroup() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkSiteRequest) GetTenant() int32 {
+func (o *PatchedBulkSiteRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -289,7 +289,7 @@ func (o *PatchedBulkSiteRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkSiteRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkSiteRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -305,8 +305,8 @@ func (o *PatchedBulkSiteRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkSiteRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkSiteRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -578,9 +578,9 @@ func (o *PatchedBulkSiteRequest) UnsetLongitude() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkSiteRequest) GetOwner() int32 {
+func (o *PatchedBulkSiteRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -589,7 +589,7 @@ func (o *PatchedBulkSiteRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkSiteRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkSiteRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -605,8 +605,8 @@ func (o *PatchedBulkSiteRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkSiteRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkSiteRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -653,9 +653,9 @@ func (o *PatchedBulkSiteRequest) SetComments(v string) {
 }
 
 // GetAsns returns the Asns field value if set, zero value otherwise.
-func (o *PatchedBulkSiteRequest) GetAsns() []int32 {
+func (o *PatchedBulkSiteRequest) GetAsns() []int64 {
 	if o == nil || IsNil(o.Asns) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Asns
@@ -663,7 +663,7 @@ func (o *PatchedBulkSiteRequest) GetAsns() []int32 {
 
 // GetAsnsOk returns a tuple with the Asns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkSiteRequest) GetAsnsOk() ([]int32, bool) {
+func (o *PatchedBulkSiteRequest) GetAsnsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Asns) {
 		return nil, false
 	}
@@ -679,8 +679,8 @@ func (o *PatchedBulkSiteRequest) HasAsns() bool {
 	return false
 }
 
-// SetAsns gets a reference to the given []int32 and assigns it to the Asns field.
-func (o *PatchedBulkSiteRequest) SetAsns(v []int32) {
+// SetAsns gets a reference to the given []int64 and assigns it to the Asns field.
+func (o *PatchedBulkSiteRequest) SetAsns(v []int64) {
 	o.Asns = v
 }
 

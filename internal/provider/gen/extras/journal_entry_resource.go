@@ -184,7 +184,7 @@ func (r *JournalEntryResource) Read(ctx context.Context, req resource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -215,7 +215,7 @@ func (r *JournalEntryResource) Update(ctx context.Context, req resource.UpdateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -245,7 +245,7 @@ func (r *JournalEntryResource) Delete(ctx context.Context, req resource.DeleteRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -267,7 +267,7 @@ func journalEntryToCreate(ctx context.Context, plan *JournalEntryModel, cf *cust
 	const objectType = "extras.journalentry"
 	body := netbox.NewWritableJournalEntryRequest(plan.AssignedObjectType.ValueString(), plan.AssignedObjectId.ValueInt64(), plan.Comments.ValueString())
 	if conv.Known(plan.CreatedById) {
-		body.SetCreatedBy(conv.Int32(plan.CreatedById))
+		body.SetCreatedBy(plan.CreatedById.ValueInt64())
 	}
 	if conv.Known(plan.Kind) {
 		body.SetKind(plan.Kind.ValueString())
@@ -297,7 +297,7 @@ func journalEntryToPatch(ctx context.Context, plan, state *JournalEntryModel, cf
 	}
 	if !plan.CreatedById.Equal(state.CreatedById) {
 		if conv.Known(plan.CreatedById) {
-			body.SetCreatedBy(conv.Int32(plan.CreatedById))
+			body.SetCreatedBy(plan.CreatedById.ValueInt64())
 		}
 	}
 	if !plan.Kind.Equal(state.Kind) {
@@ -333,7 +333,7 @@ func journalEntryFromAPI(ctx context.Context, obj *netbox.JournalEntry, prior *J
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.AssignedObjectType = conv.StringKeep(conv.String(obj.GetAssignedObjectTypeOk()), conv.PriorString(prior, func(m *JournalEntryModel) types.String { return m.AssignedObjectType }), false)
 	out.AssignedObjectId = conv.Int64From64(obj.GetAssignedObjectIdOk())
-	out.CreatedById = conv.Int64From32(obj.GetCreatedByOk())
+	out.CreatedById = conv.Int64From64(obj.GetCreatedByOk())
 	out.Kind = conv.Choice(obj.GetKindOk())
 	out.Comments = conv.StringKeep(conv.String(obj.GetCommentsOk()), conv.PriorString(prior, func(m *JournalEntryModel) types.String { return m.Comments }), false)
 	out.Tags = conv.TagsFromAPI(obj.GetTags())

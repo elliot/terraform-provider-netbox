@@ -22,14 +22,14 @@ var _ MappedNullable = &BriefModuleType{}
 
 // BriefModuleType Base serializer class for models inheriting from PrimaryModel.
 type BriefModuleType struct {
-	Id                   int32                          `json:"id"`
+	Id                   int64                          `json:"id"`
 	Url                  *string                        `json:"url,omitempty"`
 	Display              *string                        `json:"display,omitempty"`
 	Profile              NullableBriefModuleTypeProfile `json:"profile,omitempty"`
 	Manufacturer         *BriefManufacturer             `json:"manufacturer,omitempty"`
 	Model                *string                        `json:"model,omitempty"`
 	Description          *string                        `json:"description,omitempty"`
-	ModuleCount          *int32                         `json:"module_count,omitempty"`
+	ModuleCount          *int64                         `json:"module_count,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -39,7 +39,7 @@ type _BriefModuleType BriefModuleType
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefModuleType(id int32) *BriefModuleType {
+func NewBriefModuleType(id int64) *BriefModuleType {
 	this := BriefModuleType{}
 	this.Id = id
 	return &this
@@ -54,9 +54,9 @@ func NewBriefModuleTypeWithDefaults() *BriefModuleType {
 }
 
 // GetId returns the Id field value
-func (o *BriefModuleType) GetId() int32 {
+func (o *BriefModuleType) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *BriefModuleType) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefModuleType) GetIdOk() (*int32, bool) {
+func (o *BriefModuleType) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *BriefModuleType) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefModuleType) SetId(v int32) {
+func (o *BriefModuleType) SetId(v int64) {
 	o.Id = v
 }
 
@@ -281,9 +281,9 @@ func (o *BriefModuleType) SetDescription(v string) {
 }
 
 // GetModuleCount returns the ModuleCount field value if set, zero value otherwise.
-func (o *BriefModuleType) GetModuleCount() int32 {
+func (o *BriefModuleType) GetModuleCount() int64 {
 	if o == nil || IsNil(o.ModuleCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleCount
@@ -291,7 +291,7 @@ func (o *BriefModuleType) GetModuleCount() int32 {
 
 // GetModuleCountOk returns a tuple with the ModuleCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BriefModuleType) GetModuleCountOk() (*int32, bool) {
+func (o *BriefModuleType) GetModuleCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.ModuleCount) {
 		return nil, false
 	}
@@ -307,8 +307,8 @@ func (o *BriefModuleType) HasModuleCount() bool {
 	return false
 }
 
-// SetModuleCount gets a reference to the given int32 and assigns it to the ModuleCount field.
-func (o *BriefModuleType) SetModuleCount(v int32) {
+// SetModuleCount gets a reference to the given int64 and assigns it to the ModuleCount field.
+func (o *BriefModuleType) SetModuleCount(v int64) {
 	o.ModuleCount = &v
 }
 
