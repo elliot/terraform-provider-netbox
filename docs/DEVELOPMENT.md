@@ -42,7 +42,9 @@ reads the same pin through `make lint-version`, and Renovate bumps it via the an
 `make lint` only runs golangci-lint over the hand-written packages listed in `LINT_PKGS` in the
 `Makefile`; linting the regenerated client (`netbox/`) and generated resources
 (`internal/provider/gen/`) alongside them exhausts the GitHub runner's memory. CI runs the unit-test
-matrix against Terraform 1.13, 1.14 and 1.16.
+matrix against Terraform 1.12, 1.15, 1.16 and 1.17: the supported minimum plus the three newest minors.
+1.12 is the floor because every resource implements resource identity (`import` blocks with `identity`),
+which older releases reject; raise it together with the README badge.
 
 ## Acceptance tests
 

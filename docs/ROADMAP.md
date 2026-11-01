@@ -11,7 +11,7 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 | Spec | pinned at NetBox 4.7.4 (`spec/VERSION`); 4.7.4 support merged after `v0.5.0` |
 | Acceptance | nightly workflow on `main` (docker-compose, 12 shards, one pinned NetBox each) green since `v0.5.0`; the 4.7.4 bump passed on its PR. The workflow also runs on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (historical; superseded by the nightly acceptance run) |
-| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on several Terraform versions, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), daily NetBox release watch (`netbox-watch.yml`), zizmor workflow audit, CodeQL, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate weekly with a 7-day cooldown (Dependency Dashboard: issue #46) |
+| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.12 (minimum) / 1.15 / 1.16 / 1.17, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), daily NetBox release watch (`netbox-watch.yml`), zizmor workflow audit, CodeQL, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate weekly with a 7-day cooldown (Dependency Dashboard: issue #46) |
 | Release | `v0.5.0` is the latest release. GitHub Releases with eight platform zips, GPG-signed `SHA256SUMS` (verified for `v0.4.0`, `v0.4.1`, `v0.5.0`) and SLSA build provenance attestations for every asset; network mirror at `https://elliot.github.io/terraform-provider-netbox/` and `scripts/install.sh` for off-registry installs; see [INSTALL.md](INSTALL.md) |
 | Registry | live at [registry.terraform.io/providers/elliot/netbox](https://registry.terraform.io/providers/elliot/netbox) (community tier) with every signed release from `v0.1.1`; `terraform init` installs from it without CLI configuration |
 
@@ -24,7 +24,6 @@ Remaining work before `v1.0.0`; the compatibility promise is described in [VERSI
   upgraders, so attributes can be deprecated and state migrated without a major release.
 - A CI check that diffs the provider schema against the last release and fails on unannounced breaking changes.
 - Upgrade tests: apply with the latest registry release, then plan with the current build and expect no changes.
-- Terraform version matrix: minimum 1.12 (resource identity) and the latest release in CI.
 - Naming audit and the remaining pre-1.0 attribute renames, while they are still allowed without a deprecation.
 - Decide how data sources expose `custom_fields` (JSON string today) before it is frozen.
 - Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require
