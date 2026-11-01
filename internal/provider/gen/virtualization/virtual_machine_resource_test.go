@@ -119,6 +119,18 @@ func TestAccVirtualMachine_basic(t *testing.T) {
 	})
 }
 
+func TestAccVirtualMachine_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_virtual_machine",
+		APIPath:      "/api/virtualization/virtual-machines/",
+		Configs: []string{
+			acctest.Render(t, virtualMachineTestConfigUpdate, name),
+			acctest.Render(t, virtualMachineTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_virtual_machine", &resource.Sweeper{
 		Name:         "netbox_virtual_machine",

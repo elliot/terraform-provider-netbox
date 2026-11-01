@@ -90,6 +90,18 @@ func TestAccNotificationGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccNotificationGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_notification_group",
+		APIPath:      "/api/extras/notification-groups/",
+		Configs: []string{
+			acctest.Render(t, notificationGroupTestConfigUpdate, name),
+			acctest.Render(t, notificationGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_notification_group", &resource.Sweeper{
 		Name:         "netbox_notification_group",

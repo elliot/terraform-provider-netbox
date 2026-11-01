@@ -136,6 +136,18 @@ func TestAccInterface_basic(t *testing.T) {
 	})
 }
 
+func TestAccInterface_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_interface",
+		APIPath:      "/api/dcim/interfaces/",
+		Configs: []string{
+			acctest.Render(t, interfaceTestConfigUpdate, name),
+			acctest.Render(t, interfaceTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_interface", &resource.Sweeper{
 		Name:         "netbox_interface",

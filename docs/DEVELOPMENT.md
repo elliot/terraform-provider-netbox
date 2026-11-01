@@ -42,7 +42,9 @@ reads the same pin through `make lint-version`, and Renovate bumps it via the an
 `make lint` only runs golangci-lint over the hand-written packages listed in `LINT_PKGS` in the
 `Makefile`; linting the regenerated client (`netbox/`) and generated resources
 (`internal/provider/gen/`) alongside them exhausts the GitHub runner's memory. CI runs the unit-test
-matrix against Terraform 1.13, 1.14 and 1.16.
+matrix against Terraform 1.12, 1.15, 1.16 and 1.17: the supported minimum plus the three newest minors.
+1.12 is the floor because every resource implements resource identity (`import` blocks with `identity`),
+which older releases reject; raise it together with the README badge.
 
 ## Acceptance tests
 
@@ -61,6 +63,12 @@ and export `NETBOX_SERVER_URL=http://localhost:8000` / `NETBOX_API_TOKEN`. In sa
 binary fails while the harness looks for one. To run a scenario with a locally built provider, use a CLI
 configuration with a `dev_overrides { "elliot/netbox" = "/path/to/dir" }` block (Terraform 1.16 rejects the
 attribute form). `make sweep` deletes every `tfacc-*` object on the configured server.
+
+Upgrade tests (`TestAcc<Resource>_upgrade`) apply each fixture with a published release and expect an
+empty plan from the current build; they run only when `NETBOX_UPGRADE_FROM` names that release, e.g.
+`NETBOX_UPGRADE_FROM=0.5.0 TF_ACC=1 go test ./internal/provider/gen/ipam/ -run '_upgrade$' -v`. See
+[GENERATOR.md](GENERATOR.md#upgrade-tests) for how fixtures are chosen and how to handle a deliberate
+breaking change.
 
 ## Bumping the NetBox version
 
@@ -84,7 +92,10 @@ The generator jar is pinned by SHA-256 (`OAG_SHA256` next to `OAG_VERSION` in
 `tools/client-gen/` or `netbox/` and fails on drift, so commit the regenerated `netbox/` with the bump.
 Acceptance tests (`.github/workflows/acceptance.yml`) run nightly, on demand via *Run workflow* (optionally
 against another `netbox_image_tag`), and on pull requests labelled `run-acceptance`; every shard records the
-NetBox version it tested in the run summary.
+NetBox version it tested in the run summary. After the acceptance tests, each shard runs its upgrade tests
+against the same NetBox, starting from the `upgrade_from` input (default `latest`, resolved from the
+registry API; `none` skips them; runs triggered by the NetBox release watch skip them), and adds
+pass/fail/skip counts and skip reasons to the summary.
 
 ### NetBox release watch
 

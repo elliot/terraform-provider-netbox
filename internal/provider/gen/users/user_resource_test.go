@@ -88,6 +88,18 @@ func TestAccUser_basic(t *testing.T) {
 	})
 }
 
+func TestAccUser_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_user",
+		APIPath:      "/api/users/users/",
+		Configs: []string{
+			acctest.Render(t, userTestConfigUpdate, name),
+			acctest.Render(t, userTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_user", &resource.Sweeper{
 		Name:         "netbox_user",

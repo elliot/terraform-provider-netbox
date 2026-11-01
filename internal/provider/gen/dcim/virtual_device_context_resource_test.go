@@ -135,6 +135,18 @@ func TestAccVirtualDeviceContext_basic(t *testing.T) {
 	})
 }
 
+func TestAccVirtualDeviceContext_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_virtual_device_context",
+		APIPath:      "/api/dcim/virtual-device-contexts/",
+		Configs: []string{
+			acctest.Render(t, virtualDeviceContextTestConfigUpdate, name),
+			acctest.Render(t, virtualDeviceContextTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_virtual_device_context", &resource.Sweeper{
 		Name:         "netbox_virtual_device_context",

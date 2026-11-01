@@ -106,6 +106,18 @@ func TestAccVirtualDisk_basic(t *testing.T) {
 	})
 }
 
+func TestAccVirtualDisk_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_virtual_disk",
+		APIPath:      "/api/virtualization/virtual-disks/",
+		Configs: []string{
+			acctest.Render(t, virtualDiskTestConfigUpdate, name),
+			acctest.Render(t, virtualDiskTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_virtual_disk", &resource.Sweeper{
 		Name:         "netbox_virtual_disk",

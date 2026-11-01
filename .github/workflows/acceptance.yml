@@ -10,11 +10,15 @@ on:
       terraform:
         description: "Terraform version"
         required: false
-        default: "1.14.*"
+        default: "1.17.*"
       netbox_image_tag:
         description: "netboxcommunity/netbox image tag, e.g. v4.7.2 (empty: the docker-compose.yml default)"
         required: false
         default: ""
+      upgrade_from:
+        description: "Released provider version the upgrade tests start from (latest: newest on the registry, none: skip them)"
+        required: false
+        default: "latest"
   # Called by netbox-watch.yml to test a release tag against a new NetBox image.
   workflow_call:
     inputs:
@@ -25,7 +29,7 @@ on:
       terraform:
         type: string
         required: false
-        default: "1.14.*"
+        default: "1.17.*"
       netbox_image_tag:
         type: string
         required: false
@@ -35,6 +39,11 @@ on:
         type: string
         required: false
         default: ""
+      upgrade_from:
+        description: "Released provider version the upgrade tests start from (latest, none or X.Y.Z)"
+        type: string
+        required: false
+        default: "none"
   schedule:
     # Nightly at 03:17 UTC.
     - cron: "17 3 * * *"
@@ -62,7 +71,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read # check out the repository
-    timeout-minutes: 150
+    # 120 minutes of acceptance tests plus up to 45 of upgrade tests.
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
@@ -102,7 +112,7 @@ jobs:
             go-${{ runner.os }}-build-
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
-          terraform_version: ${{ inputs.terraform || '1.14.*' }}
+          terraform_version: ${{ inputs.terraform || '1.17.*' }}
           terraform_wrapper: false
 
       - name: Start NetBox
@@ -147,6 +157,69 @@ jobs:
           NETBOX_REQUESTS_PER_SECOND: "10"
           ACC_SHARD: ${{ inputs.shard || matrix.shard }}
         run: go test "$ACC_SHARD" -v -count=1 -run TestAcc -timeout 120m -parallel 4
+
+      - name: Resolve the upgrade baseline
+        id: upgrade
+        # Also after failed acceptance tests; scheduled and PR runs have no
+        # inputs and start from the latest release.
+        if: ${{ !cancelled() && steps.token.outcome == 'success' }}
+        env:
+          UPGRADE_FROM: ${{ inputs.upgrade_from || 'latest' }}
+        run: |
+          set -euo pipefail
+          case "$UPGRADE_FROM" in
+            none) echo "Upgrade tests disabled"; exit 0 ;;
+            latest) UPGRADE_FROM=$(curl -sS -f --retry 3 https://registry.terraform.io/v1/providers/elliot/netbox | jq -r '.version') ;;
+          esac
+          if ! [[ "$UPGRADE_FROM" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::upgrade_from must be latest, none or a version such as 0.5.0"
+            exit 1
+          fi
+          echo "version=$UPGRADE_FROM" >> "$GITHUB_OUTPUT"
+
+      - name: Run upgrade tests
+        # Applies each fixture with the release from the registry, then expects
+        # an empty plan from this build (docs/GENERATOR.md, Upgrade tests). Runs
+        # against the same NetBox even when the acceptance tests failed.
+        if: ${{ !cancelled() && steps.upgrade.outputs.version != '' }}
+        env:
+          TF_ACC: "1"
+          NETBOX_SERVER_URL: http://localhost:8000
+          NETBOX_API_TOKEN: ${{ steps.token.outputs.token }}
+          NETBOX_REQUESTS_PER_SECOND: "10"
+          NETBOX_UPGRADE_FROM: ${{ steps.upgrade.outputs.version }}
+          TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/plugin-cache
+          ACC_SHARD: ${{ inputs.shard || matrix.shard }}
+        run: |
+          set -uo pipefail
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          go test "$ACC_SHARD" -v -count=1 -run 'TestAcc.*_upgrade$' -timeout 45m -parallel 4 2>&1 | tee "$RUNNER_TEMP/upgrade.log"
+          status=$?
+          log="$RUNNER_TEMP/upgrade.log"
+          pass=$(grep -cE -- '--- PASS: TestAcc[A-Za-z0-9]+_upgrade' "$log" || true)
+          fail=$(grep -cE -- '--- FAIL: TestAcc[A-Za-z0-9]+_upgrade' "$log" || true)
+          skip=$(grep -cE -- '--- SKIP: TestAcc[A-Za-z0-9]+_upgrade' "$log" || true)
+          {
+            echo "### Upgrade from \`$NETBOX_UPGRADE_FROM\` for \`$ACC_SHARD\`"
+            echo ""
+            echo "$pass passed, $fail failed, $skip skipped"
+            if [ "$fail" -gt 0 ]; then
+              echo ""
+              echo "Failed:"
+              grep -oE -- '--- FAIL: TestAcc[A-Za-z0-9]+_upgrade' "$log" | sed 's/^--- FAIL: /- /'
+            fi
+            if [ "$skip" -gt 0 ]; then
+              echo ""
+              echo "<details><summary>Skipped</summary>"
+              echo ""
+              # go test -v prints a skipped test's reason just before its "--- SKIP" line.
+              awk '/^ +[a-z_]+_test\.go:[0-9]+: / { reason=$0; sub(/^ +[a-z_]+_test\.go:[0-9]+: /, "", reason) }
+                   /^--- SKIP: TestAcc[A-Za-z0-9]+_upgrade/ { print "- " $3 ": " reason; reason="" }' "$log"
+              echo ""
+              echo "</details>"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
 
       - name: NetBox logs (on failure)
         if: failure()

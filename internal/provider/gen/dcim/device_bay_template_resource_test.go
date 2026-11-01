@@ -99,6 +99,18 @@ func TestAccDeviceBayTemplate_basic(t *testing.T) {
 	})
 }
 
+func TestAccDeviceBayTemplate_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_device_bay_template",
+		APIPath:      "/api/dcim/device-bay-templates/",
+		Configs: []string{
+			acctest.Render(t, deviceBayTemplateTestConfigUpdate, name),
+			acctest.Render(t, deviceBayTemplateTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_device_bay_template", &resource.Sweeper{
 		Name:         "netbox_device_bay_template",

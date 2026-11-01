@@ -149,6 +149,18 @@ func TestAccFrontPort_basic(t *testing.T) {
 	})
 }
 
+func TestAccFrontPort_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_front_port",
+		APIPath:      "/api/dcim/front-ports/",
+		Configs: []string{
+			acctest.Render(t, frontPortTestConfigUpdate, name),
+			acctest.Render(t, frontPortTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_front_port", &resource.Sweeper{
 		Name:         "netbox_front_port",

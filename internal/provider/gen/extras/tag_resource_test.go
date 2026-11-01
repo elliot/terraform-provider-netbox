@@ -79,6 +79,18 @@ func TestAccTag_basic(t *testing.T) {
 	})
 }
 
+func TestAccTag_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_tag",
+		APIPath:      "/api/extras/tags/",
+		Configs: []string{
+			acctest.Render(t, tagTestConfigUpdate, name),
+			acctest.Render(t, tagTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_tag", &resource.Sweeper{
 		Name:         "netbox_tag",

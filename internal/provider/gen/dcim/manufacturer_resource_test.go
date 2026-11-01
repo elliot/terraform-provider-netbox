@@ -85,6 +85,18 @@ func TestAccManufacturer_basic(t *testing.T) {
 	})
 }
 
+func TestAccManufacturer_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_manufacturer",
+		APIPath:      "/api/dcim/manufacturers/",
+		Configs: []string{
+			acctest.Render(t, manufacturerTestConfigUpdate, name),
+			acctest.Render(t, manufacturerTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_manufacturer", &resource.Sweeper{
 		Name:         "netbox_manufacturer",

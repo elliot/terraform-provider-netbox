@@ -91,7 +91,7 @@ jobs:
             go-${{ runner.os }}-build-
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
-          terraform_version: "1.16.*"
+          terraform_version: "1.17.*"
           terraform_wrapper: false
       - name: Generated code is up to date
         run: make gen-check
@@ -112,10 +112,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # The documented minimum (1.12, the first release with resource identity,
+        # which every resource implements) plus the three newest minors. Keep the
+        # floor in step with the README badge, and add a new minor here when
+        # Renovate bumps the "latest" setup-terraform pins below (it cannot see
+        # matrix entries). The jobs run in parallel, so each entry costs runner
+        # minutes but no wall-clock time.
         terraform:
-          - "1.13.*"
-          - "1.14.*"
+          - "1.12.*"
+          - "1.15.*"
           - "1.16.*"
+          - "1.17.*"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -145,7 +152,7 @@ jobs:
           TF_ACC: ""
         run: go test ./internal/... ./tools/... -count=1 -v -cover -timeout 15m
       - name: Save Go cache
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.terraform == '1.14.*'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.terraform == '1.12.*'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -190,7 +197,7 @@ jobs:
             go-${{ runner.os }}-package-
       - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
         with:
-          terraform_version: "1.16.*"
+          terraform_version: "1.17.*"
           terraform_wrapper: false
       - uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:

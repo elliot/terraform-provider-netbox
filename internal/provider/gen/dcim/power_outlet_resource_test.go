@@ -142,6 +142,18 @@ func TestAccPowerOutlet_basic(t *testing.T) {
 	})
 }
 
+func TestAccPowerOutlet_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_power_outlet",
+		APIPath:      "/api/dcim/power-outlets/",
+		Configs: []string{
+			acctest.Render(t, powerOutletTestConfigUpdate, name),
+			acctest.Render(t, powerOutletTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_power_outlet", &resource.Sweeper{
 		Name:         "netbox_power_outlet",

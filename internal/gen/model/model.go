@@ -170,6 +170,12 @@ type Test struct {
 	ImportVerifyIgnore []string
 	// Checks lists extra attribute checks: attribute -> expected string after Basic.
 	Checks map[string]string
+	// UpgradeSkip disables the upgrade test (apply with the last release,
+	// then plan with this build) with a reason.
+	UpgradeSkip string
+	// UpgradeConfig replaces the configurations the upgrade test tries
+	// (Update, then Basic) with one written for the released provider.
+	UpgradeConfig string
 }
 
 // Resource is one generated Terraform resource (plus its data sources).

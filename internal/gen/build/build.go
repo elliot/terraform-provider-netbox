@@ -388,6 +388,10 @@ func (b *Builder) buildResource(r *model.Resource) error {
 		r.Test.Skip = o.Test.Skip
 		r.Test.Checks = o.Test.Checks
 		r.Test.ImportVerifyIgnore = append(r.Test.ImportVerifyIgnore, o.Test.ImportVerifyIgnore...)
+		if u := o.Test.Upgrade; u != nil {
+			r.Test.UpgradeSkip = u.Skip
+			r.Test.UpgradeConfig = u.Config
+		}
 	}
 	return nil
 }

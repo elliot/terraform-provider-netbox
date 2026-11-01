@@ -91,6 +91,18 @@ func TestAccTenant_basic(t *testing.T) {
 	})
 }
 
+func TestAccTenant_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_tenant",
+		APIPath:      "/api/tenancy/tenants/",
+		Configs: []string{
+			acctest.Render(t, tenantTestConfigUpdate, name),
+			acctest.Render(t, tenantTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_tenant", &resource.Sweeper{
 		Name:         "netbox_tenant",

@@ -135,6 +135,18 @@ func TestAccPowerPort_basic(t *testing.T) {
 	})
 }
 
+func TestAccPowerPort_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_power_port",
+		APIPath:      "/api/dcim/power-ports/",
+		Configs: []string{
+			acctest.Render(t, powerPortTestConfigUpdate, name),
+			acctest.Render(t, powerPortTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_power_port", &resource.Sweeper{
 		Name:         "netbox_power_port",

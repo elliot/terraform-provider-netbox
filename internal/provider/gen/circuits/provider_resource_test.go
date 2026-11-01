@@ -93,6 +93,18 @@ func TestAccProvider_basic(t *testing.T) {
 	})
 }
 
+func TestAccProvider_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_provider",
+		APIPath:      "/api/circuits/providers/",
+		Configs: []string{
+			acctest.Render(t, providerTestConfigUpdate, name),
+			acctest.Render(t, providerTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_provider", &resource.Sweeper{
 		Name:         "netbox_provider",

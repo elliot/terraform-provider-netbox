@@ -100,6 +100,18 @@ func TestAccPowerPortTemplate_basic(t *testing.T) {
 	})
 }
 
+func TestAccPowerPortTemplate_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_power_port_template",
+		APIPath:      "/api/dcim/power-port-templates/",
+		Configs: []string{
+			acctest.Render(t, powerPortTemplateTestConfigUpdate, name),
+			acctest.Render(t, powerPortTemplateTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_power_port_template", &resource.Sweeper{
 		Name:         "netbox_power_port_template",

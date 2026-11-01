@@ -172,6 +172,18 @@ func TestAccVirtualCircuitTermination_basic(t *testing.T) {
 	})
 }
 
+func TestAccVirtualCircuitTermination_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_virtual_circuit_termination",
+		APIPath:      "/api/circuits/virtual-circuit-terminations/",
+		Configs: []string{
+			acctest.Render(t, virtualCircuitTerminationTestConfigUpdate, name),
+			acctest.Render(t, virtualCircuitTerminationTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_virtual_circuit_termination", &resource.Sweeper{
 		Name:         "netbox_virtual_circuit_termination",

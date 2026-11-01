@@ -75,6 +75,18 @@ func TestAccDeviceRole_basic(t *testing.T) {
 	})
 }
 
+func TestAccDeviceRole_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_device_role",
+		APIPath:      "/api/dcim/device-roles/",
+		Configs: []string{
+			acctest.Render(t, deviceRoleTestConfigUpdate, name),
+			acctest.Render(t, deviceRoleTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_device_role", &resource.Sweeper{
 		Name:         "netbox_device_role",

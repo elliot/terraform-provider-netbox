@@ -103,6 +103,18 @@ func TestAccL2vpn_basic(t *testing.T) {
 	})
 }
 
+func TestAccL2vpn_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_l2vpn",
+		APIPath:      "/api/vpn/l2vpns/",
+		Configs: []string{
+			acctest.Render(t, l2vpnTestConfigUpdate, name),
+			acctest.Render(t, l2vpnTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_l2vpn", &resource.Sweeper{
 		Name:         "netbox_l2vpn",
