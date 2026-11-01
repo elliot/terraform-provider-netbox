@@ -25,7 +25,7 @@ import (
 const (
 	// EnvUpgradeFrom selects the released provider version the upgrade tests
 	// start from (a Terraform version constraint, normally an exact version
-	// such as 0.5.0). Upgrade tests are skipped when it is unset.
+	// such as 1.0.0). Upgrade tests are skipped when it is unset.
 	EnvUpgradeFrom = "NETBOX_UPGRADE_FROM"
 	// EnvUpgradeSource overrides the registry source of that release
 	// (default DefaultUpgradeSource), e.g. to test from a fork.

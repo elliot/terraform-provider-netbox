@@ -8,8 +8,8 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 | Area | State |
 |---|---|
 | Resources / data sources | 133 resources (126 generated, 7 hand-written) and 266 data sources; see [RESOURCES.md](RESOURCES.md) |
-| Spec | pinned at NetBox 4.7.4 (`spec/VERSION`); 4.7.4 support merged after `v0.5.0` |
-| Acceptance | nightly workflow on `main` (docker-compose, 12 shards, one pinned NetBox each) green since `v0.5.0`; the 4.7.4 bump passed on its PR. The workflow also runs on `workflow_dispatch` and on PRs labelled `run-acceptance` |
+| Spec | pinned at NetBox 4.7.4 (`spec/VERSION`) since `v0.6.0` |
+| Acceptance | nightly workflow on `main` (docker-compose, 12 shards, one pinned NetBox each). The workflow also runs on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (historical; superseded by the nightly acceptance run) |
 | CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.12 (minimum) / 1.15 / 1.16 / 1.17, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), daily NetBox release watch (`netbox-watch.yml`), zizmor workflow audit, CodeQL, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate weekly with a 7-day cooldown (Dependency Dashboard: issue #46) |
 | Release | `v1.0.0` is the latest release, the first under the [versioning policy](VERSIONING.md). GitHub Releases with eight platform zips, GPG-signed `SHA256SUMS` and SLSA build provenance attestations for every asset; network mirror at `https://elliot.github.io/terraform-provider-netbox/` and `scripts/install.sh` for off-registry installs; see [INSTALL.md](INSTALL.md) |

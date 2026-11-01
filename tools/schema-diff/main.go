@@ -4,7 +4,7 @@
 // reshape something users depend on. `make schema-diff` and the Schema diff
 // workflow drive it; see docs/DEVELOPMENT.md.
 //
-//	schema-diff -old base.json -new current.json [-old-label v0.5.0] [-new-label HEAD] \
+//	schema-diff -old base.json -new current.json [-old-label v1.0.0] [-new-label HEAD] \
 //	    [-provider registry.terraform.io/elliot/netbox] [-out report.md] [-allow-breaking]
 //	schema-diff latest elliot/netbox     # prints the latest release on the registry
 //
