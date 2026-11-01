@@ -38,7 +38,7 @@ output "installed_blade" {
 ### Read-Only
 
 - `created` (String) Created.
-- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `device_id` (Number) ID of the Device (`netbox_device`).
 - `display` (String) Display.

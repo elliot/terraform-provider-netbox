@@ -21,7 +21,7 @@ func dataSourceFile(r *model.Resource, version string) string {
 	for i := range all {
 		if all[i].Kind == model.KindCustomFields {
 			all[i].Kind = model.KindCustomFieldsJSON
-			all[i].Description = "All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID."
+			all[i].Description = "All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID."
 		}
 	}
 	lookups := map[string]bool{"id": true}

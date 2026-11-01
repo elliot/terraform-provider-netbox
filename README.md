@@ -51,8 +51,10 @@ What an older server lacks shows up in two ways, so check this list before using
   ignores fields it does not know, so the value you set comes back null. Attributes that need 4.7:
   `cooling_capability` on `netbox_rack` and `netbox_rack_type`, `cooling_capacity` on `netbox_rack_type`, and
   `timeout` on `netbox_webhook`. `choice_colors` on `netbox_custom_field_choice_set` needs 4.6.
-* **`ports` is required before 4.7.** NetBox 4.5 and 4.6 reject `netbox_service` and
-  `netbox_service_template` without `ports` (`400 ports: This field is required`); set it explicitly.
+* **`netbox_service` and `netbox_service_template` need 4.7.** NetBox 4.5 and 4.6 require `ports`
+  (`400 ports: This field is required`), which the provider does not expose: NetBox 4.7 derives it from
+  `port_mappings`, so managing both would produce inconsistent results. Manage services on 4.5 and 4.6 outside
+  Terraform, or upgrade NetBox.
 
 Apart from the cases above, the suite passed on 4.5 and 4.6 (sites, devices, interfaces, IPAM, circuits,
 tenancy, VPN, wireless, users, virtualization). Releases before 4.5 cannot use v2 tokens, and 4.4 was only run
@@ -184,8 +186,8 @@ data "netbox_prefixes" "dc1" {
   fields take the choice value, object fields the related object ID, multi-value fields a list and JSON fields
   any value. Field names are validated against the NetBox definitions before anything is sent, and only the keys
   present in your configuration are tracked, so fields managed elsewhere never cause drift. Data sources expose
-  every field as a JSON string (`jsondecode(data.netbox_site.x.custom_fields)`), because dynamic values cannot
-  be nested in list results. `netbox_custom_field_value` sets a single field on objects this configuration does not manage.
+  every field as a JSON string (`jsondecode(data.netbox_site.x.custom_fields)`, `"{}"` when the object has none),
+  because dynamic values cannot be nested in list results. `netbox_custom_field_value` sets a single field on objects this configuration does not manage.
 * Other free-form JSON fields (`local_context_data`, `data`, `parameters`, ...) are JSON strings (`jsonencode({...})`).
 * Choice fields take the machine value (`active`, `1000base-t`, ...); attributes with a server-side default
   are `Optional` + `Computed`.

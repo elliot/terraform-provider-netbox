@@ -37,7 +37,7 @@ minor release, next to the existing ones, without changing them.
 
 ## Deprecation policy
 
-Nothing is removed without a deprecation period:
+Nothing the provider controls is removed without a deprecation period:
 
 1. The resource, data source or attribute is marked deprecated in a minor release: it keeps working, its schema
    carries a `DeprecationMessage` (Terraform prints a warning on every plan that uses it) naming the replacement,
@@ -57,12 +57,17 @@ Each provider release is generated from, and tested against, exactly one pinned 
   whether it adds anything to the schema.
 * **NetBox minor release** (`4.7` -> `4.8`): a provider minor release. New NetBox collections and fields become
   new resources and attributes.
-* **Something NetBox removes or renames** (a field, a choice, a whole endpoint): handled through the deprecation
-  policy above. The provider keeps the attribute and marks it deprecated; where NetBox no longer accepts it, the
-  deprecation message says so and the attribute is ignored or mapped to its replacement. It is removed in the
-  next provider major release, not in the minor release that pins the new NetBox version.
+* **Something NetBox deprecates or renames** (a field, a choice, a whole endpoint) while the old form still
+  exists in its API: handled through the deprecation policy above. The provider keeps the attribute, marks it
+  deprecated and adds the replacement next to it; the old attribute is removed in the next provider major
+  release, not in the minor release that pins the new NetBox version.
+* **Something NetBox deletes outright** (the field is gone from the API, so the provider cannot keep sending or
+  reading it): the attribute is removed in the release that pins that NetBox version, and the changelog lists it
+  under *Breaking changes* with upgrade notes. Where that would break working configurations, the provider keeps
+  the previous NetBox spec pinned until the next major instead. NetBox normally deprecates before it deletes, so
+  this should be rare.
 * **NetBox 5.0**: supported by a provider minor release when the API changes allow it. A provider 2.0 follows
-  only if NetBox removes something that cannot be bridged within the deprecation policy.
+  if NetBox removes things that cannot be handled as above.
 
 ## Supported NetBox versions
 

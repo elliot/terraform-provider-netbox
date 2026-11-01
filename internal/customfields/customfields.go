@@ -253,10 +253,12 @@ func Infer(m map[string]any) types.Dynamic {
 
 // InferJSON returns every custom field as a normalized JSON string with
 // selection and related-object values unwrapped (data sources, where dynamic
-// values cannot be nested inside list items).
+// values cannot be nested inside list items). An object without custom
+// fields yields "{}", never null.
 func InferJSON(m map[string]any) jsontypes.Normalized {
 	if len(m) == 0 {
-		return jsontypes.NewNormalizedNull()
+		// "{}" rather than null, so jsondecode() works on every object.
+		return jsontypes.NewNormalizedValue("{}")
 	}
 	out := map[string]any{}
 	for k, v := range m {

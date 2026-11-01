@@ -90,7 +90,7 @@ func journalEntryDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"custom_fields": dsschema.StringAttribute{
-			MarkdownDescription: "All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.",
+			MarkdownDescription: "All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.",
 			CustomType:          jsontypes.NormalizedType{},
 			Computed:            true,
 		},

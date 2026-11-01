@@ -39,7 +39,7 @@ data "netbox_module_type" "nm_8x" {
 - `cooling_method` (String) Cooling Method. Valid values: `air`, `liquid`, `hybrid`, `immersion`. Defaults to the NetBox server default when omitted.
 - `cooling_outflow_template_count` (Number) Cooling Outflow Template Count.
 - `created` (String) Created.
-- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
