@@ -24,6 +24,10 @@ type Options struct {
 	TemplatesDir string
 	// Partial means only a subset is rendered; stale files are not removed.
 	Partial bool
+	// Universe is every resource the spec defines. Partial runs need it so
+	// cross-resource output (sweeper dependencies) matches a full run; when
+	// nil, the rendered resources are used.
+	Universe []*model.Resource
 }
 
 // headerVersion reduces the spec's info.version ("4.7.2 (4.7)") to major.minor
@@ -62,7 +66,11 @@ func All(resources []*model.Resource, netboxVersion string, opts Options) error 
 			_ = root.Close()
 		}
 	}
-	computeSweeperDeps(resources)
+	universe := opts.Universe
+	if universe == nil {
+		universe = resources
+	}
+	computeSweeperDeps(universe)
 	var appNames []string
 	for app := range apps {
 		appNames = append(appNames, app)
@@ -79,18 +87,7 @@ func All(resources []*model.Resource, netboxVersion string, opts Options) error 
 			}
 		}
 	}
-	// The registration package lists every app directory present on disk so
-	// that partial runs keep previously generated packages registered.
-	var onDisk []string
-	entries, _ := os.ReadDir(opts.OutDir)
-	for _, e := range entries {
-		if e.IsDir() && e.Name() != "all" {
-			if matches, _ := filepath.Glob(filepath.Join(opts.OutDir, e.Name(), "*.go")); len(matches) > 0 {
-				onDisk = append(onDisk, e.Name())
-			}
-		}
-	}
-	if err := writeAllPackage(onDisk, version, opts.OutDir); err != nil {
+	if err := writeAllPackage(appPackagesOnDisk(opts.OutDir), version, opts.OutDir); err != nil {
 		return err
 	}
 	if !opts.Partial {
@@ -147,6 +144,26 @@ func writeGo(path, src string) error {
 		return fmt.Errorf("format %s: %w (raw source written to %s.broken)", path, err, path)
 	}
 	return os.WriteFile(path, out, 0o600)
+}
+
+// nonAppPackages are generated packages under the output directory that hold
+// no resources, so the registration package must not import them.
+var nonAppPackages = map[string]bool{"all": true, "objecttypes": true}
+
+// appPackagesOnDisk lists every app package present on disk, so that partial
+// runs keep previously generated packages registered.
+func appPackagesOnDisk(outDir string) []string {
+	var apps []string
+	entries, _ := os.ReadDir(outDir)
+	for _, e := range entries {
+		if !e.IsDir() || nonAppPackages[e.Name()] {
+			continue
+		}
+		if matches, _ := filepath.Glob(filepath.Join(outDir, e.Name(), "*.go")); len(matches) > 0 {
+			apps = append(apps, e.Name())
+		}
+	}
+	return apps
 }
 
 func writeAllPackage(apps []string, version, outDir string) error {
