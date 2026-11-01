@@ -216,6 +216,9 @@ func incompatibilities(cfg string, schema *tfjson.ProviderSchema) ([]string, err
 	if diags.HasErrors() {
 		return nil, fmt.Errorf("parse config: %s", diags.Error())
 	}
+	if file == nil {
+		return nil, fmt.Errorf("parse config: no file returned")
+	}
 	body, ok := file.Body.(*hclsyntax.Body)
 	if !ok {
 		return nil, fmt.Errorf("unexpected HCL body type %T", file.Body)
