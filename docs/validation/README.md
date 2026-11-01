@@ -1,5 +1,9 @@
 # Validation reports
 
+> **Superseded.** These reports and their counts are a historical snapshot. The nightly acceptance workflow
+> (`.github/workflows/acceptance.yml`, green on `main` since `v0.5.0`) is now the record of what passes; see
+> its runs in the Actions tab. The reports below are kept unchanged for their NetBox behaviour notes.
+
 One report per validation shard. The pass/fail counts below come from a full
 run of the repo's acceptance workflow (Actions run 92, `workflow_dispatch` on
 `main` at `d57b8a0`, 2026-10-11): 12 shards, one docker-compose NetBox

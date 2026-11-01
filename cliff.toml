@@ -56,5 +56,8 @@ commit_parsers = [
 
 [bump]
 # Pre-1.0: a feature or a breaking change bumps the minor version, a fix the patch.
+# Both settings only matter while the major version is 0 (https://git-cliff.org/docs/configuration/bump):
+# from 1.0 on a breaking change (`!` or a BREAKING CHANGE footer) bumps the major and a feature the minor
+# without any change here. git-cliff never proposes 1.0.0 itself; enter it explicitly in Prepare release.
 features_always_bump_minor = true
 breaking_always_bump_major = false

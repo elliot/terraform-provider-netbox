@@ -10,6 +10,15 @@ The NetBox provider manages objects in [NetBox](https://netboxlabs.com/oss/netbo
 Every CRUD collection of the NetBox 4.7 API is available as a resource (`netbox_<object>`), a single-object data source
 (`data.netbox_<object>`) and a list data source (`data.netbox_<objects>`); see the resource index in the sidebar.
 
+## Installation and versioning
+
+Declare `source = "elliot/netbox"` in `required_providers` (see the example below) and run `terraform init`; the
+provider installs from the Terraform Registry without any CLI configuration. Hosts without registry access can use
+the network mirror, install script or filesystem mirror described in
+[INSTALL.md](https://github.com/elliot/terraform-provider-netbox/blob/main/docs/INSTALL.md). Releases follow
+semantic versioning; breaking changes, deprecations and the supported NetBox and Terraform versions are covered by
+the [versioning policy](https://github.com/elliot/terraform-provider-netbox/blob/main/docs/VERSIONING.md).
+
 ## Authentication
 
 Use a NetBox v2 API token (`nbt_<key>.<secret>`, NetBox 4.5+). Create one under *Admin → API Tokens* or with
@@ -34,7 +43,7 @@ terraform {
   required_providers {
     netbox = {
       source  = "elliot/netbox"
-      version = "~> 0.1"
+      version = "~> 0.5"
     }
   }
 }
