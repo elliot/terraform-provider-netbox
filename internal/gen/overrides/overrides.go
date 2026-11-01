@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -22,16 +23,22 @@ type File struct {
 
 // Resource overrides one collection.
 type Resource struct {
-	Name               string                `yaml:"name"`
-	Plural             string                `yaml:"plural"`
-	Skip               bool                  `yaml:"skip"`
-	SkipReason         string                `yaml:"skip_reason"`
-	Description        string                `yaml:"description"`
-	Lookups            []string              `yaml:"lookups"`
-	ImportVerifyIgnore []string              `yaml:"import_verify_ignore"`
-	SerialTest         bool                  `yaml:"serial_test"`
-	Attributes         map[string]*Attribute `yaml:"attributes"`
-	Test               *Test                 `yaml:"test"`
+	Name               string   `yaml:"name"`
+	Plural             string   `yaml:"plural"`
+	Skip               bool     `yaml:"skip"`
+	SkipReason         string   `yaml:"skip_reason"`
+	Description        string   `yaml:"description"`
+	Lookups            []string `yaml:"lookups"`
+	ImportVerifyIgnore []string `yaml:"import_verify_ignore"`
+	SerialTest         bool     `yaml:"serial_test"`
+	// Deprecated marks the resource and both data sources as deprecated.
+	Deprecated Deprecation `yaml:"deprecated"`
+	// SchemaVersion is the resource schema version. Above 0 the resource
+	// implements ResourceWithUpgradeState with the upgraders registered in
+	// internal/upgrade.
+	SchemaVersion int64                 `yaml:"schema_version"`
+	Attributes    map[string]*Attribute `yaml:"attributes"`
+	Test          *Test                 `yaml:"test"`
 }
 
 // Attribute overrides one API property (keyed by API property name).
@@ -61,8 +68,58 @@ type Attribute struct {
 	OrderedList bool     `yaml:"ordered_list"`
 	Description string   `yaml:"description"`
 	Enum        []string `yaml:"enum"`
+	// Deprecated sets the attribute's DeprecationMessage. Properties the spec
+	// marks deprecated get a default message unless this is false.
+	Deprecated Deprecation `yaml:"deprecated"`
 	// Nested overrides apply to the item attributes of nested lists.
 	Nested map[string]*Attribute `yaml:"nested"`
+}
+
+// Deprecation is the value of a deprecated key: a message, true (use the
+// default message) or false (suppress the deprecation the spec declares).
+type Deprecation struct {
+	// Set is true when the key is present.
+	Set bool
+	// Off is true for `deprecated: false`.
+	Off bool
+	// Message is the configured message ("" for `deprecated: true`).
+	Message string
+}
+
+// UnmarshalYAML accepts a string or a boolean.
+func (d *Deprecation) UnmarshalYAML(n *yaml.Node) error {
+	if n.Kind != yaml.ScalarNode {
+		return fmt.Errorf("line %d: deprecated must be a message or a boolean", n.Line)
+	}
+	*d = Deprecation{Set: true}
+	if n.Tag == "!!bool" {
+		var b bool
+		if err := n.Decode(&b); err != nil {
+			return err
+		}
+		d.Off = !b
+		return nil
+	}
+	d.Message = strings.TrimSpace(n.Value)
+	if d.Message == "" {
+		return fmt.Errorf("line %d: deprecated message is empty", n.Line)
+	}
+	return nil
+}
+
+// Resolve returns the deprecation message for a property: specDeprecated is
+// whether the OpenAPI document marks it deprecated, def the message used when
+// no override gives one. It returns "" when the property is not deprecated.
+func (d Deprecation) Resolve(specDeprecated bool, def string) string {
+	switch {
+	case d.Off:
+		return ""
+	case d.Message != "":
+		return d.Message
+	case d.Set || specDeprecated:
+		return def
+	}
+	return ""
 }
 
 // Test overrides the acceptance test.
@@ -139,6 +196,12 @@ func merge(dst, src *Resource) {
 	dst.ImportVerifyIgnore = append(dst.ImportVerifyIgnore, src.ImportVerifyIgnore...)
 	if src.SerialTest {
 		dst.SerialTest = true
+	}
+	if src.Deprecated.Set {
+		dst.Deprecated = src.Deprecated
+	}
+	if src.SchemaVersion != 0 {
+		dst.SchemaVersion = src.SchemaVersion
 	}
 	if len(src.Attributes) > 0 {
 		if dst.Attributes == nil {

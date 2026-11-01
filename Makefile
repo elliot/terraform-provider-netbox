@@ -42,7 +42,7 @@ fmt:
 # Hand-written packages only: the regenerated client (netbox/, 1,100+ files) and
 # the generated resources (internal/provider/gen/) carry "Code generated" headers
 # and linting them exhausts CI runner memory without finding anything.
-LINT_PKGS ?= . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
+LINT_PKGS ?= . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./internal/upgrade/... ./tools/...
 
 # golangci-lint is pinned here (CI reads this value through `make lint-version`) and
 # installed with the repo's own Go toolchain into a local, gitignored bin dir. A
