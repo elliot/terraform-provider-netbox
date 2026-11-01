@@ -110,6 +110,10 @@ resources:
     lookups: [name]            # singular data source lookup attributes (default: name, slug)
     import_verify_ignore: [x]  # attributes ignored by ImportStateVerify
     serial_test: true          # resource.Test instead of resource.ParallelTest
+    deprecated: "..."          # DeprecationMessage on the resource and both data sources
+                               #   (true: default message; a deprecated list operation in the spec sets it too)
+    schema_version: 1          # resource schema Version; above 0 the resource implements
+                               #   UpgradeState with the upgraders in internal/upgrade
     attributes:
       parent:                  # keyed by API property name
         name: parent_id        # Terraform attribute name
@@ -130,6 +134,9 @@ resources:
         ordered_list: true     # List instead of Set
         description: "..."
         enum: [a, b]           # replace the allowed values
+        deprecated: "Use y."   # DeprecationMessage on the resource and data source attribute
+                               #   (also nested and data-source-only attributes); true: default
+                               #   message; false: ignore `deprecated: true` in the spec
         nested:                # same keys for nested list item properties
           rear_port: { target: rear_port }
     test:
@@ -155,6 +162,51 @@ sweepers can find it (`make sweep`).
 When no fixture is given, the generator synthesises one if every required
 attribute is a plain string, choice, number or boolean; otherwise the test is
 generated with `t.Skip(...)` naming the override to add.
+
+## Changing the schema after 1.0
+
+From 1.0 on, a provider upgrade must not break a working configuration or
+state within the major version. Anything NetBox removes or renames stays as a
+deprecated attribute through the 1.x line and is removed in the next major.
+
+**Deprecation.** `deprecated: "<message>"` on an attribute or a resource sets
+`DeprecationMessage`, so Terraform warns wherever the configuration uses it,
+and appends `**Deprecated:** <message>` to the description (tfplugindocs only
+shows a "Deprecated" flag, not the message). Properties and list operations
+the spec marks `deprecated: true` get a default message automatically;
+override it with your own message, or with `deprecated: false` when the
+provider keeps supporting the field. `skip` still wins. A required attribute
+cannot be deprecated (users could not stop setting it): make it `optional`
+first. `docs/RESOURCES.md` lists deprecated resources and attributes in its
+Notes column.
+
+**Rename.** Add the new attribute and keep the old one with `deprecated:
+"Use <new> instead."`. When NetBox renames a field it usually keeps the old
+property for a release; the new property is generated automatically and the
+old one only needs the override. A provider-side rename of one API property
+(two Terraform names for the same field) is not supported by the generator
+yet, so rename attributes before 1.0 or in a major release.
+
+**Type or shape change.** Bump `schema_version` on the resource and write a
+state upgrader by hand:
+
+1. Set `schema_version: N` in the resource's overrides and run `make gen`.
+   The generated resource sets `Version: N` and implements
+   `resource.ResourceWithUpgradeState` by returning
+   `upgrade.For("netbox_<name>", N)`.
+2. Add `internal/upgrade/<name>.go` registering one upgrader per older
+   version from `init()`:
+   `upgrade.Register("netbox_<name>", 0, resource.StateUpgrader{PriorSchema: ..., StateUpgrader: ...})`.
+   The framework calls only the upgrader keyed by the version in the state,
+   and it must return state of the current version: on the next bump, update
+   every existing upgrader to produce the new shape and add one from the
+   previous version.
+3. `make test` fails (`TestEveryVersionedResourceHasUpgraders`) while a
+   version has no upgrader or an upgrader is registered for a version that
+   is not older than the resource's. `internal/upgrade/upgrade_test.go` shows
+   an upgrader exercised end to end through the protocol server.
+
+All resources are at schema version 0 today.
 
 ## Acceptance tests
 

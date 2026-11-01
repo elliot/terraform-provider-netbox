@@ -1,0 +1,66 @@
+{
+  "format_version": "1.0",
+  "provider_schemas": {
+    "registry.terraform.io/example/demo": {
+      "provider": {
+        "version": 0,
+        "block": {
+          "attributes": {
+            "api_token": {"type": "string", "description": "Token.", "optional": true},
+            "server_url": {"type": "string", "description": "URL.", "optional": true}
+          }
+        }
+      },
+      "resource_schemas": {
+        "demo_site": {
+          "version": 0,
+          "block": {
+            "attributes": {
+              "id": {"type": "number", "computed": true},
+              "name": {"type": "string", "description": "Name.", "required": true},
+              "slug": {"type": "string", "optional": true},
+              "status": {"type": "string", "optional": true, "computed": true},
+              "comments": {"type": "string", "description": "Old text.", "optional": true, "computed": true},
+              "tag_ids": {"type": ["list", "number"], "optional": true},
+              "facility": {"type": "string", "optional": true},
+              "region_id": {"type": "number", "optional": true},
+              "group_id": {"type": "number", "optional": true},
+              "secret": {"type": "string", "optional": true},
+              "legacy": {"type": "string", "computed": true},
+              "ports": {
+                "nested_type": {
+                  "nesting_mode": "list",
+                  "attributes": {
+                    "name": {"type": "string", "required": true},
+                    "speed": {"type": "number", "optional": true}
+                  }
+                },
+                "optional": true
+              },
+              "front_ports": {
+                "nested_type": {
+                  "nesting_mode": "list",
+                  "attributes": {
+                    "position": {"type": "number", "computed": true}
+                  }
+                },
+                "computed": true
+              }
+            },
+            "block_types": {
+              "timeouts": {"nesting_mode": "single", "block": {"attributes": {"create": {"type": "string", "optional": true}}}}
+            }
+          }
+        },
+        "demo_vlan": {"version": 0, "block": {"attributes": {"id": {"type": "number", "computed": true}}}}
+      },
+      "data_source_schemas": {
+        "demo_site": {"version": 0, "block": {"attributes": {"id": {"type": "number", "optional": true, "computed": true}}}},
+        "demo_sites": {"version": 0, "block": {"attributes": {"filter": {"type": "string", "optional": true}}}}
+      },
+      "resource_identity_schemas": {
+        "demo_site": {"version": 0, "attributes": {"id": {"type": "number", "required_for_import": true}}}
+      }
+    }
+  }
+}

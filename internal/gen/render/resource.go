@@ -50,6 +50,7 @@ const commonImports = `import (
 	"github.com/elliot/terraform-provider-netbox/internal/conv"
 	"github.com/elliot/terraform-provider-netbox/internal/customfields"
 	"github.com/elliot/terraform-provider-netbox/internal/provider"
+	"github.com/elliot/terraform-provider-netbox/internal/upgrade"
 	"github.com/elliot/terraform-provider-netbox/netbox"
 )
 
@@ -75,6 +76,7 @@ func resourceFile(r *model.Resource, version string) (string, error) {
 	_ resource.ResourceWithImportState = &%[1]sResource{}
 	_ resource.ResourceWithIdentity    = &%[1]sResource{}
 )
+%[8]s
 
 // %[1]sResource manages %[2]s objects (%[3]s).
 type %[1]sResource struct {
@@ -92,7 +94,7 @@ func (r *%[1]sResource) Metadata(_ context.Context, req resource.MetadataRequest
 func (r *%[1]sResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: %[5]s,
-		Attributes: %[6]sResourceAttributes(),
+%[7]s		Attributes: %[6]sResourceAttributes(),
 	}
 }
 
@@ -117,7 +119,8 @@ func (r *%[1]sResource) Configure(_ context.Context, req resource.ConfigureReque
 	r.cf = pd.CustomFields
 }
 
-`, g, r.TFType(), r.Path, "_"+r.Name, q(resourceDescription(r)), lg)
+`, g, r.TFType(), r.Path, "_"+r.Name, q(withDeprecation(resourceDescription(r), r.Deprecated)), lg, resourceSchemaExtras(r), upgradeAssertion(r))
+	b.WriteString(upgradeState(r))
 
 	// Schema attributes.
 	fmt.Fprintf(&b, "// %sResourceAttributes returns the schema attributes of %s.\nfunc %sResourceAttributes() map[string]schema.Attribute {\nreturn map[string]schema.Attribute{\n", lg, r.TFType(), lg)
@@ -259,6 +262,40 @@ func (r *%[1]sResource) ImportState(ctx context.Context, req resource.ImportStat
 	b.WriteString(patch)
 	b.WriteString(fromAPIFunc(r, false))
 	return b.String(), nil
+}
+
+// resourceSchemaExtras renders the optional schema fields of a resource:
+// DeprecationMessage and Version (both omitted when unset).
+func resourceSchemaExtras(r *model.Resource) string {
+	s := deprecationMessage(r.Deprecated)
+	if r.SchemaVersion > 0 {
+		s += fmt.Sprintf("Version: %d,\n", r.SchemaVersion)
+	}
+	return s
+}
+
+// upgradeAssertion declares ResourceWithUpgradeState for versioned resources.
+func upgradeAssertion(r *model.Resource) string {
+	if r.SchemaVersion == 0 {
+		return ""
+	}
+	return fmt.Sprintf("\nvar _ resource.ResourceWithUpgradeState = &%sResource{}\n", r.GoName)
+}
+
+// upgradeState renders UpgradeState for versioned resources. The upgraders
+// are hand-written and registered in internal/upgrade; the generated code only
+// wires them to the resource.
+func upgradeState(r *model.Resource) string {
+	if r.SchemaVersion == 0 {
+		return ""
+	}
+	return fmt.Sprintf(`// UpgradeState returns the state upgraders registered for %[2]s in
+// internal/upgrade, keyed by the prior schema version (current: %[3]d).
+func (r *%[1]sResource) UpgradeState(_ context.Context) map[int64]resource.StateUpgrader {
+	return upgrade.For(%[2]q, %[3]d)
+}
+
+`, r.GoName, r.TFType(), r.SchemaVersion)
 }
 
 func resourceDescription(r *model.Resource) string {

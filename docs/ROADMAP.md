@@ -19,9 +19,6 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 
 Remaining work before `v1.0.0`; the compatibility promise is described in [VERSIONING.md](VERSIONING.md).
 
-- Generator support for deprecations (`DeprecationMessage` from overrides) and schema versions with state
-  upgraders, so attributes can be deprecated and state migrated without a major release.
-- A CI check that diffs the provider schema against the last release and fails on unannounced breaking changes.
 - Decide how data sources expose `custom_fields` (JSON string today) before it is frozen.
 - Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require
   full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability
@@ -131,7 +128,7 @@ Attributes hidden or forced by overrides (revisit on every spec bump):
 | module_bay | installed_module | skip | owned by netbox_module.module_bay_id; the 4.7.2 write error is fixed in 4.7.3, so it can become a computed `installed_module_id` |
 | asn | sites | read_only, target | reverse side of site.asn_ids; the read items (`ASNSite`) name no target, so it is set explicitly for the symmetric-pair check |
 | user, user_group | permissions | read_only | reverse side of permission.user_ids / group_ids; exposed as computed `permission_ids` |
-| service, service_template | protocol, ports | skip | deprecated in 4.7 for port_mappings |
+| service, service_template | protocol, ports | skip | deprecated in 4.7 for port_mappings (the spec says so only in the description, not with `deprecated: true`). Not exposed as deprecated attributes: NetBox derives them from `port_mappings` (null for multi-protocol services) and derives `port_mappings` from them, so writing both sides of one value through `Optional+Computed` attributes produces inconsistent-result errors (stale `ports` re-sent after a `port_mappings` change; the empty `port_mappings` default overriding `ports`). Exposing them needs mutually exclusive attributes without state carry-over; never part of a release, so nothing to keep for 1.x |
 | device_type | front_image, rear_image | skip | multipart upload |
 | data_source | type | choice enum | free string in the schema, three shipped backends |
 | devices, virtual_machines | primary_ip4, primary_ip6 | computed | managed by the primary-IP resources |
