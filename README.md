@@ -216,8 +216,8 @@ make sweep            # delete leftover tfacc-* objects
 
 The generator, the overrides format and the testing workflow are described in
 [docs/GENERATOR.md](docs/GENERATOR.md); repository layout and release steps in
-[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). Per-app validation reports against the public demo live in
-`docs/validation/`.
+[docs/DEVELOPMENT.md](docs/DEVELOPMENT.md). Historical per-app validation reports live in `docs/validation/`;
+the nightly acceptance run supersedes them, and they are kept for their NetBox behaviour notes.
 
 ### Known limitations
 

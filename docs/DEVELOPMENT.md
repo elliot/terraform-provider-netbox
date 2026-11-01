@@ -51,12 +51,12 @@ which older releases reject; raise it together with the README badge.
 Every `make gen` rewrites all generated resources, so a generator or override change can remove, rename or
 reshape attributes without anyone noticing. `make schema-diff` builds the working tree, dumps its schema with
 `terraform providers schema -json` through a `dev_overrides` CLI configuration, installs the latest release
-from the Terraform Registry (or `BASE=0.5.0`) the same way users do, and compares the two with
+from the Terraform Registry (or `BASE=1.0.0`) the same way users do, and compares the two with
 `tools/schema-diff`. It needs Terraform and registry access, and prints a Markdown report:
 
 ```sh
 make schema-diff                    # against the latest release
-make schema-diff BASE=0.5.0         # against a given release
+make schema-diff BASE=1.0.0         # against a given release
 BASE_REF=origin/main make schema-diff   # against a git commit (what CI does on pull requests)
 ALLOW_BREAKING=1 make schema-diff   # report breaking changes without failing
 go run ./tools/schema-diff -old base.json -new current.json   # two existing schema dumps
@@ -105,7 +105,7 @@ attribute form). `make sweep` deletes every `tfacc-*` object on the configured s
 
 Upgrade tests (`TestAcc<Resource>_upgrade`) apply each fixture with a published release and expect an
 empty plan from the current build; they run only when `NETBOX_UPGRADE_FROM` names that release, e.g.
-`NETBOX_UPGRADE_FROM=0.5.0 TF_ACC=1 go test ./internal/provider/gen/ipam/ -run '_upgrade$' -v`. See
+`NETBOX_UPGRADE_FROM=1.0.0 TF_ACC=1 go test ./internal/provider/gen/ipam/ -run '_upgrade$' -v`. See
 [GENERATOR.md](GENERATOR.md#upgrade-tests) for how fixtures are chosen and how to handle a deliberate
 breaking change.
 

@@ -234,7 +234,7 @@ expects an empty plan. The hand-written resources have curated equivalents in
 `internal/provider/manual/upgrade_test.go`. Both go through
 `acctest.UpgradeTest`, which:
 
-* skips unless `TF_ACC` and `NETBOX_UPGRADE_FROM` (the release, e.g. `0.5.0`)
+* skips unless `TF_ACC` and `NETBOX_UPGRADE_FROM` (the release, e.g. `1.0.0`)
   are set; `NETBOX_UPGRADE_SOURCE` overrides the registry address
   (default `elliot/netbox`);
 * reads the release's schema once per test binary (`terraform providers schema
@@ -247,7 +247,7 @@ expects an empty plan. The hand-written resources have curated equivalents in
   release is downloaded once rather than by every test.
 
 ```sh
-NETBOX_UPGRADE_FROM=0.5.0 TF_ACC=1 go test ./internal/provider/gen/dcim/ -run 'TestAccSite_upgrade$' -v
+NETBOX_UPGRADE_FROM=1.0.0 TF_ACC=1 go test ./internal/provider/gen/dcim/ -run 'TestAccSite_upgrade$' -v
 ```
 
 A failure means the current build reads the state of an existing resource
