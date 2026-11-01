@@ -44,6 +44,7 @@ type Operation struct {
 	OperationID string               `json:"operationId"`
 	Description string               `json:"description"`
 	Tags        []string             `json:"tags"`
+	Deprecated  bool                 `json:"deprecated"`
 	Parameters  []*Parameter         `json:"parameters"`
 	RequestBody *RequestBody         `json:"requestBody"`
 	Responses   map[string]*Response `json:"responses"`
