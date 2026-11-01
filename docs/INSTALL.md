@@ -1,42 +1,51 @@
-# Installing the provider without the Terraform Registry
+# Installing the provider
 
-The provider is not (yet) published on `registry.terraform.io`. Terraform still resolves it under its
-normal address, `elliot/netbox`, through one of the three supported off-registry channels below. All of
-them keep `terraform init`, the dependency lock file and `required_providers` version constraints working
-exactly as they do for registry providers.
-
-| Channel | Best for | Needs |
-|---|---|---|
-| [Install script](#1-install-script-implied-local-mirror) | one machine, CI runners, quick start | `curl`, nothing else |
-| [Network mirror](#2-network-mirror-github-pages) | teams, many machines, version pinning | one CLI config file |
-| [Filesystem mirror / air-gapped bundle](#3-filesystem-mirror-and-air-gapped-bundles) | no internet, corporate artifact stores | a shared directory |
-
-Every GitHub Release ships `terraform-provider-netbox_<version>_<os>_<arch>.zip` for **linux** and
-**darwin** (`amd64`, `arm64`), plus `freebsd`/`windows`, a `_SHA256SUMS` file and the registry
-manifest. Each of those files has a Sigstore build provenance attestation (see
-[Verifying a release](../SECURITY.md#verifying-a-release)). From the release after `v0.1.0` the checksum file
-is also GPG-signed (`_SHA256SUMS.sig`); the public registry verifies that signature, while Terraform itself
-verifies mirror downloads with the `h1:` hashes in the lock file.
-
-Reference the provider the same way in every case:
+The provider is published on the [Terraform Registry](https://registry.terraform.io/providers/elliot/netbox)
+as `elliot/netbox`, which is the normal way to install it. Reference it in `required_providers` and run
+`terraform init`; Terraform downloads the binary for your platform from the registry, verifies the signed
+checksums and records the hashes in `.terraform.lock.hcl`:
 
 ```hcl
 terraform {
   required_providers {
     netbox = {
       source  = "elliot/netbox"
-      version = "~> 0.1"
+      version = "~> 0.5"
     }
   }
 }
 ```
+
+No CLI configuration is needed. The registry returns the signed checksums of every platform, so the lock file
+written by `terraform init` on one platform also works on the others; commit it. `terraform providers lock
+-platform=linux_amd64 -platform=darwin_arm64` additionally records the `h1:` hashes of the listed platforms.
+
+## Off-registry and air-gapped installation
+
+For hosts that cannot reach `registry.terraform.io`, or organisations that only install from their own
+artifact stores, the same releases are available through three off-registry channels. Terraform still
+resolves the provider under its normal address, `elliot/netbox`, so `terraform init`, the dependency lock file
+and `required_providers` version constraints work exactly as they do with the registry.
+
+| Channel | Best for | Needs |
+|---|---|---|
+| [Install script](#1-install-script-implied-local-mirror) | one machine or CI runner without registry access | `curl`, nothing else |
+| [Network mirror](#2-network-mirror-github-pages) | teams that mirror providers, version pinning | one CLI config file |
+| [Filesystem mirror / air-gapped bundle](#3-filesystem-mirror-and-air-gapped-bundles) | no internet, corporate artifact stores | a shared directory |
+
+Every GitHub Release ships `terraform-provider-netbox_<version>_<os>_<arch>.zip` for **linux** and
+**darwin** (`amd64`, `arm64`), plus `freebsd`/`windows`, a `_SHA256SUMS` file and the registry
+manifest. Each of those files has a Sigstore build provenance attestation (see
+[Verifying a release](../SECURITY.md#verifying-a-release)). From the release after `v0.1.0` the checksum file
+is also GPG-signed (`_SHA256SUMS.sig`); the registry verifies that signature, while Terraform itself
+verifies mirror downloads with the `h1:` hashes in the lock file.
 
 ## 1. Install script (implied local mirror)
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/elliot/terraform-provider-netbox/main/scripts/install.sh | sh
 # or a specific release:
-VERSION=0.1.0 sh scripts/install.sh
+VERSION=0.5.0 sh scripts/install.sh
 ```
 
 The script detects the OS and CPU, downloads the zip and `SHA256SUMS` from the GitHub Release, verifies
@@ -90,8 +99,8 @@ which gives a self-contained directory.
 A filesystem mirror is a directory in either layout Terraform understands:
 
 ```
-registry.terraform.io/elliot/netbox/terraform-provider-netbox_0.1.0_linux_amd64.zip   # packed
-registry.terraform.io/elliot/netbox/0.1.0/linux_amd64/terraform-provider-netbox_v0.1.0 # unpacked
+registry.terraform.io/elliot/netbox/terraform-provider-netbox_0.5.0_linux_amd64.zip   # packed
+registry.terraform.io/elliot/netbox/0.5.0/linux_amd64/terraform-provider-netbox_v0.5.0 # unpacked
 ```
 
 Point Terraform at it explicitly:
@@ -109,7 +118,7 @@ provider_installation {
 ```
 
 To build a bundle for machines without internet access, run this once on a connected machine that can
-reach the network mirror (or has the provider installed through the script):
+reach the registry or the network mirror (or has the provider installed through the script):
 
 ```sh
 terraform providers mirror -platform=linux_amd64 -platform=darwin_arm64 -platform=darwin_amd64 /opt/terraform/providers
@@ -134,7 +143,8 @@ terraform providers lock -fs-mirror=$HOME/.terraform.d/plugins -platform=linux_a
 ```
 
 `terraform providers lock` does not read `provider_installation` from the CLI configuration: without
-`-net-mirror` or `-fs-mirror` it asks the public registry, which does not know this provider.
+`-net-mirror` or `-fs-mirror` it asks the public registry. That works when the host can reach the registry
+(the registry serves the same zips, so the hashes match); on hosts that cannot, pass the mirror explicitly.
 
 ## Development builds
 
@@ -155,9 +165,10 @@ make mirror-check    # serves dist/mirror over local HTTPS, runs terraform init 
 The same three steps run in CI for every pull request (`package` job in `.github/workflows/test.yml`), so a
 tag only publishes what has already been installed at least once.
 
-## Publishing on the Terraform Registry later
+## Switching between the registry and a mirror
 
-Nothing above changes when the provider is eventually published: users switch `provider_installation`
-off (or keep it; a mirror takes precedence only for the providers it `include`s). The registry additionally
-requires a public repository, a GPG-signed `SHA256SUMS` (the release workflow signs it automatically) and
-the `terraform-registry-manifest.json` that is already part of every release.
+The registry, the network mirror and the release zips carry the same signed artifacts, so a lock file
+written through one channel is valid for the others as long as it holds the hashes of every platform in use.
+To move from a mirror to the registry, remove the `elliot/netbox` entries from `provider_installation` (or
+the whole block) and run `terraform init`; to move the other way, add them back. A mirror takes precedence
+only for the providers it `include`s.
