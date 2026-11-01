@@ -48,7 +48,7 @@ type ClusterDataModel struct {
 	Display             types.String         `tfsdk:"display"`
 	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
 	DeviceCount         types.Int64          `tfsdk:"device_count"`
-	VirtualmachineCount types.Int64          `tfsdk:"virtualmachine_count"`
+	VirtualMachineCount types.Int64          `tfsdk:"virtual_machine_count"`
 	AllocatedVcpus      types.Float64        `tfsdk:"allocated_vcpus"`
 	AllocatedMemory     types.Int64          `tfsdk:"allocated_memory"`
 	AllocatedDisk       types.Int64          `tfsdk:"allocated_disk"`
@@ -162,7 +162,7 @@ func clusterDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Device Count.",
 			Computed:            true,
 		},
-		"virtualmachine_count": dsschema.Int64Attribute{
+		"virtual_machine_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Virtualmachine Count.",
 			Computed:            true,
 		},
@@ -438,7 +438,7 @@ func clusterDataFromAPI(ctx context.Context, obj *netbox.Cluster, out *ClusterDa
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DeviceCount = conv.Int64From64(obj.GetDeviceCountOk())
-	out.VirtualmachineCount = conv.Int64From64(obj.GetVirtualmachineCountOk())
+	out.VirtualMachineCount = conv.Int64From64(obj.GetVirtualmachineCountOk())
 	out.AllocatedVcpus = conv.Float64From(obj.GetAllocatedVcpusOk())
 	out.AllocatedMemory = conv.Int64From32(obj.GetAllocatedMemoryOk())
 	out.AllocatedDisk = conv.Int64From32(obj.GetAllocatedDiskOk())

@@ -49,7 +49,7 @@ Read-Only:
 
 - `base_choices` (String) Base set of predefined choices (optional). Valid values: `IATA`, `ISO_3166`, `UN_LOCODE`. Defaults to the NetBox server default when omitted.
 - `choice_colors` (String) Colors per choice value as a JSON object (`jsonencode({ gold = "yellow" })`). Values are NetBox colour names: `blue`, `indigo`, `purple`, `pink`, `red`, `orange`, `yellow`, `green`, `teal`, `cyan`, `gray`, `black`, `white` (not hex codes).
-- `choices_count` (Number) Choices Count.
+- `choice_count` (Number) Choices Count.
 - `created` (String) Created.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.

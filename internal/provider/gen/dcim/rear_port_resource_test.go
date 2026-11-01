@@ -135,7 +135,7 @@ func TestAccRearPort_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_rear_port", &resource.Sweeper{
 		Name:         "netbox_rear_port",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_front_port"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/rear-ports/", []string{"name__isw", "description__isw", "q"})
 		},

@@ -45,11 +45,11 @@ type TenantDataModel struct {
 	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
 	CircuitCount        types.Int64          `tfsdk:"circuit_count"`
 	DeviceCount         types.Int64          `tfsdk:"device_count"`
-	IpaddressCount      types.Int64          `tfsdk:"ipaddress_count"`
+	IpAddressCount      types.Int64          `tfsdk:"ip_address_count"`
 	PrefixCount         types.Int64          `tfsdk:"prefix_count"`
 	RackCount           types.Int64          `tfsdk:"rack_count"`
 	SiteCount           types.Int64          `tfsdk:"site_count"`
-	VirtualmachineCount types.Int64          `tfsdk:"virtualmachine_count"`
+	VirtualMachineCount types.Int64          `tfsdk:"virtual_machine_count"`
 	VlanCount           types.Int64          `tfsdk:"vlan_count"`
 	VrfCount            types.Int64          `tfsdk:"vrf_count"`
 	ClusterCount        types.Int64          `tfsdk:"cluster_count"`
@@ -145,7 +145,7 @@ func tenantDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Device Count.",
 			Computed:            true,
 		},
-		"ipaddress_count": dsschema.Int64Attribute{
+		"ip_address_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Ipaddress Count.",
 			Computed:            true,
 		},
@@ -161,7 +161,7 @@ func tenantDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Site Count.",
 			Computed:            true,
 		},
-		"virtualmachine_count": dsschema.Int64Attribute{
+		"virtual_machine_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Virtualmachine Count.",
 			Computed:            true,
 		},
@@ -442,11 +442,11 @@ func tenantDataFromAPI(ctx context.Context, obj *netbox.Tenant, out *TenantDataM
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.CircuitCount = conv.Int64From64(obj.GetCircuitCountOk())
 	out.DeviceCount = conv.Int64From64(obj.GetDeviceCountOk())
-	out.IpaddressCount = conv.Int64From64(obj.GetIpaddressCountOk())
+	out.IpAddressCount = conv.Int64From64(obj.GetIpaddressCountOk())
 	out.PrefixCount = conv.Int64From64(obj.GetPrefixCountOk())
 	out.RackCount = conv.Int64From64(obj.GetRackCountOk())
 	out.SiteCount = conv.Int64From64(obj.GetSiteCountOk())
-	out.VirtualmachineCount = conv.Int64From64(obj.GetVirtualmachineCountOk())
+	out.VirtualMachineCount = conv.Int64From64(obj.GetVirtualmachineCountOk())
 	out.VlanCount = conv.Int64From64(obj.GetVlanCountOk())
 	out.VrfCount = conv.Int64From64(obj.GetVrfCountOk())
 	out.ClusterCount = conv.Int64From64(obj.GetClusterCountOk())

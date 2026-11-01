@@ -46,7 +46,7 @@ type PlatformDataModel struct {
 	Display             types.String         `tfsdk:"display"`
 	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
 	DeviceCount         types.Int64          `tfsdk:"device_count"`
-	VirtualmachineCount types.Int64          `tfsdk:"virtualmachine_count"`
+	VirtualMachineCount types.Int64          `tfsdk:"virtual_machine_count"`
 	Depth               types.Int64          `tfsdk:"depth"`
 }
 
@@ -145,7 +145,7 @@ func platformDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Device Count.",
 			Computed:            true,
 		},
-		"virtualmachine_count": dsschema.Int64Attribute{
+		"virtual_machine_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Virtualmachine Count.",
 			Computed:            true,
 		},
@@ -419,6 +419,6 @@ func platformDataFromAPI(ctx context.Context, obj *netbox.Platform, out *Platfor
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DeviceCount = conv.Int64From32(obj.GetDeviceCountOk())
-	out.VirtualmachineCount = conv.Int64From32(obj.GetVirtualmachineCountOk())
+	out.VirtualMachineCount = conv.Int64From32(obj.GetVirtualmachineCountOk())
 	out.Depth = conv.Int64From32(obj.GetDepthOk())
 }

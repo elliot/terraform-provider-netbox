@@ -5,7 +5,7 @@ resource "netbox_service" "web" {
   parent_object_id   = netbox_device.web1.id
   name               = "nginx"
   port_mappings      = ["tcp/80", "tcp/443"]
-  ipaddress_ids      = [netbox_ip_address.web1_eth0.id]
+  ip_address_ids     = [netbox_ip_address.web1_eth0.id]
   description        = "Public web front end"
 }
 

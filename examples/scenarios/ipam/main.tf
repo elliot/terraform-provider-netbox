@@ -289,7 +289,7 @@ resource "netbox_service" "core1_ssh" {
   parent_object_id   = netbox_device.core1.id
   name               = "${local.prefix}-ssh"
   port_mappings      = netbox_service_template.ssh.port_mappings
-  ipaddress_ids      = [netbox_ip_address.core1_vlan20.id]
+  ip_address_ids     = [netbox_ip_address.core1_vlan20.id]
   description        = "${local.prefix} management SSH"
 }
 

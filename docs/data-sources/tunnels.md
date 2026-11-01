@@ -68,6 +68,6 @@ Read-Only:
 - `status` (String) Status. Valid values: `planned`, `active`, `disabled`.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `tenant_id` (Number) ID of the Tenant (`netbox_tenant`).
-- `terminations_count` (Number) Terminations Count.
+- `termination_count` (Number) Terminations Count.
 - `tunnel_id` (Number) Tunnel Id. Defaults to the NetBox server default when omitted.
 - `url` (String) Url.

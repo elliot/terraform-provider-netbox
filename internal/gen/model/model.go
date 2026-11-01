@@ -217,6 +217,16 @@ func (r *Resource) Attr(name string) *Attr {
 	return nil
 }
 
+// AttrByJSON returns the attribute mapped to an API property name.
+func (r *Resource) AttrByJSON(prop string) *Attr {
+	for i := range r.Attrs {
+		if r.Attrs[i].JSON == prop {
+			return &r.Attrs[i]
+		}
+	}
+	return nil
+}
+
 // TFType returns the full Terraform type name.
 func (r *Resource) TFType() string { return "netbox_" + r.Name }
 

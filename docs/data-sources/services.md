@@ -59,7 +59,7 @@ Read-Only:
 - `display` (String) Display.
 - `display_url` (String) Display Url.
 - `id` (Number) The numeric ID of the object in NetBox.
-- `ipaddress_ids` (Set of Number) IDs of the assigned Ipaddres (`netbox_ip_address`). Defaults to an empty set.
+- `ip_address_ids` (Set of Number) IDs of the assigned Ip Address (`netbox_ip_address`). Defaults to an empty set.
 - `last_updated` (String) Last Updated.
 - `name` (String) Name.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).

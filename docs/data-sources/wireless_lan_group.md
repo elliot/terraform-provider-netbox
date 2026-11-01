@@ -46,7 +46,7 @@ resource "netbox_wireless_lan" "corp" {
 - `parent_id` (Number) ID of the Wireless Lan Group (`netbox_wireless_lan_group`).
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.
-- `wirelesslan_count` (Number) Wirelesslan Count.
+- `wireless_lan_count` (Number) Wirelesslan Count.
 
 <a id="nestedatt--filters"></a>
 ### Nested Schema for `filters`

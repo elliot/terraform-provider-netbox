@@ -46,7 +46,7 @@ resource "netbox_circuit" "example" {
 - `display` (String) Display.
 - `display_url` (String) Display Url.
 - `group_id` (Number) ID of the Tenant Group (`netbox_tenant_group`).
-- `ipaddress_count` (Number) Ipaddress Count.
+- `ip_address_count` (Number) Ipaddress Count.
 - `last_updated` (String) Last Updated.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `prefix_count` (Number) Prefix Count.
@@ -54,7 +54,7 @@ resource "netbox_circuit" "example" {
 - `site_count` (Number) Site Count.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.
-- `virtualmachine_count` (Number) Virtualmachine Count.
+- `virtual_machine_count` (Number) Virtualmachine Count.
 - `vlan_count` (Number) Vlan Count.
 - `vrf_count` (Number) Vrf Count.
 

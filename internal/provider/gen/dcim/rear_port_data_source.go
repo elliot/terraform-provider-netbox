@@ -133,7 +133,7 @@ func rearPortDataAttributes(lookup bool) map[string]dsschema.Attribute {
 					MarkdownDescription: "Position.",
 					Computed:            true,
 				},
-				"front_port": dsschema.Int64Attribute{
+				"front_port_id": dsschema.Int64Attribute{
 					MarkdownDescription: "Front Port.",
 					Computed:            true,
 				},
@@ -460,7 +460,7 @@ func rearPortDataFromAPI(ctx context.Context, obj *netbox.RearPort, out *RearPor
 			src := &items[i]
 			vals = append(vals, RearPortFrontPortsItem{
 				Position:          conv.Int64From32(src.GetPositionOk()),
-				FrontPort:         conv.Int64From64(src.GetFrontPortOk()),
+				FrontPortId:       conv.Int64From64(src.GetFrontPortOk()),
 				FrontPortPosition: conv.Int64From32(src.GetFrontPortPositionOk()),
 			})
 		}

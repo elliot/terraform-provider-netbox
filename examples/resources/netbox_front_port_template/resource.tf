@@ -23,7 +23,7 @@ resource "netbox_front_port_template" "lc" {
   rear_ports = [
     {
       position           = 1
-      rear_port          = netbox_rear_port_template.trunk1.id
+      rear_port_id       = netbox_rear_port_template.trunk1.id
       rear_port_position = count.index + 1
     },
   ]

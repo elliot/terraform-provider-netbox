@@ -66,13 +66,13 @@ type RearPortModel struct {
 // RearPortFrontPortsItem is one element of netbox_rear_port.front_ports.
 type RearPortFrontPortsItem struct {
 	Position          types.Int64 `tfsdk:"position"`
-	FrontPort         types.Int64 `tfsdk:"front_port"`
+	FrontPortId       types.Int64 `tfsdk:"front_port_id"`
 	FrontPortPosition types.Int64 `tfsdk:"front_port_position"`
 }
 
 var rearPortFrontPortsItemAttrTypes = map[string]attr.Type{
 	"position":            types.Int64Type,
-	"front_port":          types.Int64Type,
+	"front_port_id":       types.Int64Type,
 	"front_port_position": types.Int64Type,
 }
 
@@ -177,7 +177,7 @@ func rearPortResourceAttributes() map[string]schema.Attribute {
 					MarkdownDescription: "Position.",
 					Computed:            true,
 				},
-				"front_port": schema.Int64Attribute{
+				"front_port_id": schema.Int64Attribute{
 					MarkdownDescription: "Front Port.",
 					Computed:            true,
 				},
@@ -466,7 +466,7 @@ func rearPortFromAPI(ctx context.Context, obj *netbox.RearPort, prior *RearPortM
 			src := &items[i]
 			vals = append(vals, RearPortFrontPortsItem{
 				Position:          conv.Int64From32(src.GetPositionOk()),
-				FrontPort:         conv.Int64From64(src.GetFrontPortOk()),
+				FrontPortId:       conv.Int64From64(src.GetFrontPortOk()),
 				FrontPortPosition: conv.Int64From32(src.GetFrontPortPositionOk()),
 			})
 		}

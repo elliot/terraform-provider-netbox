@@ -1,4 +1,8 @@
 resources:
+  scripts:
+    attributes:
+      # bare integer in the read serializer (the script module's ID); named like every other FK
+      module: { name: module_id, description: "ID of the script module the script belongs to." }
   image-attachments:
     skip: true
     skip_reason: requires a multipart image upload

@@ -72,6 +72,6 @@ Read-Only:
 
 Read-Only:
 
-- `front_port` (Number) Front Port.
+- `front_port_id` (Number) Front Port.
 - `front_port_position` (Number) Front Port Position.
 - `position` (Number) Position.

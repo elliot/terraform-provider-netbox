@@ -42,9 +42,9 @@ type ManufacturerDataModel struct {
 	DisplayUrl         types.String         `tfsdk:"display_url"`
 	Display            types.String         `tfsdk:"display"`
 	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
-	DevicetypeCount    types.Int64          `tfsdk:"devicetype_count"`
-	ModuletypeCount    types.Int64          `tfsdk:"moduletype_count"`
-	InventoryitemCount types.Int64          `tfsdk:"inventoryitem_count"`
+	DeviceTypeCount    types.Int64          `tfsdk:"device_type_count"`
+	ModuleTypeCount    types.Int64          `tfsdk:"module_type_count"`
+	InventoryItemCount types.Int64          `tfsdk:"inventory_item_count"`
 	PlatformCount      types.Int64          `tfsdk:"platform_count"`
 }
 
@@ -125,15 +125,15 @@ func manufacturerDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"devicetype_count": dsschema.Int64Attribute{
+		"device_type_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Devicetype Count.",
 			Computed:            true,
 		},
-		"moduletype_count": dsschema.Int64Attribute{
+		"module_type_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Moduletype Count.",
 			Computed:            true,
 		},
-		"inventoryitem_count": dsschema.Int64Attribute{
+		"inventory_item_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Inventoryitem Count.",
 			Computed:            true,
 		},
@@ -403,8 +403,8 @@ func manufacturerDataFromAPI(ctx context.Context, obj *netbox.Manufacturer, out 
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.DevicetypeCount = conv.Int64From64(obj.GetDevicetypeCountOk())
-	out.ModuletypeCount = conv.Int64From64(obj.GetModuletypeCountOk())
-	out.InventoryitemCount = conv.Int64From64(obj.GetInventoryitemCountOk())
+	out.DeviceTypeCount = conv.Int64From64(obj.GetDevicetypeCountOk())
+	out.ModuleTypeCount = conv.Int64From64(obj.GetModuletypeCountOk())
+	out.InventoryItemCount = conv.Int64From64(obj.GetInventoryitemCountOk())
 	out.PlatformCount = conv.Int64From64(obj.GetPlatformCountOk())
 }

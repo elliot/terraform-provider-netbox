@@ -36,7 +36,7 @@ type ServiceModel struct {
 	ParentObjectId   types.Int64       `tfsdk:"parent_object_id"`
 	Name             types.String      `tfsdk:"name"`
 	PortMappings     types.Set         `tfsdk:"port_mappings"`
-	IpaddressIds     types.Set         `tfsdk:"ipaddress_ids"`
+	IpAddressIds     types.Set         `tfsdk:"ip_address_ids"`
 	Description      types.String      `tfsdk:"description"`
 	OwnerId          types.Int64       `tfsdk:"owner_id"`
 	Comments         types.String      `tfsdk:"comments"`
@@ -122,8 +122,8 @@ func serviceResourceAttributes() map[string]schema.Attribute {
 			Computed:            true,
 			Default:             setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 		},
-		"ipaddress_ids": schema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Ipaddres (`netbox_ip_address`). Defaults to an empty set.",
+		"ip_address_ids": schema.SetAttribute{
+			MarkdownDescription: "IDs of the assigned Ip Address (`netbox_ip_address`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Optional:            true,
 			Computed:            true,
@@ -287,8 +287,8 @@ func serviceToCreate(ctx context.Context, plan *ServiceModel, cf *customfields.C
 	if conv.Known(plan.PortMappings) {
 		body.SetPortMappings(conv.Strings(ctx, plan.PortMappings, diags))
 	}
-	if conv.Known(plan.IpaddressIds) {
-		body.SetIpaddresses(conv.Int64s(ctx, plan.IpaddressIds, diags))
+	if conv.Known(plan.IpAddressIds) {
+		body.SetIpaddresses(conv.Int64s(ctx, plan.IpAddressIds, diags))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -332,9 +332,9 @@ func serviceToPatch(ctx context.Context, plan, state *ServiceModel, cf *customfi
 			body.SetPortMappings(conv.Strings(ctx, plan.PortMappings, diags))
 		}
 	}
-	if !plan.IpaddressIds.Equal(state.IpaddressIds) {
-		if conv.Known(plan.IpaddressIds) {
-			body.SetIpaddresses(conv.Int64s(ctx, plan.IpaddressIds, diags))
+	if !plan.IpAddressIds.Equal(state.IpAddressIds) {
+		if conv.Known(plan.IpAddressIds) {
+			body.SetIpaddresses(conv.Int64s(ctx, plan.IpAddressIds, diags))
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -379,7 +379,7 @@ func serviceFromAPI(ctx context.Context, obj *netbox.Service, prior *ServiceMode
 	out.ParentObjectId = conv.Int64From64(obj.GetParentObjectIdOk())
 	out.Name = conv.StringKeep(conv.String(obj.GetNameOk()), conv.PriorString(prior, func(m *ServiceModel) types.String { return m.Name }), false)
 	out.PortMappings = conv.StringSet(obj.GetPortMappings())
-	out.IpaddressIds = conv.BriefIDs(obj.GetIpaddresses())
+	out.IpAddressIds = conv.BriefIDs(obj.GetIpaddresses())
 	out.Description = conv.StringKeep(conv.StringOrEmpty(obj.GetDescriptionOk()), conv.PriorString(prior, func(m *ServiceModel) types.String { return m.Description }), false)
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringKeep(conv.StringOrEmpty(obj.GetCommentsOk()), conv.PriorString(prior, func(m *ServiceModel) types.String { return m.Comments }), false)

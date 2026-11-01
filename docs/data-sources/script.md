@@ -40,7 +40,7 @@ data "netbox_script" "filtered" {
 - `display` (String) Display.
 - `display_url` (String) Display Url.
 - `is_executable` (Boolean) Is Executable.
-- `module` (Number) Module.
+- `module_id` (Number) ID of the script module the script belongs to.
 - `url` (String) Url.
 - `vars` (String) Vars.
 

@@ -43,7 +43,7 @@ type InventoryItemRoleDataModel struct {
 	DisplayUrl         types.String         `tfsdk:"display_url"`
 	Display            types.String         `tfsdk:"display"`
 	LastUpdated        timetypes.RFC3339    `tfsdk:"last_updated"`
-	InventoryitemCount types.Int64          `tfsdk:"inventoryitem_count"`
+	InventoryItemCount types.Int64          `tfsdk:"inventory_item_count"`
 }
 
 // inventoryItemRoleFilterNames lists the query parameters accepted by /api/dcim/inventory-item-roles/ (sorted).
@@ -129,7 +129,7 @@ func inventoryItemRoleDataAttributes(lookup bool) map[string]dsschema.Attribute 
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"inventoryitem_count": dsschema.Int64Attribute{
+		"inventory_item_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Inventoryitem Count.",
 			Computed:            true,
 		},
@@ -398,5 +398,5 @@ func inventoryItemRoleDataFromAPI(ctx context.Context, obj *netbox.InventoryItem
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.InventoryitemCount = conv.Int64From64(obj.GetInventoryitemCountOk())
+	out.InventoryItemCount = conv.Int64From64(obj.GetInventoryitemCountOk())
 }

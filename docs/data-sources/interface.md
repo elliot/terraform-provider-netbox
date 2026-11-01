@@ -44,8 +44,6 @@ data "netbox_interface" "filtered" {
 - `channels` (Number) The number of channels into which this interface is channelized. Defaults to the NetBox server default when omitted.
 - `connected_endpoints_reachable` (Boolean) Connected Endpoints Reachable.
 - `connected_endpoints_type` (String) Connected Endpoints Type.
-- `count_fhrp_groups` (Number) Count Fhrp Groups.
-- `count_ipaddresses` (Number) Count Ipaddresses.
 - `created` (String) Created.
 - `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
@@ -54,6 +52,8 @@ data "netbox_interface" "filtered" {
 - `display_url` (String) Display Url.
 - `duplex` (String) Duplex. Valid values: `half`, `full`, `auto`. Defaults to the NetBox server default when omitted.
 - `enabled` (Boolean) Enabled. Defaults to the NetBox server default when omitted.
+- `fhrp_group_count` (Number) Count Fhrp Groups.
+- `ip_address_count` (Number) Count Ipaddresses.
 - `l2vpn_termination_id` (Number) L2vpn Termination. References `netbox_l2vpn_termination`.
 - `label` (String) Physical label. Defaults to an empty string.
 - `lag_id` (Number) ID of the Interface (`netbox_interface`).

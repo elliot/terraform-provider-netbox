@@ -43,7 +43,7 @@ type WirelessLanGroupDataModel struct {
 	DisplayUrl       types.String         `tfsdk:"display_url"`
 	Display          types.String         `tfsdk:"display"`
 	LastUpdated      timetypes.RFC3339    `tfsdk:"last_updated"`
-	WirelesslanCount types.Int64          `tfsdk:"wirelesslan_count"`
+	WirelessLanCount types.Int64          `tfsdk:"wireless_lan_count"`
 	Depth            types.Int64          `tfsdk:"depth"`
 }
 
@@ -129,7 +129,7 @@ func wirelessLanGroupDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"wirelesslan_count": dsschema.Int64Attribute{
+		"wireless_lan_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Wirelesslan Count.",
 			Computed:            true,
 		},
@@ -402,6 +402,6 @@ func wirelessLanGroupDataFromAPI(ctx context.Context, obj *netbox.WirelessLANGro
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.WirelesslanCount = conv.Int64From32(obj.GetWirelesslanCountOk())
+	out.WirelessLanCount = conv.Int64From32(obj.GetWirelesslanCountOk())
 	out.Depth = conv.Int64From32(obj.GetDepthOk())
 }

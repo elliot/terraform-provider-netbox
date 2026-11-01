@@ -56,7 +56,7 @@ output "platform_id" {
 - `parent_id` (Number) ID of the Platform (`netbox_platform`).
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.
-- `virtualmachine_count` (Number) Virtualmachine Count.
+- `virtual_machine_count` (Number) Virtualmachine Count.
 
 <a id="nestedatt--filters"></a>
 ### Nested Schema for `filters`

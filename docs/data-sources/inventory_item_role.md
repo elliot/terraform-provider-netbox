@@ -36,7 +36,7 @@ data "netbox_inventory_item_role" "psu" {
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
-- `inventoryitem_count` (Number) Inventoryitem Count.
+- `inventory_item_count` (Number) Inventoryitem Count.
 - `last_updated` (String) Last Updated.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.

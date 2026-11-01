@@ -30,7 +30,7 @@ type ScriptDataModel struct {
 	Id           types.Int64          `tfsdk:"id"`
 	Url          types.String         `tfsdk:"url"`
 	DisplayUrl   types.String         `tfsdk:"display_url"`
-	Module       types.Int64          `tfsdk:"module"`
+	ModuleId     types.Int64          `tfsdk:"module_id"`
 	Name         types.String         `tfsdk:"name"`
 	Description  types.String         `tfsdk:"description"`
 	Vars         jsontypes.Normalized `tfsdk:"vars"`
@@ -61,8 +61,8 @@ func scriptDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display Url.",
 			Computed:            true,
 		},
-		"module": dsschema.Int64Attribute{
-			MarkdownDescription: "Module.",
+		"module_id": dsschema.Int64Attribute{
+			MarkdownDescription: "ID of the script module the script belongs to.",
 			Computed:            true,
 		},
 		"name": dsschema.StringAttribute{
@@ -330,7 +330,7 @@ func scriptDataFromAPI(ctx context.Context, obj *netbox.Script, out *ScriptDataM
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Url = conv.String(obj.GetUrlOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
-	out.Module = conv.Int64From64(obj.GetModuleOk())
+	out.ModuleId = conv.Int64From64(obj.GetModuleOk())
 	out.Name = conv.String(obj.GetNameOk())
 	out.Description = conv.String(obj.GetDescriptionOk())
 	out.Vars = conv.JSONFromAPI(obj.GetVars())

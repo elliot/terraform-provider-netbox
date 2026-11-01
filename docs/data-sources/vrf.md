@@ -48,7 +48,7 @@ output "vrf_id" {
 - `enforce_unique` (Boolean) Prevent duplicate prefixes/IP addresses within this VRF. Defaults to the NetBox server default when omitted.
 - `export_target_ids` (Set of Number) IDs of the assigned Export Target (`netbox_route_target`). Defaults to an empty set.
 - `import_target_ids` (Set of Number) IDs of the assigned Import Target (`netbox_route_target`). Defaults to an empty set.
-- `ipaddress_count` (Number) Ipaddress Count.
+- `ip_address_count` (Number) Ipaddress Count.
 - `last_updated` (String) Last Updated.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `prefix_count` (Number) Prefix Count.

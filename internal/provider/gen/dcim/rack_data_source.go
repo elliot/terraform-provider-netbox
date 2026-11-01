@@ -68,7 +68,7 @@ type RackDataModel struct {
 	Display           types.String         `tfsdk:"display"`
 	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
 	DeviceCount       types.Int64          `tfsdk:"device_count"`
-	PowerfeedCount    types.Int64          `tfsdk:"powerfeed_count"`
+	PowerFeedCount    types.Int64          `tfsdk:"power_feed_count"`
 }
 
 // rackFilterNames lists the query parameters accepted by /api/dcim/racks/ (sorted).
@@ -289,7 +289,7 @@ func rackDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Device Count.",
 			Computed:            true,
 		},
-		"powerfeed_count": dsschema.Int64Attribute{
+		"power_feed_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Powerfeed Count.",
 			Computed:            true,
 		},
@@ -573,5 +573,5 @@ func rackDataFromAPI(ctx context.Context, obj *netbox.Rack, out *RackDataModel, 
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 	out.DeviceCount = conv.Int64From64(obj.GetDeviceCountOk())
-	out.PowerfeedCount = conv.Int64From64(obj.GetPowerfeedCountOk())
+	out.PowerFeedCount = conv.Int64From64(obj.GetPowerfeedCountOk())
 }

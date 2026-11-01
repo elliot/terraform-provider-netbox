@@ -60,13 +60,13 @@ type RearPortTemplateModel struct {
 // RearPortTemplateFrontPortsItem is one element of netbox_rear_port_template.front_ports.
 type RearPortTemplateFrontPortsItem struct {
 	Position          types.Int64 `tfsdk:"position"`
-	FrontPort         types.Int64 `tfsdk:"front_port"`
+	FrontPortId       types.Int64 `tfsdk:"front_port_id"`
 	FrontPortPosition types.Int64 `tfsdk:"front_port_position"`
 }
 
 var rearPortTemplateFrontPortsItemAttrTypes = map[string]attr.Type{
 	"position":            types.Int64Type,
-	"front_port":          types.Int64Type,
+	"front_port_id":       types.Int64Type,
 	"front_port_position": types.Int64Type,
 }
 
@@ -171,7 +171,7 @@ func rearPortTemplateResourceAttributes() map[string]schema.Attribute {
 					MarkdownDescription: "Position.",
 					Computed:            true,
 				},
-				"front_port": schema.Int64Attribute{
+				"front_port_id": schema.Int64Attribute{
 					MarkdownDescription: "Front Port.",
 					Computed:            true,
 				},
@@ -404,7 +404,7 @@ func rearPortTemplateFromAPI(ctx context.Context, obj *netbox.RearPortTemplate, 
 			src := &items[i]
 			vals = append(vals, RearPortTemplateFrontPortsItem{
 				Position:          conv.Int64From32(src.GetPositionOk()),
-				FrontPort:         conv.Int64From64(src.GetFrontPortOk()),
+				FrontPortId:       conv.Int64From64(src.GetFrontPortOk()),
 				FrontPortPosition: conv.Int64From32(src.GetFrontPortPositionOk()),
 			})
 		}

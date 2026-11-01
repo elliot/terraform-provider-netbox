@@ -69,7 +69,7 @@ DCIM
 
 IPAM
 - Aggregates may not overlap regardless of RIR; `asn` is globally unique; IP range boundaries need a prefix length.
-- `service.ipaddress_ids` must reference IPs assigned to the parent device or VM.
+- `service.ip_address_ids` must reference IPs assigned to the parent device or VM.
 - VLAN `vid` must fall inside the group's `vid_ranges`.
 
 Extras and wireless

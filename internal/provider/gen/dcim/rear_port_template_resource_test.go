@@ -105,7 +105,7 @@ func TestAccRearPortTemplate_basic(t *testing.T) {
 func init() {
 	resource.AddTestSweepers("netbox_rear_port_template", &resource.Sweeper{
 		Name:         "netbox_rear_port_template",
-		Dependencies: []string{},
+		Dependencies: []string{"netbox_front_port_template"},
 		F: func(_ string) error {
 			return acctest.Sweep("/api/dcim/rear-port-templates/", []string{"name__isw", "description__isw", "q"})
 		},

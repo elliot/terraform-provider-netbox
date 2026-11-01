@@ -82,5 +82,5 @@ Read-Only:
 Read-Only:
 
 - `position` (Number) Position.
-- `rear_port` (Number) Rear Port.
+- `rear_port_id` (Number) Rear Port.
 - `rear_port_position` (Number) Rear Port Position.

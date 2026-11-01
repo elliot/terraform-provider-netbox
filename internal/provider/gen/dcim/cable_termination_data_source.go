@@ -31,7 +31,7 @@ type CableTerminationDataModel struct {
 	Id              types.Int64          `tfsdk:"id"`
 	Url             types.String         `tfsdk:"url"`
 	Display         types.String         `tfsdk:"display"`
-	Cable           types.Int64          `tfsdk:"cable"`
+	CableId         types.Int64          `tfsdk:"cable_id"`
 	CableEnd        types.String         `tfsdk:"cable_end"`
 	TerminationType types.String         `tfsdk:"termination_type"`
 	TerminationId   types.Int64          `tfsdk:"termination_id"`
@@ -71,8 +71,8 @@ func cableTerminationDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
-		"cable": dsschema.Int64Attribute{
-			MarkdownDescription: "Cable.",
+		"cable_id": dsschema.Int64Attribute{
+			MarkdownDescription: "ID of the cable (`netbox_cable`).",
 			Computed:            true,
 		},
 		"cable_end": dsschema.StringAttribute{
@@ -349,7 +349,7 @@ func cableTerminationDataFromAPI(ctx context.Context, obj *netbox.CableTerminati
 	out.Id = types.Int64Value(int64(obj.GetId()))
 	out.Url = conv.String(obj.GetUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
-	out.Cable = conv.Int64From64(obj.GetCableOk())
+	out.CableId = conv.Int64From64(obj.GetCableOk())
 	out.CableEnd = conv.String(obj.GetCableEndOk())
 	out.TerminationType = conv.String(obj.GetTerminationTypeOk())
 	out.TerminationId = conv.Int64From64(obj.GetTerminationIdOk())

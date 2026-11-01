@@ -82,8 +82,8 @@ type InterfaceDataModel struct {
 	ConnectedEndpointsType      types.String         `tfsdk:"connected_endpoints_type"`
 	ConnectedEndpointsReachable types.Bool           `tfsdk:"connected_endpoints_reachable"`
 	LastUpdated                 timetypes.RFC3339    `tfsdk:"last_updated"`
-	CountIpaddresses            types.Int64          `tfsdk:"count_ipaddresses"`
-	CountFhrpGroups             types.Int64          `tfsdk:"count_fhrp_groups"`
+	IpAddressCount              types.Int64          `tfsdk:"ip_address_count"`
+	FhrpGroupCount              types.Int64          `tfsdk:"fhrp_group_count"`
 	Occupied                    types.Bool           `tfsdk:"occupied"`
 }
 
@@ -377,11 +377,11 @@ func interfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"count_ipaddresses": dsschema.Int64Attribute{
+		"ip_address_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Count Ipaddresses.",
 			Computed:            true,
 		},
-		"count_fhrp_groups": dsschema.Int64Attribute{
+		"fhrp_group_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Count Fhrp Groups.",
 			Computed:            true,
 		},
@@ -683,7 +683,7 @@ func interfaceDataFromAPI(ctx context.Context, obj *netbox.Interface, out *Inter
 	out.ConnectedEndpointsType = conv.String(obj.GetConnectedEndpointsTypeOk())
 	out.ConnectedEndpointsReachable = conv.Bool(obj.GetConnectedEndpointsReachableOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.CountIpaddresses = conv.Int64From64(obj.GetCountIpaddressesOk())
-	out.CountFhrpGroups = conv.Int64From64(obj.GetCountFhrpGroupsOk())
+	out.IpAddressCount = conv.Int64From64(obj.GetCountIpaddressesOk())
+	out.FhrpGroupCount = conv.Int64From64(obj.GetCountFhrpGroupsOk())
 	out.Occupied = conv.Bool(obj.GetOccupiedOk())
 }

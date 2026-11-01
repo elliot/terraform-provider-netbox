@@ -57,7 +57,7 @@ Read-Only:
 - `display` (String) Display.
 - `display_url` (String) Display Url.
 - `id` (Number) The numeric ID of the object in NetBox.
-- `inventoryitem_count` (Number) Inventoryitem Count.
+- `inventory_item_count` (Number) Inventoryitem Count.
 - `last_updated` (String) Last Updated.
 - `name` (String) Name.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
