@@ -6,6 +6,23 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-01
+
+### Breaking changes
+
+- Make attribute names consistent before 1.0 ([#58](https://github.com/elliot/terraform-provider-netbox/pull/58))
+- Return "{}" for data source custom_fields without values and clarify the support policy ([#60](https://github.com/elliot/terraform-provider-netbox/pull/60))
+
+### Added
+
+- Support NetBox 4.7.4 ([#53](https://github.com/elliot/terraform-provider-netbox/pull/53))
+- `gen`: Support attribute deprecation and schema versions with state upgraders ([#59](https://github.com/elliot/terraform-provider-netbox/pull/59))
+
+### Fixed
+
+- `ci`: Compare the provider schema with the pull request's base, not the latest release ([#62](https://github.com/elliot/terraform-provider-netbox/pull/62))
+- `gen`: Make partial -only runs produce the same output as a full run ([#61](https://github.com/elliot/terraform-provider-netbox/pull/61))
+
 ## [0.5.0] - 2026-10-26
 
 ### Added
@@ -175,7 +192,8 @@ All notable changes to this project are documented in this file. The format foll
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.3.0...v0.4.0
