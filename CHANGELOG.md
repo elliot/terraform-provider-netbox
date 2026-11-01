@@ -8,20 +8,82 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [0.6.0] - 2026-11-01
 
+The last 0.x release before 1.0: it finishes the pre-1.0 attribute renames, so upgrading needs a few
+configuration edits (see *Breaking changes*). From 1.0 the provider follows the compatibility policy in
+[docs/VERSIONING.md](https://github.com/elliot/terraform-provider-netbox/blob/main/docs/VERSIONING.md). The
+provider is installed from the [Terraform Registry](https://registry.terraform.io/providers/elliot/netbox)
+with `source = "elliot/netbox"`; the network mirror and `scripts/install.sh` remain for off-registry hosts.
+
 ### Breaking changes
 
-- Make attribute names consistent before 1.0 ([#58](https://github.com/elliot/terraform-provider-netbox/pull/58))
-- Return "{}" for data source custom_fields without values and clarify the support policy ([#60](https://github.com/elliot/terraform-provider-netbox/pull/60))
+- Attribute names are consistent with the provider's conventions (`ip_address`, `<field>_id`,
+  `<singular>_count`) ([#58](https://github.com/elliot/terraform-provider-netbox/pull/58)). Resources:
+  - `netbox_service.ipaddress_ids` -> `ip_address_ids`
+  - `netbox_front_port` and `netbox_front_port_template`: `rear_ports[].rear_port` -> `rear_ports[].rear_port_id`
+  - `netbox_rear_port` and `netbox_rear_port_template`: `front_ports[].front_port` -> `front_ports[].front_port_id`
+    (computed)
+
+  Data sources (singular and list) follow the resource renames above, and also rename:
+  - `virtualmachine_count` -> `virtual_machine_count` (device role, platform, site, tenant, cluster)
+  - `ipaddress_count` -> `ip_address_count` (VRF, tenant); `count_ipaddresses` -> `ip_address_count` and
+    `count_fhrp_groups` -> `fhrp_group_count` (interface, VM interface)
+  - `devicetype_count`, `moduletype_count`, `inventoryitem_count` -> `device_type_count`,
+    `module_type_count`, `inventory_item_count` (manufacturer; inventory item role for the last)
+  - `coolingfeed_count` -> `cooling_feed_count`, `powerfeed_count` -> `power_feed_count`,
+    `wirelesslan_count` -> `wireless_lan_count`, `tunnel.terminations_count` -> `termination_count`,
+    `custom_field_choice_set.choices_count` -> `choice_count`
+  - `netbox_cable_termination.cable` -> `cable_id`, `netbox_script.module` -> `module_id`
+
+  **Upgrading:** no state commands are needed; the next refresh reads the renamed attributes from NetBox.
+  Terraform rejects the old names, so update configurations. Most renames can be applied with:
+
+  ```sh
+  sed -i -E \
+    -e 's/\bipaddress_ids\b/ip_address_ids/g' \
+    -e 's/\bvirtualmachine_count\b/virtual_machine_count/g' \
+    -e 's/\bcount_ipaddresses\b|\bipaddress_count\b/ip_address_count/g' \
+    -e 's/\bcount_fhrp_groups\b/fhrp_group_count/g' \
+    -e 's/\bdevicetype_count\b/device_type_count/g' \
+    -e 's/\bmoduletype_count\b/module_type_count/g' \
+    -e 's/\binventoryitem_count\b/inventory_item_count/g' \
+    -e 's/\bcoolingfeed_count\b/cooling_feed_count/g' \
+    -e 's/\bpowerfeed_count\b/power_feed_count/g' \
+    -e 's/\bwirelesslan_count\b/wireless_lan_count/g' \
+    -e 's/\bterminations_count\b/termination_count/g' \
+    -e 's/\bchoices_count\b/choice_count/g' \
+    *.tf
+  ```
+
+  Rename `rear_port =` to `rear_port_id =` inside `rear_ports = [...]` blocks, references to
+  `.front_ports[*].front_port`, and `data.netbox_cable_termination.<name>.cable` / `data.netbox_script.<name>.module`
+  by hand: those names are too generic to rewrite safely.
+- Data sources return `custom_fields = "{}"` instead of null for objects without custom fields, so
+  `jsondecode()` and `lookup(jsondecode(...), "key", null)` work on every object. Configurations that compared
+  `custom_fields` with `null` should compare with `"{}"` or check `length(jsondecode(...)) == 0`
+  ([#60](https://github.com/elliot/terraform-provider-netbox/pull/60)).
 
 ### Added
 
-- Support NetBox 4.7.4 ([#53](https://github.com/elliot/terraform-provider-netbox/pull/53))
-- `gen`: Support attribute deprecation and schema versions with state upgraders ([#59](https://github.com/elliot/terraform-provider-netbox/pull/59))
+- Support NetBox 4.7.4: the pinned OpenAPI document, API client, resources and docs are regenerated from it
+  ([#53](https://github.com/elliot/terraform-provider-netbox/pull/53)):
+  - `netbox_cable`: `profile` accepts `trunk-8c1p`, `trunk-12c1p` and `trunk-24c1p`.
+  - `netbox_circuits`, `netbox_circuit_terminations`, `netbox_virtual_circuits` and
+    `netbox_virtual_circuit_terminations`: `provider_network` filters.
+  - NetBox now declares object IDs as 64-bit integers; the provider already used Int64 attributes, so nothing
+    changes in configurations.
 
-### Fixed
+### Changed
 
-- `ci`: Compare the provider schema with the pull request's base, not the latest release ([#62](https://github.com/elliot/terraform-provider-netbox/pull/62))
-- `gen`: Make partial -only runs produce the same output as a full run ([#61](https://github.com/elliot/terraform-provider-netbox/pull/61))
+- Terraform 1.12 is the documented and tested minimum (resource identity needs it); CI runs the unit tests on
+  Terraform 1.12, 1.15, 1.16 and 1.17.
+- `netbox_service` and `netbox_service_template` need NetBox 4.7: NetBox 4.5 and 4.6 require `ports`, which the
+  provider does not expose (the README previously suggested setting it, which was not possible).
+
+### Security
+
+- `golang.org/x/net` 0.62.0 fixes quadratic complexity in its HTML parser (GO-2026-6860). The provider does not
+  link that package, so it was not affected; the update keeps vulnerability scanners quiet
+  ([#51](https://github.com/elliot/terraform-provider-netbox/pull/51)).
 
 ## [0.5.0] - 2026-10-26
 
