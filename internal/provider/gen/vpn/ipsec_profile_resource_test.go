@@ -132,6 +132,18 @@ func TestAccIpsecProfile_basic(t *testing.T) {
 	})
 }
 
+func TestAccIpsecProfile_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_ipsec_profile",
+		APIPath:      "/api/vpn/ipsec-profiles/",
+		Configs: []string{
+			acctest.Render(t, ipsecProfileTestConfigUpdate, name),
+			acctest.Render(t, ipsecProfileTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_ipsec_profile", &resource.Sweeper{
 		Name:         "netbox_ipsec_profile",

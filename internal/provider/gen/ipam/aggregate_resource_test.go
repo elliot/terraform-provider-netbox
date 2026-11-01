@@ -95,6 +95,18 @@ func TestAccAggregate_basic(t *testing.T) {
 	})
 }
 
+func TestAccAggregate_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_aggregate",
+		APIPath:      "/api/ipam/aggregates/",
+		Configs: []string{
+			acctest.Render(t, aggregateTestConfigUpdate, name),
+			acctest.Render(t, aggregateTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_aggregate", &resource.Sweeper{
 		Name:         "netbox_aggregate",

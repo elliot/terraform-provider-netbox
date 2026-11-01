@@ -85,6 +85,18 @@ func TestAccRackGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccRackGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_rack_group",
+		APIPath:      "/api/dcim/rack-groups/",
+		Configs: []string{
+			acctest.Render(t, rackGroupTestConfigUpdate, name),
+			acctest.Render(t, rackGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_rack_group", &resource.Sweeper{
 		Name:         "netbox_rack_group",

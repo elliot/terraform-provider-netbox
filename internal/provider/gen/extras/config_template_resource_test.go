@@ -88,6 +88,18 @@ func TestAccConfigTemplate_basic(t *testing.T) {
 	})
 }
 
+func TestAccConfigTemplate_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_config_template",
+		APIPath:      "/api/extras/config-templates/",
+		Configs: []string{
+			acctest.Render(t, configTemplateTestConfigUpdate, name),
+			acctest.Render(t, configTemplateTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_config_template", &resource.Sweeper{
 		Name:         "netbox_config_template",

@@ -72,6 +72,16 @@ type Test struct {
 	Skip               string            `yaml:"skip"`
 	ImportVerifyIgnore []string          `yaml:"import_verify_ignore"`
 	Checks             map[string]string `yaml:"checks"`
+	Upgrade            *UpgradeTest      `yaml:"upgrade"`
+}
+
+// UpgradeTest overrides the upgrade test (TestAcc<Resource>_upgrade).
+type UpgradeTest struct {
+	// Skip disables the upgrade test with a reason.
+	Skip string `yaml:"skip"`
+	// Config is complete HCL the released provider accepts; it replaces the
+	// default of trying test.update, then test.basic.
+	Config string `yaml:"config"`
 }
 
 // Load reads every *.yaml file in dir (sorted by name) and merges them. A

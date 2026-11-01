@@ -101,6 +101,18 @@ func TestAccPrefix_basic(t *testing.T) {
 	})
 }
 
+func TestAccPrefix_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_prefix",
+		APIPath:      "/api/ipam/prefixes/",
+		Configs: []string{
+			acctest.Render(t, prefixTestConfigUpdate, name),
+			acctest.Render(t, prefixTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_prefix", &resource.Sweeper{
 		Name:         "netbox_prefix",

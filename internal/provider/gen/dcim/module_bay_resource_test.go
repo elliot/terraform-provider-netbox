@@ -128,6 +128,18 @@ func TestAccModuleBay_basic(t *testing.T) {
 	})
 }
 
+func TestAccModuleBay_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_module_bay",
+		APIPath:      "/api/dcim/module-bays/",
+		Configs: []string{
+			acctest.Render(t, moduleBayTestConfigUpdate, name),
+			acctest.Render(t, moduleBayTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_module_bay", &resource.Sweeper{
 		Name:         "netbox_module_bay",

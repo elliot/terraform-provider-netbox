@@ -86,6 +86,18 @@ func TestAccCircuitType_basic(t *testing.T) {
 	})
 }
 
+func TestAccCircuitType_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_circuit_type",
+		APIPath:      "/api/circuits/circuit-types/",
+		Configs: []string{
+			acctest.Render(t, circuitTypeTestConfigUpdate, name),
+			acctest.Render(t, circuitTypeTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_circuit_type", &resource.Sweeper{
 		Name:         "netbox_circuit_type",

@@ -88,6 +88,18 @@ func TestAccConfigContextProfile_basic(t *testing.T) {
 	})
 }
 
+func TestAccConfigContextProfile_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_config_context_profile",
+		APIPath:      "/api/extras/config-context-profiles/",
+		Configs: []string{
+			acctest.Render(t, configContextProfileTestConfigUpdate, name),
+			acctest.Render(t, configContextProfileTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_config_context_profile", &resource.Sweeper{
 		Name:         "netbox_config_context_profile",

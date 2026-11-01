@@ -86,6 +86,18 @@ func TestAccContactRole_basic(t *testing.T) {
 	})
 }
 
+func TestAccContactRole_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_contact_role",
+		APIPath:      "/api/tenancy/contact-roles/",
+		Configs: []string{
+			acctest.Render(t, contactRoleTestConfigUpdate, name),
+			acctest.Render(t, contactRoleTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_contact_role", &resource.Sweeper{
 		Name:         "netbox_contact_role",

@@ -93,6 +93,18 @@ func TestAccOwner_basic(t *testing.T) {
 	})
 }
 
+func TestAccOwner_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_owner",
+		APIPath:      "/api/users/owners/",
+		Configs: []string{
+			acctest.Render(t, ownerTestConfigUpdate, name),
+			acctest.Render(t, ownerTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_owner", &resource.Sweeper{
 		Name:         "netbox_owner",

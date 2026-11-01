@@ -102,6 +102,19 @@ func TestAccEventRule_basic(t *testing.T) {
 	})
 }
 
+func TestAccEventRule_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_event_rule",
+		APIPath:      "/api/extras/event-rules/",
+		Configs: []string{
+			acctest.Render(t, eventRuleTestConfigUpdate, name),
+			acctest.Render(t, eventRuleTestConfigBasic, name),
+		},
+		Serial: true,
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_event_rule", &resource.Sweeper{
 		Name:         "netbox_event_rule",

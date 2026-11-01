@@ -96,6 +96,18 @@ func TestAccIkeProposal_basic(t *testing.T) {
 	})
 }
 
+func TestAccIkeProposal_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_ike_proposal",
+		APIPath:      "/api/vpn/ike-proposals/",
+		Configs: []string{
+			acctest.Render(t, ikeProposalTestConfigUpdate, name),
+			acctest.Render(t, ikeProposalTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_ike_proposal", &resource.Sweeper{
 		Name:         "netbox_ike_proposal",

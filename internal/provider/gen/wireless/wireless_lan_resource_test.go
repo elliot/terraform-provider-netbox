@@ -103,6 +103,18 @@ func TestAccWirelessLan_basic(t *testing.T) {
 	})
 }
 
+func TestAccWirelessLan_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_wireless_lan",
+		APIPath:      "/api/wireless/wireless-lans/",
+		Configs: []string{
+			acctest.Render(t, wirelessLanTestConfigUpdate, name),
+			acctest.Render(t, wirelessLanTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_wireless_lan", &resource.Sweeper{
 		Name:         "netbox_wireless_lan",

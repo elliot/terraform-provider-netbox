@@ -86,6 +86,18 @@ func TestAccVirtualCircuitType_basic(t *testing.T) {
 	})
 }
 
+func TestAccVirtualCircuitType_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_virtual_circuit_type",
+		APIPath:      "/api/circuits/virtual-circuit-types/",
+		Configs: []string{
+			acctest.Render(t, virtualCircuitTypeTestConfigUpdate, name),
+			acctest.Render(t, virtualCircuitTypeTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_virtual_circuit_type", &resource.Sweeper{
 		Name:         "netbox_virtual_circuit_type",

@@ -95,6 +95,18 @@ func TestAccIpAddress_basic(t *testing.T) {
 	})
 }
 
+func TestAccIpAddress_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_ip_address",
+		APIPath:      "/api/ipam/ip-addresses/",
+		Configs: []string{
+			acctest.Render(t, ipAddressTestConfigUpdate, name),
+			acctest.Render(t, ipAddressTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_ip_address", &resource.Sweeper{
 		Name:         "netbox_ip_address",

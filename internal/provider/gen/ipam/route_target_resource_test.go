@@ -82,6 +82,18 @@ func TestAccRouteTarget_basic(t *testing.T) {
 	})
 }
 
+func TestAccRouteTarget_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_route_target",
+		APIPath:      "/api/ipam/route-targets/",
+		Configs: []string{
+			acctest.Render(t, routeTargetTestConfigUpdate, name),
+			acctest.Render(t, routeTargetTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_route_target", &resource.Sweeper{
 		Name:         "netbox_route_target",

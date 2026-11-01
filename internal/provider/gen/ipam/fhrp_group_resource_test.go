@@ -83,6 +83,18 @@ func TestAccFhrpGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccFhrpGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_fhrp_group",
+		APIPath:      "/api/ipam/fhrp-groups/",
+		Configs: []string{
+			acctest.Render(t, fhrpGroupTestConfigUpdate, name),
+			acctest.Render(t, fhrpGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_fhrp_group", &resource.Sweeper{
 		Name:         "netbox_fhrp_group",

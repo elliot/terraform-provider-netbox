@@ -130,6 +130,9 @@ data %[2]q "list" {
 }
 `, r.TFType(), r.TFPluralType())
 	fmt.Fprintf(&b, "const %sTestConfigDataSources = %s\n\n", lower(r.GoName), backtick(dsCfg))
+	if r.Test.UpgradeConfig != "" {
+		fmt.Fprintf(&b, "const %sTestConfigUpgrade = %s\n\n", lower(r.GoName), backtick(r.Test.UpgradeConfig))
+	}
 
 	testFunc := "resource.ParallelTest"
 	if r.Test.Serial {
@@ -200,6 +203,7 @@ data %[2]q "list" {
 	})
 }
 
+%[9]s
 func init() {
 	resource.AddTestSweepers(%[5]q, &resource.Sweeper{
 		Name:         %[5]q,
@@ -209,7 +213,45 @@ func init() {
 		},
 	})
 }
-`, r.TFType()+".test", ign, lastCfg, testFunc, r.TFType(), r.Path, goStringSlice(depTypes(r)), goStringSlice(sweepFilters(r)))
+`, r.TFType()+".test", ign, lastCfg, testFunc, r.TFType(), r.Path, goStringSlice(depTypes(r)), goStringSlice(sweepFilters(r)), upgradeTest(r, skip, update != ""))
+	return b.String()
+}
+
+// upgradeTest renders TestAcc<Resource>_upgrade: apply a configuration with
+// the release named by NETBOX_UPGRADE_FROM, then expect an empty plan from
+// this build (see acctest.UpgradeTest). It tries the update fixture first
+// (more attributes) and falls back to the basic one when the release lacks
+// something the update fixture uses.
+func upgradeTest(r *model.Resource, skip string, hasUpdate bool) string {
+	if skip == "" {
+		skip = r.Test.UpgradeSkip
+	}
+	l := lower(r.GoName)
+	var configs []string
+	switch {
+	case r.Test.UpgradeConfig != "":
+		configs = []string{l + "TestConfigUpgrade"}
+	case hasUpdate:
+		configs = []string{l + "TestConfigUpdate", l + "TestConfigBasic"}
+	default:
+		configs = []string{l + "TestConfigBasic"}
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "\nfunc TestAcc%s_upgrade(t *testing.T) {\n", r.GoName)
+	if skip != "" {
+		fmt.Fprintf(&b, "\tt.Skip(%q)\n", skip)
+	}
+	b.WriteString("\tname := acctest.RandName()\n\tacctest.UpgradeTest(t, acctest.UpgradeCase{\n")
+	fmt.Fprintf(&b, "\t\tResourceType: %q,\n\t\tAPIPath:      %q,\n", r.TFType(), r.Path)
+	b.WriteString("\t\tConfigs: []string{\n")
+	for _, c := range configs {
+		fmt.Fprintf(&b, "\t\t\tacctest.Render(t, %s, name),\n", c)
+	}
+	b.WriteString("\t\t},\n")
+	if r.Test.Serial {
+		b.WriteString("\t\tSerial: true,\n")
+	}
+	b.WriteString("\t})\n}\n")
 	return b.String()
 }
 

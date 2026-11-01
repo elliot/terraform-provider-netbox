@@ -92,6 +92,18 @@ func TestAccVrf_basic(t *testing.T) {
 	})
 }
 
+func TestAccVrf_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_vrf",
+		APIPath:      "/api/ipam/vrfs/",
+		Configs: []string{
+			acctest.Render(t, vrfTestConfigUpdate, name),
+			acctest.Render(t, vrfTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_vrf", &resource.Sweeper{
 		Name:         "netbox_vrf",
