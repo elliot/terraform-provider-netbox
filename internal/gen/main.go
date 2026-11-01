@@ -55,6 +55,7 @@ func main() {
 	for _, w := range warnings {
 		fmt.Fprintln(os.Stderr, "warning:", w)
 	}
+	universe := resources
 	if *only != "" {
 		want := map[string]bool{}
 		for _, n := range strings.Split(*only, ",") {
@@ -82,7 +83,7 @@ func main() {
 	case *dump:
 		dumpModel(resources)
 	default:
-		if err := render.All(resources, doc.Info.Version, render.Options{OutDir: *outDir, ExamplesDir: *exDir, DocsDir: *docsDir, TemplatesDir: *tmplDir, Partial: *only != ""}); err != nil {
+		if err := render.All(resources, doc.Info.Version, render.Options{OutDir: *outDir, ExamplesDir: *exDir, DocsDir: *docsDir, TemplatesDir: *tmplDir, Partial: *only != "", Universe: universe}); err != nil {
 			fatal(err)
 		}
 	}
