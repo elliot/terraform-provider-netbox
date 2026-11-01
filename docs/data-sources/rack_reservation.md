@@ -41,7 +41,7 @@ data "netbox_rack_reservation" "a01_storage" {
 
 - `comments` (String) Comments. Defaults to an empty string.
 - `created` (String) Created.
-- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description.
 - `display` (String) Display.
 - `display_url` (String) Display Url.

@@ -57,7 +57,7 @@ Read-Only:
 - `cooling_capacity` (Number) Rated cooling capacity (kW). Defaults to the NetBox server default when omitted.
 - `cooling_source_id` (Number) ID of the Cooling Source (`netbox_cooling_source`).
 - `created` (String) Created.
-- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.

@@ -44,7 +44,7 @@ output "rack_type_id" {
 - `cooling_capability` (String) Cooling Capability. Valid values: `air-only`, `hybrid`, `liquid-only`. Defaults to the NetBox server default when omitted.
 - `cooling_capacity` (Number) Cooling capacity (kW). Defaults to the NetBox server default when omitted.
 - `created` (String) Created.
-- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `desc_units` (Boolean) Units are numbered top-to-bottom. Defaults to the NetBox server default when omitted.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.

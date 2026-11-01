@@ -55,7 +55,7 @@ Read-Only:
 
 - `cooling_outflow_id` (Number) The upstream cooling outflow supplying this intake. References `netbox_cooling_outflow`.
 - `created` (String) Created.
-- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `device_id` (Number) ID of the Device (`netbox_device`).
 - `diameter` (Number) Diameter. Defaults to the NetBox server default when omitted.

@@ -37,7 +37,7 @@ resource "netbox_contact" "example" {
 - `comments` (String) Comments. Defaults to an empty string.
 - `contact_count` (Number) Contact Count.
 - `created` (String) Created.
-- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `depth` (Number) Depth.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.

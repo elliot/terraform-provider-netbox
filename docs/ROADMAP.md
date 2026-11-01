@@ -19,7 +19,6 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 
 Remaining work before `v1.0.0`; the compatibility promise is described in [VERSIONING.md](VERSIONING.md).
 
-- Decide how data sources expose `custom_fields` (JSON string today) before it is frozen.
 - Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require
   full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability
   reporting (maintainer only).
@@ -43,6 +42,8 @@ Additive work that does not need a major release:
 - ETag / `If-Match` concurrency control (absent from the schema).
 - An ephemeral resource for API tokens (the secret is only returned once).
 - Write-only variants of secret attributes, next to the existing `Sensitive` ones.
+- An optional native `custom_fields_value` (dynamic object) on singular data sources, next to the JSON string
+  `custom_fields`, which stays the stable shape (list data source items cannot hold dynamic values).
 
 ## Backlog
 

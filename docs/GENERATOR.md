@@ -166,8 +166,10 @@ generated with `t.Skip(...)` naming the override to add.
 ## Changing the schema after 1.0
 
 From 1.0 on, a provider upgrade must not break a working configuration or
-state within the major version. Anything NetBox removes or renames stays as a
-deprecated attribute through the 1.x line and is removed in the next major.
+state within the major version. Anything NetBox deprecates or renames stays as a
+deprecated attribute through the 1.x line and is removed in the next major. A
+field NetBox deletes from its API outright cannot be generated any more; see
+[VERSIONING.md](VERSIONING.md) for how such releases are handled.
 
 **Deprecation.** `deprecated: "<message>"` on an attribute or a resource sets
 `DeprecationMessage`, so Terraform warns wherever the configuration uses it,

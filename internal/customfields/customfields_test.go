@@ -168,3 +168,22 @@ func TestInfer(t *testing.T) {
 		t.Fatal("empty map must be null")
 	}
 }
+
+func TestInferJSON(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		in   map[string]any
+		want string
+	}{
+		{"nil", nil, "{}"},
+		{"empty", map[string]any{}, "{}"},
+		{"values", map[string]any{"cost_center": "CC-42", "vlan": map[string]any{"id": float64(5), "display": "v5"}}, `{"cost_center":"CC-42","vlan":5}`},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got := InferJSON(tc.in)
+			if got.IsNull() || got.ValueString() != tc.want {
+				t.Fatalf("InferJSON(%v) = %v, want %s", tc.in, got, tc.want)
+			}
+		})
+	}
+}

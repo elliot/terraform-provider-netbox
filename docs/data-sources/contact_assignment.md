@@ -33,7 +33,7 @@ output "assignment_contact_id" {
 
 - `contact_id` (Number) ID of the Contact (`netbox_contact`).
 - `created` (String) Created.
-- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
+- `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `display` (String) Display.
 - `last_updated` (String) Last Updated.
 - `object_id` (Number) Object Id.
