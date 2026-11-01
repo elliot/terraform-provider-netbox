@@ -57,6 +57,7 @@ from the Terraform Registry (or `BASE=0.5.0`) the same way users do, and compare
 ```sh
 make schema-diff                    # against the latest release
 make schema-diff BASE=0.5.0         # against a given release
+BASE_REF=origin/main make schema-diff   # against a git commit (what CI does on pull requests)
 ALLOW_BREAKING=1 make schema-diff   # report breaking changes without failing
 go run ./tools/schema-diff -old base.json -new current.json   # two existing schema dumps
 ```
@@ -74,8 +75,11 @@ Descriptions are not classified, only counted. Allowed values come from validato
 expose, so a removed enum value only shows up as a changed description (and in the `docs/` diff, and in
 `tools/netbox-diff` for spec bumps); the report says how many descriptions changed so a reviewer can check.
 
-`.github/workflows/schema-diff.yml` runs it on every pull request against the latest release and writes the
-report to the job summary. A breaking change fails the check unless the PR title carries the breaking-change
+`.github/workflows/schema-diff.yml` runs it on every pull request against the commit the pull request merges
+into (`BASE_REF`), so each pull request is judged on its own changes: a breaking change already merged and
+waiting for a release is not reported again. Writing the changelog for a release is where the full difference
+from the previous release matters; `make schema-diff` (against the latest release) prints it. The workflow
+writes the report to the job summary. A breaking change fails the check unless the PR title carries the breaking-change
 marker (`feat!: ...`, `fix(dcim)!: ...`), which `cliff.toml` lists under *Breaking changes* and which, after
 1.0, requires a major release. The workflow also runs on `edited`, so adding the `!` to the title re-runs the
 check; a newly sensitive attribute is only a notice, but mention it in the changelog because root module
