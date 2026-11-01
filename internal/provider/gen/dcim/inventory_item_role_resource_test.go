@@ -82,6 +82,18 @@ func TestAccInventoryItemRole_basic(t *testing.T) {
 	})
 }
 
+func TestAccInventoryItemRole_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_inventory_item_role",
+		APIPath:      "/api/dcim/inventory-item-roles/",
+		Configs: []string{
+			acctest.Render(t, inventoryItemRoleTestConfigUpdate, name),
+			acctest.Render(t, inventoryItemRoleTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_inventory_item_role", &resource.Sweeper{
 		Name:         "netbox_inventory_item_role",

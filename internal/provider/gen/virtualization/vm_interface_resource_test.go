@@ -118,6 +118,18 @@ func TestAccVmInterface_basic(t *testing.T) {
 	})
 }
 
+func TestAccVmInterface_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_vm_interface",
+		APIPath:      "/api/virtualization/interfaces/",
+		Configs: []string{
+			acctest.Render(t, vmInterfaceTestConfigUpdate, name),
+			acctest.Render(t, vmInterfaceTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_vm_interface", &resource.Sweeper{
 		Name:         "netbox_vm_interface",

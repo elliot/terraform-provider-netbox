@@ -92,6 +92,19 @@ func TestAccWebhook_basic(t *testing.T) {
 	})
 }
 
+func TestAccWebhook_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_webhook",
+		APIPath:      "/api/extras/webhooks/",
+		Configs: []string{
+			acctest.Render(t, webhookTestConfigUpdate, name),
+			acctest.Render(t, webhookTestConfigBasic, name),
+		},
+		Serial: true,
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_webhook", &resource.Sweeper{
 		Name:         "netbox_webhook",

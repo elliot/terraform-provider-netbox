@@ -85,6 +85,18 @@ func TestAccTenantGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccTenantGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_tenant_group",
+		APIPath:      "/api/tenancy/tenant-groups/",
+		Configs: []string{
+			acctest.Render(t, tenantGroupTestConfigUpdate, name),
+			acctest.Render(t, tenantGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_tenant_group", &resource.Sweeper{
 		Name:         "netbox_tenant_group",

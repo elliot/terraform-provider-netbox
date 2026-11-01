@@ -105,6 +105,18 @@ func TestAccContactAssignment_basic(t *testing.T) {
 	})
 }
 
+func TestAccContactAssignment_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_contact_assignment",
+		APIPath:      "/api/tenancy/contact-assignments/",
+		Configs: []string{
+			acctest.Render(t, contactAssignmentTestConfigUpdate, name),
+			acctest.Render(t, contactAssignmentTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_contact_assignment", &resource.Sweeper{
 		Name:         "netbox_contact_assignment",

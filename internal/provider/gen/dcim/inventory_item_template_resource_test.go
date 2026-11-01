@@ -104,6 +104,18 @@ func TestAccInventoryItemTemplate_basic(t *testing.T) {
 	})
 }
 
+func TestAccInventoryItemTemplate_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_inventory_item_template",
+		APIPath:      "/api/dcim/inventory-item-templates/",
+		Configs: []string{
+			acctest.Render(t, inventoryItemTemplateTestConfigUpdate, name),
+			acctest.Render(t, inventoryItemTemplateTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_inventory_item_template", &resource.Sweeper{
 		Name:         "netbox_inventory_item_template",

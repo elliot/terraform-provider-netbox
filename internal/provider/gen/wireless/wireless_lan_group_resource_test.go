@@ -90,6 +90,18 @@ func TestAccWirelessLanGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccWirelessLanGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_wireless_lan_group",
+		APIPath:      "/api/wireless/wireless-lan-groups/",
+		Configs: []string{
+			acctest.Render(t, wirelessLanGroupTestConfigUpdate, name),
+			acctest.Render(t, wirelessLanGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_wireless_lan_group", &resource.Sweeper{
 		Name:         "netbox_wireless_lan_group",

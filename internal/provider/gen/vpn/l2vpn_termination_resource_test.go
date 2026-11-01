@@ -112,6 +112,18 @@ func TestAccL2vpnTermination_basic(t *testing.T) {
 	})
 }
 
+func TestAccL2vpnTermination_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_l2vpn_termination",
+		APIPath:      "/api/vpn/l2vpn-terminations/",
+		Configs: []string{
+			acctest.Render(t, l2vpnTerminationTestConfigUpdate, name),
+			acctest.Render(t, l2vpnTerminationTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_l2vpn_termination", &resource.Sweeper{
 		Name:         "netbox_l2vpn_termination",

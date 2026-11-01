@@ -179,6 +179,18 @@ func TestAccWirelessLink_basic(t *testing.T) {
 	})
 }
 
+func TestAccWirelessLink_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_wireless_link",
+		APIPath:      "/api/wireless/wireless-links/",
+		Configs: []string{
+			acctest.Render(t, wirelessLinkTestConfigUpdate, name),
+			acctest.Render(t, wirelessLinkTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_wireless_link", &resource.Sweeper{
 		Name:         "netbox_wireless_link",

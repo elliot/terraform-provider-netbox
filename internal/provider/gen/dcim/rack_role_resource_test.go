@@ -86,6 +86,18 @@ func TestAccRackRole_basic(t *testing.T) {
 	})
 }
 
+func TestAccRackRole_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_rack_role",
+		APIPath:      "/api/dcim/rack-roles/",
+		Configs: []string{
+			acctest.Render(t, rackRoleTestConfigUpdate, name),
+			acctest.Render(t, rackRoleTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_rack_role", &resource.Sweeper{
 		Name:         "netbox_rack_role",

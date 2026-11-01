@@ -82,6 +82,19 @@ func TestAccCustomFieldChoiceSet_basic(t *testing.T) {
 	})
 }
 
+func TestAccCustomFieldChoiceSet_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_custom_field_choice_set",
+		APIPath:      "/api/extras/custom-field-choice-sets/",
+		Configs: []string{
+			acctest.Render(t, customFieldChoiceSetTestConfigUpdate, name),
+			acctest.Render(t, customFieldChoiceSetTestConfigBasic, name),
+		},
+		Serial: true,
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_custom_field_choice_set", &resource.Sweeper{
 		Name:         "netbox_custom_field_choice_set",

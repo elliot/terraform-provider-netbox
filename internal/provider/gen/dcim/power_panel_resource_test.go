@@ -99,6 +99,18 @@ func TestAccPowerPanel_basic(t *testing.T) {
 	})
 }
 
+func TestAccPowerPanel_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_power_panel",
+		APIPath:      "/api/dcim/power-panels/",
+		Configs: []string{
+			acctest.Render(t, powerPanelTestConfigUpdate, name),
+			acctest.Render(t, powerPanelTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_power_panel", &resource.Sweeper{
 		Name:         "netbox_power_panel",

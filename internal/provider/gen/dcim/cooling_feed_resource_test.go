@@ -118,6 +118,18 @@ func TestAccCoolingFeed_basic(t *testing.T) {
 	})
 }
 
+func TestAccCoolingFeed_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_cooling_feed",
+		APIPath:      "/api/dcim/cooling-feeds/",
+		Configs: []string{
+			acctest.Render(t, coolingFeedTestConfigUpdate, name),
+			acctest.Render(t, coolingFeedTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_cooling_feed", &resource.Sweeper{
 		Name:         "netbox_cooling_feed",

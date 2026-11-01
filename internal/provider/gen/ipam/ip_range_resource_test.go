@@ -96,6 +96,18 @@ func TestAccIpRange_basic(t *testing.T) {
 	})
 }
 
+func TestAccIpRange_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_ip_range",
+		APIPath:      "/api/ipam/ip-ranges/",
+		Configs: []string{
+			acctest.Render(t, ipRangeTestConfigUpdate, name),
+			acctest.Render(t, ipRangeTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_ip_range", &resource.Sweeper{
 		Name:         "netbox_ip_range",

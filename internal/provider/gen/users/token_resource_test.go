@@ -90,6 +90,18 @@ func TestAccToken_basic(t *testing.T) {
 	})
 }
 
+func TestAccToken_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_token",
+		APIPath:      "/api/users/tokens/",
+		Configs: []string{
+			acctest.Render(t, tokenTestConfigUpdate, name),
+			acctest.Render(t, tokenTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_token", &resource.Sweeper{
 		Name:         "netbox_token",

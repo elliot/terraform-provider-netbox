@@ -123,6 +123,18 @@ func TestAccPowerFeed_basic(t *testing.T) {
 	})
 }
 
+func TestAccPowerFeed_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_power_feed",
+		APIPath:      "/api/dcim/power-feeds/",
+		Configs: []string{
+			acctest.Render(t, powerFeedTestConfigUpdate, name),
+			acctest.Render(t, powerFeedTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_power_feed", &resource.Sweeper{
 		Name:         "netbox_power_feed",

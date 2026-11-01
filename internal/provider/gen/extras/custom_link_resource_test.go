@@ -86,6 +86,19 @@ func TestAccCustomLink_basic(t *testing.T) {
 	})
 }
 
+func TestAccCustomLink_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_custom_link",
+		APIPath:      "/api/extras/custom-links/",
+		Configs: []string{
+			acctest.Render(t, customLinkTestConfigUpdate, name),
+			acctest.Render(t, customLinkTestConfigBasic, name),
+		},
+		Serial: true,
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_custom_link", &resource.Sweeper{
 		Name:         "netbox_custom_link",
