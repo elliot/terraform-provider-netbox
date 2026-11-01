@@ -96,6 +96,14 @@ docs: build-client
 docs-check: build-client
 	go tool tfplugindocs validate --provider-name $(PROVIDER_NAME)
 
+# Compares the working tree's provider schema with a release from the registry
+# (default: the latest; BASE=0.5.0 picks one). ALLOW_BREAKING=1 reports breaking
+# changes without failing. See docs/DEVELOPMENT.md#schema-compatibility.
+BASE ?=
+.PHONY: schema-diff
+schema-diff: build-client
+	./scripts/schema-diff.sh $(BASE)
+
 .PHONY: demo-token
 demo-token:
 	./scripts/demo-token.sh
