@@ -1,0 +1,69 @@
+name: Schema diff
+
+# Compares the provider schema of the pull request with the latest release on
+# the Terraform Registry (scripts/schema-diff.sh, tools/schema-diff) and writes
+# the report to the job summary. Breaking changes fail the check unless the PR
+# title marks them with `!` (feat!: ..., fix(ipam)!: ...), which cliff.toml
+# lists under "Breaking changes" and which requires a major version after 1.0.
+# `edited` re-runs the check when the title changes; no paths filter, so the
+# check always reports.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  schema-diff:
+    name: Provider schema compatibility
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # check out the repository
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Restore Go cache
+        # The build job in test.yml saves this cache on pushes to main; it holds
+        # the compiled API client, so the provider build is warm. Never saved here.
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-${{ runner.os }}-build-${{ hashFiles('go.sum') }}-${{ github.sha }}
+          restore-keys: |
+            go-${{ runner.os }}-build-${{ hashFiles('go.sum') }}-
+            go-${{ runner.os }}-build-
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: "1.16.*"
+          terraform_wrapper: false
+      - run: go mod download
+      - name: Compare with the latest release
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          SCHEMA_DIFF_NEW_LABEL: this pull request
+        run: |
+          re='^[a-z]+(\([^)]*\))?!:'
+          if [[ "$TITLE" =~ $re ]]; then
+            echo "PR title marks a breaking change; breaking changes are reported but allowed."
+            export ALLOW_BREAKING=1
+          fi
+          status=0
+          make schema-diff || status=$?
+          if [ "$status" = 1 ]; then
+            msg="This pull request breaks the provider schema. If that is intended, mark the PR title as a breaking change with '!' (for example 'feat!: ...' or 'fix(dcim)!: ...'); editing the title re-runs this check. Otherwise restore the removed or changed attributes."
+            echo "::error::$msg"
+            printf '\n> [!CAUTION]\n> %s\n' "$msg" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$status"
