@@ -1,50 +1,72 @@
 # Roadmap, todos and sharp edges
 
-Status as of `v0.4.0` (released 2026-10-11 from `main`). Items that have been actioned are removed from this
-file; `CHANGELOG.md` is the record of what shipped.
+Status as of `v0.5.0` (2026-11-01; NetBox 4.7.4 support is merged on `main` and unreleased). Items that have
+been actioned are removed from this file; `CHANGELOG.md` is the record of what shipped.
 
 ## Where things stand
 
 | Area | State |
 |---|---|
-| Resources / data sources | 126 generated resources, 266 data sources, 7 hand-written resources; see [RESOURCES.md](RESOURCES.md) |
-| Acceptance | Actions run 92 (docker-compose, 12 shards, one NetBox 4.7 each; `workflow_dispatch` on `main`, 2026-10-11): 138/139 pass; `TestAccCustomFieldValue_basic` fails (refresh plan not empty after apply); fix #33 (v0.4.0) landed afterwards and has not been re-run yet. Earlier: 135/135 pass on demo.netbox.dev (4.7.0): create, update, data sources, import, empty plan; 7 scenarios applied and destroyed. Spec pinned at 4.7.4 since 2026-10-31. The workflow runs nightly, on `workflow_dispatch` and on PRs labelled `run-acceptance` |
-| Per-app validation reports | [validation/](validation/README.md) (counts refreshed from run 92; narrative predates the last generator fixes, see the banner there) |
-| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.12 (minimum) / 1.15 / 1.16 / 1.17, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), daily NetBox release watch (spec diff, trial bump, latest release on the new image, demo smoke tests, verdict issue; `netbox-watch.yml`), zizmor workflow audit, CodeQL (Go without the generated `netbox/` client, and Actions; weekly and on every PR), incremental Go build caches written from `main`, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate weekly (Mondays) with a 7-day cooldown |
-| Release | `v0.4.0` released 2026-10-11 (after `v0.3.0`, 2026-10-02, and `v0.2.0`, 2026-10-01); `v0.1.0` and `v0.1.1` published 2026-09-24 (the 0.1.0 checksums are unsigned because of a workflow bug fixed in 0.1.1). GitHub Releases with eight platform zips, network mirror live at `https://elliot.github.io/terraform-provider-netbox/`, `scripts/install.sh` and `terraform init` through the mirror verified against the published assets; see [INSTALL.md](INSTALL.md). Releases build in the `release` environment with build provenance attestations and mandatory GPG signing with post-upload verification |
-| Registry | namespace `elliot` reserved, address `elliot/netbox` final; listing not yet published |
+| Resources / data sources | 133 resources (126 generated, 7 hand-written) and 266 data sources; see [RESOURCES.md](RESOURCES.md) |
+| Spec | pinned at NetBox 4.7.4 (`spec/VERSION`); 4.7.4 support merged after `v0.5.0` |
+| Acceptance | nightly workflow on `main` (docker-compose, 12 shards, one pinned NetBox each) green since `v0.5.0`; the 4.7.4 bump passed on its PR. The workflow also runs on `workflow_dispatch` and on PRs labelled `run-acceptance` |
+| Per-app validation reports | [validation/](validation/README.md) (historical; superseded by the nightly acceptance run) |
+| CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.12 (minimum) / 1.15 / 1.16 / 1.17, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), daily NetBox release watch (`netbox-watch.yml`), zizmor workflow audit, CodeQL, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate weekly with a 7-day cooldown (Dependency Dashboard: issue #46) |
+| Release | `v0.5.0` is the latest release. GitHub Releases with eight platform zips, GPG-signed `SHA256SUMS` (verified for `v0.4.0`, `v0.4.1`, `v0.5.0`) and SLSA build provenance attestations for every asset; network mirror at `https://elliot.github.io/terraform-provider-netbox/` and `scripts/install.sh` for off-registry installs; see [INSTALL.md](INSTALL.md) |
+| Registry | live at [registry.terraform.io/providers/elliot/netbox](https://registry.terraform.io/providers/elliot/netbox) (community tier) with every signed release from `v0.1.1`; `terraform init` installs from it without CLI configuration |
 
-## Next steps
+## v1.0
 
-1. Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability reporting. (The protected `release` environment, the `main` and `v*` rulesets and immutable releases are done.)
-2. Registry listing: releases are signed since `v0.1.1` (`SHA256SUMS.sig`). Optionally set the `RELEASE_KEY_FINGERPRINT` repository variable, register the public key under the `elliot` namespace, publish the repository once through the registry UI and verify the docs in the registry preview tool.
-3. For `v0.4.0` (and every later tag), confirm the provenance attestations (`gh attestation verify`) and `SHA256SUMS.sig`.
+Remaining work before `v1.0.0`; the compatibility promise is described in [VERSIONING.md](VERSIONING.md).
 
-## Milestones
+- Compatibility policy: [VERSIONING.md](VERSIONING.md) (semver, deprecation, NetBox and Terraform support).
+- Generator support for deprecations (`DeprecationMessage` from overrides) and schema versions with state
+  upgraders, so attributes can be deprecated and state migrated without a major release.
+- A CI check that diffs the provider schema against the last release and fails on unannounced breaking changes.
+- Upgrade tests: apply with the latest registry release, then plan with the current build and expect no changes.
+- Naming audit and the remaining pre-1.0 attribute renames, while they are still allowed without a deprecation.
+- Decide how data sources expose `custom_fields` (JSON string today) before it is frozen.
+- Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require
+  full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability
+  reporting (maintainer only).
+
+Release PR checklist for `v1.0.0`:
+
+- [ ] Drop the "Status: pre-1.0" banner from `README.md`.
+- [ ] Bump the version pins to `~> 1.0` in `README.md`, `docs/INSTALL.md`, `templates/index.md.tmpl` (if it
+      carries one) and `examples/provider/provider.tf`, then `make docs`.
+- [ ] Run **Prepare release** with the explicit version `1.0.0` (git-cliff would otherwise propose a 0.x
+      version, see [DEVELOPMENT.md](DEVELOPMENT.md#releasing)).
+
+## 1.x
+
+Additive work that does not need a major release:
+
+- Expose `circuit.assignment_ids` and `module_bay.installed_module_id` as read-only computed attributes on the
+  resources (NetBox 4.7.3 returns both on read; the data sources already have them).
+- `cf_<name>` custom-field filters on list data sources (not in the OpenAPI document; derive from the definition cache).
+- Natural-key imports (`terraform import netbox_site.x slug:dc1`).
+- ETag / `If-Match` concurrency control (absent from the schema).
+- An ephemeral resource for API tokens (the secret is only returned once).
+- Write-only variants of secret attributes, next to the existing `Sensitive` ones.
+
+## Backlog
 
 Behaviour that is deliberately conservative since v0.1: reverse sides of relations are read-only; nullable numbers and choices track the server value; `custom_fields` tracks only configured keys.
 
-### v0.2: generator polish
+### Generator polish
 - Reverse-side computed lists (`asn.site_ids`, `rear_port.front_ports`) are unknown during updates of the owning resource; a state-copying plan modifier would remove that line from plans but risks an inconsistent-result error when the other side changes in the same apply.
-- Expose `module_bay.installed_module_id` and `circuit.assignment_ids` as read-only computed attributes on the resources (NetBox 4.7.3 fixed the write error and returns both on read; the data sources already have them). They stay skipped on the resources until then, because `netbox_module.module_bay_id` and `netbox_circuit_group_assignment` own those relations.
 - Description polish: rack dimensions copied from the rack type, `extra_choices` as `[value, label]` pairs, `sync_interval` in minutes, list data source item shapes.
 - Per-field float precision in overrides for every decimal field (only `latitude`/`longitude` carry a precision today, applied by the generator; other floats fall back to 6 on read and have no decimals validator).
 
-### v0.3: beyond CRUD
+### Beyond CRUD
 - Action endpoints as data sources: cable traces and paths, `render-config` for devices and VMs, available IP/prefix/VLAN/ASN listings.
-- An ephemeral resource for API tokens (the secret is only returned once).
-- `cf_<name>` custom-field filters on list data sources (not in the OpenAPI document; derive from the definition cache).
-- Bulk operations and ETag / `If-Match` concurrency control (both absent from the schema).
+- Bulk operations (absent from the schema).
 - `Token.allowed_ips` once the OpenAPI document declares it.
 
 ### Later
 - NetBox 4.8 bump following [DEVELOPMENT.md](DEVELOPMENT.md); expect new collections and field additions only.
 - Plugin API support behind an opt-in (plugins do not appear in the core schema).
-- Natural-key imports (`terraform import netbox_site.x slug:dc1`).
-
-## Todos (file-anchored)
-
-- [ ] Renovate has not processed the repository yet (no dependency dashboard issue or `renovate/*` branches, although `.github/renovate.json5` validates): check that the Mend Renovate app's repository access includes this repository (GitHub Settings → Applications) and its status on developer.mend.io, then review the first dashboard.
 
 ## Sharp edges for users
 
@@ -56,7 +78,7 @@ General
 - `custom_fields` tracks only the keys you configure; the data sources return every field as a JSON string. Unknown field names fail at plan time.
 - Data-source `filters` names are checked against the endpoint's query parameters at plan time (with suggestions for typos); custom-field filters (`cf_<name>`) are not accepted yet.
 - Rate limiting is off unless `requests_per_second` (or `NETBOX_REQUESTS_PER_SECOND`) is set; shared instances such as the demo need it.
-- `terraform providers lock` ignores the CLI configuration's mirrors; pass `-net-mirror` or `-fs-mirror` explicitly (see [INSTALL.md](INSTALL.md)).
+- `terraform providers lock` ignores the CLI configuration's mirrors; pass `-net-mirror` or `-fs-mirror` explicitly on hosts that cannot reach the registry (see [INSTALL.md](INSTALL.md)).
 
 DCIM
 - Component templates instantiate only when a device is created: add `depends_on` from the device to its templates, and read the generated components with data sources.

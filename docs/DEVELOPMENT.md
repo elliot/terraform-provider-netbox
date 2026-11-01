@@ -129,8 +129,12 @@ each squash-merged title becomes a draft changelog entry: `feat` under *Added*, 
 `style` are left out. The mapping lives in `cliff.toml`.
 
 1. Run **Actions → Prepare release → Run workflow** on `main`. Leave *version* empty to let
-   [git-cliff](https://git-cliff.org) work it out (pre-1.0: a feature or breaking change bumps the minor
-   version, otherwise the patch), or enter one. The workflow runs `scripts/prepare-release.sh`, which turns
+   [git-cliff](https://git-cliff.org) work it out, or enter one. On 0.x a feature or a breaking change
+   bumps the minor version, otherwise the patch. The `[bump]` settings in `cliff.toml`
+   (`features_always_bump_minor`, `breaking_always_bump_major = false`) only make a difference while the
+   major version is 0; from 1.0 on, git-cliff bumps the major for a breaking change (`!` or a
+   `BREAKING CHANGE:` footer), the minor for a feature and the patch otherwise, with no configuration change.
+   It never proposes 1.0.0 by itself, so enter `1.0.0` explicitly for that release. The workflow runs `scripts/prepare-release.sh`, which turns
    `[Unreleased]` into a `## [X.Y.Z] - <date>` section that merges any hand-written entries with the drafted
    ones, then pushes it to a `release/vX.Y.Z` branch.
 2. Open the pull request from the link in the job summary, titled `chore(release): vX.Y.Z`. Edit

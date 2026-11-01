@@ -16,14 +16,15 @@ instance through its REST API. It is built on the Terraform Plugin Framework (pr
 resource, a single-object data source and a list data source (see [docs/RESOURCES.md](docs/RESOURCES.md)
 for the current list).
 
-> **Status: pre-1.0.** Names, attributes and behaviour may still change between minor releases; see the [changelog](CHANGELOG.md).
+> **Status: pre-1.0.** Names, attributes and behaviour may still change between minor releases; see the [changelog](CHANGELOG.md) and the [versioning policy](docs/VERSIONING.md) that applies from 1.0.
 
 ### Supported NetBox versions
 
 The provider tracks the NetBox 4.x release line. Each provider release is generated from, and tested
 against, one pinned NetBox OpenAPI document; the pinned version lives in [`spec/VERSION`](spec/VERSION)
 and moving to a new NetBox release is mostly a matter of pinning the new spec and regenerating (see
-[Bumping the NetBox version](docs/DEVELOPMENT.md#bumping-the-netbox-version)).
+[Bumping the NetBox version](docs/DEVELOPMENT.md#bumping-the-netbox-version)); how NetBox releases map to
+provider releases is described in [docs/VERSIONING.md](docs/VERSIONING.md).
 At start-up the provider reads `/api/status/` and warns (without failing) when the server's minor
 version differs from the one it was generated for; set `skip_version_check = true` to silence it.
 v2 API tokens require NetBox 4.5 or later; legacy v1 tokens still work, with a deprecation warning.
@@ -91,30 +92,29 @@ each endpoint. It is a separate provider with its own schema conventions, not a 
 
 ## Installation
 
-The provider is not on the public Terraform Registry yet. Releases on GitHub ship zips for Linux and
-macOS (`amd64`, `arm64`) and install through any of Terraform's off-registry channels while keeping the
-normal `source = "elliot/netbox"` address:
-
-```sh
-# 1. one machine: verified download into Terraform's implied local mirror, no CLI config needed
-curl -fsSL https://raw.githubusercontent.com/elliot/terraform-provider-netbox/main/scripts/install.sh | sh
-```
+The provider is published on the [Terraform Registry](https://registry.terraform.io/providers/elliot/netbox)
+as `elliot/netbox`. Declare it and run `terraform init`; no CLI configuration is needed:
 
 ```hcl
-# 2. teams: provider network mirror published on GitHub Pages (~/.terraformrc)
-provider_installation {
-  network_mirror {
-    url     = "https://elliot.github.io/terraform-provider-netbox/"
-    include = ["elliot/netbox"]
-  }
-  direct {
-    exclude = ["elliot/netbox"]
+terraform {
+  required_providers {
+    netbox = {
+      source  = "elliot/netbox"
+      version = "~> 0.5"
+    }
   }
 }
 ```
 
-A filesystem mirror for air-gapped hosts, lock-file guidance for mixed Linux/macOS teams and the local
-build/verify loop (`make dist mirror mirror-check`) are described in [docs/INSTALL.md](docs/INSTALL.md).
+The registry hosts the documentation of every resource and data source and verifies each release's signed
+checksums. For hosts that cannot reach the registry, every GitHub Release (Linux, macOS, FreeBSD and Windows,
+`amd64` and `arm64`) also installs through Terraform's off-registry channels under the same address: a
+verified install script, a provider network mirror on GitHub Pages, and a filesystem mirror for air-gapped
+machines. Those channels, lock-file guidance for mixed Linux/macOS teams and the local build/verify loop
+(`make dist mirror mirror-check`) are described in [docs/INSTALL.md](docs/INSTALL.md).
+
+Version numbers follow semantic versioning; what counts as a breaking change, the deprecation policy and the
+supported NetBox and Terraform versions are described in [docs/VERSIONING.md](docs/VERSIONING.md).
 
 ## Usage
 
@@ -123,7 +123,7 @@ terraform {
   required_providers {
     netbox = {
       source  = "elliot/netbox"
-      version = "~> 0.1"
+      version = "~> 0.5"
     }
   }
 }
