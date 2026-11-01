@@ -77,6 +77,18 @@ func TestAccUserGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccUserGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_user_group",
+		APIPath:      "/api/users/groups/",
+		Configs: []string{
+			acctest.Render(t, userGroupTestConfigUpdate, name),
+			acctest.Render(t, userGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_user_group", &resource.Sweeper{
 		Name:         "netbox_user_group",

@@ -141,6 +141,10 @@ resources:
       checks:                  # extra TestCheckResourceAttr on step 1
         status: active
       import_verify_ignore: [x]
+      upgrade:                 # TestAcc<Resource>_upgrade (see Upgrade tests)
+        skip: reason           # skip the upgrade test only
+        config: |              # complete HCL both the release and this build accept;
+          ...                  #   replaces trying update, then basic
 ```
 
 Templates use Go `text/template`: `{{.Name}}` is a unique `tfacc-xxxxxxxx`
@@ -165,6 +169,52 @@ export NETBOX_REQUESTS_PER_SECOND=5  # be polite to the shared demo
 TF_ACC=1 go test ./internal/provider/gen/dcim/ -run TestAccSite_basic -v
 make sweep                           # delete leftover tfacc-* objects
 ```
+
+### Upgrade tests
+
+Every generated test file also has `TestAcc<Resource>_upgrade`, which checks
+that state written by a published release still plans cleanly with the
+current build: step 1 applies the fixture with the release from the Terraform
+Registry (`ExternalProviders`), step 2 switches to the in-process provider and
+expects an empty plan. The hand-written resources have curated equivalents in
+`internal/provider/manual/upgrade_test.go`. Both go through
+`acctest.UpgradeTest`, which:
+
+* skips unless `TF_ACC` and `NETBOX_UPGRADE_FROM` (the release, e.g. `0.5.0`)
+  are set; `NETBOX_UPGRADE_SOURCE` overrides the registry address
+  (default `elliot/netbox`);
+* reads the release's schema once per test binary (`terraform providers schema
+  -json`) and uses the first configuration that only contains resource types,
+  data sources and attributes the release knows: the `update` fixture, then
+  the `basic` one. A fixture that uses something newer than the release falls
+  back or is skipped with the unknown names in the skip message, so new
+  resources and attributes need no override;
+* defaults `TF_PLUGIN_CACHE_DIR` to a directory under the user cache, so the
+  release is downloaded once rather than by every test.
+
+```sh
+NETBOX_UPGRADE_FROM=0.5.0 TF_ACC=1 go test ./internal/provider/gen/dcim/ -run 'TestAccSite_upgrade$' -v
+```
+
+A failure means the current build reads the state of an existing resource
+differently from the release: a renamed or removed attribute, a changed type
+without a state upgrader, or a normalisation that now produces a diff. Fix it
+in the generator (or add a state upgrader) unless the change is a deliberate
+breaking change. For deliberate ones:
+
+* a renamed attribute is unknown to the release, so fixtures using the new
+  name fall back or skip on their own. `test.upgrade.config` supplies a
+  configuration that both the release and the current build accept (for
+  example one that leaves the renamed attribute out) to keep the resource
+  covered, and `test.upgrade.skip` opts a resource out with a reason;
+* after a breaking release, the upgrade from the release before it fails by
+  design. Run the tests with `NETBOX_UPGRADE_FROM` set to the last
+  schema-compatible release (the nightly workflow takes it from the
+  `upgrade_from` input) until the breaking release is the latest one, then
+  drop overrides that only existed for the old schema.
+
+If the release refuses the NetBox under test (it checks the server version),
+set `NETBOX_SKIP_VERSION_CHECK=true` for the run; both providers read it.
 
 ## Adding hand-written behaviour
 

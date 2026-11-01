@@ -173,6 +173,18 @@ func TestAccTunnelTermination_basic(t *testing.T) {
 	})
 }
 
+func TestAccTunnelTermination_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_tunnel_termination",
+		APIPath:      "/api/vpn/tunnel-terminations/",
+		Configs: []string{
+			acctest.Render(t, tunnelTerminationTestConfigUpdate, name),
+			acctest.Render(t, tunnelTerminationTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_tunnel_termination", &resource.Sweeper{
 		Name:         "netbox_tunnel_termination",

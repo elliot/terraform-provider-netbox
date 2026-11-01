@@ -74,6 +74,18 @@ func TestAccPlatform_basic(t *testing.T) {
 	})
 }
 
+func TestAccPlatform_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_platform",
+		APIPath:      "/api/dcim/platforms/",
+		Configs: []string{
+			acctest.Render(t, platformTestConfigUpdate, name),
+			acctest.Render(t, platformTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_platform", &resource.Sweeper{
 		Name:         "netbox_platform",

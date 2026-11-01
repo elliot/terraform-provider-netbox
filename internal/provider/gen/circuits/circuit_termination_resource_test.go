@@ -123,6 +123,18 @@ func TestAccCircuitTermination_basic(t *testing.T) {
 	})
 }
 
+func TestAccCircuitTermination_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_circuit_termination",
+		APIPath:      "/api/circuits/circuit-terminations/",
+		Configs: []string{
+			acctest.Render(t, circuitTerminationTestConfigUpdate, name),
+			acctest.Render(t, circuitTerminationTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_circuit_termination", &resource.Sweeper{
 		Name:         "netbox_circuit_termination",

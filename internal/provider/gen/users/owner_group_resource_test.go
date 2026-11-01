@@ -77,6 +77,18 @@ func TestAccOwnerGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccOwnerGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_owner_group",
+		APIPath:      "/api/users/owner-groups/",
+		Configs: []string{
+			acctest.Render(t, ownerGroupTestConfigUpdate, name),
+			acctest.Render(t, ownerGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_owner_group", &resource.Sweeper{
 		Name:         "netbox_owner_group",

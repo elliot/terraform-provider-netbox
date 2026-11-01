@@ -152,6 +152,18 @@ func TestAccCable_basic(t *testing.T) {
 	})
 }
 
+func TestAccCable_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_cable",
+		APIPath:      "/api/dcim/cables/",
+		Configs: []string{
+			acctest.Render(t, cableTestConfigUpdate, name),
+			acctest.Render(t, cableTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_cable", &resource.Sweeper{
 		Name:         "netbox_cable",

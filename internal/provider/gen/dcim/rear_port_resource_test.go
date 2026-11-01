@@ -132,6 +132,18 @@ func TestAccRearPort_basic(t *testing.T) {
 	})
 }
 
+func TestAccRearPort_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_rear_port",
+		APIPath:      "/api/dcim/rear-ports/",
+		Configs: []string{
+			acctest.Render(t, rearPortTestConfigUpdate, name),
+			acctest.Render(t, rearPortTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_rear_port", &resource.Sweeper{
 		Name:         "netbox_rear_port",

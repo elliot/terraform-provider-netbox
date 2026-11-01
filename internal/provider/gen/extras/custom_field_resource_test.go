@@ -82,6 +82,19 @@ func TestAccCustomField_basic(t *testing.T) {
 	})
 }
 
+func TestAccCustomField_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_custom_field",
+		APIPath:      "/api/extras/custom-fields/",
+		Configs: []string{
+			acctest.Render(t, customFieldTestConfigUpdate, name),
+			acctest.Render(t, customFieldTestConfigBasic, name),
+		},
+		Serial: true,
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_custom_field", &resource.Sweeper{
 		Name:         "netbox_custom_field",

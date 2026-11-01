@@ -113,6 +113,18 @@ func TestAccRackType_basic(t *testing.T) {
 	})
 }
 
+func TestAccRackType_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_rack_type",
+		APIPath:      "/api/dcim/rack-types/",
+		Configs: []string{
+			acctest.Render(t, rackTypeTestConfigUpdate, name),
+			acctest.Render(t, rackTypeTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_rack_type", &resource.Sweeper{
 		Name:         "netbox_rack_type",

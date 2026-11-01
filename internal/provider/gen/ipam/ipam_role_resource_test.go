@@ -80,6 +80,18 @@ func TestAccIpamRole_basic(t *testing.T) {
 	})
 }
 
+func TestAccIpamRole_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_ipam_role",
+		APIPath:      "/api/ipam/roles/",
+		Configs: []string{
+			acctest.Render(t, ipamRoleTestConfigUpdate, name),
+			acctest.Render(t, ipamRoleTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_ipam_role", &resource.Sweeper{
 		Name:         "netbox_ipam_role",

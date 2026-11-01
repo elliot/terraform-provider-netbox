@@ -94,6 +94,18 @@ func TestAccJournalEntry_basic(t *testing.T) {
 	})
 }
 
+func TestAccJournalEntry_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_journal_entry",
+		APIPath:      "/api/extras/journal-entries/",
+		Configs: []string{
+			acctest.Render(t, journalEntryTestConfigUpdate, name),
+			acctest.Render(t, journalEntryTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_journal_entry", &resource.Sweeper{
 		Name:         "netbox_journal_entry",

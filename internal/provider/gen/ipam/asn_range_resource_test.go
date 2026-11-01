@@ -98,6 +98,18 @@ func TestAccAsnRange_basic(t *testing.T) {
 	})
 }
 
+func TestAccAsnRange_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_asn_range",
+		APIPath:      "/api/ipam/asn-ranges/",
+		Configs: []string{
+			acctest.Render(t, asnRangeTestConfigUpdate, name),
+			acctest.Render(t, asnRangeTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_asn_range", &resource.Sweeper{
 		Name:         "netbox_asn_range",

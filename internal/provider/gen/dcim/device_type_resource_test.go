@@ -91,6 +91,18 @@ func TestAccDeviceType_basic(t *testing.T) {
 	})
 }
 
+func TestAccDeviceType_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_device_type",
+		APIPath:      "/api/dcim/device-types/",
+		Configs: []string{
+			acctest.Render(t, deviceTypeTestConfigUpdate, name),
+			acctest.Render(t, deviceTypeTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_device_type", &resource.Sweeper{
 		Name:         "netbox_device_type",

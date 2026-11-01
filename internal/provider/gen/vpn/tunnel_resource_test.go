@@ -102,6 +102,18 @@ func TestAccTunnel_basic(t *testing.T) {
 	})
 }
 
+func TestAccTunnel_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_tunnel",
+		APIPath:      "/api/vpn/tunnels/",
+		Configs: []string{
+			acctest.Render(t, tunnelTestConfigUpdate, name),
+			acctest.Render(t, tunnelTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_tunnel", &resource.Sweeper{
 		Name:         "netbox_tunnel",

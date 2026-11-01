@@ -141,6 +141,18 @@ func TestAccService_basic(t *testing.T) {
 	})
 }
 
+func TestAccService_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_service",
+		APIPath:      "/api/ipam/services/",
+		Configs: []string{
+			acctest.Render(t, serviceTestConfigUpdate, name),
+			acctest.Render(t, serviceTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_service", &resource.Sweeper{
 		Name:         "netbox_service",

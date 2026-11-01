@@ -86,6 +86,18 @@ func TestAccTunnelGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccTunnelGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_tunnel_group",
+		APIPath:      "/api/vpn/tunnel-groups/",
+		Configs: []string{
+			acctest.Render(t, tunnelGroupTestConfigUpdate, name),
+			acctest.Render(t, tunnelGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_tunnel_group", &resource.Sweeper{
 		Name:         "netbox_tunnel_group",

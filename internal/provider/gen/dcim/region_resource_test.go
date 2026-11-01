@@ -90,6 +90,18 @@ func TestAccRegion_basic(t *testing.T) {
 	})
 }
 
+func TestAccRegion_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_region",
+		APIPath:      "/api/dcim/regions/",
+		Configs: []string{
+			acctest.Render(t, regionTestConfigUpdate, name),
+			acctest.Render(t, regionTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_region", &resource.Sweeper{
 		Name:         "netbox_region",

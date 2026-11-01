@@ -101,6 +101,18 @@ func TestAccAsn_basic(t *testing.T) {
 	})
 }
 
+func TestAccAsn_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_asn",
+		APIPath:      "/api/ipam/asns/",
+		Configs: []string{
+			acctest.Render(t, asnTestConfigUpdate, name),
+			acctest.Render(t, asnTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_asn", &resource.Sweeper{
 		Name:         "netbox_asn",

@@ -92,6 +92,18 @@ func TestAccVlanGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccVlanGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_vlan_group",
+		APIPath:      "/api/ipam/vlan-groups/",
+		Configs: []string{
+			acctest.Render(t, vlanGroupTestConfigUpdate, name),
+			acctest.Render(t, vlanGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_vlan_group", &resource.Sweeper{
 		Name:         "netbox_vlan_group",
