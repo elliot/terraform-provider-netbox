@@ -61,7 +61,7 @@ Read-Only:
 - `display_url` (String) Display Url.
 - `group_id` (Number) ID of the Tenant Group (`netbox_tenant_group`).
 - `id` (Number) The numeric ID of the object in NetBox.
-- `ipaddress_count` (Number) Ipaddress Count.
+- `ip_address_count` (Number) Ipaddress Count.
 - `last_updated` (String) Last Updated.
 - `name` (String) Name.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
@@ -71,6 +71,6 @@ Read-Only:
 - `slug` (String) Slug.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.
-- `virtualmachine_count` (Number) Virtualmachine Count.
+- `virtual_machine_count` (Number) Virtualmachine Count.
 - `vlan_count` (Number) Vlan Count.
 - `vrf_count` (Number) Vrf Count.

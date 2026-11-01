@@ -41,14 +41,14 @@ output "vm_interface_id" {
 ### Read-Only
 
 - `bridge_id` (Number) ID of the Vm Interface (`netbox_vm_interface`).
-- `count_fhrp_groups` (Number) Count Fhrp Groups.
-- `count_ipaddresses` (Number) Count Ipaddresses.
 - `created` (String) Created.
 - `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
 - `enabled` (Boolean) Enabled. Defaults to the NetBox server default when omitted.
+- `fhrp_group_count` (Number) Count Fhrp Groups.
+- `ip_address_count` (Number) Count Ipaddresses.
 - `l2vpn_termination_id` (Number) L2vpn Termination. References `netbox_l2vpn_termination`.
 - `last_updated` (String) Last Updated.
 - `mac_address` (String) Mac Address. Colon notation, e.g. `aa:bb:cc:dd:ee:ff`; NetBox stores it in upper case.

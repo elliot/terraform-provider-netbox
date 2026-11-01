@@ -47,6 +47,12 @@ make gen && git diff --exit-code            # what CI enforces
 * Foreign keys: `<field>_id` (Int64). Many-to-many integer lists:
   `<singular>_ids` (Set of Int64). Generic FKs keep `*_object_type` /
   `*_object_id`.
+* Attribute names separate the words NetBox runs together in a few
+  properties and spell counters `<singular>_count` (`naming.Attribute`:
+  `ipaddresses` -> `ip_address_ids`, `virtualmachine_count` ->
+  `virtual_machine_count`, `count_ipaddresses` -> `ip_address_count`).
+  Integer IDs inside nested objects and in data-source-only collections are
+  renamed to `<field>_id` through the overrides (`rear_ports[].rear_port_id`).
 * `tags` is a set of tag **slugs**. `custom_fields` is a `DynamicAttribute`
   handled by `internal/customfields` (definition cache per object type,
   validation of names, coercion of NetBox's `{value,label}` and related-object

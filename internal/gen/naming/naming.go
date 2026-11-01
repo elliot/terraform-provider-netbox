@@ -129,3 +129,47 @@ func Title(snake string) string {
 	}
 	return strings.Join(parts, " ")
 }
+
+// compoundWords maps the run-together words NetBox uses in a few property
+// names ("ipaddresses", "virtualmachine_count") to the separated form used
+// everywhere else, so Terraform attribute names spell a concept one way.
+var compoundWords = map[string]string{
+	"coolingfeed":     "cooling_feed",
+	"devicetype":      "device_type",
+	"inventoryitem":   "inventory_item",
+	"ipaddress":       "ip_address",
+	"ipaddresses":     "ip_addresses",
+	"moduletype":      "module_type",
+	"powerfeed":       "power_feed",
+	"virtualmachine":  "virtual_machine",
+	"virtualmachines": "virtual_machines",
+	"wirelesslan":     "wireless_lan",
+}
+
+// pluralCounts are "<plural>_count" properties whose counted noun is singular
+// in every other "<noun>_count" attribute.
+var pluralCounts = map[string]string{
+	"choices_count":      "choice_count",
+	"terminations_count": "termination_count",
+}
+
+// Attribute converts an OpenAPI property name to the Terraform attribute base
+// name (before the _id/_ids suffixes): run-together words are separated and
+// counters are spelled "<singular>_count" ("ipaddresses" -> "ip_addresses",
+// "count_ipaddresses" -> "ip_address_count", "terminations_count" -> "termination_count").
+func Attribute(prop string) string {
+	parts := strings.Split(prop, "_")
+	for i, p := range parts {
+		if w, ok := compoundWords[p]; ok {
+			parts[i] = w
+		}
+	}
+	name := strings.Join(parts, "_")
+	if rest, ok := strings.CutPrefix(name, "count_"); ok && rest != "" {
+		return Singular(rest) + "_count"
+	}
+	if c, ok := pluralCounts[name]; ok {
+		return c
+	}
+	return name
+}

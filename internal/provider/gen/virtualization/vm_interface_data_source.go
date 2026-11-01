@@ -55,8 +55,8 @@ type VmInterfaceDataModel struct {
 	MacAddressIds           types.Set            `tfsdk:"mac_address_ids"`
 	L2vpnTerminationId      types.Int64          `tfsdk:"l2vpn_termination_id"`
 	LastUpdated             timetypes.RFC3339    `tfsdk:"last_updated"`
-	CountIpaddresses        types.Int64          `tfsdk:"count_ipaddresses"`
-	CountFhrpGroups         types.Int64          `tfsdk:"count_fhrp_groups"`
+	IpAddressCount          types.Int64          `tfsdk:"ip_address_count"`
+	FhrpGroupCount          types.Int64          `tfsdk:"fhrp_group_count"`
 }
 
 // vmInterfaceFilterNames lists the query parameters accepted by /api/virtualization/interfaces/ (sorted).
@@ -198,11 +198,11 @@ func vmInterfaceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"count_ipaddresses": dsschema.Int64Attribute{
+		"ip_address_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Count Ipaddresses.",
 			Computed:            true,
 		},
-		"count_fhrp_groups": dsschema.Int64Attribute{
+		"fhrp_group_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Count Fhrp Groups.",
 			Computed:            true,
 		},
@@ -473,6 +473,6 @@ func vmInterfaceDataFromAPI(ctx context.Context, obj *netbox.VMInterface, out *V
 	out.MacAddressIds = conv.BriefIDs(obj.GetMacAddresses())
 	out.L2vpnTerminationId = conv.BriefID(obj.GetL2vpnTerminationOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.CountIpaddresses = conv.Int64From64(obj.GetCountIpaddressesOk())
-	out.CountFhrpGroups = conv.Int64From64(obj.GetCountFhrpGroupsOk())
+	out.IpAddressCount = conv.Int64From64(obj.GetCountIpaddressesOk())
+	out.FhrpGroupCount = conv.Int64From64(obj.GetCountFhrpGroupsOk())
 }

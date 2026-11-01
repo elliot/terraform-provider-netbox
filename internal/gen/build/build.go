@@ -265,6 +265,16 @@ func (b *Builder) buildResource(r *model.Resource) error {
 				b.warn("%s.%s: read-only property skipped", r.Name, pname)
 				continue
 			}
+			if ao := o.Attributes[pname]; ao != nil {
+				// Only naming applies: every attribute of a data-source-only
+				// collection is computed from the read serializer.
+				if ao.Name != "" {
+					ro.Name = ao.Name
+				}
+				if ao.Description != "" {
+					ro.Description = ao.Description
+				}
+			}
 			applyDeprecation(&ro, readSchema.Properties[pname].Deprecated, o.Attributes[pname])
 			r.Attrs = append(r.Attrs, ro)
 		}
@@ -300,7 +310,9 @@ func (b *Builder) buildResource(r *model.Resource) error {
 		// and would show "(known after apply)" in every plan, so they are data
 		// source only. Everything else that is readable-only goes to ReadOnlyAttrs.
 		for _, pname := range readSchema.OrderedProperties() {
-			if pname == "id" || r.Attr(pname) != nil || r.Attr(pname+"_id") != nil || r.Attr(naming.Singular(pname)+"_ids") != nil {
+			// Skip properties already mapped to an attribute, including the
+			// object side of a generic relation (scope next to scope_id).
+			if pname == "id" || r.AttrByJSON(pname) != nil || r.Attr(pname) != nil || r.Attr(pname+"_id") != nil || r.Attr(naming.Singular(pname)+"_ids") != nil {
 				continue
 			}
 			if createSchema.Properties[pname] != nil {
@@ -570,6 +582,7 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 	}
 
 	// Terraform naming.
+	a.Name = naming.Attribute(a.Name)
 	switch kind {
 	case model.KindFK:
 		if !strings.HasSuffix(a.Name, "_id") {
@@ -763,7 +776,7 @@ func defaultDescription(a *model.Attr) string {
 		return fmt.Sprintf("ID of the related %s.", naming.Title(strings.TrimSuffix(a.Name, "_id")))
 	case model.KindFKList:
 		if a.Target != "" {
-			return fmt.Sprintf("IDs of the assigned %s (`netbox_%s`).", naming.Title(naming.Singular(strings.TrimSuffix(a.Name, "_ids"))), a.Target)
+			return fmt.Sprintf("IDs of the assigned %s (`netbox_%s`).", naming.Title(strings.TrimSuffix(a.Name, "_ids")), a.Target)
 		}
 		return fmt.Sprintf("IDs of the assigned %s.", naming.Title(strings.TrimSuffix(a.Name, "_ids")))
 	case model.KindTags:
@@ -917,7 +930,7 @@ func (b *Builder) buildNested(r *model.Resource, a *model.Attr, itemReq *openapi
 // classifyReadOnly maps a read-only property (counts, display_url, ...) to a computed attribute.
 func (b *Builder) classifyReadOnly(pname string, prop *openapi.Schema) (model.Attr, bool) {
 	doc := b.Doc
-	a := model.Attr{Name: strings.TrimLeft(pname, "_"), JSON: pname, GoField: naming.GoField(pname), ReadGoField: naming.GoField(pname), ReadOnly: true, Computed: true,
+	a := model.Attr{Name: naming.Attribute(strings.TrimLeft(pname, "_")), JSON: pname, GoField: naming.GoField(pname), ReadGoField: naming.GoField(pname), ReadOnly: true, Computed: true,
 		Description: strings.TrimSpace(prop.Description), Nullable: prop.Nullable}
 	rs, refName := doc.Resolve(prop)
 	if rs == nil {

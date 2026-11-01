@@ -58,7 +58,7 @@ Read-Only:
 - `display_url` (String) Display Url.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `is_executable` (Boolean) Is Executable.
-- `module` (Number) Module.
+- `module_id` (Number) ID of the script module the script belongs to.
 - `name` (String) Name.
 - `url` (String) Url.
 - `vars` (String) Vars.

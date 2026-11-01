@@ -45,12 +45,12 @@ output "manufacturer_id" {
 - `created` (String) Created.
 - `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.
-- `devicetype_count` (Number) Devicetype Count.
+- `device_type_count` (Number) Devicetype Count.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
-- `inventoryitem_count` (Number) Inventoryitem Count.
+- `inventory_item_count` (Number) Inventoryitem Count.
 - `last_updated` (String) Last Updated.
-- `moduletype_count` (Number) Moduletype Count.
+- `module_type_count` (Number) Moduletype Count.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `platform_count` (Number) Platform Count.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.

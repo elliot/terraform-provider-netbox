@@ -19,7 +19,7 @@ resource "netbox_service" "web" {
   parent_object_id   = netbox_device.web1.id
   name               = "nginx"
   port_mappings      = ["tcp/80", "tcp/443"]
-  ipaddress_ids      = [netbox_ip_address.web1_eth0.id]
+  ip_address_ids     = [netbox_ip_address.web1_eth0.id]
   description        = "Public web front end"
 }
 
@@ -45,7 +45,7 @@ resource "netbox_service" "ssh" {
 - `comments` (String) Comments. Defaults to an empty string.
 - `custom_fields` (Dynamic) Custom field values as an object of field name to value, e.g. `{ cost_center = "CC-42", vlan_id = 5, owner_site = 12 }`. Selection fields take the choice value, object fields the related object ID, multi-value fields a list, JSON fields any value. Only keys present in the configuration are tracked; field names are validated against the NetBox definitions.
 - `description` (String) Description. Defaults to an empty string.
-- `ipaddress_ids` (Set of Number) IDs of the assigned Ipaddres (`netbox_ip_address`). Defaults to an empty set.
+- `ip_address_ids` (Set of Number) IDs of the assigned Ip Address (`netbox_ip_address`). Defaults to an empty set.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `port_mappings` (Set of String) Port Mappings. Defaults to an empty set.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.

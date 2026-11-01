@@ -60,7 +60,7 @@ output "cluster_id" {
 - `tenant_id` (Number) ID of the Tenant (`netbox_tenant`).
 - `type_id` (Number) ID of the Cluster Type (`netbox_cluster_type`).
 - `url` (String) Url.
-- `virtualmachine_count` (Number) Virtualmachine Count.
+- `virtual_machine_count` (Number) Virtualmachine Count.
 
 <a id="nestedatt--filters"></a>
 ### Nested Schema for `filters`

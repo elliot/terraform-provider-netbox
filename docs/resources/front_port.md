@@ -59,7 +59,7 @@ resource "netbox_front_port" "lc" {
   rear_ports = [
     {
       position           = 1
-      rear_port          = netbox_rear_port.trunk1.id
+      rear_port_id       = netbox_rear_port.trunk1.id
       rear_port_position = count.index + 1
     },
   ]
@@ -100,7 +100,7 @@ resource "netbox_front_port" "lc" {
 Required:
 
 - `position` (Number) Position.
-- `rear_port` (Number) Rear Port.
+- `rear_port_id` (Number) Rear Port.
 
 Optional:
 

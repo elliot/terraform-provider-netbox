@@ -46,7 +46,7 @@ output "service_id" {
 - `description` (String) Description. Defaults to an empty string.
 - `display` (String) Display.
 - `display_url` (String) Display Url.
-- `ipaddress_ids` (Set of Number) IDs of the assigned Ipaddres (`netbox_ip_address`). Defaults to an empty set.
+- `ip_address_ids` (Set of Number) IDs of the assigned Ip Address (`netbox_ip_address`). Defaults to an empty set.
 - `last_updated` (String) Last Updated.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
 - `parent` (String) Parent.

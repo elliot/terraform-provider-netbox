@@ -62,7 +62,7 @@ Read-Only:
 - `export_target_ids` (Set of Number) IDs of the assigned Export Target (`netbox_route_target`). Defaults to an empty set.
 - `id` (Number) The numeric ID of the object in NetBox.
 - `import_target_ids` (Set of Number) IDs of the assigned Import Target (`netbox_route_target`). Defaults to an empty set.
-- `ipaddress_count` (Number) Ipaddress Count.
+- `ip_address_count` (Number) Ipaddress Count.
 - `last_updated` (String) Last Updated.
 - `name` (String) Name.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).

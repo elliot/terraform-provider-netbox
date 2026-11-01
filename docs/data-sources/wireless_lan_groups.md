@@ -63,4 +63,4 @@ Read-Only:
 - `slug` (String) Slug.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.
-- `wirelesslan_count` (Number) Wirelesslan Count.
+- `wireless_lan_count` (Number) Wirelesslan Count.

@@ -38,7 +38,7 @@ data "netbox_cooling_source" "chiller_1" {
 
 - `comments` (String) Comments. Defaults to an empty string.
 - `cooling_capacity` (Number) Total rated cooling capacity (kW). Defaults to the NetBox server default when omitted.
-- `coolingfeed_count` (Number) Coolingfeed Count.
+- `cooling_feed_count` (Number) Coolingfeed Count.
 - `created` (String) Created.
 - `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.

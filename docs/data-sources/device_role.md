@@ -56,7 +56,7 @@ output "device_role_id" {
 - `parent_id` (Number) ID of the Device Role (`netbox_device_role`).
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.
-- `virtualmachine_count` (Number) Virtualmachine Count.
+- `virtual_machine_count` (Number) Virtualmachine Count.
 - `vm_role` (Boolean) Virtual machines may be assigned to this role. Defaults to the NetBox server default when omitted.
 
 <a id="nestedatt--filters"></a>

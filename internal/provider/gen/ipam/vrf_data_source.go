@@ -46,7 +46,7 @@ type VrfDataModel struct {
 	DisplayUrl      types.String         `tfsdk:"display_url"`
 	Display         types.String         `tfsdk:"display"`
 	LastUpdated     timetypes.RFC3339    `tfsdk:"last_updated"`
-	IpaddressCount  types.Int64          `tfsdk:"ipaddress_count"`
+	IpAddressCount  types.Int64          `tfsdk:"ip_address_count"`
 	PrefixCount     types.Int64          `tfsdk:"prefix_count"`
 }
 
@@ -147,7 +147,7 @@ func vrfDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"ipaddress_count": dsschema.Int64Attribute{
+		"ip_address_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Ipaddress Count.",
 			Computed:            true,
 		},
@@ -413,6 +413,6 @@ func vrfDataFromAPI(ctx context.Context, obj *netbox.VRF, out *VrfDataModel, dia
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.IpaddressCount = conv.Int64From64(obj.GetIpaddressCountOk())
+	out.IpAddressCount = conv.Int64From64(obj.GetIpaddressCountOk())
 	out.PrefixCount = conv.Int64From64(obj.GetPrefixCountOk())
 }

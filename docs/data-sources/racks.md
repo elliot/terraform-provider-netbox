@@ -79,7 +79,7 @@ Read-Only:
 - `outer_unit` (String) Outer Unit. Valid values: `mm`, `in`. Defaults to the NetBox server default when omitted.
 - `outer_width` (Number) Outer dimension of rack (width). Defaults to the NetBox server default when omitted.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
-- `powerfeed_count` (Number) Powerfeed Count.
+- `power_feed_count` (Number) Powerfeed Count.
 - `rack_type_id` (Number) ID of the Rack Type (`netbox_rack_type`).
 - `role_id` (Number) ID of the Rack Role (`netbox_rack_role`).
 - `serial` (String) Serial. Defaults to an empty string.

@@ -81,5 +81,5 @@ Read-Only:
 - `tenant_id` (Number) ID of the Tenant (`netbox_tenant`).
 - `time_zone` (String) Time Zone.
 - `url` (String) Url.
-- `virtualmachine_count` (Number) Virtualmachine Count.
+- `virtual_machine_count` (Number) Virtualmachine Count.
 - `vlan_count` (Number) Vlan Count.

@@ -66,13 +66,13 @@ type FrontPortModel struct {
 // FrontPortRearPortsItem is one element of netbox_front_port.rear_ports.
 type FrontPortRearPortsItem struct {
 	Position         types.Int64 `tfsdk:"position"`
-	RearPort         types.Int64 `tfsdk:"rear_port"`
+	RearPortId       types.Int64 `tfsdk:"rear_port_id"`
 	RearPortPosition types.Int64 `tfsdk:"rear_port_position"`
 }
 
 var frontPortRearPortsItemAttrTypes = map[string]attr.Type{
 	"position":           types.Int64Type,
-	"rear_port":          types.Int64Type,
+	"rear_port_id":       types.Int64Type,
 	"rear_port_position": types.Int64Type,
 }
 
@@ -177,7 +177,7 @@ func frontPortResourceAttributes() map[string]schema.Attribute {
 					MarkdownDescription: "Position.",
 					Required:            true,
 				},
-				"rear_port": schema.Int64Attribute{
+				"rear_port_id": schema.Int64Attribute{
 					MarkdownDescription: "Rear Port.",
 					Required:            true,
 				},
@@ -361,7 +361,7 @@ func frontPortToCreate(ctx context.Context, plan *FrontPortModel, cf *customfiel
 			var items []FrontPortRearPortsItem
 			diags.Append(plan.RearPorts.ElementsAs(ctx, &items, false)...)
 			for _, it := range items {
-				e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), it.RearPort.ValueInt64())
+				e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), it.RearPortId.ValueInt64())
 				if conv.Known(it.RearPortPosition) {
 					e.SetRearPortPosition(conv.Int32(it.RearPortPosition))
 				}
@@ -436,7 +436,7 @@ func frontPortToPatch(ctx context.Context, plan, state *FrontPortModel, cf *cust
 				var items []FrontPortRearPortsItem
 				diags.Append(plan.RearPorts.ElementsAs(ctx, &items, false)...)
 				for _, it := range items {
-					e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), it.RearPort.ValueInt64())
+					e := netbox.NewFrontPortMappingRequest(conv.Int32(it.Position), it.RearPortId.ValueInt64())
 					if conv.Known(it.RearPortPosition) {
 						e.SetRearPortPosition(conv.Int32(it.RearPortPosition))
 					}
@@ -498,7 +498,7 @@ func frontPortFromAPI(ctx context.Context, obj *netbox.FrontPort, prior *FrontPo
 			src := &items[i]
 			vals = append(vals, FrontPortRearPortsItem{
 				Position:         conv.Int64From32(src.GetPositionOk()),
-				RearPort:         conv.Int64From64(src.GetRearPortOk()),
+				RearPortId:       conv.Int64From64(src.GetRearPortOk()),
 				RearPortPosition: conv.Int64From32(src.GetRearPortPositionOk()),
 			})
 		}

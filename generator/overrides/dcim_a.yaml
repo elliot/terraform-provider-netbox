@@ -1146,6 +1146,10 @@ resources:
           tags            = [netbox_tag.test.slug]
         }
 
+  cable-terminations:
+    attributes:
+      # bare integer in the read serializer; named like every other FK
+      cable: { name: cable_id, description: "ID of the cable (`netbox_cable`)." }
   cable-bundles:
     test:
       basic: |

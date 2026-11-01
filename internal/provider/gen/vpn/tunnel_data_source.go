@@ -29,25 +29,25 @@ func init() {
 
 // TunnelDataModel is the state of data.netbox_tunnel and of items of data.netbox_tunnels.
 type TunnelDataModel struct {
-	Id                types.Int64          `tfsdk:"id"`
-	Name              types.String         `tfsdk:"name"`
-	Status            types.String         `tfsdk:"status"`
-	GroupId           types.Int64          `tfsdk:"group_id"`
-	Encapsulation     types.String         `tfsdk:"encapsulation"`
-	IpsecProfileId    types.Int64          `tfsdk:"ipsec_profile_id"`
-	TenantId          types.Int64          `tfsdk:"tenant_id"`
-	TunnelId          types.Int64          `tfsdk:"tunnel_id"`
-	Description       types.String         `tfsdk:"description"`
-	OwnerId           types.Int64          `tfsdk:"owner_id"`
-	Comments          types.String         `tfsdk:"comments"`
-	Tags              types.Set            `tfsdk:"tags"`
-	CustomFields      jsontypes.Normalized `tfsdk:"custom_fields"`
-	Url               types.String         `tfsdk:"url"`
-	Created           timetypes.RFC3339    `tfsdk:"created"`
-	DisplayUrl        types.String         `tfsdk:"display_url"`
-	Display           types.String         `tfsdk:"display"`
-	LastUpdated       timetypes.RFC3339    `tfsdk:"last_updated"`
-	TerminationsCount types.Int64          `tfsdk:"terminations_count"`
+	Id               types.Int64          `tfsdk:"id"`
+	Name             types.String         `tfsdk:"name"`
+	Status           types.String         `tfsdk:"status"`
+	GroupId          types.Int64          `tfsdk:"group_id"`
+	Encapsulation    types.String         `tfsdk:"encapsulation"`
+	IpsecProfileId   types.Int64          `tfsdk:"ipsec_profile_id"`
+	TenantId         types.Int64          `tfsdk:"tenant_id"`
+	TunnelId         types.Int64          `tfsdk:"tunnel_id"`
+	Description      types.String         `tfsdk:"description"`
+	OwnerId          types.Int64          `tfsdk:"owner_id"`
+	Comments         types.String         `tfsdk:"comments"`
+	Tags             types.Set            `tfsdk:"tags"`
+	CustomFields     jsontypes.Normalized `tfsdk:"custom_fields"`
+	Url              types.String         `tfsdk:"url"`
+	Created          timetypes.RFC3339    `tfsdk:"created"`
+	DisplayUrl       types.String         `tfsdk:"display_url"`
+	Display          types.String         `tfsdk:"display"`
+	LastUpdated      timetypes.RFC3339    `tfsdk:"last_updated"`
+	TerminationCount types.Int64          `tfsdk:"termination_count"`
 }
 
 // tunnelFilterNames lists the query parameters accepted by /api/vpn/tunnels/ (sorted).
@@ -153,7 +153,7 @@ func tunnelDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			CustomType:          timetypes.RFC3339Type{},
 			Computed:            true,
 		},
-		"terminations_count": dsschema.Int64Attribute{
+		"termination_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Terminations Count.",
 			Computed:            true,
 		},
@@ -416,5 +416,5 @@ func tunnelDataFromAPI(ctx context.Context, obj *netbox.Tunnel, out *TunnelDataM
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.TerminationsCount = conv.Int64From64(obj.GetTerminationsCountOk())
+	out.TerminationCount = conv.Int64From64(obj.GetTerminationsCountOk())
 }

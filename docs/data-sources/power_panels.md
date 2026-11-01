@@ -64,7 +64,7 @@ Read-Only:
 - `location_id` (Number) ID of the Location (`netbox_location`).
 - `name` (String) Name.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
-- `powerfeed_count` (Number) Powerfeed Count.
+- `power_feed_count` (Number) Powerfeed Count.
 - `site_id` (Number) ID of the Site (`netbox_site`).
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `url` (String) Url.

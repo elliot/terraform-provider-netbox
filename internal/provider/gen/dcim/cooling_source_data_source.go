@@ -46,7 +46,7 @@ type CoolingSourceDataModel struct {
 	Created          timetypes.RFC3339    `tfsdk:"created"`
 	DisplayUrl       types.String         `tfsdk:"display_url"`
 	Display          types.String         `tfsdk:"display"`
-	CoolingfeedCount types.Int64          `tfsdk:"coolingfeed_count"`
+	CoolingFeedCount types.Int64          `tfsdk:"cooling_feed_count"`
 	LastUpdated      timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
@@ -151,7 +151,7 @@ func coolingSourceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
-		"coolingfeed_count": dsschema.Int64Attribute{
+		"cooling_feed_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Coolingfeed Count.",
 			Computed:            true,
 		},
@@ -418,6 +418,6 @@ func coolingSourceDataFromAPI(ctx context.Context, obj *netbox.CoolingSource, ou
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
-	out.CoolingfeedCount = conv.Int64From64(obj.GetCoolingfeedCountOk())
+	out.CoolingFeedCount = conv.Int64From64(obj.GetCoolingfeedCountOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

@@ -34,7 +34,7 @@ type ServiceDataModel struct {
 	ParentObjectId   types.Int64          `tfsdk:"parent_object_id"`
 	Name             types.String         `tfsdk:"name"`
 	PortMappings     types.Set            `tfsdk:"port_mappings"`
-	IpaddressIds     types.Set            `tfsdk:"ipaddress_ids"`
+	IpAddressIds     types.Set            `tfsdk:"ip_address_ids"`
 	Description      types.String         `tfsdk:"description"`
 	OwnerId          types.Int64          `tfsdk:"owner_id"`
 	Comments         types.String         `tfsdk:"comments"`
@@ -93,8 +93,8 @@ func serviceDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			ElementType:         types.StringType,
 			Computed:            true,
 		},
-		"ipaddress_ids": dsschema.SetAttribute{
-			MarkdownDescription: "IDs of the assigned Ipaddres (`netbox_ip_address`). Defaults to an empty set.",
+		"ip_address_ids": dsschema.SetAttribute{
+			MarkdownDescription: "IDs of the assigned Ip Address (`netbox_ip_address`). Defaults to an empty set.",
 			ElementType:         types.Int64Type,
 			Computed:            true,
 		},
@@ -393,7 +393,7 @@ func serviceDataFromAPI(ctx context.Context, obj *netbox.Service, out *ServiceDa
 	out.ParentObjectId = conv.Int64From64(obj.GetParentObjectIdOk())
 	out.Name = conv.String(obj.GetNameOk())
 	out.PortMappings = conv.StringSet(obj.GetPortMappings())
-	out.IpaddressIds = conv.BriefIDs(obj.GetIpaddresses())
+	out.IpAddressIds = conv.BriefIDs(obj.GetIpaddresses())
 	out.Description = conv.StringOrEmpty(obj.GetDescriptionOk())
 	out.OwnerId = conv.BriefID(obj.GetOwnerOk())
 	out.Comments = conv.StringOrEmpty(obj.GetCommentsOk())

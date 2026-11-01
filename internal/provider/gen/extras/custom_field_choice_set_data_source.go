@@ -40,7 +40,7 @@ type CustomFieldChoiceSetDataModel struct {
 	Created             timetypes.RFC3339    `tfsdk:"created"`
 	DisplayUrl          types.String         `tfsdk:"display_url"`
 	Display             types.String         `tfsdk:"display"`
-	ChoicesCount        types.Int64          `tfsdk:"choices_count"`
+	ChoiceCount         types.Int64          `tfsdk:"choice_count"`
 	LastUpdated         timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
@@ -115,7 +115,7 @@ func customFieldChoiceSetDataAttributes(lookup bool) map[string]dsschema.Attribu
 			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
-		"choices_count": dsschema.Int64Attribute{
+		"choice_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Choices Count.",
 			Computed:            true,
 		},
@@ -381,6 +381,6 @@ func customFieldChoiceSetDataFromAPI(ctx context.Context, obj *netbox.CustomFiel
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
-	out.ChoicesCount = conv.Int64From32(obj.GetChoicesCountOk())
+	out.ChoiceCount = conv.Int64From32(obj.GetChoicesCountOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

@@ -82,7 +82,7 @@ resource "netbox_service" "test" {
   parent_object_id   = netbox_device.test.id
   name               = "{{.Name}}"
   port_mappings      = ["tcp/443", "udp/53"]
-  ipaddress_ids      = [netbox_ip_address.test.id]
+  ip_address_ids     = [netbox_ip_address.test.id]
   description        = "{{.Name}} updated"
 }
 `

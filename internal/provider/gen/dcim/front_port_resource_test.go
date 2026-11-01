@@ -46,7 +46,7 @@ resource "netbox_front_port" "test" {
   name      = "Front 1"
   type      = "lc"
   rear_ports = [
-    { position = 1, rear_port = netbox_rear_port.test.id, rear_port_position = 1 },
+    { position = 1, rear_port_id = netbox_rear_port.test.id, rear_port_position = 1 },
   ]
 }
 `
@@ -90,7 +90,7 @@ resource "netbox_front_port" "test" {
   description    = "{{.Name}} updated"
   # See front-port-templates: the update must change the mapping set.
   rear_ports = [
-    { position = 1, rear_port = netbox_rear_port.test.id, rear_port_position = 2 },
+    { position = 1, rear_port_id = netbox_rear_port.test.id, rear_port_position = 2 },
   ]
 }
 `

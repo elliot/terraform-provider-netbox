@@ -59,3 +59,21 @@ func TestSnakeSingular(t *testing.T) {
 		t.Errorf("Snake(VMInterface) = %q", got)
 	}
 }
+
+func TestAttribute(t *testing.T) {
+	cases := map[string]string{
+		"ipaddresses": "ip_addresses", "ipaddress_count": "ip_address_count", "count_ipaddresses": "ip_address_count",
+		"count_fhrp_groups": "fhrp_group_count", "virtualmachine_count": "virtual_machine_count",
+		"devicetype_count": "device_type_count", "moduletype_count": "module_type_count",
+		"inventoryitem_count": "inventory_item_count", "coolingfeed_count": "cooling_feed_count",
+		"powerfeed_count": "power_feed_count", "wirelesslan_count": "wireless_lan_count",
+		"terminations_count": "termination_count", "choices_count": "choice_count",
+		"ip_addresses": "ip_addresses", "device_count": "device_count", "primary_ip4": "primary_ip4",
+		"vm_role": "vm_role", "_depth": "_depth", "count": "count",
+	}
+	for in, want := range cases {
+		if got := Attribute(in); got != want {
+			t.Errorf("Attribute(%q) = %q, want %q", in, got, want)
+		}
+	}
+}

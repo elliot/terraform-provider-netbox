@@ -42,7 +42,7 @@ type PowerPanelDataModel struct {
 	Created        timetypes.RFC3339    `tfsdk:"created"`
 	DisplayUrl     types.String         `tfsdk:"display_url"`
 	Display        types.String         `tfsdk:"display"`
-	PowerfeedCount types.Int64          `tfsdk:"powerfeed_count"`
+	PowerFeedCount types.Int64          `tfsdk:"power_feed_count"`
 	LastUpdated    timetypes.RFC3339    `tfsdk:"last_updated"`
 }
 
@@ -123,7 +123,7 @@ func powerPanelDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Display.",
 			Computed:            true,
 		},
-		"powerfeed_count": dsschema.Int64Attribute{
+		"power_feed_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Powerfeed Count.",
 			Computed:            true,
 		},
@@ -386,6 +386,6 @@ func powerPanelDataFromAPI(ctx context.Context, obj *netbox.PowerPanel, out *Pow
 	out.Created = conv.RFC3339(obj.GetCreatedOk())
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
-	out.PowerfeedCount = conv.Int64From64(obj.GetPowerfeedCountOk())
+	out.PowerFeedCount = conv.Int64From64(obj.GetPowerfeedCountOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
 }

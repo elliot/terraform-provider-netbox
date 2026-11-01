@@ -19,8 +19,6 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 
 Remaining work before `v1.0.0`; the compatibility promise is described in [VERSIONING.md](VERSIONING.md).
 
-- A CI check that diffs the provider schema against the last release and fails on unannounced breaking changes.
-- Naming audit and the remaining pre-1.0 attribute renames, while they are still allowed without a deprecation.
 - Decide how data sources expose `custom_fields` (JSON string today) before it is frozen.
 - Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require
   full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability
@@ -87,7 +85,7 @@ DCIM
 
 IPAM
 - Aggregates may not overlap regardless of RIR; `asn` is globally unique; IP range boundaries need a prefix length.
-- `service.ipaddress_ids` must reference IPs assigned to the parent device or VM.
+- `service.ip_address_ids` must reference IPs assigned to the parent device or VM.
 - VLAN `vid` must fall inside the group's `vid_ranges`.
 
 Extras and wireless

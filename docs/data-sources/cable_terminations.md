@@ -53,8 +53,8 @@ Required:
 
 Read-Only:
 
-- `cable` (Number) Cable.
 - `cable_end` (String) Cable End.
+- `cable_id` (Number) ID of the cable (`netbox_cable`).
 - `connector` (Number) Connector.
 - `created` (String) Created.
 - `display` (String) Display.

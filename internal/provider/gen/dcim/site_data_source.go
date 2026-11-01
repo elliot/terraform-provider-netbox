@@ -57,7 +57,7 @@ type SiteDataModel struct {
 	DeviceCount         types.Int64          `tfsdk:"device_count"`
 	PrefixCount         types.Int64          `tfsdk:"prefix_count"`
 	RackCount           types.Int64          `tfsdk:"rack_count"`
-	VirtualmachineCount types.Int64          `tfsdk:"virtualmachine_count"`
+	VirtualMachineCount types.Int64          `tfsdk:"virtual_machine_count"`
 	VlanCount           types.Int64          `tfsdk:"vlan_count"`
 }
 
@@ -211,7 +211,7 @@ func siteDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			MarkdownDescription: "Rack Count.",
 			Computed:            true,
 		},
-		"virtualmachine_count": dsschema.Int64Attribute{
+		"virtual_machine_count": dsschema.Int64Attribute{
 			MarkdownDescription: "Virtualmachine Count.",
 			Computed:            true,
 		},
@@ -496,6 +496,6 @@ func siteDataFromAPI(ctx context.Context, obj *netbox.Site, out *SiteDataModel, 
 	out.DeviceCount = conv.Int64From64(obj.GetDeviceCountOk())
 	out.PrefixCount = conv.Int64From64(obj.GetPrefixCountOk())
 	out.RackCount = conv.Int64From64(obj.GetRackCountOk())
-	out.VirtualmachineCount = conv.Int64From64(obj.GetVirtualmachineCountOk())
+	out.VirtualMachineCount = conv.Int64From64(obj.GetVirtualmachineCountOk())
 	out.VlanCount = conv.Int64From64(obj.GetVlanCountOk())
 }
