@@ -21,8 +21,8 @@ var _ MappedNullable = &PatchedWritableCoolingFeedRequest{}
 
 // PatchedWritableCoolingFeedRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedWritableCoolingFeedRequest struct {
-	CoolingSource *int32        `json:"cooling_source,omitempty"`
-	Rack          NullableInt32 `json:"rack,omitempty"`
+	CoolingSource *int64        `json:"cooling_source,omitempty"`
+	Rack          NullableInt64 `json:"rack,omitempty"`
 	Name          *string       `json:"name,omitempty"`
 	// * `offline` - Offline * `active` - Active * `planned` - Planned * `failed` - Failed
 	Status *string `json:"status,omitempty"`
@@ -32,8 +32,8 @@ type PatchedWritableCoolingFeedRequest struct {
 	// * `lpm` - Liters per minute (L/min) * `m3ph` - Cubic meters per hour (m³/h) * `gpm` - Gallons per minute (GPM)
 	MaxFlowUnit          NullableString         `json:"max_flow_unit,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -60,9 +60,9 @@ func NewPatchedWritableCoolingFeedRequestWithDefaults() *PatchedWritableCoolingF
 }
 
 // GetCoolingSource returns the CoolingSource field value if set, zero value otherwise.
-func (o *PatchedWritableCoolingFeedRequest) GetCoolingSource() int32 {
+func (o *PatchedWritableCoolingFeedRequest) GetCoolingSource() int64 {
 	if o == nil || IsNil(o.CoolingSource) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CoolingSource
@@ -70,7 +70,7 @@ func (o *PatchedWritableCoolingFeedRequest) GetCoolingSource() int32 {
 
 // GetCoolingSourceOk returns a tuple with the CoolingSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableCoolingFeedRequest) GetCoolingSourceOk() (*int32, bool) {
+func (o *PatchedWritableCoolingFeedRequest) GetCoolingSourceOk() (*int64, bool) {
 	if o == nil || IsNil(o.CoolingSource) {
 		return nil, false
 	}
@@ -86,15 +86,15 @@ func (o *PatchedWritableCoolingFeedRequest) HasCoolingSource() bool {
 	return false
 }
 
-// SetCoolingSource gets a reference to the given int32 and assigns it to the CoolingSource field.
-func (o *PatchedWritableCoolingFeedRequest) SetCoolingSource(v int32) {
+// SetCoolingSource gets a reference to the given int64 and assigns it to the CoolingSource field.
+func (o *PatchedWritableCoolingFeedRequest) SetCoolingSource(v int64) {
 	o.CoolingSource = &v
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableCoolingFeedRequest) GetRack() int32 {
+func (o *PatchedWritableCoolingFeedRequest) GetRack() int64 {
 	if o == nil || IsNil(o.Rack.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rack.Get()
@@ -103,7 +103,7 @@ func (o *PatchedWritableCoolingFeedRequest) GetRack() int32 {
 // GetRackOk returns a tuple with the Rack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableCoolingFeedRequest) GetRackOk() (*int32, bool) {
+func (o *PatchedWritableCoolingFeedRequest) GetRackOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -119,8 +119,8 @@ func (o *PatchedWritableCoolingFeedRequest) HasRack() bool {
 	return false
 }
 
-// SetRack gets a reference to the given NullableInt32 and assigns it to the Rack field.
-func (o *PatchedWritableCoolingFeedRequest) SetRack(v int32) {
+// SetRack gets a reference to the given NullableInt64 and assigns it to the Rack field.
+func (o *PatchedWritableCoolingFeedRequest) SetRack(v int64) {
 	o.Rack.Set(&v)
 }
 
@@ -360,9 +360,9 @@ func (o *PatchedWritableCoolingFeedRequest) SetDescription(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableCoolingFeedRequest) GetTenant() int32 {
+func (o *PatchedWritableCoolingFeedRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -371,7 +371,7 @@ func (o *PatchedWritableCoolingFeedRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableCoolingFeedRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableCoolingFeedRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -387,8 +387,8 @@ func (o *PatchedWritableCoolingFeedRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableCoolingFeedRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableCoolingFeedRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -403,9 +403,9 @@ func (o *PatchedWritableCoolingFeedRequest) UnsetTenant() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableCoolingFeedRequest) GetOwner() int32 {
+func (o *PatchedWritableCoolingFeedRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -414,7 +414,7 @@ func (o *PatchedWritableCoolingFeedRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableCoolingFeedRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableCoolingFeedRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -430,8 +430,8 @@ func (o *PatchedWritableCoolingFeedRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableCoolingFeedRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableCoolingFeedRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

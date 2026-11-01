@@ -21,11 +21,11 @@ var _ MappedNullable = &PatchedProviderAccountRequest{}
 
 // PatchedProviderAccountRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedProviderAccountRequest struct {
-	Provider             *int32                 `json:"provider,omitempty"`
+	Provider             *int64                 `json:"provider,omitempty"`
 	Name                 *string                `json:"name,omitempty"`
 	Account              *string                `json:"account,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -56,9 +56,9 @@ func NewPatchedProviderAccountRequestWithDefaults() *PatchedProviderAccountReque
 }
 
 // GetProvider returns the Provider field value if set, zero value otherwise.
-func (o *PatchedProviderAccountRequest) GetProvider() int32 {
+func (o *PatchedProviderAccountRequest) GetProvider() int64 {
 	if o == nil || IsNil(o.Provider) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Provider
@@ -66,7 +66,7 @@ func (o *PatchedProviderAccountRequest) GetProvider() int32 {
 
 // GetProviderOk returns a tuple with the Provider field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedProviderAccountRequest) GetProviderOk() (*int32, bool) {
+func (o *PatchedProviderAccountRequest) GetProviderOk() (*int64, bool) {
 	if o == nil || IsNil(o.Provider) {
 		return nil, false
 	}
@@ -82,8 +82,8 @@ func (o *PatchedProviderAccountRequest) HasProvider() bool {
 	return false
 }
 
-// SetProvider gets a reference to the given int32 and assigns it to the Provider field.
-func (o *PatchedProviderAccountRequest) SetProvider(v int32) {
+// SetProvider gets a reference to the given int64 and assigns it to the Provider field.
+func (o *PatchedProviderAccountRequest) SetProvider(v int64) {
 	o.Provider = &v
 }
 
@@ -184,9 +184,9 @@ func (o *PatchedProviderAccountRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedProviderAccountRequest) GetOwner() int32 {
+func (o *PatchedProviderAccountRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -195,7 +195,7 @@ func (o *PatchedProviderAccountRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedProviderAccountRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedProviderAccountRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -211,8 +211,8 @@ func (o *PatchedProviderAccountRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedProviderAccountRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedProviderAccountRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -22,7 +22,7 @@ var _ MappedNullable = &RearPortMapping{}
 // RearPortMapping struct for RearPortMapping
 type RearPortMapping struct {
 	Position             *int32 `json:"position,omitempty"`
-	FrontPort            *int32 `json:"front_port,omitempty"`
+	FrontPort            *int64 `json:"front_port,omitempty"`
 	FrontPortPosition    *int32 `json:"front_port_position,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -83,9 +83,9 @@ func (o *RearPortMapping) SetPosition(v int32) {
 }
 
 // GetFrontPort returns the FrontPort field value if set, zero value otherwise.
-func (o *RearPortMapping) GetFrontPort() int32 {
+func (o *RearPortMapping) GetFrontPort() int64 {
 	if o == nil || IsNil(o.FrontPort) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.FrontPort
@@ -93,7 +93,7 @@ func (o *RearPortMapping) GetFrontPort() int32 {
 
 // GetFrontPortOk returns a tuple with the FrontPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RearPortMapping) GetFrontPortOk() (*int32, bool) {
+func (o *RearPortMapping) GetFrontPortOk() (*int64, bool) {
 	if o == nil || IsNil(o.FrontPort) {
 		return nil, false
 	}
@@ -109,8 +109,8 @@ func (o *RearPortMapping) HasFrontPort() bool {
 	return false
 }
 
-// SetFrontPort gets a reference to the given int32 and assigns it to the FrontPort field.
-func (o *RearPortMapping) SetFrontPort(v int32) {
+// SetFrontPort gets a reference to the given int64 and assigns it to the FrontPort field.
+func (o *RearPortMapping) SetFrontPort(v int64) {
 	o.FrontPort = &v
 }
 

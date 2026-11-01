@@ -22,12 +22,12 @@ var _ MappedNullable = &PatchedBulkMACAddressRequest{}
 
 // PatchedBulkMACAddressRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkMACAddressRequest struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	MacAddress           *string                `json:"mac_address,omitempty"`
 	AssignedObjectType   NullableString         `json:"assigned_object_type,omitempty"`
 	AssignedObjectId     NullableInt64          `json:"assigned_object_id,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -40,7 +40,7 @@ type _PatchedBulkMACAddressRequest PatchedBulkMACAddressRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkMACAddressRequest(id int32) *PatchedBulkMACAddressRequest {
+func NewPatchedBulkMACAddressRequest(id int64) *PatchedBulkMACAddressRequest {
 	this := PatchedBulkMACAddressRequest{}
 	this.Id = id
 	return &this
@@ -55,9 +55,9 @@ func NewPatchedBulkMACAddressRequestWithDefaults() *PatchedBulkMACAddressRequest
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkMACAddressRequest) GetId() int32 {
+func (o *PatchedBulkMACAddressRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -66,7 +66,7 @@ func (o *PatchedBulkMACAddressRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkMACAddressRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkMACAddressRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,7 +74,7 @@ func (o *PatchedBulkMACAddressRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkMACAddressRequest) SetId(v int32) {
+func (o *PatchedBulkMACAddressRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -229,9 +229,9 @@ func (o *PatchedBulkMACAddressRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkMACAddressRequest) GetOwner() int32 {
+func (o *PatchedBulkMACAddressRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -240,7 +240,7 @@ func (o *PatchedBulkMACAddressRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkMACAddressRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkMACAddressRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -256,8 +256,8 @@ func (o *PatchedBulkMACAddressRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkMACAddressRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkMACAddressRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

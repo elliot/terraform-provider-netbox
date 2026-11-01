@@ -197,7 +197,7 @@ func (r *ProviderResource) Read(ctx context.Context, req resource.ReadRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -228,7 +228,7 @@ func (r *ProviderResource) Update(ctx context.Context, req resource.UpdateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -258,7 +258,7 @@ func (r *ProviderResource) Delete(ctx context.Context, req resource.DeleteReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -283,13 +283,13 @@ func providerToCreate(ctx context.Context, plan *ProviderModel, cf *customfields
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
 	}
 	if conv.Known(plan.AsnIds) {
-		body.SetAsns(conv.Int32s(ctx, plan.AsnIds, diags))
+		body.SetAsns(conv.Int64s(ctx, plan.AsnIds, diags))
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -323,7 +323,7 @@ func providerToPatch(ctx context.Context, plan, state *ProviderModel, cf *custom
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -333,7 +333,7 @@ func providerToPatch(ctx context.Context, plan, state *ProviderModel, cf *custom
 	}
 	if !plan.AsnIds.Equal(state.AsnIds) {
 		if conv.Known(plan.AsnIds) {
-			body.SetAsns(conv.Int32s(ctx, plan.AsnIds, diags))
+			body.SetAsns(conv.Int64s(ctx, plan.AsnIds, diags))
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

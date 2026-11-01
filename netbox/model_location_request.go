@@ -24,17 +24,17 @@ var _ MappedNullable = &LocationRequest{}
 type LocationRequest struct {
 	Name   string                        `json:"name"`
 	Slug   string                        `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Site   int32                         `json:"site"`
+	Site   int64                         `json:"site"`
 	Parent NullableNestedLocationRequest `json:"parent,omitempty"`
 	// * `planned` - Planned * `staging` - Staging * `active` - Active * `decommissioning` - Decommissioning * `retired` - Retired
 	Status *string       `json:"status,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// Local facility ID or description
 	Facility             *string                `json:"facility,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -45,7 +45,7 @@ type _LocationRequest LocationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLocationRequest(name string, slug string, site int32) *LocationRequest {
+func NewLocationRequest(name string, slug string, site int64) *LocationRequest {
 	this := LocationRequest{}
 	this.Name = name
 	this.Slug = slug
@@ -110,9 +110,9 @@ func (o *LocationRequest) SetSlug(v string) {
 }
 
 // GetSite returns the Site field value
-func (o *LocationRequest) GetSite() int32 {
+func (o *LocationRequest) GetSite() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -121,7 +121,7 @@ func (o *LocationRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value
 // and a boolean to check if the value has been set.
-func (o *LocationRequest) GetSiteOk() (*int32, bool) {
+func (o *LocationRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -129,7 +129,7 @@ func (o *LocationRequest) GetSiteOk() (*int32, bool) {
 }
 
 // SetSite sets field value
-func (o *LocationRequest) SetSite(v int32) {
+func (o *LocationRequest) SetSite(v int64) {
 	o.Site = v
 }
 
@@ -209,9 +209,9 @@ func (o *LocationRequest) SetStatus(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LocationRequest) GetTenant() int32 {
+func (o *LocationRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -220,7 +220,7 @@ func (o *LocationRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LocationRequest) GetTenantOk() (*int32, bool) {
+func (o *LocationRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -236,8 +236,8 @@ func (o *LocationRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *LocationRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *LocationRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -380,9 +380,9 @@ func (o *LocationRequest) SetCustomFields(v map[string]interface{}) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LocationRequest) GetOwner() int32 {
+func (o *LocationRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -391,7 +391,7 @@ func (o *LocationRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LocationRequest) GetOwnerOk() (*int32, bool) {
+func (o *LocationRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -407,8 +407,8 @@ func (o *LocationRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *LocationRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *LocationRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -177,7 +177,7 @@ func (r *CircuitGroupAssignmentResource) Read(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -208,7 +208,7 @@ func (r *CircuitGroupAssignmentResource) Update(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -238,7 +238,7 @@ func (r *CircuitGroupAssignmentResource) Delete(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -258,7 +258,7 @@ func (r *CircuitGroupAssignmentResource) ImportState(ctx context.Context, req re
 // circuitGroupAssignmentToCreate builds the WritableCircuitGroupAssignmentRequest request body from the plan.
 func circuitGroupAssignmentToCreate(ctx context.Context, plan *CircuitGroupAssignmentModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCircuitGroupAssignmentRequest {
 	const objectType = "circuits.circuitgroupassignment"
-	body := netbox.NewWritableCircuitGroupAssignmentRequest(conv.Int32(plan.GroupId), plan.MemberType.ValueString(), plan.MemberId.ValueInt64())
+	body := netbox.NewWritableCircuitGroupAssignmentRequest(plan.GroupId.ValueInt64(), plan.MemberType.ValueString(), plan.MemberId.ValueInt64())
 	if conv.Known(plan.Priority) {
 		body.SetPriority(plan.Priority.ValueString())
 	}
@@ -277,7 +277,7 @@ func circuitGroupAssignmentToPatch(ctx context.Context, plan, state *CircuitGrou
 	body := netbox.NewPatchedWritableCircuitGroupAssignmentRequest()
 	if !plan.GroupId.Equal(state.GroupId) {
 		if conv.Known(plan.GroupId) {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.MemberType.Equal(state.MemberType) {

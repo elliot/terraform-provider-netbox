@@ -22,7 +22,7 @@ var _ MappedNullable = &FHRPGroupAssignmentRequest{}
 
 // FHRPGroupAssignmentRequest Adds support for custom fields and tags.
 type FHRPGroupAssignmentRequest struct {
-	Group                int32  `json:"group"`
+	Group                int64  `json:"group"`
 	InterfaceType        string `json:"interface_type"`
 	InterfaceId          int64  `json:"interface_id"`
 	Priority             int32  `json:"priority"`
@@ -35,7 +35,7 @@ type _FHRPGroupAssignmentRequest FHRPGroupAssignmentRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFHRPGroupAssignmentRequest(group int32, interfaceType string, interfaceId int64, priority int32) *FHRPGroupAssignmentRequest {
+func NewFHRPGroupAssignmentRequest(group int64, interfaceType string, interfaceId int64, priority int32) *FHRPGroupAssignmentRequest {
 	this := FHRPGroupAssignmentRequest{}
 	this.Group = group
 	this.InterfaceType = interfaceType
@@ -53,9 +53,9 @@ func NewFHRPGroupAssignmentRequestWithDefaults() *FHRPGroupAssignmentRequest {
 }
 
 // GetGroup returns the Group field value
-func (o *FHRPGroupAssignmentRequest) GetGroup() int32 {
+func (o *FHRPGroupAssignmentRequest) GetGroup() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -64,7 +64,7 @@ func (o *FHRPGroupAssignmentRequest) GetGroup() int32 {
 
 // GetGroupOk returns a tuple with the Group field value
 // and a boolean to check if the value has been set.
-func (o *FHRPGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
+func (o *FHRPGroupAssignmentRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -72,7 +72,7 @@ func (o *FHRPGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
 }
 
 // SetGroup sets field value
-func (o *FHRPGroupAssignmentRequest) SetGroup(v int32) {
+func (o *FHRPGroupAssignmentRequest) SetGroup(v int64) {
 	o.Group = v
 }
 

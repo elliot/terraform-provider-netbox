@@ -85,6 +85,18 @@ func TestAccContactGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccContactGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_contact_group",
+		APIPath:      "/api/tenancy/contact-groups/",
+		Configs: []string{
+			acctest.Render(t, contactGroupTestConfigUpdate, name),
+			acctest.Render(t, contactGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_contact_group", &resource.Sweeper{
 		Name:         "netbox_contact_group",

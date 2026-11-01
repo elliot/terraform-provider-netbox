@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefInterfaceRequest{}
 
 // BriefInterfaceRequest Mixin for Interface and VMInterface serializers that adds a `mac_address` shortcut field for creating/updating the primary MACAddress in a single request. The validated write is centralized on the interface model (BaseInterface.set_primary_mac_address); this mixin is a thin adapter that owns the permission check, the shortcut-vs-primary_mac_address conflict guard, and translating the model's validation errors into API errors.
 type BriefInterfaceRequest struct {
-	Device               int32   `json:"device"`
+	Device               int64   `json:"device"`
 	Name                 string  `json:"name"`
 	Description          *string `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -34,7 +34,7 @@ type _BriefInterfaceRequest BriefInterfaceRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefInterfaceRequest(device int32, name string) *BriefInterfaceRequest {
+func NewBriefInterfaceRequest(device int64, name string) *BriefInterfaceRequest {
 	this := BriefInterfaceRequest{}
 	this.Device = device
 	this.Name = name
@@ -50,9 +50,9 @@ func NewBriefInterfaceRequestWithDefaults() *BriefInterfaceRequest {
 }
 
 // GetDevice returns the Device field value
-func (o *BriefInterfaceRequest) GetDevice() int32 {
+func (o *BriefInterfaceRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -61,7 +61,7 @@ func (o *BriefInterfaceRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *BriefInterfaceRequest) GetDeviceOk() (*int32, bool) {
+func (o *BriefInterfaceRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -69,7 +69,7 @@ func (o *BriefInterfaceRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *BriefInterfaceRequest) SetDevice(v int32) {
+func (o *BriefInterfaceRequest) SetDevice(v int64) {
 	o.Device = v
 }
 

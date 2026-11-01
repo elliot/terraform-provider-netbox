@@ -22,15 +22,15 @@ var _ MappedNullable = &BulkInventoryItemTemplateRequest{}
 
 // BulkInventoryItemTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkInventoryItemTemplateRequest struct {
-	Id         int32         `json:"id"`
-	DeviceType int32         `json:"device_type"`
-	Parent     NullableInt32 `json:"parent,omitempty"`
+	Id         int64         `json:"id"`
+	DeviceType int64         `json:"device_type"`
+	Parent     NullableInt64 `json:"parent,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name string `json:"name"`
 	// Physical label
 	Label        *string       `json:"label,omitempty"`
-	Role         NullableInt32 `json:"role,omitempty"`
-	Manufacturer NullableInt32 `json:"manufacturer,omitempty"`
+	Role         NullableInt64 `json:"role,omitempty"`
+	Manufacturer NullableInt64 `json:"manufacturer,omitempty"`
 	// Manufacturer-assigned part identifier
 	PartId               *string        `json:"part_id,omitempty"`
 	Description          *string        `json:"description,omitempty"`
@@ -45,7 +45,7 @@ type _BulkInventoryItemTemplateRequest BulkInventoryItemTemplateRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkInventoryItemTemplateRequest(id int32, deviceType int32, name string) *BulkInventoryItemTemplateRequest {
+func NewBulkInventoryItemTemplateRequest(id int64, deviceType int64, name string) *BulkInventoryItemTemplateRequest {
 	this := BulkInventoryItemTemplateRequest{}
 	this.Id = id
 	this.DeviceType = deviceType
@@ -62,9 +62,9 @@ func NewBulkInventoryItemTemplateRequestWithDefaults() *BulkInventoryItemTemplat
 }
 
 // GetId returns the Id field value
-func (o *BulkInventoryItemTemplateRequest) GetId() int32 {
+func (o *BulkInventoryItemTemplateRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -73,7 +73,7 @@ func (o *BulkInventoryItemTemplateRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkInventoryItemTemplateRequest) GetIdOk() (*int32, bool) {
+func (o *BulkInventoryItemTemplateRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -81,14 +81,14 @@ func (o *BulkInventoryItemTemplateRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkInventoryItemTemplateRequest) SetId(v int32) {
+func (o *BulkInventoryItemTemplateRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetDeviceType returns the DeviceType field value
-func (o *BulkInventoryItemTemplateRequest) GetDeviceType() int32 {
+func (o *BulkInventoryItemTemplateRequest) GetDeviceType() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -97,7 +97,7 @@ func (o *BulkInventoryItemTemplateRequest) GetDeviceType() int32 {
 
 // GetDeviceTypeOk returns a tuple with the DeviceType field value
 // and a boolean to check if the value has been set.
-func (o *BulkInventoryItemTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *BulkInventoryItemTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -105,14 +105,14 @@ func (o *BulkInventoryItemTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
 }
 
 // SetDeviceType sets field value
-func (o *BulkInventoryItemTemplateRequest) SetDeviceType(v int32) {
+func (o *BulkInventoryItemTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType = v
 }
 
 // GetParent returns the Parent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkInventoryItemTemplateRequest) GetParent() int32 {
+func (o *BulkInventoryItemTemplateRequest) GetParent() int64 {
 	if o == nil || IsNil(o.Parent.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Parent.Get()
@@ -121,7 +121,7 @@ func (o *BulkInventoryItemTemplateRequest) GetParent() int32 {
 // GetParentOk returns a tuple with the Parent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkInventoryItemTemplateRequest) GetParentOk() (*int32, bool) {
+func (o *BulkInventoryItemTemplateRequest) GetParentOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -137,8 +137,8 @@ func (o *BulkInventoryItemTemplateRequest) HasParent() bool {
 	return false
 }
 
-// SetParent gets a reference to the given NullableInt32 and assigns it to the Parent field.
-func (o *BulkInventoryItemTemplateRequest) SetParent(v int32) {
+// SetParent gets a reference to the given NullableInt64 and assigns it to the Parent field.
+func (o *BulkInventoryItemTemplateRequest) SetParent(v int64) {
 	o.Parent.Set(&v)
 }
 
@@ -209,9 +209,9 @@ func (o *BulkInventoryItemTemplateRequest) SetLabel(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkInventoryItemTemplateRequest) GetRole() int32 {
+func (o *BulkInventoryItemTemplateRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -220,7 +220,7 @@ func (o *BulkInventoryItemTemplateRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkInventoryItemTemplateRequest) GetRoleOk() (*int32, bool) {
+func (o *BulkInventoryItemTemplateRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -236,8 +236,8 @@ func (o *BulkInventoryItemTemplateRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *BulkInventoryItemTemplateRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *BulkInventoryItemTemplateRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -252,9 +252,9 @@ func (o *BulkInventoryItemTemplateRequest) UnsetRole() {
 }
 
 // GetManufacturer returns the Manufacturer field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkInventoryItemTemplateRequest) GetManufacturer() int32 {
+func (o *BulkInventoryItemTemplateRequest) GetManufacturer() int64 {
 	if o == nil || IsNil(o.Manufacturer.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Manufacturer.Get()
@@ -263,7 +263,7 @@ func (o *BulkInventoryItemTemplateRequest) GetManufacturer() int32 {
 // GetManufacturerOk returns a tuple with the Manufacturer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkInventoryItemTemplateRequest) GetManufacturerOk() (*int32, bool) {
+func (o *BulkInventoryItemTemplateRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -279,8 +279,8 @@ func (o *BulkInventoryItemTemplateRequest) HasManufacturer() bool {
 	return false
 }
 
-// SetManufacturer gets a reference to the given NullableInt32 and assigns it to the Manufacturer field.
-func (o *BulkInventoryItemTemplateRequest) SetManufacturer(v int32) {
+// SetManufacturer gets a reference to the given NullableInt64 and assigns it to the Manufacturer field.
+func (o *BulkInventoryItemTemplateRequest) SetManufacturer(v int64) {
 	o.Manufacturer.Set(&v)
 }
 

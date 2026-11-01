@@ -87,6 +87,18 @@ func TestAccDataSource_basic(t *testing.T) {
 	})
 }
 
+func TestAccDataSource_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_data_source",
+		APIPath:      "/api/core/data-sources/",
+		Configs: []string{
+			acctest.Render(t, dataSourceTestConfigUpdate, name),
+			acctest.Render(t, dataSourceTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_data_source", &resource.Sweeper{
 		Name:         "netbox_data_source",

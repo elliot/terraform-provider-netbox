@@ -23,7 +23,7 @@ var _ MappedNullable = &IPRange{}
 
 // IPRange Base serializer class for models inheriting from PrimaryModel.
 type IPRange struct {
-	Id           int32                  `json:"id"`
+	Id           int64                  `json:"id"`
 	Url          *string                `json:"url,omitempty"`
 	DisplayUrl   *string                `json:"display_url,omitempty"`
 	Display      *string                `json:"display,omitempty"`
@@ -55,7 +55,7 @@ type _IPRange IPRange
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewIPRange(id int32) *IPRange {
+func NewIPRange(id int64) *IPRange {
 	this := IPRange{}
 	this.Id = id
 	return &this
@@ -70,9 +70,9 @@ func NewIPRangeWithDefaults() *IPRange {
 }
 
 // GetId returns the Id field value
-func (o *IPRange) GetId() int32 {
+func (o *IPRange) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -81,7 +81,7 @@ func (o *IPRange) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *IPRange) GetIdOk() (*int32, bool) {
+func (o *IPRange) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -89,7 +89,7 @@ func (o *IPRange) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *IPRange) SetId(v int32) {
+func (o *IPRange) SetId(v int64) {
 	o.Id = v
 }
 

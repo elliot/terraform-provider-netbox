@@ -23,7 +23,7 @@ var _ MappedNullable = &PowerFeed{}
 
 // PowerFeed Base serializer class for models inheriting from PrimaryModel.
 type PowerFeed struct {
-	Id         int32             `json:"id"`
+	Id         int64             `json:"id"`
 	Url        *string           `json:"url,omitempty"`
 	DisplayUrl *string           `json:"display_url,omitempty"`
 	Display    *string           `json:"display,omitempty"`
@@ -67,7 +67,7 @@ type _PowerFeed PowerFeed
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPowerFeed(id int32) *PowerFeed {
+func NewPowerFeed(id int64) *PowerFeed {
 	this := PowerFeed{}
 	this.Id = id
 	return &this
@@ -82,9 +82,9 @@ func NewPowerFeedWithDefaults() *PowerFeed {
 }
 
 // GetId returns the Id field value
-func (o *PowerFeed) GetId() int32 {
+func (o *PowerFeed) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -93,7 +93,7 @@ func (o *PowerFeed) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PowerFeed) GetIdOk() (*int32, bool) {
+func (o *PowerFeed) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -101,7 +101,7 @@ func (o *PowerFeed) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PowerFeed) SetId(v int32) {
+func (o *PowerFeed) SetId(v int64) {
 	o.Id = v
 }
 

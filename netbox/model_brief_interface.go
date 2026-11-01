@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefInterface{}
 
 // BriefInterface Mixin for Interface and VMInterface serializers that adds a `mac_address` shortcut field for creating/updating the primary MACAddress in a single request. The validated write is centralized on the interface model (BaseInterface.set_primary_mac_address); this mixin is a thin adapter that owns the permission check, the shortcut-vs-primary_mac_address conflict guard, and translating the model's validation errors into API errors.
 type BriefInterface struct {
-	Id                   int32              `json:"id"`
+	Id                   int64              `json:"id"`
 	Url                  *string            `json:"url,omitempty"`
 	Display              *string            `json:"display,omitempty"`
 	Device               *BriefDevice       `json:"device,omitempty"`
@@ -39,7 +39,7 @@ type _BriefInterface BriefInterface
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefInterface(id int32) *BriefInterface {
+func NewBriefInterface(id int64) *BriefInterface {
 	this := BriefInterface{}
 	this.Id = id
 	return &this
@@ -54,9 +54,9 @@ func NewBriefInterfaceWithDefaults() *BriefInterface {
 }
 
 // GetId returns the Id field value
-func (o *BriefInterface) GetId() int32 {
+func (o *BriefInterface) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *BriefInterface) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefInterface) GetIdOk() (*int32, bool) {
+func (o *BriefInterface) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *BriefInterface) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefInterface) SetId(v int32) {
+func (o *BriefInterface) SetId(v int64) {
 	o.Id = v
 }
 

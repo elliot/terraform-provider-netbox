@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefClusterGroup{}
 
 // BriefClusterGroup Base serializer class for models inheriting from OrganizationalModel.
 type BriefClusterGroup struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	Display              *string `json:"display,omitempty"`
 	Name                 *string `json:"name,omitempty"`
@@ -37,7 +37,7 @@ type _BriefClusterGroup BriefClusterGroup
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefClusterGroup(id int32) *BriefClusterGroup {
+func NewBriefClusterGroup(id int64) *BriefClusterGroup {
 	this := BriefClusterGroup{}
 	this.Id = id
 	return &this
@@ -52,9 +52,9 @@ func NewBriefClusterGroupWithDefaults() *BriefClusterGroup {
 }
 
 // GetId returns the Id field value
-func (o *BriefClusterGroup) GetId() int32 {
+func (o *BriefClusterGroup) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *BriefClusterGroup) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefClusterGroup) GetIdOk() (*int32, bool) {
+func (o *BriefClusterGroup) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *BriefClusterGroup) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefClusterGroup) SetId(v int32) {
+func (o *BriefClusterGroup) SetId(v int64) {
 	o.Id = v
 }
 

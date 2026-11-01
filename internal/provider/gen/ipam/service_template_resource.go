@@ -184,7 +184,7 @@ func (r *ServiceTemplateResource) Read(ctx context.Context, req resource.ReadReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -215,7 +215,7 @@ func (r *ServiceTemplateResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -245,7 +245,7 @@ func (r *ServiceTemplateResource) Delete(ctx context.Context, req resource.Delet
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -273,7 +273,7 @@ func serviceTemplateToCreate(ctx context.Context, plan *ServiceTemplateModel, cf
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -310,7 +310,7 @@ func serviceTemplateToPatch(ctx context.Context, plan, state *ServiceTemplateMod
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

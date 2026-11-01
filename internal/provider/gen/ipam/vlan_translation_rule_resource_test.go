@@ -87,6 +87,18 @@ func TestAccVlanTranslationRule_basic(t *testing.T) {
 	})
 }
 
+func TestAccVlanTranslationRule_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_vlan_translation_rule",
+		APIPath:      "/api/ipam/vlan-translation-rules/",
+		Configs: []string{
+			acctest.Render(t, vlanTranslationRuleTestConfigUpdate, name),
+			acctest.Render(t, vlanTranslationRuleTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_vlan_translation_rule", &resource.Sweeper{
 		Name:         "netbox_vlan_translation_rule",

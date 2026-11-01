@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefContact{}
 
 // BriefContact Base serializer class for models inheriting from PrimaryModel.
 type BriefContact struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	Display              *string `json:"display,omitempty"`
 	Name                 *string `json:"name,omitempty"`
@@ -36,7 +36,7 @@ type _BriefContact BriefContact
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefContact(id int32) *BriefContact {
+func NewBriefContact(id int64) *BriefContact {
 	this := BriefContact{}
 	this.Id = id
 	return &this
@@ -51,9 +51,9 @@ func NewBriefContactWithDefaults() *BriefContact {
 }
 
 // GetId returns the Id field value
-func (o *BriefContact) GetId() int32 {
+func (o *BriefContact) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -62,7 +62,7 @@ func (o *BriefContact) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefContact) GetIdOk() (*int32, bool) {
+func (o *BriefContact) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,7 +70,7 @@ func (o *BriefContact) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefContact) SetId(v int32) {
+func (o *BriefContact) SetId(v int64) {
 	o.Id = v
 }
 

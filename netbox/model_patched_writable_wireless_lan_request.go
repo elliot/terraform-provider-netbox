@@ -23,19 +23,19 @@ var _ MappedNullable = &PatchedWritableWirelessLANRequest{}
 type PatchedWritableWirelessLANRequest struct {
 	Ssid        *string       `json:"ssid,omitempty"`
 	Description *string       `json:"description,omitempty"`
-	Group       NullableInt32 `json:"group,omitempty"`
+	Group       NullableInt64 `json:"group,omitempty"`
 	// * `active` - Active * `reserved` - Reserved * `disabled` - Disabled * `deprecated` - Deprecated
 	Status    *string        `json:"status,omitempty"`
-	Vlan      NullableInt32  `json:"vlan,omitempty"`
+	Vlan      NullableInt64  `json:"vlan,omitempty"`
 	ScopeType NullableString `json:"scope_type,omitempty"`
-	ScopeId   NullableInt32  `json:"scope_id,omitempty"`
-	Tenant    NullableInt32  `json:"tenant,omitempty"`
+	ScopeId   NullableInt64  `json:"scope_id,omitempty"`
+	Tenant    NullableInt64  `json:"tenant,omitempty"`
 	// * `open` - Open * `wep` - WEP * `wpa-personal` - WPA Personal (PSK) * `wpa-enterprise` - WPA Enterprise
 	AuthType NullableString `json:"auth_type,omitempty"`
 	// * `auto` - Auto * `tkip` - TKIP * `aes` - AES
 	AuthCipher           NullableString         `json:"auth_cipher,omitempty"`
 	AuthPsk              *string                `json:"auth_psk,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -126,9 +126,9 @@ func (o *PatchedWritableWirelessLANRequest) SetDescription(v string) {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableWirelessLANRequest) GetGroup() int32 {
+func (o *PatchedWritableWirelessLANRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -137,7 +137,7 @@ func (o *PatchedWritableWirelessLANRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableWirelessLANRequest) GetGroupOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLANRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -153,8 +153,8 @@ func (o *PatchedWritableWirelessLANRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *PatchedWritableWirelessLANRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *PatchedWritableWirelessLANRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -201,9 +201,9 @@ func (o *PatchedWritableWirelessLANRequest) SetStatus(v string) {
 }
 
 // GetVlan returns the Vlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableWirelessLANRequest) GetVlan() int32 {
+func (o *PatchedWritableWirelessLANRequest) GetVlan() int64 {
 	if o == nil || IsNil(o.Vlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vlan.Get()
@@ -212,7 +212,7 @@ func (o *PatchedWritableWirelessLANRequest) GetVlan() int32 {
 // GetVlanOk returns a tuple with the Vlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableWirelessLANRequest) GetVlanOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLANRequest) GetVlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -228,8 +228,8 @@ func (o *PatchedWritableWirelessLANRequest) HasVlan() bool {
 	return false
 }
 
-// SetVlan gets a reference to the given NullableInt32 and assigns it to the Vlan field.
-func (o *PatchedWritableWirelessLANRequest) SetVlan(v int32) {
+// SetVlan gets a reference to the given NullableInt64 and assigns it to the Vlan field.
+func (o *PatchedWritableWirelessLANRequest) SetVlan(v int64) {
 	o.Vlan.Set(&v)
 }
 
@@ -287,9 +287,9 @@ func (o *PatchedWritableWirelessLANRequest) UnsetScopeType() {
 }
 
 // GetScopeId returns the ScopeId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableWirelessLANRequest) GetScopeId() int32 {
+func (o *PatchedWritableWirelessLANRequest) GetScopeId() int64 {
 	if o == nil || IsNil(o.ScopeId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ScopeId.Get()
@@ -298,7 +298,7 @@ func (o *PatchedWritableWirelessLANRequest) GetScopeId() int32 {
 // GetScopeIdOk returns a tuple with the ScopeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableWirelessLANRequest) GetScopeIdOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLANRequest) GetScopeIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -314,8 +314,8 @@ func (o *PatchedWritableWirelessLANRequest) HasScopeId() bool {
 	return false
 }
 
-// SetScopeId gets a reference to the given NullableInt32 and assigns it to the ScopeId field.
-func (o *PatchedWritableWirelessLANRequest) SetScopeId(v int32) {
+// SetScopeId gets a reference to the given NullableInt64 and assigns it to the ScopeId field.
+func (o *PatchedWritableWirelessLANRequest) SetScopeId(v int64) {
 	o.ScopeId.Set(&v)
 }
 
@@ -330,9 +330,9 @@ func (o *PatchedWritableWirelessLANRequest) UnsetScopeId() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableWirelessLANRequest) GetTenant() int32 {
+func (o *PatchedWritableWirelessLANRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -341,7 +341,7 @@ func (o *PatchedWritableWirelessLANRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableWirelessLANRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLANRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -357,8 +357,8 @@ func (o *PatchedWritableWirelessLANRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableWirelessLANRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableWirelessLANRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -491,9 +491,9 @@ func (o *PatchedWritableWirelessLANRequest) SetAuthPsk(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableWirelessLANRequest) GetOwner() int32 {
+func (o *PatchedWritableWirelessLANRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -502,7 +502,7 @@ func (o *PatchedWritableWirelessLANRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableWirelessLANRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableWirelessLANRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -518,8 +518,8 @@ func (o *PatchedWritableWirelessLANRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableWirelessLANRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableWirelessLANRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

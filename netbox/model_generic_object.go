@@ -22,7 +22,7 @@ var _ MappedNullable = &GenericObject{}
 // GenericObject Minimal representation of some generic object identified by ContentType and PK.
 type GenericObject struct {
 	ObjectType           *string     `json:"object_type,omitempty"`
-	ObjectId             *int32      `json:"object_id,omitempty"`
+	ObjectId             *int64      `json:"object_id,omitempty"`
 	Object               interface{} `json:"object,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -79,9 +79,9 @@ func (o *GenericObject) SetObjectType(v string) {
 }
 
 // GetObjectId returns the ObjectId field value if set, zero value otherwise.
-func (o *GenericObject) GetObjectId() int32 {
+func (o *GenericObject) GetObjectId() int64 {
 	if o == nil || IsNil(o.ObjectId) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ObjectId
@@ -89,7 +89,7 @@ func (o *GenericObject) GetObjectId() int32 {
 
 // GetObjectIdOk returns a tuple with the ObjectId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *GenericObject) GetObjectIdOk() (*int32, bool) {
+func (o *GenericObject) GetObjectIdOk() (*int64, bool) {
 	if o == nil || IsNil(o.ObjectId) {
 		return nil, false
 	}
@@ -105,8 +105,8 @@ func (o *GenericObject) HasObjectId() bool {
 	return false
 }
 
-// SetObjectId gets a reference to the given int32 and assigns it to the ObjectId field.
-func (o *GenericObject) SetObjectId(v int32) {
+// SetObjectId gets a reference to the given int64 and assigns it to the ObjectId field.
+func (o *GenericObject) SetObjectId(v int64) {
 	o.ObjectId = &v
 }
 

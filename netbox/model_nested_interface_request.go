@@ -23,7 +23,7 @@ var _ MappedNullable = &NestedInterfaceRequest{}
 // NestedInterfaceRequest Represents an object related through a ForeignKey field. On write, it accepts a primary key (PK) value or a dictionary of attributes which can be used to uniquely identify the related object. This class should be subclassed to return a full representation of the related object on read.
 type NestedInterfaceRequest struct {
 	Name                 string        `json:"name"`
-	Cable                NullableInt32 `json:"cable,omitempty"`
+	Cable                NullableInt64 `json:"cable,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -72,9 +72,9 @@ func (o *NestedInterfaceRequest) SetName(v string) {
 }
 
 // GetCable returns the Cable field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *NestedInterfaceRequest) GetCable() int32 {
+func (o *NestedInterfaceRequest) GetCable() int64 {
 	if o == nil || IsNil(o.Cable.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Cable.Get()
@@ -83,7 +83,7 @@ func (o *NestedInterfaceRequest) GetCable() int32 {
 // GetCableOk returns a tuple with the Cable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *NestedInterfaceRequest) GetCableOk() (*int32, bool) {
+func (o *NestedInterfaceRequest) GetCableOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -99,8 +99,8 @@ func (o *NestedInterfaceRequest) HasCable() bool {
 	return false
 }
 
-// SetCable gets a reference to the given NullableInt32 and assigns it to the Cable field.
-func (o *NestedInterfaceRequest) SetCable(v int32) {
+// SetCable gets a reference to the given NullableInt64 and assigns it to the Cable field.
+func (o *NestedInterfaceRequest) SetCable(v int64) {
 	o.Cable.Set(&v)
 }
 

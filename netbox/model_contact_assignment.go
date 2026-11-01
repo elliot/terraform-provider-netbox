@@ -23,7 +23,7 @@ var _ MappedNullable = &ContactAssignment{}
 
 // ContactAssignment Adds support for custom fields and tags.
 type ContactAssignment struct {
-	Id                   int32                    `json:"id"`
+	Id                   int64                    `json:"id"`
 	Url                  *string                  `json:"url,omitempty"`
 	Display              *string                  `json:"display,omitempty"`
 	ObjectType           *string                  `json:"object_type,omitempty"`
@@ -45,7 +45,7 @@ type _ContactAssignment ContactAssignment
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewContactAssignment(id int32) *ContactAssignment {
+func NewContactAssignment(id int64) *ContactAssignment {
 	this := ContactAssignment{}
 	this.Id = id
 	return &this
@@ -60,9 +60,9 @@ func NewContactAssignmentWithDefaults() *ContactAssignment {
 }
 
 // GetId returns the Id field value
-func (o *ContactAssignment) GetId() int32 {
+func (o *ContactAssignment) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -71,7 +71,7 @@ func (o *ContactAssignment) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ContactAssignment) GetIdOk() (*int32, bool) {
+func (o *ContactAssignment) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -79,7 +79,7 @@ func (o *ContactAssignment) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *ContactAssignment) SetId(v int32) {
+func (o *ContactAssignment) SetId(v int64) {
 	o.Id = v
 }
 

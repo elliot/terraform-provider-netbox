@@ -42,7 +42,44 @@ reads the same pin through `make lint-version`, and Renovate bumps it via the an
 `make lint` only runs golangci-lint over the hand-written packages listed in `LINT_PKGS` in the
 `Makefile`; linting the regenerated client (`netbox/`) and generated resources
 (`internal/provider/gen/`) alongside them exhausts the GitHub runner's memory. CI runs the unit-test
-matrix against Terraform 1.13, 1.14 and 1.16.
+matrix against Terraform 1.12, 1.15, 1.16 and 1.17: the supported minimum plus the three newest minors.
+1.12 is the floor because every resource implements resource identity (`import` blocks with `identity`),
+which older releases reject; raise it together with the README badge.
+
+## Schema compatibility
+
+Every `make gen` rewrites all generated resources, so a generator or override change can remove, rename or
+reshape attributes without anyone noticing. `make schema-diff` builds the working tree, dumps its schema with
+`terraform providers schema -json` through a `dev_overrides` CLI configuration, installs the latest release
+from the Terraform Registry (or `BASE=0.5.0`) the same way users do, and compares the two with
+`tools/schema-diff`. It needs Terraform and registry access, and prints a Markdown report:
+
+```sh
+make schema-diff                    # against the latest release
+make schema-diff BASE=0.5.0         # against a given release
+ALLOW_BREAKING=1 make schema-diff   # report breaking changes without failing
+go run ./tools/schema-diff -old base.json -new current.json   # two existing schema dumps
+```
+
+Changes are classified as follows (the full list, with reasons, is in the `tools/schema-diff` package
+comment):
+
+| Severity | Changes |
+|---|---|
+| Breaking (fails) | a resource, data source, ephemeral resource, function or resource identity removed; an attribute or nested block removed; a type change, including list <-> set and a nested attribute's nesting mode or object type; a new required attribute or nested block; optional -> required; settable -> computed-only; Optional+Computed -> Optional-only (an omitted value becomes null instead of the server value, so existing resources plan a change); computed-only -> Optional-only; an attribute becoming write-only; tighter item limits; a lower schema version |
+| Additive | new types, new optional or computed attributes, new optional nested blocks, required -> optional, computed-only -> Optional+Computed |
+| Notice (listed) | sensitive added or removed, deprecations, Optional -> Optional+Computed, a higher schema version |
+
+Descriptions are not classified, only counted. Allowed values come from validators, which the schema does not
+expose, so a removed enum value only shows up as a changed description (and in the `docs/` diff, and in
+`tools/netbox-diff` for spec bumps); the report says how many descriptions changed so a reviewer can check.
+
+`.github/workflows/schema-diff.yml` runs it on every pull request against the latest release and writes the
+report to the job summary. A breaking change fails the check unless the PR title carries the breaking-change
+marker (`feat!: ...`, `fix(dcim)!: ...`), which `cliff.toml` lists under *Breaking changes* and which, after
+1.0, requires a major release. The workflow also runs on `edited`, so adding the `!` to the title re-runs the
+check; a newly sensitive attribute is only a notice, but mention it in the changelog because root module
+outputs that expose it need `sensitive = true`.
 
 ## Acceptance tests
 
@@ -61,6 +98,12 @@ and export `NETBOX_SERVER_URL=http://localhost:8000` / `NETBOX_API_TOKEN`. In sa
 binary fails while the harness looks for one. To run a scenario with a locally built provider, use a CLI
 configuration with a `dev_overrides { "elliot/netbox" = "/path/to/dir" }` block (Terraform 1.16 rejects the
 attribute form). `make sweep` deletes every `tfacc-*` object on the configured server.
+
+Upgrade tests (`TestAcc<Resource>_upgrade`) apply each fixture with a published release and expect an
+empty plan from the current build; they run only when `NETBOX_UPGRADE_FROM` names that release, e.g.
+`NETBOX_UPGRADE_FROM=0.5.0 TF_ACC=1 go test ./internal/provider/gen/ipam/ -run '_upgrade$' -v`. See
+[GENERATOR.md](GENERATOR.md#upgrade-tests) for how fixtures are chosen and how to handle a deliberate
+breaking change.
 
 ## Bumping the NetBox version
 
@@ -84,7 +127,10 @@ The generator jar is pinned by SHA-256 (`OAG_SHA256` next to `OAG_VERSION` in
 `tools/client-gen/` or `netbox/` and fails on drift, so commit the regenerated `netbox/` with the bump.
 Acceptance tests (`.github/workflows/acceptance.yml`) run nightly, on demand via *Run workflow* (optionally
 against another `netbox_image_tag`), and on pull requests labelled `run-acceptance`; every shard records the
-NetBox version it tested in the run summary.
+NetBox version it tested in the run summary. After the acceptance tests, each shard runs its upgrade tests
+against the same NetBox, starting from the `upgrade_from` input (default `latest`, resolved from the
+registry API; `none` skips them; runs triggered by the NetBox release watch skip them), and adds
+pass/fail/skip counts and skip reasons to the summary.
 
 ### NetBox release watch
 
@@ -118,8 +164,12 @@ each squash-merged title becomes a draft changelog entry: `feat` under *Added*, 
 `style` are left out. The mapping lives in `cliff.toml`.
 
 1. Run **Actions → Prepare release → Run workflow** on `main`. Leave *version* empty to let
-   [git-cliff](https://git-cliff.org) work it out (pre-1.0: a feature or breaking change bumps the minor
-   version, otherwise the patch), or enter one. The workflow runs `scripts/prepare-release.sh`, which turns
+   [git-cliff](https://git-cliff.org) work it out, or enter one. On 0.x a feature or a breaking change
+   bumps the minor version, otherwise the patch. The `[bump]` settings in `cliff.toml`
+   (`features_always_bump_minor`, `breaking_always_bump_major = false`) only make a difference while the
+   major version is 0; from 1.0 on, git-cliff bumps the major for a breaking change (`!` or a
+   `BREAKING CHANGE:` footer), the minor for a feature and the patch otherwise, with no configuration change.
+   It never proposes 1.0.0 by itself, so enter `1.0.0` explicitly for that release. The workflow runs `scripts/prepare-release.sh`, which turns
    `[Unreleased]` into a `## [X.Y.Z] - <date>` section that merges any hand-written entries with the drafted
    ones, then pushes it to a `release/vX.Y.Z` branch.
 2. Open the pull request from the link in the job summary, titled `chore(release): vX.Y.Z`. Edit

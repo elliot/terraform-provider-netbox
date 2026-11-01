@@ -22,20 +22,20 @@ var _ MappedNullable = &BulkLocationRequest{}
 
 // BulkLocationRequest Base serializer class for models inheriting from NestedGroupModel.
 type BulkLocationRequest struct {
-	Id     int32                         `json:"id"`
+	Id     int64                         `json:"id"`
 	Name   string                        `json:"name"`
 	Slug   string                        `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Site   int32                         `json:"site"`
+	Site   int64                         `json:"site"`
 	Parent NullableNestedLocationRequest `json:"parent,omitempty"`
 	// * `planned` - Planned * `staging` - Staging * `active` - Active * `decommissioning` - Decommissioning * `retired` - Retired
 	Status *string       `json:"status,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// Local facility ID or description
 	Facility             *string                `json:"facility,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -46,7 +46,7 @@ type _BulkLocationRequest BulkLocationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkLocationRequest(id int32, name string, slug string, site int32) *BulkLocationRequest {
+func NewBulkLocationRequest(id int64, name string, slug string, site int64) *BulkLocationRequest {
 	this := BulkLocationRequest{}
 	this.Id = id
 	this.Name = name
@@ -64,9 +64,9 @@ func NewBulkLocationRequestWithDefaults() *BulkLocationRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkLocationRequest) GetId() int32 {
+func (o *BulkLocationRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *BulkLocationRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkLocationRequest) GetIdOk() (*int32, bool) {
+func (o *BulkLocationRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,7 +83,7 @@ func (o *BulkLocationRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkLocationRequest) SetId(v int32) {
+func (o *BulkLocationRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -136,9 +136,9 @@ func (o *BulkLocationRequest) SetSlug(v string) {
 }
 
 // GetSite returns the Site field value
-func (o *BulkLocationRequest) GetSite() int32 {
+func (o *BulkLocationRequest) GetSite() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -147,7 +147,7 @@ func (o *BulkLocationRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value
 // and a boolean to check if the value has been set.
-func (o *BulkLocationRequest) GetSiteOk() (*int32, bool) {
+func (o *BulkLocationRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -155,7 +155,7 @@ func (o *BulkLocationRequest) GetSiteOk() (*int32, bool) {
 }
 
 // SetSite sets field value
-func (o *BulkLocationRequest) SetSite(v int32) {
+func (o *BulkLocationRequest) SetSite(v int64) {
 	o.Site = v
 }
 
@@ -235,9 +235,9 @@ func (o *BulkLocationRequest) SetStatus(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkLocationRequest) GetTenant() int32 {
+func (o *BulkLocationRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -246,7 +246,7 @@ func (o *BulkLocationRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkLocationRequest) GetTenantOk() (*int32, bool) {
+func (o *BulkLocationRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -262,8 +262,8 @@ func (o *BulkLocationRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *BulkLocationRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *BulkLocationRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -406,9 +406,9 @@ func (o *BulkLocationRequest) SetCustomFields(v map[string]interface{}) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkLocationRequest) GetOwner() int32 {
+func (o *BulkLocationRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -417,7 +417,7 @@ func (o *BulkLocationRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkLocationRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkLocationRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -433,8 +433,8 @@ func (o *BulkLocationRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkLocationRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkLocationRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

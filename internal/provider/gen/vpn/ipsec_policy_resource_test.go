@@ -104,6 +104,18 @@ func TestAccIpsecPolicy_basic(t *testing.T) {
 	})
 }
 
+func TestAccIpsecPolicy_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_ipsec_policy",
+		APIPath:      "/api/vpn/ipsec-policies/",
+		Configs: []string{
+			acctest.Render(t, ipsecPolicyTestConfigUpdate, name),
+			acctest.Render(t, ipsecPolicyTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_ipsec_policy", &resource.Sweeper{
 		Name:         "netbox_ipsec_policy",

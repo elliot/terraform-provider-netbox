@@ -24,14 +24,14 @@ var _ MappedNullable = &VirtualCircuitRequest{}
 type VirtualCircuitRequest struct {
 	// Unique circuit ID
 	Cid             string        `json:"cid"`
-	ProviderNetwork int32         `json:"provider_network"`
-	ProviderAccount NullableInt32 `json:"provider_account,omitempty"`
-	Type            int32         `json:"type"`
+	ProviderNetwork int64         `json:"provider_network"`
+	ProviderAccount NullableInt64 `json:"provider_account,omitempty"`
+	Type            int64         `json:"type"`
 	// * `planned` - Planned * `provisioning` - Provisioning * `active` - Active * `offline` - Offline * `deprovisioning` - Deprovisioning * `decommissioned` - Decommissioned
 	Status               *string                `json:"status,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -44,7 +44,7 @@ type _VirtualCircuitRequest VirtualCircuitRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVirtualCircuitRequest(cid string, providerNetwork int32, type_ int32) *VirtualCircuitRequest {
+func NewVirtualCircuitRequest(cid string, providerNetwork int64, type_ int64) *VirtualCircuitRequest {
 	this := VirtualCircuitRequest{}
 	this.Cid = cid
 	this.ProviderNetwork = providerNetwork
@@ -85,9 +85,9 @@ func (o *VirtualCircuitRequest) SetCid(v string) {
 }
 
 // GetProviderNetwork returns the ProviderNetwork field value
-func (o *VirtualCircuitRequest) GetProviderNetwork() int32 {
+func (o *VirtualCircuitRequest) GetProviderNetwork() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -96,7 +96,7 @@ func (o *VirtualCircuitRequest) GetProviderNetwork() int32 {
 
 // GetProviderNetworkOk returns a tuple with the ProviderNetwork field value
 // and a boolean to check if the value has been set.
-func (o *VirtualCircuitRequest) GetProviderNetworkOk() (*int32, bool) {
+func (o *VirtualCircuitRequest) GetProviderNetworkOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -104,14 +104,14 @@ func (o *VirtualCircuitRequest) GetProviderNetworkOk() (*int32, bool) {
 }
 
 // SetProviderNetwork sets field value
-func (o *VirtualCircuitRequest) SetProviderNetwork(v int32) {
+func (o *VirtualCircuitRequest) SetProviderNetwork(v int64) {
 	o.ProviderNetwork = v
 }
 
 // GetProviderAccount returns the ProviderAccount field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VirtualCircuitRequest) GetProviderAccount() int32 {
+func (o *VirtualCircuitRequest) GetProviderAccount() int64 {
 	if o == nil || IsNil(o.ProviderAccount.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ProviderAccount.Get()
@@ -120,7 +120,7 @@ func (o *VirtualCircuitRequest) GetProviderAccount() int32 {
 // GetProviderAccountOk returns a tuple with the ProviderAccount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VirtualCircuitRequest) GetProviderAccountOk() (*int32, bool) {
+func (o *VirtualCircuitRequest) GetProviderAccountOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -136,8 +136,8 @@ func (o *VirtualCircuitRequest) HasProviderAccount() bool {
 	return false
 }
 
-// SetProviderAccount gets a reference to the given NullableInt32 and assigns it to the ProviderAccount field.
-func (o *VirtualCircuitRequest) SetProviderAccount(v int32) {
+// SetProviderAccount gets a reference to the given NullableInt64 and assigns it to the ProviderAccount field.
+func (o *VirtualCircuitRequest) SetProviderAccount(v int64) {
 	o.ProviderAccount.Set(&v)
 }
 
@@ -152,9 +152,9 @@ func (o *VirtualCircuitRequest) UnsetProviderAccount() {
 }
 
 // GetType returns the Type field value
-func (o *VirtualCircuitRequest) GetType() int32 {
+func (o *VirtualCircuitRequest) GetType() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -163,7 +163,7 @@ func (o *VirtualCircuitRequest) GetType() int32 {
 
 // GetTypeOk returns a tuple with the Type field value
 // and a boolean to check if the value has been set.
-func (o *VirtualCircuitRequest) GetTypeOk() (*int32, bool) {
+func (o *VirtualCircuitRequest) GetTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -171,7 +171,7 @@ func (o *VirtualCircuitRequest) GetTypeOk() (*int32, bool) {
 }
 
 // SetType sets field value
-func (o *VirtualCircuitRequest) SetType(v int32) {
+func (o *VirtualCircuitRequest) SetType(v int64) {
 	o.Type = v
 }
 
@@ -208,9 +208,9 @@ func (o *VirtualCircuitRequest) SetStatus(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VirtualCircuitRequest) GetTenant() int32 {
+func (o *VirtualCircuitRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -219,7 +219,7 @@ func (o *VirtualCircuitRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VirtualCircuitRequest) GetTenantOk() (*int32, bool) {
+func (o *VirtualCircuitRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -235,8 +235,8 @@ func (o *VirtualCircuitRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *VirtualCircuitRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *VirtualCircuitRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -283,9 +283,9 @@ func (o *VirtualCircuitRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VirtualCircuitRequest) GetOwner() int32 {
+func (o *VirtualCircuitRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -294,7 +294,7 @@ func (o *VirtualCircuitRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VirtualCircuitRequest) GetOwnerOk() (*int32, bool) {
+func (o *VirtualCircuitRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -310,8 +310,8 @@ func (o *VirtualCircuitRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *VirtualCircuitRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *VirtualCircuitRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

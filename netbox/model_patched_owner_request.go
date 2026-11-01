@@ -22,10 +22,10 @@ var _ MappedNullable = &PatchedOwnerRequest{}
 // PatchedOwnerRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedOwnerRequest struct {
 	Name                 *string       `json:"name,omitempty"`
-	Group                NullableInt32 `json:"group,omitempty"`
+	Group                NullableInt64 `json:"group,omitempty"`
 	Description          *string       `json:"description,omitempty"`
-	UserGroups           []int32       `json:"user_groups,omitempty"`
-	Users                []int32       `json:"users,omitempty"`
+	UserGroups           []int64       `json:"user_groups,omitempty"`
+	Users                []int64       `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -81,9 +81,9 @@ func (o *PatchedOwnerRequest) SetName(v string) {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedOwnerRequest) GetGroup() int32 {
+func (o *PatchedOwnerRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -92,7 +92,7 @@ func (o *PatchedOwnerRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedOwnerRequest) GetGroupOk() (*int32, bool) {
+func (o *PatchedOwnerRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -108,8 +108,8 @@ func (o *PatchedOwnerRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *PatchedOwnerRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *PatchedOwnerRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -156,9 +156,9 @@ func (o *PatchedOwnerRequest) SetDescription(v string) {
 }
 
 // GetUserGroups returns the UserGroups field value if set, zero value otherwise.
-func (o *PatchedOwnerRequest) GetUserGroups() []int32 {
+func (o *PatchedOwnerRequest) GetUserGroups() []int64 {
 	if o == nil || IsNil(o.UserGroups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.UserGroups
@@ -166,7 +166,7 @@ func (o *PatchedOwnerRequest) GetUserGroups() []int32 {
 
 // GetUserGroupsOk returns a tuple with the UserGroups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedOwnerRequest) GetUserGroupsOk() ([]int32, bool) {
+func (o *PatchedOwnerRequest) GetUserGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.UserGroups) {
 		return nil, false
 	}
@@ -182,15 +182,15 @@ func (o *PatchedOwnerRequest) HasUserGroups() bool {
 	return false
 }
 
-// SetUserGroups gets a reference to the given []int32 and assigns it to the UserGroups field.
-func (o *PatchedOwnerRequest) SetUserGroups(v []int32) {
+// SetUserGroups gets a reference to the given []int64 and assigns it to the UserGroups field.
+func (o *PatchedOwnerRequest) SetUserGroups(v []int64) {
 	o.UserGroups = v
 }
 
 // GetUsers returns the Users field value if set, zero value otherwise.
-func (o *PatchedOwnerRequest) GetUsers() []int32 {
+func (o *PatchedOwnerRequest) GetUsers() []int64 {
 	if o == nil || IsNil(o.Users) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Users
@@ -198,7 +198,7 @@ func (o *PatchedOwnerRequest) GetUsers() []int32 {
 
 // GetUsersOk returns a tuple with the Users field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedOwnerRequest) GetUsersOk() ([]int32, bool) {
+func (o *PatchedOwnerRequest) GetUsersOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Users) {
 		return nil, false
 	}
@@ -214,8 +214,8 @@ func (o *PatchedOwnerRequest) HasUsers() bool {
 	return false
 }
 
-// SetUsers gets a reference to the given []int32 and assigns it to the Users field.
-func (o *PatchedOwnerRequest) SetUsers(v []int32) {
+// SetUsers gets a reference to the given []int64 and assigns it to the Users field.
+func (o *PatchedOwnerRequest) SetUsers(v []int64) {
 	o.Users = v
 }
 

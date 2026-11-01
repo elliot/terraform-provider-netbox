@@ -288,18 +288,18 @@ func (c *APIClient) doRaw(ctx context.Context, method, apiPath string, body any,
 	return nil
 }
 
-// Int32ID converts an int64 Terraform ID into the int32 the client expects.
-func Int32ID(id int64) (int32, error) {
-	if id < 0 || id > 1<<31-1 {
-		return 0, fmt.Errorf("id %d out of range for NetBox (int32)", id)
-	}
-	return int32(id), nil
-}
-
 func sortStrings(s []string) {
 	for i := 1; i < len(s); i++ {
 		for j := i; j > 0 && s[j-1] > s[j]; j-- {
 			s[j-1], s[j] = s[j], s[j-1]
 		}
 	}
+}
+
+// Int64ID validates a Terraform ID before it is used in an API path.
+func Int64ID(id int64) (int64, error) {
+	if id < 0 {
+		return 0, fmt.Errorf("id %d out of range for NetBox", id)
+	}
+	return id, nil
 }

@@ -27,12 +27,12 @@ type WritableDeviceRoleRequest struct {
 	Color *string `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
 	// Virtual machines may be assigned to this role
 	VmRole               *bool                  `json:"vm_role,omitempty"`
-	ConfigTemplate       NullableInt32          `json:"config_template,omitempty"`
-	Parent               NullableInt32          `json:"parent,omitempty"`
+	ConfigTemplate       NullableInt64          `json:"config_template,omitempty"`
+	Parent               NullableInt64          `json:"parent,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -171,9 +171,9 @@ func (o *WritableDeviceRoleRequest) SetVmRole(v bool) {
 }
 
 // GetConfigTemplate returns the ConfigTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRoleRequest) GetConfigTemplate() int32 {
+func (o *WritableDeviceRoleRequest) GetConfigTemplate() int64 {
 	if o == nil || IsNil(o.ConfigTemplate.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplate.Get()
@@ -182,7 +182,7 @@ func (o *WritableDeviceRoleRequest) GetConfigTemplate() int32 {
 // GetConfigTemplateOk returns a tuple with the ConfigTemplate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRoleRequest) GetConfigTemplateOk() (*int32, bool) {
+func (o *WritableDeviceRoleRequest) GetConfigTemplateOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -198,8 +198,8 @@ func (o *WritableDeviceRoleRequest) HasConfigTemplate() bool {
 	return false
 }
 
-// SetConfigTemplate gets a reference to the given NullableInt32 and assigns it to the ConfigTemplate field.
-func (o *WritableDeviceRoleRequest) SetConfigTemplate(v int32) {
+// SetConfigTemplate gets a reference to the given NullableInt64 and assigns it to the ConfigTemplate field.
+func (o *WritableDeviceRoleRequest) SetConfigTemplate(v int64) {
 	o.ConfigTemplate.Set(&v)
 }
 
@@ -214,9 +214,9 @@ func (o *WritableDeviceRoleRequest) UnsetConfigTemplate() {
 }
 
 // GetParent returns the Parent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRoleRequest) GetParent() int32 {
+func (o *WritableDeviceRoleRequest) GetParent() int64 {
 	if o == nil || IsNil(o.Parent.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Parent.Get()
@@ -225,7 +225,7 @@ func (o *WritableDeviceRoleRequest) GetParent() int32 {
 // GetParentOk returns a tuple with the Parent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRoleRequest) GetParentOk() (*int32, bool) {
+func (o *WritableDeviceRoleRequest) GetParentOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -241,8 +241,8 @@ func (o *WritableDeviceRoleRequest) HasParent() bool {
 	return false
 }
 
-// SetParent gets a reference to the given NullableInt32 and assigns it to the Parent field.
-func (o *WritableDeviceRoleRequest) SetParent(v int32) {
+// SetParent gets a reference to the given NullableInt64 and assigns it to the Parent field.
+func (o *WritableDeviceRoleRequest) SetParent(v int64) {
 	o.Parent.Set(&v)
 }
 
@@ -353,9 +353,9 @@ func (o *WritableDeviceRoleRequest) SetCustomFields(v map[string]interface{}) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableDeviceRoleRequest) GetOwner() int32 {
+func (o *WritableDeviceRoleRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -364,7 +364,7 @@ func (o *WritableDeviceRoleRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableDeviceRoleRequest) GetOwnerOk() (*int32, bool) {
+func (o *WritableDeviceRoleRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -380,8 +380,8 @@ func (o *WritableDeviceRoleRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *WritableDeviceRoleRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *WritableDeviceRoleRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

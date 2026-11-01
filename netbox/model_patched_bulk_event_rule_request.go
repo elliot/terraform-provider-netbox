@@ -22,7 +22,7 @@ var _ MappedNullable = &PatchedBulkEventRuleRequest{}
 
 // PatchedBulkEventRuleRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type PatchedBulkEventRuleRequest struct {
-	Id          int32    `json:"id"`
+	Id          int64    `json:"id"`
 	ObjectTypes []string `json:"object_types,omitempty"`
 	Name        *string  `json:"name,omitempty"`
 	Enabled     *bool    `json:"enabled,omitempty"`
@@ -36,7 +36,7 @@ type PatchedBulkEventRuleRequest struct {
 	ActionObjectId       NullableInt64          `json:"action_object_id,omitempty"`
 	Description          *string                `json:"description,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -47,7 +47,7 @@ type _PatchedBulkEventRuleRequest PatchedBulkEventRuleRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkEventRuleRequest(id int32) *PatchedBulkEventRuleRequest {
+func NewPatchedBulkEventRuleRequest(id int64) *PatchedBulkEventRuleRequest {
 	this := PatchedBulkEventRuleRequest{}
 	this.Id = id
 	return &this
@@ -62,9 +62,9 @@ func NewPatchedBulkEventRuleRequestWithDefaults() *PatchedBulkEventRuleRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkEventRuleRequest) GetId() int32 {
+func (o *PatchedBulkEventRuleRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -73,7 +73,7 @@ func (o *PatchedBulkEventRuleRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkEventRuleRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkEventRuleRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -81,7 +81,7 @@ func (o *PatchedBulkEventRuleRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkEventRuleRequest) SetId(v int32) {
+func (o *PatchedBulkEventRuleRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -429,9 +429,9 @@ func (o *PatchedBulkEventRuleRequest) SetCustomFields(v map[string]interface{}) 
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkEventRuleRequest) GetOwner() int32 {
+func (o *PatchedBulkEventRuleRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -440,7 +440,7 @@ func (o *PatchedBulkEventRuleRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkEventRuleRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkEventRuleRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -456,8 +456,8 @@ func (o *PatchedBulkEventRuleRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkEventRuleRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkEventRuleRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

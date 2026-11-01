@@ -22,12 +22,12 @@ var _ MappedNullable = &TunnelTerminationRequest{}
 
 // TunnelTerminationRequest Adds support for custom fields and tags.
 type TunnelTerminationRequest struct {
-	Tunnel int32 `json:"tunnel"`
+	Tunnel int64 `json:"tunnel"`
 	// * `peer` - Peer * `hub` - Hub * `spoke` - Spoke
 	Role                 *string                `json:"role,omitempty"`
 	TerminationType      string                 `json:"termination_type"`
 	TerminationId        NullableInt64          `json:"termination_id,omitempty"`
-	OutsideIp            NullableInt32          `json:"outside_ip,omitempty"`
+	OutsideIp            NullableInt64          `json:"outside_ip,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -39,7 +39,7 @@ type _TunnelTerminationRequest TunnelTerminationRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTunnelTerminationRequest(tunnel int32, terminationType string) *TunnelTerminationRequest {
+func NewTunnelTerminationRequest(tunnel int64, terminationType string) *TunnelTerminationRequest {
 	this := TunnelTerminationRequest{}
 	this.Tunnel = tunnel
 	this.TerminationType = terminationType
@@ -55,9 +55,9 @@ func NewTunnelTerminationRequestWithDefaults() *TunnelTerminationRequest {
 }
 
 // GetTunnel returns the Tunnel field value
-func (o *TunnelTerminationRequest) GetTunnel() int32 {
+func (o *TunnelTerminationRequest) GetTunnel() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -66,7 +66,7 @@ func (o *TunnelTerminationRequest) GetTunnel() int32 {
 
 // GetTunnelOk returns a tuple with the Tunnel field value
 // and a boolean to check if the value has been set.
-func (o *TunnelTerminationRequest) GetTunnelOk() (*int32, bool) {
+func (o *TunnelTerminationRequest) GetTunnelOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,7 +74,7 @@ func (o *TunnelTerminationRequest) GetTunnelOk() (*int32, bool) {
 }
 
 // SetTunnel sets field value
-func (o *TunnelTerminationRequest) SetTunnel(v int32) {
+func (o *TunnelTerminationRequest) SetTunnel(v int64) {
 	o.Tunnel = v
 }
 
@@ -178,9 +178,9 @@ func (o *TunnelTerminationRequest) UnsetTerminationId() {
 }
 
 // GetOutsideIp returns the OutsideIp field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TunnelTerminationRequest) GetOutsideIp() int32 {
+func (o *TunnelTerminationRequest) GetOutsideIp() int64 {
 	if o == nil || IsNil(o.OutsideIp.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.OutsideIp.Get()
@@ -189,7 +189,7 @@ func (o *TunnelTerminationRequest) GetOutsideIp() int32 {
 // GetOutsideIpOk returns a tuple with the OutsideIp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TunnelTerminationRequest) GetOutsideIpOk() (*int32, bool) {
+func (o *TunnelTerminationRequest) GetOutsideIpOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -205,8 +205,8 @@ func (o *TunnelTerminationRequest) HasOutsideIp() bool {
 	return false
 }
 
-// SetOutsideIp gets a reference to the given NullableInt32 and assigns it to the OutsideIp field.
-func (o *TunnelTerminationRequest) SetOutsideIp(v int32) {
+// SetOutsideIp gets a reference to the given NullableInt64 and assigns it to the OutsideIp field.
+func (o *TunnelTerminationRequest) SetOutsideIp(v int64) {
 	o.OutsideIp.Set(&v)
 }
 

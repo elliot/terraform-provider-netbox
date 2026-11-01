@@ -99,6 +99,8 @@ type Attr struct {
 	// KeepPriorWhenNull marks exposed read-only attributes that NetBox returns
 	// only once (token secrets): the prior state is kept when the API returns null.
 	KeepPriorWhenNull bool
+	// Deprecated is the DeprecationMessage of the attribute ("" = current).
+	Deprecated string
 
 	// Client typing.
 	Int64    bool // client scalar is int64 (else int32)
@@ -168,6 +170,12 @@ type Test struct {
 	ImportVerifyIgnore []string
 	// Checks lists extra attribute checks: attribute -> expected string after Basic.
 	Checks map[string]string
+	// UpgradeSkip disables the upgrade test (apply with the last release,
+	// then plan with this build) with a reason.
+	UpgradeSkip string
+	// UpgradeConfig replaces the configurations the upgrade test tries
+	// (Update, then Basic) with one written for the released provider.
+	UpgradeConfig string
 }
 
 // Resource is one generated Terraform resource (plus its data sources).
@@ -205,6 +213,12 @@ type Resource struct {
 	SkipReason      string
 	// DataSourceOnly resources have no create (read-only collections).
 	DataSourceOnly bool
+	// Deprecated is the DeprecationMessage of the resource and its data
+	// sources ("" = current).
+	Deprecated string
+	// SchemaVersion is the resource schema version; above 0 the resource
+	// upgrades older state through the upgraders registered in internal/upgrade.
+	SchemaVersion int64
 }
 
 // Attr returns the attribute with the given Terraform name.

@@ -118,6 +118,18 @@ func TestAccSite_basic(t *testing.T) {
 	})
 }
 
+func TestAccSite_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_site",
+		APIPath:      "/api/dcim/sites/",
+		Configs: []string{
+			acctest.Render(t, siteTestConfigUpdate, name),
+			acctest.Render(t, siteTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_site", &resource.Sweeper{
 		Name:         "netbox_site",

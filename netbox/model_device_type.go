@@ -23,7 +23,7 @@ var _ MappedNullable = &DeviceType{}
 
 // DeviceType Base serializer class for models inheriting from PrimaryModel.
 type DeviceType struct {
-	Id              int32                 `json:"id"`
+	Id              int64                 `json:"id"`
 	Url             *string               `json:"url,omitempty"`
 	DisplayUrl      *string               `json:"display_url,omitempty"`
 	Display         *string               `json:"display,omitempty"`
@@ -54,19 +54,19 @@ type DeviceType struct {
 	CustomFields                   map[string]interface{} `json:"custom_fields,omitempty"`
 	Created                        NullableTime           `json:"created,omitempty"`
 	LastUpdated                    NullableTime           `json:"last_updated,omitempty"`
-	DeviceCount                    *int32                 `json:"device_count,omitempty"`
-	ConsolePortTemplateCount       *int32                 `json:"console_port_template_count,omitempty"`
-	ConsoleServerPortTemplateCount *int32                 `json:"console_server_port_template_count,omitempty"`
-	PowerPortTemplateCount         *int32                 `json:"power_port_template_count,omitempty"`
-	PowerOutletTemplateCount       *int32                 `json:"power_outlet_template_count,omitempty"`
-	CoolingIntakeTemplateCount     *int32                 `json:"cooling_intake_template_count,omitempty"`
-	CoolingOutflowTemplateCount    *int32                 `json:"cooling_outflow_template_count,omitempty"`
-	InterfaceTemplateCount         *int32                 `json:"interface_template_count,omitempty"`
-	FrontPortTemplateCount         *int32                 `json:"front_port_template_count,omitempty"`
-	RearPortTemplateCount          *int32                 `json:"rear_port_template_count,omitempty"`
-	DeviceBayTemplateCount         *int32                 `json:"device_bay_template_count,omitempty"`
-	ModuleBayTemplateCount         *int32                 `json:"module_bay_template_count,omitempty"`
-	InventoryItemTemplateCount     *int32                 `json:"inventory_item_template_count,omitempty"`
+	DeviceCount                    *int64                 `json:"device_count,omitempty"`
+	ConsolePortTemplateCount       *int64                 `json:"console_port_template_count,omitempty"`
+	ConsoleServerPortTemplateCount *int64                 `json:"console_server_port_template_count,omitempty"`
+	PowerPortTemplateCount         *int64                 `json:"power_port_template_count,omitempty"`
+	PowerOutletTemplateCount       *int64                 `json:"power_outlet_template_count,omitempty"`
+	CoolingIntakeTemplateCount     *int64                 `json:"cooling_intake_template_count,omitempty"`
+	CoolingOutflowTemplateCount    *int64                 `json:"cooling_outflow_template_count,omitempty"`
+	InterfaceTemplateCount         *int64                 `json:"interface_template_count,omitempty"`
+	FrontPortTemplateCount         *int64                 `json:"front_port_template_count,omitempty"`
+	RearPortTemplateCount          *int64                 `json:"rear_port_template_count,omitempty"`
+	DeviceBayTemplateCount         *int64                 `json:"device_bay_template_count,omitempty"`
+	ModuleBayTemplateCount         *int64                 `json:"module_bay_template_count,omitempty"`
+	InventoryItemTemplateCount     *int64                 `json:"inventory_item_template_count,omitempty"`
 	AdditionalProperties           map[string]interface{}
 }
 
@@ -76,7 +76,7 @@ type _DeviceType DeviceType
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceType(id int32) *DeviceType {
+func NewDeviceType(id int64) *DeviceType {
 	this := DeviceType{}
 	this.Id = id
 	var uHeight float64 = 1.0
@@ -95,9 +95,9 @@ func NewDeviceTypeWithDefaults() *DeviceType {
 }
 
 // GetId returns the Id field value
-func (o *DeviceType) GetId() int32 {
+func (o *DeviceType) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -106,7 +106,7 @@ func (o *DeviceType) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetIdOk() (*int32, bool) {
+func (o *DeviceType) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -114,7 +114,7 @@ func (o *DeviceType) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *DeviceType) SetId(v int32) {
+func (o *DeviceType) SetId(v int64) {
 	o.Id = v
 }
 
@@ -1083,9 +1083,9 @@ func (o *DeviceType) UnsetLastUpdated() {
 }
 
 // GetDeviceCount returns the DeviceCount field value if set, zero value otherwise.
-func (o *DeviceType) GetDeviceCount() int32 {
+func (o *DeviceType) GetDeviceCount() int64 {
 	if o == nil || IsNil(o.DeviceCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceCount
@@ -1093,7 +1093,7 @@ func (o *DeviceType) GetDeviceCount() int32 {
 
 // GetDeviceCountOk returns a tuple with the DeviceCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetDeviceCountOk() (*int32, bool) {
+func (o *DeviceType) GetDeviceCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.DeviceCount) {
 		return nil, false
 	}
@@ -1109,15 +1109,15 @@ func (o *DeviceType) HasDeviceCount() bool {
 	return false
 }
 
-// SetDeviceCount gets a reference to the given int32 and assigns it to the DeviceCount field.
-func (o *DeviceType) SetDeviceCount(v int32) {
+// SetDeviceCount gets a reference to the given int64 and assigns it to the DeviceCount field.
+func (o *DeviceType) SetDeviceCount(v int64) {
 	o.DeviceCount = &v
 }
 
 // GetConsolePortTemplateCount returns the ConsolePortTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetConsolePortTemplateCount() int32 {
+func (o *DeviceType) GetConsolePortTemplateCount() int64 {
 	if o == nil || IsNil(o.ConsolePortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConsolePortTemplateCount
@@ -1125,7 +1125,7 @@ func (o *DeviceType) GetConsolePortTemplateCount() int32 {
 
 // GetConsolePortTemplateCountOk returns a tuple with the ConsolePortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetConsolePortTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetConsolePortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.ConsolePortTemplateCount) {
 		return nil, false
 	}
@@ -1141,15 +1141,15 @@ func (o *DeviceType) HasConsolePortTemplateCount() bool {
 	return false
 }
 
-// SetConsolePortTemplateCount gets a reference to the given int32 and assigns it to the ConsolePortTemplateCount field.
-func (o *DeviceType) SetConsolePortTemplateCount(v int32) {
+// SetConsolePortTemplateCount gets a reference to the given int64 and assigns it to the ConsolePortTemplateCount field.
+func (o *DeviceType) SetConsolePortTemplateCount(v int64) {
 	o.ConsolePortTemplateCount = &v
 }
 
 // GetConsoleServerPortTemplateCount returns the ConsoleServerPortTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetConsoleServerPortTemplateCount() int32 {
+func (o *DeviceType) GetConsoleServerPortTemplateCount() int64 {
 	if o == nil || IsNil(o.ConsoleServerPortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConsoleServerPortTemplateCount
@@ -1157,7 +1157,7 @@ func (o *DeviceType) GetConsoleServerPortTemplateCount() int32 {
 
 // GetConsoleServerPortTemplateCountOk returns a tuple with the ConsoleServerPortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetConsoleServerPortTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetConsoleServerPortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.ConsoleServerPortTemplateCount) {
 		return nil, false
 	}
@@ -1173,15 +1173,15 @@ func (o *DeviceType) HasConsoleServerPortTemplateCount() bool {
 	return false
 }
 
-// SetConsoleServerPortTemplateCount gets a reference to the given int32 and assigns it to the ConsoleServerPortTemplateCount field.
-func (o *DeviceType) SetConsoleServerPortTemplateCount(v int32) {
+// SetConsoleServerPortTemplateCount gets a reference to the given int64 and assigns it to the ConsoleServerPortTemplateCount field.
+func (o *DeviceType) SetConsoleServerPortTemplateCount(v int64) {
 	o.ConsoleServerPortTemplateCount = &v
 }
 
 // GetPowerPortTemplateCount returns the PowerPortTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetPowerPortTemplateCount() int32 {
+func (o *DeviceType) GetPowerPortTemplateCount() int64 {
 	if o == nil || IsNil(o.PowerPortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PowerPortTemplateCount
@@ -1189,7 +1189,7 @@ func (o *DeviceType) GetPowerPortTemplateCount() int32 {
 
 // GetPowerPortTemplateCountOk returns a tuple with the PowerPortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetPowerPortTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetPowerPortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.PowerPortTemplateCount) {
 		return nil, false
 	}
@@ -1205,15 +1205,15 @@ func (o *DeviceType) HasPowerPortTemplateCount() bool {
 	return false
 }
 
-// SetPowerPortTemplateCount gets a reference to the given int32 and assigns it to the PowerPortTemplateCount field.
-func (o *DeviceType) SetPowerPortTemplateCount(v int32) {
+// SetPowerPortTemplateCount gets a reference to the given int64 and assigns it to the PowerPortTemplateCount field.
+func (o *DeviceType) SetPowerPortTemplateCount(v int64) {
 	o.PowerPortTemplateCount = &v
 }
 
 // GetPowerOutletTemplateCount returns the PowerOutletTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetPowerOutletTemplateCount() int32 {
+func (o *DeviceType) GetPowerOutletTemplateCount() int64 {
 	if o == nil || IsNil(o.PowerOutletTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PowerOutletTemplateCount
@@ -1221,7 +1221,7 @@ func (o *DeviceType) GetPowerOutletTemplateCount() int32 {
 
 // GetPowerOutletTemplateCountOk returns a tuple with the PowerOutletTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetPowerOutletTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetPowerOutletTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.PowerOutletTemplateCount) {
 		return nil, false
 	}
@@ -1237,15 +1237,15 @@ func (o *DeviceType) HasPowerOutletTemplateCount() bool {
 	return false
 }
 
-// SetPowerOutletTemplateCount gets a reference to the given int32 and assigns it to the PowerOutletTemplateCount field.
-func (o *DeviceType) SetPowerOutletTemplateCount(v int32) {
+// SetPowerOutletTemplateCount gets a reference to the given int64 and assigns it to the PowerOutletTemplateCount field.
+func (o *DeviceType) SetPowerOutletTemplateCount(v int64) {
 	o.PowerOutletTemplateCount = &v
 }
 
 // GetCoolingIntakeTemplateCount returns the CoolingIntakeTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetCoolingIntakeTemplateCount() int32 {
+func (o *DeviceType) GetCoolingIntakeTemplateCount() int64 {
 	if o == nil || IsNil(o.CoolingIntakeTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CoolingIntakeTemplateCount
@@ -1253,7 +1253,7 @@ func (o *DeviceType) GetCoolingIntakeTemplateCount() int32 {
 
 // GetCoolingIntakeTemplateCountOk returns a tuple with the CoolingIntakeTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetCoolingIntakeTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetCoolingIntakeTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.CoolingIntakeTemplateCount) {
 		return nil, false
 	}
@@ -1269,15 +1269,15 @@ func (o *DeviceType) HasCoolingIntakeTemplateCount() bool {
 	return false
 }
 
-// SetCoolingIntakeTemplateCount gets a reference to the given int32 and assigns it to the CoolingIntakeTemplateCount field.
-func (o *DeviceType) SetCoolingIntakeTemplateCount(v int32) {
+// SetCoolingIntakeTemplateCount gets a reference to the given int64 and assigns it to the CoolingIntakeTemplateCount field.
+func (o *DeviceType) SetCoolingIntakeTemplateCount(v int64) {
 	o.CoolingIntakeTemplateCount = &v
 }
 
 // GetCoolingOutflowTemplateCount returns the CoolingOutflowTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetCoolingOutflowTemplateCount() int32 {
+func (o *DeviceType) GetCoolingOutflowTemplateCount() int64 {
 	if o == nil || IsNil(o.CoolingOutflowTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CoolingOutflowTemplateCount
@@ -1285,7 +1285,7 @@ func (o *DeviceType) GetCoolingOutflowTemplateCount() int32 {
 
 // GetCoolingOutflowTemplateCountOk returns a tuple with the CoolingOutflowTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetCoolingOutflowTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetCoolingOutflowTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.CoolingOutflowTemplateCount) {
 		return nil, false
 	}
@@ -1301,15 +1301,15 @@ func (o *DeviceType) HasCoolingOutflowTemplateCount() bool {
 	return false
 }
 
-// SetCoolingOutflowTemplateCount gets a reference to the given int32 and assigns it to the CoolingOutflowTemplateCount field.
-func (o *DeviceType) SetCoolingOutflowTemplateCount(v int32) {
+// SetCoolingOutflowTemplateCount gets a reference to the given int64 and assigns it to the CoolingOutflowTemplateCount field.
+func (o *DeviceType) SetCoolingOutflowTemplateCount(v int64) {
 	o.CoolingOutflowTemplateCount = &v
 }
 
 // GetInterfaceTemplateCount returns the InterfaceTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetInterfaceTemplateCount() int32 {
+func (o *DeviceType) GetInterfaceTemplateCount() int64 {
 	if o == nil || IsNil(o.InterfaceTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InterfaceTemplateCount
@@ -1317,7 +1317,7 @@ func (o *DeviceType) GetInterfaceTemplateCount() int32 {
 
 // GetInterfaceTemplateCountOk returns a tuple with the InterfaceTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetInterfaceTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetInterfaceTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.InterfaceTemplateCount) {
 		return nil, false
 	}
@@ -1333,15 +1333,15 @@ func (o *DeviceType) HasInterfaceTemplateCount() bool {
 	return false
 }
 
-// SetInterfaceTemplateCount gets a reference to the given int32 and assigns it to the InterfaceTemplateCount field.
-func (o *DeviceType) SetInterfaceTemplateCount(v int32) {
+// SetInterfaceTemplateCount gets a reference to the given int64 and assigns it to the InterfaceTemplateCount field.
+func (o *DeviceType) SetInterfaceTemplateCount(v int64) {
 	o.InterfaceTemplateCount = &v
 }
 
 // GetFrontPortTemplateCount returns the FrontPortTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetFrontPortTemplateCount() int32 {
+func (o *DeviceType) GetFrontPortTemplateCount() int64 {
 	if o == nil || IsNil(o.FrontPortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.FrontPortTemplateCount
@@ -1349,7 +1349,7 @@ func (o *DeviceType) GetFrontPortTemplateCount() int32 {
 
 // GetFrontPortTemplateCountOk returns a tuple with the FrontPortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetFrontPortTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetFrontPortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.FrontPortTemplateCount) {
 		return nil, false
 	}
@@ -1365,15 +1365,15 @@ func (o *DeviceType) HasFrontPortTemplateCount() bool {
 	return false
 }
 
-// SetFrontPortTemplateCount gets a reference to the given int32 and assigns it to the FrontPortTemplateCount field.
-func (o *DeviceType) SetFrontPortTemplateCount(v int32) {
+// SetFrontPortTemplateCount gets a reference to the given int64 and assigns it to the FrontPortTemplateCount field.
+func (o *DeviceType) SetFrontPortTemplateCount(v int64) {
 	o.FrontPortTemplateCount = &v
 }
 
 // GetRearPortTemplateCount returns the RearPortTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetRearPortTemplateCount() int32 {
+func (o *DeviceType) GetRearPortTemplateCount() int64 {
 	if o == nil || IsNil(o.RearPortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RearPortTemplateCount
@@ -1381,7 +1381,7 @@ func (o *DeviceType) GetRearPortTemplateCount() int32 {
 
 // GetRearPortTemplateCountOk returns a tuple with the RearPortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetRearPortTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetRearPortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.RearPortTemplateCount) {
 		return nil, false
 	}
@@ -1397,15 +1397,15 @@ func (o *DeviceType) HasRearPortTemplateCount() bool {
 	return false
 }
 
-// SetRearPortTemplateCount gets a reference to the given int32 and assigns it to the RearPortTemplateCount field.
-func (o *DeviceType) SetRearPortTemplateCount(v int32) {
+// SetRearPortTemplateCount gets a reference to the given int64 and assigns it to the RearPortTemplateCount field.
+func (o *DeviceType) SetRearPortTemplateCount(v int64) {
 	o.RearPortTemplateCount = &v
 }
 
 // GetDeviceBayTemplateCount returns the DeviceBayTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetDeviceBayTemplateCount() int32 {
+func (o *DeviceType) GetDeviceBayTemplateCount() int64 {
 	if o == nil || IsNil(o.DeviceBayTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceBayTemplateCount
@@ -1413,7 +1413,7 @@ func (o *DeviceType) GetDeviceBayTemplateCount() int32 {
 
 // GetDeviceBayTemplateCountOk returns a tuple with the DeviceBayTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetDeviceBayTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetDeviceBayTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.DeviceBayTemplateCount) {
 		return nil, false
 	}
@@ -1429,15 +1429,15 @@ func (o *DeviceType) HasDeviceBayTemplateCount() bool {
 	return false
 }
 
-// SetDeviceBayTemplateCount gets a reference to the given int32 and assigns it to the DeviceBayTemplateCount field.
-func (o *DeviceType) SetDeviceBayTemplateCount(v int32) {
+// SetDeviceBayTemplateCount gets a reference to the given int64 and assigns it to the DeviceBayTemplateCount field.
+func (o *DeviceType) SetDeviceBayTemplateCount(v int64) {
 	o.DeviceBayTemplateCount = &v
 }
 
 // GetModuleBayTemplateCount returns the ModuleBayTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetModuleBayTemplateCount() int32 {
+func (o *DeviceType) GetModuleBayTemplateCount() int64 {
 	if o == nil || IsNil(o.ModuleBayTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleBayTemplateCount
@@ -1445,7 +1445,7 @@ func (o *DeviceType) GetModuleBayTemplateCount() int32 {
 
 // GetModuleBayTemplateCountOk returns a tuple with the ModuleBayTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetModuleBayTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetModuleBayTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.ModuleBayTemplateCount) {
 		return nil, false
 	}
@@ -1461,15 +1461,15 @@ func (o *DeviceType) HasModuleBayTemplateCount() bool {
 	return false
 }
 
-// SetModuleBayTemplateCount gets a reference to the given int32 and assigns it to the ModuleBayTemplateCount field.
-func (o *DeviceType) SetModuleBayTemplateCount(v int32) {
+// SetModuleBayTemplateCount gets a reference to the given int64 and assigns it to the ModuleBayTemplateCount field.
+func (o *DeviceType) SetModuleBayTemplateCount(v int64) {
 	o.ModuleBayTemplateCount = &v
 }
 
 // GetInventoryItemTemplateCount returns the InventoryItemTemplateCount field value if set, zero value otherwise.
-func (o *DeviceType) GetInventoryItemTemplateCount() int32 {
+func (o *DeviceType) GetInventoryItemTemplateCount() int64 {
 	if o == nil || IsNil(o.InventoryItemTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InventoryItemTemplateCount
@@ -1477,7 +1477,7 @@ func (o *DeviceType) GetInventoryItemTemplateCount() int32 {
 
 // GetInventoryItemTemplateCountOk returns a tuple with the InventoryItemTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DeviceType) GetInventoryItemTemplateCountOk() (*int32, bool) {
+func (o *DeviceType) GetInventoryItemTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.InventoryItemTemplateCount) {
 		return nil, false
 	}
@@ -1493,8 +1493,8 @@ func (o *DeviceType) HasInventoryItemTemplateCount() bool {
 	return false
 }
 
-// SetInventoryItemTemplateCount gets a reference to the given int32 and assigns it to the InventoryItemTemplateCount field.
-func (o *DeviceType) SetInventoryItemTemplateCount(v int32) {
+// SetInventoryItemTemplateCount gets a reference to the given int64 and assigns it to the InventoryItemTemplateCount field.
+func (o *DeviceType) SetInventoryItemTemplateCount(v int64) {
 	o.InventoryItemTemplateCount = &v
 }
 

@@ -24,8 +24,8 @@ var _ MappedNullable = &WritableContactAssignmentRequest{}
 type WritableContactAssignmentRequest struct {
 	ObjectType string        `json:"object_type"`
 	ObjectId   int64         `json:"object_id"`
-	Contact    int32         `json:"contact"`
-	Role       NullableInt32 `json:"role,omitempty"`
+	Contact    int64         `json:"contact"`
+	Role       NullableInt64 `json:"role,omitempty"`
 	// * `primary` - Primary * `secondary` - Secondary * `tertiary` - Tertiary * `inactive` - Inactive
 	Priority             NullableString         `json:"priority,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
@@ -39,7 +39,7 @@ type _WritableContactAssignmentRequest WritableContactAssignmentRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewWritableContactAssignmentRequest(objectType string, objectId int64, contact int32) *WritableContactAssignmentRequest {
+func NewWritableContactAssignmentRequest(objectType string, objectId int64, contact int64) *WritableContactAssignmentRequest {
 	this := WritableContactAssignmentRequest{}
 	this.ObjectType = objectType
 	this.ObjectId = objectId
@@ -104,9 +104,9 @@ func (o *WritableContactAssignmentRequest) SetObjectId(v int64) {
 }
 
 // GetContact returns the Contact field value
-func (o *WritableContactAssignmentRequest) GetContact() int32 {
+func (o *WritableContactAssignmentRequest) GetContact() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -115,7 +115,7 @@ func (o *WritableContactAssignmentRequest) GetContact() int32 {
 
 // GetContactOk returns a tuple with the Contact field value
 // and a boolean to check if the value has been set.
-func (o *WritableContactAssignmentRequest) GetContactOk() (*int32, bool) {
+func (o *WritableContactAssignmentRequest) GetContactOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -123,14 +123,14 @@ func (o *WritableContactAssignmentRequest) GetContactOk() (*int32, bool) {
 }
 
 // SetContact sets field value
-func (o *WritableContactAssignmentRequest) SetContact(v int32) {
+func (o *WritableContactAssignmentRequest) SetContact(v int64) {
 	o.Contact = v
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableContactAssignmentRequest) GetRole() int32 {
+func (o *WritableContactAssignmentRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -139,7 +139,7 @@ func (o *WritableContactAssignmentRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableContactAssignmentRequest) GetRoleOk() (*int32, bool) {
+func (o *WritableContactAssignmentRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -155,8 +155,8 @@ func (o *WritableContactAssignmentRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *WritableContactAssignmentRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *WritableContactAssignmentRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 

@@ -99,6 +99,18 @@ func TestAccConsolePortTemplate_basic(t *testing.T) {
 	})
 }
 
+func TestAccConsolePortTemplate_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_console_port_template",
+		APIPath:      "/api/dcim/console-port-templates/",
+		Configs: []string{
+			acctest.Render(t, consolePortTemplateTestConfigUpdate, name),
+			acctest.Render(t, consolePortTemplateTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_console_port_template", &resource.Sweeper{
 		Name:         "netbox_console_port_template",

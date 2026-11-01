@@ -23,7 +23,7 @@ var _ MappedNullable = &ModuleType{}
 
 // ModuleType Base serializer class for models inheriting from PrimaryModel.
 type ModuleType struct {
-	Id           int32                          `json:"id"`
+	Id           int64                          `json:"id"`
 	Url          *string                        `json:"url,omitempty"`
 	DisplayUrl   *string                        `json:"display_url,omitempty"`
 	Display      *string                        `json:"display,omitempty"`
@@ -47,17 +47,17 @@ type ModuleType struct {
 	CustomFields                   map[string]interface{} `json:"custom_fields,omitempty"`
 	Created                        NullableTime           `json:"created,omitempty"`
 	LastUpdated                    NullableTime           `json:"last_updated,omitempty"`
-	ModuleCount                    *int32                 `json:"module_count,omitempty"`
-	ConsolePortTemplateCount       *int32                 `json:"console_port_template_count,omitempty"`
-	ConsoleServerPortTemplateCount *int32                 `json:"console_server_port_template_count,omitempty"`
-	PowerPortTemplateCount         *int32                 `json:"power_port_template_count,omitempty"`
-	PowerOutletTemplateCount       *int32                 `json:"power_outlet_template_count,omitempty"`
-	CoolingIntakeTemplateCount     *int32                 `json:"cooling_intake_template_count,omitempty"`
-	CoolingOutflowTemplateCount    *int32                 `json:"cooling_outflow_template_count,omitempty"`
-	InterfaceTemplateCount         *int32                 `json:"interface_template_count,omitempty"`
-	FrontPortTemplateCount         *int32                 `json:"front_port_template_count,omitempty"`
-	RearPortTemplateCount          *int32                 `json:"rear_port_template_count,omitempty"`
-	ModuleBayTemplateCount         *int32                 `json:"module_bay_template_count,omitempty"`
+	ModuleCount                    *int64                 `json:"module_count,omitempty"`
+	ConsolePortTemplateCount       *int64                 `json:"console_port_template_count,omitempty"`
+	ConsoleServerPortTemplateCount *int64                 `json:"console_server_port_template_count,omitempty"`
+	PowerPortTemplateCount         *int64                 `json:"power_port_template_count,omitempty"`
+	PowerOutletTemplateCount       *int64                 `json:"power_outlet_template_count,omitempty"`
+	CoolingIntakeTemplateCount     *int64                 `json:"cooling_intake_template_count,omitempty"`
+	CoolingOutflowTemplateCount    *int64                 `json:"cooling_outflow_template_count,omitempty"`
+	InterfaceTemplateCount         *int64                 `json:"interface_template_count,omitempty"`
+	FrontPortTemplateCount         *int64                 `json:"front_port_template_count,omitempty"`
+	RearPortTemplateCount          *int64                 `json:"rear_port_template_count,omitempty"`
+	ModuleBayTemplateCount         *int64                 `json:"module_bay_template_count,omitempty"`
 	AdditionalProperties           map[string]interface{}
 }
 
@@ -67,7 +67,7 @@ type _ModuleType ModuleType
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewModuleType(id int32) *ModuleType {
+func NewModuleType(id int64) *ModuleType {
 	this := ModuleType{}
 	this.Id = id
 	return &this
@@ -82,9 +82,9 @@ func NewModuleTypeWithDefaults() *ModuleType {
 }
 
 // GetId returns the Id field value
-func (o *ModuleType) GetId() int32 {
+func (o *ModuleType) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -93,7 +93,7 @@ func (o *ModuleType) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetIdOk() (*int32, bool) {
+func (o *ModuleType) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -101,7 +101,7 @@ func (o *ModuleType) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *ModuleType) SetId(v int32) {
+func (o *ModuleType) SetId(v int64) {
 	o.Id = v
 }
 
@@ -878,9 +878,9 @@ func (o *ModuleType) UnsetLastUpdated() {
 }
 
 // GetModuleCount returns the ModuleCount field value if set, zero value otherwise.
-func (o *ModuleType) GetModuleCount() int32 {
+func (o *ModuleType) GetModuleCount() int64 {
 	if o == nil || IsNil(o.ModuleCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleCount
@@ -888,7 +888,7 @@ func (o *ModuleType) GetModuleCount() int32 {
 
 // GetModuleCountOk returns a tuple with the ModuleCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetModuleCountOk() (*int32, bool) {
+func (o *ModuleType) GetModuleCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.ModuleCount) {
 		return nil, false
 	}
@@ -904,15 +904,15 @@ func (o *ModuleType) HasModuleCount() bool {
 	return false
 }
 
-// SetModuleCount gets a reference to the given int32 and assigns it to the ModuleCount field.
-func (o *ModuleType) SetModuleCount(v int32) {
+// SetModuleCount gets a reference to the given int64 and assigns it to the ModuleCount field.
+func (o *ModuleType) SetModuleCount(v int64) {
 	o.ModuleCount = &v
 }
 
 // GetConsolePortTemplateCount returns the ConsolePortTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetConsolePortTemplateCount() int32 {
+func (o *ModuleType) GetConsolePortTemplateCount() int64 {
 	if o == nil || IsNil(o.ConsolePortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConsolePortTemplateCount
@@ -920,7 +920,7 @@ func (o *ModuleType) GetConsolePortTemplateCount() int32 {
 
 // GetConsolePortTemplateCountOk returns a tuple with the ConsolePortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetConsolePortTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetConsolePortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.ConsolePortTemplateCount) {
 		return nil, false
 	}
@@ -936,15 +936,15 @@ func (o *ModuleType) HasConsolePortTemplateCount() bool {
 	return false
 }
 
-// SetConsolePortTemplateCount gets a reference to the given int32 and assigns it to the ConsolePortTemplateCount field.
-func (o *ModuleType) SetConsolePortTemplateCount(v int32) {
+// SetConsolePortTemplateCount gets a reference to the given int64 and assigns it to the ConsolePortTemplateCount field.
+func (o *ModuleType) SetConsolePortTemplateCount(v int64) {
 	o.ConsolePortTemplateCount = &v
 }
 
 // GetConsoleServerPortTemplateCount returns the ConsoleServerPortTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetConsoleServerPortTemplateCount() int32 {
+func (o *ModuleType) GetConsoleServerPortTemplateCount() int64 {
 	if o == nil || IsNil(o.ConsoleServerPortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConsoleServerPortTemplateCount
@@ -952,7 +952,7 @@ func (o *ModuleType) GetConsoleServerPortTemplateCount() int32 {
 
 // GetConsoleServerPortTemplateCountOk returns a tuple with the ConsoleServerPortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetConsoleServerPortTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetConsoleServerPortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.ConsoleServerPortTemplateCount) {
 		return nil, false
 	}
@@ -968,15 +968,15 @@ func (o *ModuleType) HasConsoleServerPortTemplateCount() bool {
 	return false
 }
 
-// SetConsoleServerPortTemplateCount gets a reference to the given int32 and assigns it to the ConsoleServerPortTemplateCount field.
-func (o *ModuleType) SetConsoleServerPortTemplateCount(v int32) {
+// SetConsoleServerPortTemplateCount gets a reference to the given int64 and assigns it to the ConsoleServerPortTemplateCount field.
+func (o *ModuleType) SetConsoleServerPortTemplateCount(v int64) {
 	o.ConsoleServerPortTemplateCount = &v
 }
 
 // GetPowerPortTemplateCount returns the PowerPortTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetPowerPortTemplateCount() int32 {
+func (o *ModuleType) GetPowerPortTemplateCount() int64 {
 	if o == nil || IsNil(o.PowerPortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PowerPortTemplateCount
@@ -984,7 +984,7 @@ func (o *ModuleType) GetPowerPortTemplateCount() int32 {
 
 // GetPowerPortTemplateCountOk returns a tuple with the PowerPortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetPowerPortTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetPowerPortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.PowerPortTemplateCount) {
 		return nil, false
 	}
@@ -1000,15 +1000,15 @@ func (o *ModuleType) HasPowerPortTemplateCount() bool {
 	return false
 }
 
-// SetPowerPortTemplateCount gets a reference to the given int32 and assigns it to the PowerPortTemplateCount field.
-func (o *ModuleType) SetPowerPortTemplateCount(v int32) {
+// SetPowerPortTemplateCount gets a reference to the given int64 and assigns it to the PowerPortTemplateCount field.
+func (o *ModuleType) SetPowerPortTemplateCount(v int64) {
 	o.PowerPortTemplateCount = &v
 }
 
 // GetPowerOutletTemplateCount returns the PowerOutletTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetPowerOutletTemplateCount() int32 {
+func (o *ModuleType) GetPowerOutletTemplateCount() int64 {
 	if o == nil || IsNil(o.PowerOutletTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PowerOutletTemplateCount
@@ -1016,7 +1016,7 @@ func (o *ModuleType) GetPowerOutletTemplateCount() int32 {
 
 // GetPowerOutletTemplateCountOk returns a tuple with the PowerOutletTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetPowerOutletTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetPowerOutletTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.PowerOutletTemplateCount) {
 		return nil, false
 	}
@@ -1032,15 +1032,15 @@ func (o *ModuleType) HasPowerOutletTemplateCount() bool {
 	return false
 }
 
-// SetPowerOutletTemplateCount gets a reference to the given int32 and assigns it to the PowerOutletTemplateCount field.
-func (o *ModuleType) SetPowerOutletTemplateCount(v int32) {
+// SetPowerOutletTemplateCount gets a reference to the given int64 and assigns it to the PowerOutletTemplateCount field.
+func (o *ModuleType) SetPowerOutletTemplateCount(v int64) {
 	o.PowerOutletTemplateCount = &v
 }
 
 // GetCoolingIntakeTemplateCount returns the CoolingIntakeTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetCoolingIntakeTemplateCount() int32 {
+func (o *ModuleType) GetCoolingIntakeTemplateCount() int64 {
 	if o == nil || IsNil(o.CoolingIntakeTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CoolingIntakeTemplateCount
@@ -1048,7 +1048,7 @@ func (o *ModuleType) GetCoolingIntakeTemplateCount() int32 {
 
 // GetCoolingIntakeTemplateCountOk returns a tuple with the CoolingIntakeTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetCoolingIntakeTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetCoolingIntakeTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.CoolingIntakeTemplateCount) {
 		return nil, false
 	}
@@ -1064,15 +1064,15 @@ func (o *ModuleType) HasCoolingIntakeTemplateCount() bool {
 	return false
 }
 
-// SetCoolingIntakeTemplateCount gets a reference to the given int32 and assigns it to the CoolingIntakeTemplateCount field.
-func (o *ModuleType) SetCoolingIntakeTemplateCount(v int32) {
+// SetCoolingIntakeTemplateCount gets a reference to the given int64 and assigns it to the CoolingIntakeTemplateCount field.
+func (o *ModuleType) SetCoolingIntakeTemplateCount(v int64) {
 	o.CoolingIntakeTemplateCount = &v
 }
 
 // GetCoolingOutflowTemplateCount returns the CoolingOutflowTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetCoolingOutflowTemplateCount() int32 {
+func (o *ModuleType) GetCoolingOutflowTemplateCount() int64 {
 	if o == nil || IsNil(o.CoolingOutflowTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CoolingOutflowTemplateCount
@@ -1080,7 +1080,7 @@ func (o *ModuleType) GetCoolingOutflowTemplateCount() int32 {
 
 // GetCoolingOutflowTemplateCountOk returns a tuple with the CoolingOutflowTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetCoolingOutflowTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetCoolingOutflowTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.CoolingOutflowTemplateCount) {
 		return nil, false
 	}
@@ -1096,15 +1096,15 @@ func (o *ModuleType) HasCoolingOutflowTemplateCount() bool {
 	return false
 }
 
-// SetCoolingOutflowTemplateCount gets a reference to the given int32 and assigns it to the CoolingOutflowTemplateCount field.
-func (o *ModuleType) SetCoolingOutflowTemplateCount(v int32) {
+// SetCoolingOutflowTemplateCount gets a reference to the given int64 and assigns it to the CoolingOutflowTemplateCount field.
+func (o *ModuleType) SetCoolingOutflowTemplateCount(v int64) {
 	o.CoolingOutflowTemplateCount = &v
 }
 
 // GetInterfaceTemplateCount returns the InterfaceTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetInterfaceTemplateCount() int32 {
+func (o *ModuleType) GetInterfaceTemplateCount() int64 {
 	if o == nil || IsNil(o.InterfaceTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.InterfaceTemplateCount
@@ -1112,7 +1112,7 @@ func (o *ModuleType) GetInterfaceTemplateCount() int32 {
 
 // GetInterfaceTemplateCountOk returns a tuple with the InterfaceTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetInterfaceTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetInterfaceTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.InterfaceTemplateCount) {
 		return nil, false
 	}
@@ -1128,15 +1128,15 @@ func (o *ModuleType) HasInterfaceTemplateCount() bool {
 	return false
 }
 
-// SetInterfaceTemplateCount gets a reference to the given int32 and assigns it to the InterfaceTemplateCount field.
-func (o *ModuleType) SetInterfaceTemplateCount(v int32) {
+// SetInterfaceTemplateCount gets a reference to the given int64 and assigns it to the InterfaceTemplateCount field.
+func (o *ModuleType) SetInterfaceTemplateCount(v int64) {
 	o.InterfaceTemplateCount = &v
 }
 
 // GetFrontPortTemplateCount returns the FrontPortTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetFrontPortTemplateCount() int32 {
+func (o *ModuleType) GetFrontPortTemplateCount() int64 {
 	if o == nil || IsNil(o.FrontPortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.FrontPortTemplateCount
@@ -1144,7 +1144,7 @@ func (o *ModuleType) GetFrontPortTemplateCount() int32 {
 
 // GetFrontPortTemplateCountOk returns a tuple with the FrontPortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetFrontPortTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetFrontPortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.FrontPortTemplateCount) {
 		return nil, false
 	}
@@ -1160,15 +1160,15 @@ func (o *ModuleType) HasFrontPortTemplateCount() bool {
 	return false
 }
 
-// SetFrontPortTemplateCount gets a reference to the given int32 and assigns it to the FrontPortTemplateCount field.
-func (o *ModuleType) SetFrontPortTemplateCount(v int32) {
+// SetFrontPortTemplateCount gets a reference to the given int64 and assigns it to the FrontPortTemplateCount field.
+func (o *ModuleType) SetFrontPortTemplateCount(v int64) {
 	o.FrontPortTemplateCount = &v
 }
 
 // GetRearPortTemplateCount returns the RearPortTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetRearPortTemplateCount() int32 {
+func (o *ModuleType) GetRearPortTemplateCount() int64 {
 	if o == nil || IsNil(o.RearPortTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RearPortTemplateCount
@@ -1176,7 +1176,7 @@ func (o *ModuleType) GetRearPortTemplateCount() int32 {
 
 // GetRearPortTemplateCountOk returns a tuple with the RearPortTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetRearPortTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetRearPortTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.RearPortTemplateCount) {
 		return nil, false
 	}
@@ -1192,15 +1192,15 @@ func (o *ModuleType) HasRearPortTemplateCount() bool {
 	return false
 }
 
-// SetRearPortTemplateCount gets a reference to the given int32 and assigns it to the RearPortTemplateCount field.
-func (o *ModuleType) SetRearPortTemplateCount(v int32) {
+// SetRearPortTemplateCount gets a reference to the given int64 and assigns it to the RearPortTemplateCount field.
+func (o *ModuleType) SetRearPortTemplateCount(v int64) {
 	o.RearPortTemplateCount = &v
 }
 
 // GetModuleBayTemplateCount returns the ModuleBayTemplateCount field value if set, zero value otherwise.
-func (o *ModuleType) GetModuleBayTemplateCount() int32 {
+func (o *ModuleType) GetModuleBayTemplateCount() int64 {
 	if o == nil || IsNil(o.ModuleBayTemplateCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleBayTemplateCount
@@ -1208,7 +1208,7 @@ func (o *ModuleType) GetModuleBayTemplateCount() int32 {
 
 // GetModuleBayTemplateCountOk returns a tuple with the ModuleBayTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ModuleType) GetModuleBayTemplateCountOk() (*int32, bool) {
+func (o *ModuleType) GetModuleBayTemplateCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.ModuleBayTemplateCount) {
 		return nil, false
 	}
@@ -1224,8 +1224,8 @@ func (o *ModuleType) HasModuleBayTemplateCount() bool {
 	return false
 }
 
-// SetModuleBayTemplateCount gets a reference to the given int32 and assigns it to the ModuleBayTemplateCount field.
-func (o *ModuleType) SetModuleBayTemplateCount(v int32) {
+// SetModuleBayTemplateCount gets a reference to the given int64 and assigns it to the ModuleBayTemplateCount field.
+func (o *ModuleType) SetModuleBayTemplateCount(v int64) {
 	o.ModuleBayTemplateCount = &v
 }
 

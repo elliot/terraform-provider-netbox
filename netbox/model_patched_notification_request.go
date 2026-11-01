@@ -24,7 +24,7 @@ var _ MappedNullable = &PatchedNotificationRequest{}
 type PatchedNotificationRequest struct {
 	ObjectType *string      `json:"object_type,omitempty"`
 	ObjectId   *int64       `json:"object_id,omitempty"`
-	User       *int32       `json:"user,omitempty"`
+	User       *int64       `json:"user,omitempty"`
 	Read       NullableTime `json:"read,omitempty"`
 	// * `object_created` - Object created * `object_updated` - Object updated * `object_deleted` - Object deleted * `job_started` - Job started * `job_completed` - Job completed * `job_failed` - Job failed * `job_errored` - Job errored
 	EventType            *string `json:"event_type,omitempty"`
@@ -115,9 +115,9 @@ func (o *PatchedNotificationRequest) SetObjectId(v int64) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise.
-func (o *PatchedNotificationRequest) GetUser() int32 {
+func (o *PatchedNotificationRequest) GetUser() int64 {
 	if o == nil || IsNil(o.User) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User
@@ -125,7 +125,7 @@ func (o *PatchedNotificationRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedNotificationRequest) GetUserOk() (*int32, bool) {
+func (o *PatchedNotificationRequest) GetUserOk() (*int64, bool) {
 	if o == nil || IsNil(o.User) {
 		return nil, false
 	}
@@ -141,8 +141,8 @@ func (o *PatchedNotificationRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given int32 and assigns it to the User field.
-func (o *PatchedNotificationRequest) SetUser(v int32) {
+// SetUser gets a reference to the given int64 and assigns it to the User field.
+func (o *PatchedNotificationRequest) SetUser(v int64) {
 	o.User = &v
 }
 

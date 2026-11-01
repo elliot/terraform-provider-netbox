@@ -131,7 +131,7 @@ func (r *AvailableVlanResource) Read(ctx context.Context, req resource.ReadReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -159,7 +159,7 @@ func (r *AvailableVlanResource) Update(ctx context.Context, req resource.UpdateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -168,7 +168,7 @@ func (r *AvailableVlanResource) Update(ctx context.Context, req resource.UpdateR
 	if plan.TenantId.IsNull() {
 		patch.SetTenantNil()
 	} else if !plan.TenantId.IsUnknown() {
-		patch.SetTenant(conv.Int32(plan.TenantId))
+		patch.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		patch.SetStatus(plan.Status.ValueString())
@@ -176,7 +176,7 @@ func (r *AvailableVlanResource) Update(ctx context.Context, req resource.UpdateR
 	if plan.RoleId.IsNull() {
 		patch.SetRoleNil()
 	} else if !plan.RoleId.IsUnknown() {
-		patch.SetRole(conv.Int32(plan.RoleId))
+		patch.SetRole(plan.RoleId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		patch.SetDescription(plan.Description.ValueString())
@@ -207,7 +207,7 @@ func (r *AvailableVlanResource) Delete(ctx context.Context, req resource.DeleteR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -237,7 +237,7 @@ func availableVlanBody(ctx context.Context, b body, plan *AvailableVlanModel, cf
 // availableVlanFromAPI copies the API object into out. The group is readable
 // from the VLAN, so vlan_group_id is always refreshed (imports included).
 func availableVlanFromAPI(ctx context.Context, obj *netbox.VLAN, prior, out *AvailableVlanModel, diags *diag.Diagnostics) {
-	out.Id = types.Int64Value(int64(obj.GetId()))
+	out.Id = types.Int64Value(obj.GetId())
 	out.VlanGroupId = conv.BriefID(obj.GetGroupOk())
 	out.Vid = conv.Int64From32(obj.GetVidOk())
 	out.Name = conv.String(obj.GetNameOk())

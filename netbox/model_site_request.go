@@ -27,9 +27,9 @@ type SiteRequest struct {
 	Slug string `json:"slug" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	// * `planned` - Planned * `staging` - Staging * `active` - Active * `decommissioning` - Decommissioning * `retired` - Retired
 	Status *string       `json:"status,omitempty"`
-	Region NullableInt32 `json:"region,omitempty"`
-	Group  NullableInt32 `json:"group,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Region NullableInt64 `json:"region,omitempty"`
+	Group  NullableInt64 `json:"group,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// Local facility ID or description
 	Facility    *string        `json:"facility,omitempty"`
 	TimeZone    NullableString `json:"time_zone,omitempty"`
@@ -42,9 +42,9 @@ type SiteRequest struct {
 	Latitude NullableFloat64 `json:"latitude,omitempty"`
 	// GPS coordinate in decimal format (xx.yyyyyy)
 	Longitude            NullableFloat64        `json:"longitude,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
-	Asns                 []int32                `json:"asns,omitempty"`
+	Asns                 []int64                `json:"asns,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -152,9 +152,9 @@ func (o *SiteRequest) SetStatus(v string) {
 }
 
 // GetRegion returns the Region field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SiteRequest) GetRegion() int32 {
+func (o *SiteRequest) GetRegion() int64 {
 	if o == nil || IsNil(o.Region.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Region.Get()
@@ -163,7 +163,7 @@ func (o *SiteRequest) GetRegion() int32 {
 // GetRegionOk returns a tuple with the Region field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SiteRequest) GetRegionOk() (*int32, bool) {
+func (o *SiteRequest) GetRegionOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -179,8 +179,8 @@ func (o *SiteRequest) HasRegion() bool {
 	return false
 }
 
-// SetRegion gets a reference to the given NullableInt32 and assigns it to the Region field.
-func (o *SiteRequest) SetRegion(v int32) {
+// SetRegion gets a reference to the given NullableInt64 and assigns it to the Region field.
+func (o *SiteRequest) SetRegion(v int64) {
 	o.Region.Set(&v)
 }
 
@@ -195,9 +195,9 @@ func (o *SiteRequest) UnsetRegion() {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SiteRequest) GetGroup() int32 {
+func (o *SiteRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -206,7 +206,7 @@ func (o *SiteRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SiteRequest) GetGroupOk() (*int32, bool) {
+func (o *SiteRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -222,8 +222,8 @@ func (o *SiteRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *SiteRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *SiteRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -238,9 +238,9 @@ func (o *SiteRequest) UnsetGroup() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SiteRequest) GetTenant() int32 {
+func (o *SiteRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -249,7 +249,7 @@ func (o *SiteRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SiteRequest) GetTenantOk() (*int32, bool) {
+func (o *SiteRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -265,8 +265,8 @@ func (o *SiteRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *SiteRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *SiteRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -538,9 +538,9 @@ func (o *SiteRequest) UnsetLongitude() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SiteRequest) GetOwner() int32 {
+func (o *SiteRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -549,7 +549,7 @@ func (o *SiteRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SiteRequest) GetOwnerOk() (*int32, bool) {
+func (o *SiteRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -565,8 +565,8 @@ func (o *SiteRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *SiteRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *SiteRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -613,9 +613,9 @@ func (o *SiteRequest) SetComments(v string) {
 }
 
 // GetAsns returns the Asns field value if set, zero value otherwise.
-func (o *SiteRequest) GetAsns() []int32 {
+func (o *SiteRequest) GetAsns() []int64 {
 	if o == nil || IsNil(o.Asns) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Asns
@@ -623,7 +623,7 @@ func (o *SiteRequest) GetAsns() []int32 {
 
 // GetAsnsOk returns a tuple with the Asns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SiteRequest) GetAsnsOk() ([]int32, bool) {
+func (o *SiteRequest) GetAsnsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Asns) {
 		return nil, false
 	}
@@ -639,8 +639,8 @@ func (o *SiteRequest) HasAsns() bool {
 	return false
 }
 
-// SetAsns gets a reference to the given []int32 and assigns it to the Asns field.
-func (o *SiteRequest) SetAsns(v []int32) {
+// SetAsns gets a reference to the given []int64 and assigns it to the Asns field.
+func (o *SiteRequest) SetAsns(v []int64) {
 	o.Asns = v
 }
 

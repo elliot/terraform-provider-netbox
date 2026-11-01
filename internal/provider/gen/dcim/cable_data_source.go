@@ -130,7 +130,7 @@ func cableDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"profile": dsschema.StringAttribute{
-			MarkdownDescription: "Profile. Valid values: `single-1c1p`, `single-1c2p`, `single-1c4p`, `single-1c6p`, `single-1c8p`, `single-1c12p`, `single-1c16p`, `trunk-2c1p`, `trunk-2c2p`, `trunk-2c4p`, `trunk-2c4p-shuffle`, `trunk-2c6p`, `trunk-2c8p`, `trunk-2c12p`, `trunk-4c1p`, `trunk-4c2p`, `trunk-4c4p`, `trunk-4c4p-shuffle`, `trunk-4c6p`, `trunk-4c8p`, `trunk-8c4p`, `breakout-1c2p-2c1p`, `breakout-1c4p-4c1p`, `breakout-1c6p-6c1p`, `breakout-1c8p-8c1p`, `breakout-2c4p-8c1p-shuffle`. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Profile. Valid values: `single-1c1p`, `single-1c2p`, `single-1c4p`, `single-1c6p`, `single-1c8p`, `single-1c12p`, `single-1c16p`, `trunk-2c1p`, `trunk-2c2p`, `trunk-2c4p`, `trunk-2c4p-shuffle`, `trunk-2c6p`, `trunk-2c8p`, `trunk-2c12p`, `trunk-4c1p`, `trunk-4c2p`, `trunk-4c4p`, `trunk-4c4p-shuffle`, `trunk-4c6p`, `trunk-4c8p`, `trunk-8c1p`, `trunk-8c4p`, `trunk-12c1p`, `trunk-24c1p`, `breakout-1c2p-2c1p`, `breakout-1c4p-4c1p`, `breakout-1c6p-6c1p`, `breakout-1c8p-8c1p`, `breakout-2c4p-8c1p-shuffle`. Defaults to the NetBox server default when omitted.",
 			Computed:            true,
 		},
 		"tenant_id": dsschema.Int64Attribute{
@@ -271,7 +271,7 @@ func (d *CableDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 	var obj *netbox.Cable
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -443,7 +443,7 @@ func cableDataFromAPI(ctx context.Context, obj *netbox.Cable, out *CableDataMode
 			src := &items[i]
 			vals = append(vals, CableATerminationsItem{
 				ObjectType: conv.String(src.GetObjectTypeOk()),
-				ObjectId:   conv.Int64From32(src.GetObjectIdOk()),
+				ObjectId:   conv.Int64From64(src.GetObjectIdOk()),
 			})
 		}
 		out.ATerminations = conv.ObjectList(ctx, cableATerminationsItemAttrTypes, vals, nil, diags)
@@ -455,7 +455,7 @@ func cableDataFromAPI(ctx context.Context, obj *netbox.Cable, out *CableDataMode
 			src := &items[i]
 			vals = append(vals, CableBTerminationsItem{
 				ObjectType: conv.String(src.GetObjectTypeOk()),
-				ObjectId:   conv.Int64From32(src.GetObjectIdOk()),
+				ObjectId:   conv.Int64From64(src.GetObjectIdOk()),
 			})
 		}
 		out.BTerminations = conv.ObjectList(ctx, cableBTerminationsItemAttrTypes, vals, nil, diags)

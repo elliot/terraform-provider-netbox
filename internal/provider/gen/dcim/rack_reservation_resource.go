@@ -202,7 +202,7 @@ func (r *RackReservationResource) Read(ctx context.Context, req resource.ReadReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -233,7 +233,7 @@ func (r *RackReservationResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -263,7 +263,7 @@ func (r *RackReservationResource) Delete(ctx context.Context, req resource.Delet
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -283,15 +283,15 @@ func (r *RackReservationResource) ImportState(ctx context.Context, req resource.
 // rackReservationToCreate builds the WritableRackReservationRequest request body from the plan.
 func rackReservationToCreate(ctx context.Context, plan *RackReservationModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableRackReservationRequest {
 	const objectType = "dcim.rackreservation"
-	body := netbox.NewWritableRackReservationRequest(conv.Int32(plan.RackId), conv.Int32s(ctx, plan.Units, diags), conv.Int32(plan.UserId), plan.Description.ValueString())
+	body := netbox.NewWritableRackReservationRequest(plan.RackId.ValueInt64(), conv.Int32s(ctx, plan.Units, diags), plan.UserId.ValueInt64(), plan.Description.ValueString())
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -311,7 +311,7 @@ func rackReservationToPatch(ctx context.Context, plan, state *RackReservationMod
 	body := netbox.NewPatchedWritableRackReservationRequest()
 	if !plan.RackId.Equal(state.RackId) {
 		if conv.Known(plan.RackId) {
-			body.SetRack(conv.Int32(plan.RackId))
+			body.SetRack(plan.RackId.ValueInt64())
 		}
 	}
 	if !plan.Units.Equal(state.Units) {
@@ -326,14 +326,14 @@ func rackReservationToPatch(ctx context.Context, plan, state *RackReservationMod
 	}
 	if !plan.UserId.Equal(state.UserId) {
 		if conv.Known(plan.UserId) {
-			body.SetUser(conv.Int32(plan.UserId))
+			body.SetUser(plan.UserId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -345,7 +345,7 @@ func rackReservationToPatch(ctx context.Context, plan, state *RackReservationMod
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

@@ -22,7 +22,7 @@ var _ MappedNullable = &BulkServiceRequest{}
 
 // BulkServiceRequest Shared port-mapping handling for the Service and ServiceTemplate serializers, including backward compatibility for the legacy single-protocol “protocol“/“ports“ representation.  Read: alongside the “port_mappings“ list, a service that uses a single protocol also reports the legacy “protocol“ and “ports“ fields; a multi-protocol service reports “null“ for both (it cannot be expressed in the old single-protocol format).  Write: either format is accepted. When the legacy “protocol“/“ports“ pair is supplied (and “port_mappings“ is not), it is translated into “port_mappings“. Supplying both together is accepted only when the legacy fields agree with what “port_mappings“ implies (e.g. a full-object round-trip that echoes back the read representation); a genuine conflict is rejected as ambiguous.  Subclassing “serializers.Serializer“ (rather than a plain mixin) lets DRF's metaclass collect the fields declared here into the inheriting serializers.
 type BulkServiceRequest struct {
-	Id               int32    `json:"id"`
+	Id               int64    `json:"id"`
 	ParentObjectType string   `json:"parent_object_type"`
 	ParentObjectId   int64    `json:"parent_object_id"`
 	Name             string   `json:"name"`
@@ -31,9 +31,9 @@ type BulkServiceRequest struct {
 	Protocol NullableString `json:"protocol,omitempty"`
 	// Deprecated; use port_mappings. Reported only for single-protocol services.
 	Ports                []int32                `json:"ports,omitempty"`
-	Ipaddresses          []int32                `json:"ipaddresses,omitempty"`
+	Ipaddresses          []int64                `json:"ipaddresses,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -46,7 +46,7 @@ type _BulkServiceRequest BulkServiceRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkServiceRequest(id int32, parentObjectType string, parentObjectId int64, name string) *BulkServiceRequest {
+func NewBulkServiceRequest(id int64, parentObjectType string, parentObjectId int64, name string) *BulkServiceRequest {
 	this := BulkServiceRequest{}
 	this.Id = id
 	this.ParentObjectType = parentObjectType
@@ -64,9 +64,9 @@ func NewBulkServiceRequestWithDefaults() *BulkServiceRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkServiceRequest) GetId() int32 {
+func (o *BulkServiceRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *BulkServiceRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkServiceRequest) GetIdOk() (*int32, bool) {
+func (o *BulkServiceRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,7 +83,7 @@ func (o *BulkServiceRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkServiceRequest) SetId(v int32) {
+func (o *BulkServiceRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -268,9 +268,9 @@ func (o *BulkServiceRequest) SetPorts(v []int32) {
 }
 
 // GetIpaddresses returns the Ipaddresses field value if set, zero value otherwise.
-func (o *BulkServiceRequest) GetIpaddresses() []int32 {
+func (o *BulkServiceRequest) GetIpaddresses() []int64 {
 	if o == nil || IsNil(o.Ipaddresses) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Ipaddresses
@@ -278,7 +278,7 @@ func (o *BulkServiceRequest) GetIpaddresses() []int32 {
 
 // GetIpaddressesOk returns a tuple with the Ipaddresses field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkServiceRequest) GetIpaddressesOk() ([]int32, bool) {
+func (o *BulkServiceRequest) GetIpaddressesOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Ipaddresses) {
 		return nil, false
 	}
@@ -294,8 +294,8 @@ func (o *BulkServiceRequest) HasIpaddresses() bool {
 	return false
 }
 
-// SetIpaddresses gets a reference to the given []int32 and assigns it to the Ipaddresses field.
-func (o *BulkServiceRequest) SetIpaddresses(v []int32) {
+// SetIpaddresses gets a reference to the given []int64 and assigns it to the Ipaddresses field.
+func (o *BulkServiceRequest) SetIpaddresses(v []int64) {
 	o.Ipaddresses = v
 }
 
@@ -332,9 +332,9 @@ func (o *BulkServiceRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkServiceRequest) GetOwner() int32 {
+func (o *BulkServiceRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -343,7 +343,7 @@ func (o *BulkServiceRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkServiceRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkServiceRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -359,8 +359,8 @@ func (o *BulkServiceRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkServiceRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkServiceRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

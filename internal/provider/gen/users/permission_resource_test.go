@@ -92,6 +92,18 @@ func TestAccPermission_basic(t *testing.T) {
 	})
 }
 
+func TestAccPermission_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_permission",
+		APIPath:      "/api/users/permissions/",
+		Configs: []string{
+			acctest.Render(t, permissionTestConfigUpdate, name),
+			acctest.Render(t, permissionTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_permission", &resource.Sweeper{
 		Name:         "netbox_permission",

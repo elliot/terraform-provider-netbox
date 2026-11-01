@@ -23,9 +23,9 @@ var _ MappedNullable = &PatchedRouteTargetRequest{}
 type PatchedRouteTargetRequest struct {
 	// Route target value (formatted in accordance with RFC 4360)
 	Name                 *string                `json:"name,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -84,9 +84,9 @@ func (o *PatchedRouteTargetRequest) SetName(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedRouteTargetRequest) GetTenant() int32 {
+func (o *PatchedRouteTargetRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -95,7 +95,7 @@ func (o *PatchedRouteTargetRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedRouteTargetRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedRouteTargetRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -111,8 +111,8 @@ func (o *PatchedRouteTargetRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedRouteTargetRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedRouteTargetRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -159,9 +159,9 @@ func (o *PatchedRouteTargetRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedRouteTargetRequest) GetOwner() int32 {
+func (o *PatchedRouteTargetRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -170,7 +170,7 @@ func (o *PatchedRouteTargetRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedRouteTargetRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedRouteTargetRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -186,8 +186,8 @@ func (o *PatchedRouteTargetRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedRouteTargetRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedRouteTargetRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

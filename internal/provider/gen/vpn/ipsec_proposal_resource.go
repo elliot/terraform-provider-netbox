@@ -216,7 +216,7 @@ func (r *IpsecProposalResource) Read(ctx context.Context, req resource.ReadReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -247,7 +247,7 @@ func (r *IpsecProposalResource) Update(ctx context.Context, req resource.UpdateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -277,7 +277,7 @@ func (r *IpsecProposalResource) Delete(ctx context.Context, req resource.DeleteR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -314,7 +314,7 @@ func ipsecProposalToCreate(ctx context.Context, plan *IpsecProposalModel, cf *cu
 		body.SetSaLifetimeData(conv.Int32(plan.SaLifetimeData))
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -366,7 +366,7 @@ func ipsecProposalToPatch(ctx context.Context, plan, state *IpsecProposalModel, 
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

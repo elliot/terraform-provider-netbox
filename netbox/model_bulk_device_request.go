@@ -22,19 +22,19 @@ var _ MappedNullable = &BulkDeviceRequest{}
 
 // BulkDeviceRequest Base serializer class for models inheriting from PrimaryModel.
 type BulkDeviceRequest struct {
-	Id         int32          `json:"id"`
+	Id         int64          `json:"id"`
 	Name       NullableString `json:"name,omitempty"`
-	DeviceType int32          `json:"device_type"`
-	Role       int32          `json:"role"`
-	Tenant     NullableInt32  `json:"tenant,omitempty"`
-	Platform   NullableInt32  `json:"platform,omitempty"`
+	DeviceType int64          `json:"device_type"`
+	Role       int64          `json:"role"`
+	Tenant     NullableInt64  `json:"tenant,omitempty"`
+	Platform   NullableInt64  `json:"platform,omitempty"`
 	// Chassis serial number, assigned by the manufacturer
 	Serial *string `json:"serial,omitempty"`
 	// A unique tag used to identify this device
 	AssetTag NullableString  `json:"asset_tag,omitempty"`
-	Site     int32           `json:"site"`
-	Location NullableInt32   `json:"location,omitempty"`
-	Rack     NullableInt32   `json:"rack,omitempty"`
+	Site     int64           `json:"site"`
+	Location NullableInt64   `json:"location,omitempty"`
+	Rack     NullableInt64   `json:"rack,omitempty"`
 	Position NullableFloat64 `json:"position,omitempty"`
 	// * `front` - Front * `rear` - Rear
 	Face *string `json:"face,omitempty"`
@@ -48,18 +48,18 @@ type BulkDeviceRequest struct {
 	Airflow *string `json:"airflow,omitempty"`
 	// * `air` - Air * `liquid` - Liquid * `hybrid` - Hybrid * `immersion` - Immersion
 	CoolingMethod  NullableString `json:"cooling_method,omitempty"`
-	PrimaryIp4     NullableInt32  `json:"primary_ip4,omitempty"`
-	PrimaryIp6     NullableInt32  `json:"primary_ip6,omitempty"`
-	OobIp          NullableInt32  `json:"oob_ip,omitempty"`
-	Cluster        NullableInt32  `json:"cluster,omitempty"`
-	VirtualChassis NullableInt32  `json:"virtual_chassis,omitempty"`
+	PrimaryIp4     NullableInt64  `json:"primary_ip4,omitempty"`
+	PrimaryIp6     NullableInt64  `json:"primary_ip6,omitempty"`
+	OobIp          NullableInt64  `json:"oob_ip,omitempty"`
+	Cluster        NullableInt64  `json:"cluster,omitempty"`
+	VirtualChassis NullableInt64  `json:"virtual_chassis,omitempty"`
 	VcPosition     NullableInt32  `json:"vc_position,omitempty"`
 	// Virtual chassis master election priority
 	VcPriority     NullableInt32 `json:"vc_priority,omitempty"`
 	Description    *string       `json:"description,omitempty"`
-	Owner          NullableInt32 `json:"owner,omitempty"`
+	Owner          NullableInt64 `json:"owner,omitempty"`
 	Comments       *string       `json:"comments,omitempty"`
-	ConfigTemplate NullableInt32 `json:"config_template,omitempty"`
+	ConfigTemplate NullableInt64 `json:"config_template,omitempty"`
 	// Local config context data takes precedence over source contexts in the final rendered config context
 	LocalContextData     interface{}            `json:"local_context_data,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
@@ -73,7 +73,7 @@ type _BulkDeviceRequest BulkDeviceRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkDeviceRequest(id int32, deviceType int32, role int32, site int32) *BulkDeviceRequest {
+func NewBulkDeviceRequest(id int64, deviceType int64, role int64, site int64) *BulkDeviceRequest {
 	this := BulkDeviceRequest{}
 	this.Id = id
 	this.DeviceType = deviceType
@@ -91,9 +91,9 @@ func NewBulkDeviceRequestWithDefaults() *BulkDeviceRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkDeviceRequest) GetId() int32 {
+func (o *BulkDeviceRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -102,7 +102,7 @@ func (o *BulkDeviceRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkDeviceRequest) GetIdOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -110,7 +110,7 @@ func (o *BulkDeviceRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkDeviceRequest) SetId(v int32) {
+func (o *BulkDeviceRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -158,9 +158,9 @@ func (o *BulkDeviceRequest) UnsetName() {
 }
 
 // GetDeviceType returns the DeviceType field value
-func (o *BulkDeviceRequest) GetDeviceType() int32 {
+func (o *BulkDeviceRequest) GetDeviceType() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -169,7 +169,7 @@ func (o *BulkDeviceRequest) GetDeviceType() int32 {
 
 // GetDeviceTypeOk returns a tuple with the DeviceType field value
 // and a boolean to check if the value has been set.
-func (o *BulkDeviceRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -177,14 +177,14 @@ func (o *BulkDeviceRequest) GetDeviceTypeOk() (*int32, bool) {
 }
 
 // SetDeviceType sets field value
-func (o *BulkDeviceRequest) SetDeviceType(v int32) {
+func (o *BulkDeviceRequest) SetDeviceType(v int64) {
 	o.DeviceType = v
 }
 
 // GetRole returns the Role field value
-func (o *BulkDeviceRequest) GetRole() int32 {
+func (o *BulkDeviceRequest) GetRole() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -193,7 +193,7 @@ func (o *BulkDeviceRequest) GetRole() int32 {
 
 // GetRoleOk returns a tuple with the Role field value
 // and a boolean to check if the value has been set.
-func (o *BulkDeviceRequest) GetRoleOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -201,14 +201,14 @@ func (o *BulkDeviceRequest) GetRoleOk() (*int32, bool) {
 }
 
 // SetRole sets field value
-func (o *BulkDeviceRequest) SetRole(v int32) {
+func (o *BulkDeviceRequest) SetRole(v int64) {
 	o.Role = v
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetTenant() int32 {
+func (o *BulkDeviceRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -217,7 +217,7 @@ func (o *BulkDeviceRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetTenantOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -233,8 +233,8 @@ func (o *BulkDeviceRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *BulkDeviceRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *BulkDeviceRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -249,9 +249,9 @@ func (o *BulkDeviceRequest) UnsetTenant() {
 }
 
 // GetPlatform returns the Platform field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetPlatform() int32 {
+func (o *BulkDeviceRequest) GetPlatform() int64 {
 	if o == nil || IsNil(o.Platform.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Platform.Get()
@@ -260,7 +260,7 @@ func (o *BulkDeviceRequest) GetPlatform() int32 {
 // GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetPlatformOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetPlatformOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -276,8 +276,8 @@ func (o *BulkDeviceRequest) HasPlatform() bool {
 	return false
 }
 
-// SetPlatform gets a reference to the given NullableInt32 and assigns it to the Platform field.
-func (o *BulkDeviceRequest) SetPlatform(v int32) {
+// SetPlatform gets a reference to the given NullableInt64 and assigns it to the Platform field.
+func (o *BulkDeviceRequest) SetPlatform(v int64) {
 	o.Platform.Set(&v)
 }
 
@@ -367,9 +367,9 @@ func (o *BulkDeviceRequest) UnsetAssetTag() {
 }
 
 // GetSite returns the Site field value
-func (o *BulkDeviceRequest) GetSite() int32 {
+func (o *BulkDeviceRequest) GetSite() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -378,7 +378,7 @@ func (o *BulkDeviceRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value
 // and a boolean to check if the value has been set.
-func (o *BulkDeviceRequest) GetSiteOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -386,14 +386,14 @@ func (o *BulkDeviceRequest) GetSiteOk() (*int32, bool) {
 }
 
 // SetSite sets field value
-func (o *BulkDeviceRequest) SetSite(v int32) {
+func (o *BulkDeviceRequest) SetSite(v int64) {
 	o.Site = v
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetLocation() int32 {
+func (o *BulkDeviceRequest) GetLocation() int64 {
 	if o == nil || IsNil(o.Location.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Location.Get()
@@ -402,7 +402,7 @@ func (o *BulkDeviceRequest) GetLocation() int32 {
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetLocationOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetLocationOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -418,8 +418,8 @@ func (o *BulkDeviceRequest) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given NullableInt32 and assigns it to the Location field.
-func (o *BulkDeviceRequest) SetLocation(v int32) {
+// SetLocation gets a reference to the given NullableInt64 and assigns it to the Location field.
+func (o *BulkDeviceRequest) SetLocation(v int64) {
 	o.Location.Set(&v)
 }
 
@@ -434,9 +434,9 @@ func (o *BulkDeviceRequest) UnsetLocation() {
 }
 
 // GetRack returns the Rack field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetRack() int32 {
+func (o *BulkDeviceRequest) GetRack() int64 {
 	if o == nil || IsNil(o.Rack.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rack.Get()
@@ -445,7 +445,7 @@ func (o *BulkDeviceRequest) GetRack() int32 {
 // GetRackOk returns a tuple with the Rack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetRackOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetRackOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -461,8 +461,8 @@ func (o *BulkDeviceRequest) HasRack() bool {
 	return false
 }
 
-// SetRack gets a reference to the given NullableInt32 and assigns it to the Rack field.
-func (o *BulkDeviceRequest) SetRack(v int32) {
+// SetRack gets a reference to the given NullableInt64 and assigns it to the Rack field.
+func (o *BulkDeviceRequest) SetRack(v int64) {
 	o.Rack.Set(&v)
 }
 
@@ -745,9 +745,9 @@ func (o *BulkDeviceRequest) UnsetCoolingMethod() {
 }
 
 // GetPrimaryIp4 returns the PrimaryIp4 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetPrimaryIp4() int32 {
+func (o *BulkDeviceRequest) GetPrimaryIp4() int64 {
 	if o == nil || IsNil(o.PrimaryIp4.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp4.Get()
@@ -756,7 +756,7 @@ func (o *BulkDeviceRequest) GetPrimaryIp4() int32 {
 // GetPrimaryIp4Ok returns a tuple with the PrimaryIp4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetPrimaryIp4Ok() (*int32, bool) {
+func (o *BulkDeviceRequest) GetPrimaryIp4Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -772,8 +772,8 @@ func (o *BulkDeviceRequest) HasPrimaryIp4() bool {
 	return false
 }
 
-// SetPrimaryIp4 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp4 field.
-func (o *BulkDeviceRequest) SetPrimaryIp4(v int32) {
+// SetPrimaryIp4 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp4 field.
+func (o *BulkDeviceRequest) SetPrimaryIp4(v int64) {
 	o.PrimaryIp4.Set(&v)
 }
 
@@ -788,9 +788,9 @@ func (o *BulkDeviceRequest) UnsetPrimaryIp4() {
 }
 
 // GetPrimaryIp6 returns the PrimaryIp6 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetPrimaryIp6() int32 {
+func (o *BulkDeviceRequest) GetPrimaryIp6() int64 {
 	if o == nil || IsNil(o.PrimaryIp6.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp6.Get()
@@ -799,7 +799,7 @@ func (o *BulkDeviceRequest) GetPrimaryIp6() int32 {
 // GetPrimaryIp6Ok returns a tuple with the PrimaryIp6 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetPrimaryIp6Ok() (*int32, bool) {
+func (o *BulkDeviceRequest) GetPrimaryIp6Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -815,8 +815,8 @@ func (o *BulkDeviceRequest) HasPrimaryIp6() bool {
 	return false
 }
 
-// SetPrimaryIp6 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp6 field.
-func (o *BulkDeviceRequest) SetPrimaryIp6(v int32) {
+// SetPrimaryIp6 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp6 field.
+func (o *BulkDeviceRequest) SetPrimaryIp6(v int64) {
 	o.PrimaryIp6.Set(&v)
 }
 
@@ -831,9 +831,9 @@ func (o *BulkDeviceRequest) UnsetPrimaryIp6() {
 }
 
 // GetOobIp returns the OobIp field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetOobIp() int32 {
+func (o *BulkDeviceRequest) GetOobIp() int64 {
 	if o == nil || IsNil(o.OobIp.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.OobIp.Get()
@@ -842,7 +842,7 @@ func (o *BulkDeviceRequest) GetOobIp() int32 {
 // GetOobIpOk returns a tuple with the OobIp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetOobIpOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetOobIpOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -858,8 +858,8 @@ func (o *BulkDeviceRequest) HasOobIp() bool {
 	return false
 }
 
-// SetOobIp gets a reference to the given NullableInt32 and assigns it to the OobIp field.
-func (o *BulkDeviceRequest) SetOobIp(v int32) {
+// SetOobIp gets a reference to the given NullableInt64 and assigns it to the OobIp field.
+func (o *BulkDeviceRequest) SetOobIp(v int64) {
 	o.OobIp.Set(&v)
 }
 
@@ -874,9 +874,9 @@ func (o *BulkDeviceRequest) UnsetOobIp() {
 }
 
 // GetCluster returns the Cluster field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetCluster() int32 {
+func (o *BulkDeviceRequest) GetCluster() int64 {
 	if o == nil || IsNil(o.Cluster.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Cluster.Get()
@@ -885,7 +885,7 @@ func (o *BulkDeviceRequest) GetCluster() int32 {
 // GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetClusterOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetClusterOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -901,8 +901,8 @@ func (o *BulkDeviceRequest) HasCluster() bool {
 	return false
 }
 
-// SetCluster gets a reference to the given NullableInt32 and assigns it to the Cluster field.
-func (o *BulkDeviceRequest) SetCluster(v int32) {
+// SetCluster gets a reference to the given NullableInt64 and assigns it to the Cluster field.
+func (o *BulkDeviceRequest) SetCluster(v int64) {
 	o.Cluster.Set(&v)
 }
 
@@ -917,9 +917,9 @@ func (o *BulkDeviceRequest) UnsetCluster() {
 }
 
 // GetVirtualChassis returns the VirtualChassis field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetVirtualChassis() int32 {
+func (o *BulkDeviceRequest) GetVirtualChassis() int64 {
 	if o == nil || IsNil(o.VirtualChassis.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.VirtualChassis.Get()
@@ -928,7 +928,7 @@ func (o *BulkDeviceRequest) GetVirtualChassis() int32 {
 // GetVirtualChassisOk returns a tuple with the VirtualChassis field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetVirtualChassisOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetVirtualChassisOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -944,8 +944,8 @@ func (o *BulkDeviceRequest) HasVirtualChassis() bool {
 	return false
 }
 
-// SetVirtualChassis gets a reference to the given NullableInt32 and assigns it to the VirtualChassis field.
-func (o *BulkDeviceRequest) SetVirtualChassis(v int32) {
+// SetVirtualChassis gets a reference to the given NullableInt64 and assigns it to the VirtualChassis field.
+func (o *BulkDeviceRequest) SetVirtualChassis(v int64) {
 	o.VirtualChassis.Set(&v)
 }
 
@@ -1078,9 +1078,9 @@ func (o *BulkDeviceRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetOwner() int32 {
+func (o *BulkDeviceRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -1089,7 +1089,7 @@ func (o *BulkDeviceRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1105,8 +1105,8 @@ func (o *BulkDeviceRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkDeviceRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkDeviceRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
@@ -1153,9 +1153,9 @@ func (o *BulkDeviceRequest) SetComments(v string) {
 }
 
 // GetConfigTemplate returns the ConfigTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkDeviceRequest) GetConfigTemplate() int32 {
+func (o *BulkDeviceRequest) GetConfigTemplate() int64 {
 	if o == nil || IsNil(o.ConfigTemplate.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplate.Get()
@@ -1164,7 +1164,7 @@ func (o *BulkDeviceRequest) GetConfigTemplate() int32 {
 // GetConfigTemplateOk returns a tuple with the ConfigTemplate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkDeviceRequest) GetConfigTemplateOk() (*int32, bool) {
+func (o *BulkDeviceRequest) GetConfigTemplateOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -1180,8 +1180,8 @@ func (o *BulkDeviceRequest) HasConfigTemplate() bool {
 	return false
 }
 
-// SetConfigTemplate gets a reference to the given NullableInt32 and assigns it to the ConfigTemplate field.
-func (o *BulkDeviceRequest) SetConfigTemplate(v int32) {
+// SetConfigTemplate gets a reference to the given NullableInt64 and assigns it to the ConfigTemplate field.
+func (o *BulkDeviceRequest) SetConfigTemplate(v int64) {
 	o.ConfigTemplate.Set(&v)
 }
 

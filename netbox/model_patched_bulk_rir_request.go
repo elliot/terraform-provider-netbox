@@ -22,13 +22,13 @@ var _ MappedNullable = &PatchedBulkRIRRequest{}
 
 // PatchedBulkRIRRequest Base serializer class for models inheriting from OrganizationalModel.
 type PatchedBulkRIRRequest struct {
-	Id   int32   `json:"id"`
+	Id   int64   `json:"id"`
 	Name *string `json:"name,omitempty"`
 	Slug *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	// IP space managed by this RIR is considered private
 	IsPrivate            *bool                  `json:"is_private,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -41,7 +41,7 @@ type _PatchedBulkRIRRequest PatchedBulkRIRRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkRIRRequest(id int32) *PatchedBulkRIRRequest {
+func NewPatchedBulkRIRRequest(id int64) *PatchedBulkRIRRequest {
 	this := PatchedBulkRIRRequest{}
 	this.Id = id
 	return &this
@@ -56,9 +56,9 @@ func NewPatchedBulkRIRRequestWithDefaults() *PatchedBulkRIRRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkRIRRequest) GetId() int32 {
+func (o *PatchedBulkRIRRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -67,7 +67,7 @@ func (o *PatchedBulkRIRRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkRIRRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkRIRRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,7 +75,7 @@ func (o *PatchedBulkRIRRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkRIRRequest) SetId(v int32) {
+func (o *PatchedBulkRIRRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -208,9 +208,9 @@ func (o *PatchedBulkRIRRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkRIRRequest) GetOwner() int32 {
+func (o *PatchedBulkRIRRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -219,7 +219,7 @@ func (o *PatchedBulkRIRRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkRIRRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkRIRRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -235,8 +235,8 @@ func (o *PatchedBulkRIRRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkRIRRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkRIRRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

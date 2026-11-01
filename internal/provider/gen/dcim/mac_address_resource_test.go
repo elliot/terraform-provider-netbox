@@ -114,6 +114,18 @@ func TestAccMacAddress_basic(t *testing.T) {
 	})
 }
 
+func TestAccMacAddress_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_mac_address",
+		APIPath:      "/api/dcim/mac-addresses/",
+		Configs: []string{
+			acctest.Render(t, macAddressTestConfigUpdate, name),
+			acctest.Render(t, macAddressTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_mac_address", &resource.Sweeper{
 		Name:         "netbox_mac_address",

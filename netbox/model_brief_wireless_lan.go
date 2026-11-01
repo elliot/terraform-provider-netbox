@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefWirelessLAN{}
 
 // BriefWirelessLAN Base serializer class for models inheriting from PrimaryModel.
 type BriefWirelessLAN struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	Display              *string `json:"display,omitempty"`
 	Ssid                 *string `json:"ssid,omitempty"`
@@ -36,7 +36,7 @@ type _BriefWirelessLAN BriefWirelessLAN
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefWirelessLAN(id int32) *BriefWirelessLAN {
+func NewBriefWirelessLAN(id int64) *BriefWirelessLAN {
 	this := BriefWirelessLAN{}
 	this.Id = id
 	return &this
@@ -51,9 +51,9 @@ func NewBriefWirelessLANWithDefaults() *BriefWirelessLAN {
 }
 
 // GetId returns the Id field value
-func (o *BriefWirelessLAN) GetId() int32 {
+func (o *BriefWirelessLAN) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -62,7 +62,7 @@ func (o *BriefWirelessLAN) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefWirelessLAN) GetIdOk() (*int32, bool) {
+func (o *BriefWirelessLAN) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,7 +70,7 @@ func (o *BriefWirelessLAN) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefWirelessLAN) SetId(v int32) {
+func (o *BriefWirelessLAN) SetId(v int64) {
 	o.Id = v
 }
 

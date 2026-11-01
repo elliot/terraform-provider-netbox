@@ -23,7 +23,7 @@ var _ MappedNullable = &FHRPGroup{}
 
 // FHRPGroup Base serializer class for models inheriting from PrimaryModel.
 type FHRPGroup struct {
-	Id         int32   `json:"id"`
+	Id         int64   `json:"id"`
 	Name       *string `json:"name,omitempty"`
 	Url        *string `json:"url,omitempty"`
 	DisplayUrl *string `json:"display_url,omitempty"`
@@ -51,7 +51,7 @@ type _FHRPGroup FHRPGroup
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFHRPGroup(id int32) *FHRPGroup {
+func NewFHRPGroup(id int64) *FHRPGroup {
 	this := FHRPGroup{}
 	this.Id = id
 	return &this
@@ -66,9 +66,9 @@ func NewFHRPGroupWithDefaults() *FHRPGroup {
 }
 
 // GetId returns the Id field value
-func (o *FHRPGroup) GetId() int32 {
+func (o *FHRPGroup) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -77,7 +77,7 @@ func (o *FHRPGroup) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *FHRPGroup) GetIdOk() (*int32, bool) {
+func (o *FHRPGroup) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -85,7 +85,7 @@ func (o *FHRPGroup) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *FHRPGroup) SetId(v int32) {
+func (o *FHRPGroup) SetId(v int64) {
 	o.Id = v
 }
 

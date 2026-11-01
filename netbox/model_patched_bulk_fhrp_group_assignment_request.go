@@ -22,8 +22,8 @@ var _ MappedNullable = &PatchedBulkFHRPGroupAssignmentRequest{}
 
 // PatchedBulkFHRPGroupAssignmentRequest Adds support for custom fields and tags.
 type PatchedBulkFHRPGroupAssignmentRequest struct {
-	Id                   int32   `json:"id"`
-	Group                *int32  `json:"group,omitempty"`
+	Id                   int64   `json:"id"`
+	Group                *int64  `json:"group,omitempty"`
 	InterfaceType        *string `json:"interface_type,omitempty"`
 	InterfaceId          *int64  `json:"interface_id,omitempty"`
 	Priority             *int32  `json:"priority,omitempty"`
@@ -36,7 +36,7 @@ type _PatchedBulkFHRPGroupAssignmentRequest PatchedBulkFHRPGroupAssignmentReques
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkFHRPGroupAssignmentRequest(id int32) *PatchedBulkFHRPGroupAssignmentRequest {
+func NewPatchedBulkFHRPGroupAssignmentRequest(id int64) *PatchedBulkFHRPGroupAssignmentRequest {
 	this := PatchedBulkFHRPGroupAssignmentRequest{}
 	this.Id = id
 	return &this
@@ -51,9 +51,9 @@ func NewPatchedBulkFHRPGroupAssignmentRequestWithDefaults() *PatchedBulkFHRPGrou
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkFHRPGroupAssignmentRequest) GetId() int32 {
+func (o *PatchedBulkFHRPGroupAssignmentRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -62,7 +62,7 @@ func (o *PatchedBulkFHRPGroupAssignmentRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkFHRPGroupAssignmentRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkFHRPGroupAssignmentRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -70,14 +70,14 @@ func (o *PatchedBulkFHRPGroupAssignmentRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkFHRPGroupAssignmentRequest) SetId(v int32) {
+func (o *PatchedBulkFHRPGroupAssignmentRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise.
-func (o *PatchedBulkFHRPGroupAssignmentRequest) GetGroup() int32 {
+func (o *PatchedBulkFHRPGroupAssignmentRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group
@@ -85,7 +85,7 @@ func (o *PatchedBulkFHRPGroupAssignmentRequest) GetGroup() int32 {
 
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkFHRPGroupAssignmentRequest) GetGroupOk() (*int32, bool) {
+func (o *PatchedBulkFHRPGroupAssignmentRequest) GetGroupOk() (*int64, bool) {
 	if o == nil || IsNil(o.Group) {
 		return nil, false
 	}
@@ -101,8 +101,8 @@ func (o *PatchedBulkFHRPGroupAssignmentRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given int32 and assigns it to the Group field.
-func (o *PatchedBulkFHRPGroupAssignmentRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given int64 and assigns it to the Group field.
+func (o *PatchedBulkFHRPGroupAssignmentRequest) SetGroup(v int64) {
 	o.Group = &v
 }
 

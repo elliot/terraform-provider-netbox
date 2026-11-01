@@ -21,11 +21,11 @@ var _ MappedNullable = &PatchedPowerPanelRequest{}
 
 // PatchedPowerPanelRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedPowerPanelRequest struct {
-	Site                 *int32                 `json:"site,omitempty"`
-	Location             NullableInt32          `json:"location,omitempty"`
+	Site                 *int64                 `json:"site,omitempty"`
+	Location             NullableInt64          `json:"location,omitempty"`
 	Name                 *string                `json:"name,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -52,9 +52,9 @@ func NewPatchedPowerPanelRequestWithDefaults() *PatchedPowerPanelRequest {
 }
 
 // GetSite returns the Site field value if set, zero value otherwise.
-func (o *PatchedPowerPanelRequest) GetSite() int32 {
+func (o *PatchedPowerPanelRequest) GetSite() int64 {
 	if o == nil || IsNil(o.Site) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Site
@@ -62,7 +62,7 @@ func (o *PatchedPowerPanelRequest) GetSite() int32 {
 
 // GetSiteOk returns a tuple with the Site field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedPowerPanelRequest) GetSiteOk() (*int32, bool) {
+func (o *PatchedPowerPanelRequest) GetSiteOk() (*int64, bool) {
 	if o == nil || IsNil(o.Site) {
 		return nil, false
 	}
@@ -78,15 +78,15 @@ func (o *PatchedPowerPanelRequest) HasSite() bool {
 	return false
 }
 
-// SetSite gets a reference to the given int32 and assigns it to the Site field.
-func (o *PatchedPowerPanelRequest) SetSite(v int32) {
+// SetSite gets a reference to the given int64 and assigns it to the Site field.
+func (o *PatchedPowerPanelRequest) SetSite(v int64) {
 	o.Site = &v
 }
 
 // GetLocation returns the Location field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedPowerPanelRequest) GetLocation() int32 {
+func (o *PatchedPowerPanelRequest) GetLocation() int64 {
 	if o == nil || IsNil(o.Location.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Location.Get()
@@ -95,7 +95,7 @@ func (o *PatchedPowerPanelRequest) GetLocation() int32 {
 // GetLocationOk returns a tuple with the Location field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedPowerPanelRequest) GetLocationOk() (*int32, bool) {
+func (o *PatchedPowerPanelRequest) GetLocationOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -111,8 +111,8 @@ func (o *PatchedPowerPanelRequest) HasLocation() bool {
 	return false
 }
 
-// SetLocation gets a reference to the given NullableInt32 and assigns it to the Location field.
-func (o *PatchedPowerPanelRequest) SetLocation(v int32) {
+// SetLocation gets a reference to the given NullableInt64 and assigns it to the Location field.
+func (o *PatchedPowerPanelRequest) SetLocation(v int64) {
 	o.Location.Set(&v)
 }
 
@@ -191,9 +191,9 @@ func (o *PatchedPowerPanelRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedPowerPanelRequest) GetOwner() int32 {
+func (o *PatchedPowerPanelRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -202,7 +202,7 @@ func (o *PatchedPowerPanelRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedPowerPanelRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedPowerPanelRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -218,8 +218,8 @@ func (o *PatchedPowerPanelRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedPowerPanelRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedPowerPanelRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -195,7 +195,7 @@ func (r *DeviceBayResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -226,7 +226,7 @@ func (r *DeviceBayResource) Update(ctx context.Context, req resource.UpdateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -256,7 +256,7 @@ func (r *DeviceBayResource) Delete(ctx context.Context, req resource.DeleteReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -276,7 +276,7 @@ func (r *DeviceBayResource) ImportState(ctx context.Context, req resource.Import
 // deviceBayToCreate builds the DeviceBayRequest request body from the plan.
 func deviceBayToCreate(ctx context.Context, plan *DeviceBayModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.DeviceBayRequest {
 	const objectType = "dcim.devicebay"
-	body := netbox.NewDeviceBayRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
+	body := netbox.NewDeviceBayRequest(plan.DeviceId.ValueInt64(), plan.Name.ValueString())
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
@@ -287,10 +287,10 @@ func deviceBayToCreate(ctx context.Context, plan *DeviceBayModel, cf *customfiel
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.InstalledDeviceId) {
-		body.SetInstalledDevice(conv.Int32(plan.InstalledDeviceId))
+		body.SetInstalledDevice(plan.InstalledDeviceId.ValueInt64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -307,7 +307,7 @@ func deviceBayToPatch(ctx context.Context, plan, state *DeviceBayModel, cf *cust
 	body := netbox.NewPatchedDeviceBayRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -334,14 +334,14 @@ func deviceBayToPatch(ctx context.Context, plan, state *DeviceBayModel, cf *cust
 		if plan.InstalledDeviceId.IsNull() {
 			body.SetInstalledDeviceNil()
 		} else if !plan.InstalledDeviceId.IsUnknown() {
-			body.SetInstalledDevice(conv.Int32(plan.InstalledDeviceId))
+			body.SetInstalledDevice(plan.InstalledDeviceId.ValueInt64())
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

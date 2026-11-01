@@ -22,15 +22,15 @@ var _ MappedNullable = &PatchedWritableVirtualDeviceContextRequest{}
 // PatchedWritableVirtualDeviceContextRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedWritableVirtualDeviceContextRequest struct {
 	Name       *string       `json:"name,omitempty"`
-	Device     *int32        `json:"device,omitempty"`
+	Device     *int64        `json:"device,omitempty"`
 	Identifier NullableInt32 `json:"identifier,omitempty"`
-	Tenant     NullableInt32 `json:"tenant,omitempty"`
-	PrimaryIp4 NullableInt32 `json:"primary_ip4,omitempty"`
-	PrimaryIp6 NullableInt32 `json:"primary_ip6,omitempty"`
+	Tenant     NullableInt64 `json:"tenant,omitempty"`
+	PrimaryIp4 NullableInt64 `json:"primary_ip4,omitempty"`
+	PrimaryIp6 NullableInt64 `json:"primary_ip6,omitempty"`
 	// * `active` - Active * `planned` - Planned * `offline` - Offline
 	Status               *string                `json:"status,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -89,9 +89,9 @@ func (o *PatchedWritableVirtualDeviceContextRequest) SetName(v string) {
 }
 
 // GetDevice returns the Device field value if set, zero value otherwise.
-func (o *PatchedWritableVirtualDeviceContextRequest) GetDevice() int32 {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetDevice() int64 {
 	if o == nil || IsNil(o.Device) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Device
@@ -99,7 +99,7 @@ func (o *PatchedWritableVirtualDeviceContextRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableVirtualDeviceContextRequest) GetDeviceOk() (*int32, bool) {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil || IsNil(o.Device) {
 		return nil, false
 	}
@@ -115,8 +115,8 @@ func (o *PatchedWritableVirtualDeviceContextRequest) HasDevice() bool {
 	return false
 }
 
-// SetDevice gets a reference to the given int32 and assigns it to the Device field.
-func (o *PatchedWritableVirtualDeviceContextRequest) SetDevice(v int32) {
+// SetDevice gets a reference to the given int64 and assigns it to the Device field.
+func (o *PatchedWritableVirtualDeviceContextRequest) SetDevice(v int64) {
 	o.Device = &v
 }
 
@@ -164,9 +164,9 @@ func (o *PatchedWritableVirtualDeviceContextRequest) UnsetIdentifier() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualDeviceContextRequest) GetTenant() int32 {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -175,7 +175,7 @@ func (o *PatchedWritableVirtualDeviceContextRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualDeviceContextRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -191,8 +191,8 @@ func (o *PatchedWritableVirtualDeviceContextRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableVirtualDeviceContextRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableVirtualDeviceContextRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -207,9 +207,9 @@ func (o *PatchedWritableVirtualDeviceContextRequest) UnsetTenant() {
 }
 
 // GetPrimaryIp4 returns the PrimaryIp4 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp4() int32 {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp4() int64 {
 	if o == nil || IsNil(o.PrimaryIp4.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp4.Get()
@@ -218,7 +218,7 @@ func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp4() int32 {
 // GetPrimaryIp4Ok returns a tuple with the PrimaryIp4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp4Ok() (*int32, bool) {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp4Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -234,8 +234,8 @@ func (o *PatchedWritableVirtualDeviceContextRequest) HasPrimaryIp4() bool {
 	return false
 }
 
-// SetPrimaryIp4 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp4 field.
-func (o *PatchedWritableVirtualDeviceContextRequest) SetPrimaryIp4(v int32) {
+// SetPrimaryIp4 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp4 field.
+func (o *PatchedWritableVirtualDeviceContextRequest) SetPrimaryIp4(v int64) {
 	o.PrimaryIp4.Set(&v)
 }
 
@@ -250,9 +250,9 @@ func (o *PatchedWritableVirtualDeviceContextRequest) UnsetPrimaryIp4() {
 }
 
 // GetPrimaryIp6 returns the PrimaryIp6 field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp6() int32 {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp6() int64 {
 	if o == nil || IsNil(o.PrimaryIp6.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PrimaryIp6.Get()
@@ -261,7 +261,7 @@ func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp6() int32 {
 // GetPrimaryIp6Ok returns a tuple with the PrimaryIp6 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp6Ok() (*int32, bool) {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetPrimaryIp6Ok() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -277,8 +277,8 @@ func (o *PatchedWritableVirtualDeviceContextRequest) HasPrimaryIp6() bool {
 	return false
 }
 
-// SetPrimaryIp6 gets a reference to the given NullableInt32 and assigns it to the PrimaryIp6 field.
-func (o *PatchedWritableVirtualDeviceContextRequest) SetPrimaryIp6(v int32) {
+// SetPrimaryIp6 gets a reference to the given NullableInt64 and assigns it to the PrimaryIp6 field.
+func (o *PatchedWritableVirtualDeviceContextRequest) SetPrimaryIp6(v int64) {
 	o.PrimaryIp6.Set(&v)
 }
 
@@ -357,9 +357,9 @@ func (o *PatchedWritableVirtualDeviceContextRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVirtualDeviceContextRequest) GetOwner() int32 {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -368,7 +368,7 @@ func (o *PatchedWritableVirtualDeviceContextRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVirtualDeviceContextRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableVirtualDeviceContextRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -384,8 +384,8 @@ func (o *PatchedWritableVirtualDeviceContextRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableVirtualDeviceContextRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableVirtualDeviceContextRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

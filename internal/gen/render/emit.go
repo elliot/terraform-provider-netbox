@@ -148,7 +148,28 @@ func description(a model.Attr) string {
 	if a.WriteOnly {
 		d += " Write-only: NetBox does not return this value."
 	}
+	if a.Deprecated != "" {
+		// tfplugindocs only shows a "Deprecated" flag, not the message.
+		d += " **Deprecated:** " + a.Deprecated
+	}
 	return d
+}
+
+// deprecationMessage renders the DeprecationMessage field of a schema or
+// attribute ("" when not deprecated).
+func deprecationMessage(msg string) string {
+	if msg == "" {
+		return ""
+	}
+	return fmt.Sprintf("DeprecationMessage: %s,\n", q(msg))
+}
+
+// withDeprecation appends a deprecation notice to a schema description.
+func withDeprecation(desc, msg string) string {
+	if msg == "" {
+		return desc
+	}
+	return desc + "\n\n~> **Deprecated:** " + msg
 }
 
 var goRegexpOK = func(p string) bool { _, err := regexp.Compile(p); return err == nil }
@@ -193,6 +214,7 @@ func schemaAttr(r *model.Resource, a model.Attr, pkg string, dataSource bool, lo
 	}
 	fmt.Fprintf(&b, "%q: %s.%s{\n", a.Name, pkg, typ)
 	fmt.Fprintf(&b, "MarkdownDescription: %s,\n", q(description(a)))
+	b.WriteString(deprecationMessage(a.Deprecated))
 	switch a.Kind {
 	case model.KindDateTime:
 		b.WriteString("CustomType: timetypes.RFC3339Type{},\n")
@@ -442,6 +464,14 @@ func scalarExpr(a model.Attr, v string) string {
 	return v
 }
 
+// nullableIntExpr wraps a required-but-nullable integer for the client.
+func nullableIntExpr(a model.Attr, v string) string {
+	if a.Int64 {
+		return "conv.NullableInt64(" + v + ")"
+	}
+	return "conv.NullableInt32(" + v + ")"
+}
+
 // collectionExpr returns the expression converting a collection field.
 func collectionExpr(a model.Attr, v string) string {
 	switch a.Kind {
@@ -504,7 +534,7 @@ func nestedListBuild(r *model.Resource, a model.Attr, src, dst string) string {
 		}
 		if isScalarKind(na.Kind) {
 			if na.Nullable {
-				args = append(args, "conv.NullableInt32(it."+field(*na)+")")
+				args = append(args, nullableIntExpr(*na, "it."+field(*na)))
 			} else {
 				args = append(args, scalarExpr(*na, "it."+field(*na)))
 			}
@@ -585,7 +615,7 @@ func ctorArgs(r *model.Resource) (pre string, args []string, err error) {
 			b.WriteString(nestedListBuild(r, *a, v, dst))
 			args = append(args, dst)
 		case isScalarKind(a.Kind) && a.Nullable:
-			args = append(args, "conv.NullableInt32("+v+")")
+			args = append(args, nullableIntExpr(*a, v))
 		case isScalarKind(a.Kind):
 			args = append(args, scalarExpr(*a, v))
 		default:

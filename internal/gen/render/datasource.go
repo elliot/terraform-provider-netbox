@@ -102,7 +102,7 @@ func (d *%[1]sDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 	%[5]s
 	resp.Schema = dsschema.Schema{
 		MarkdownDescription: %[6]s,
-		Attributes: attrs,
+%[11]s		Attributes: attrs,
 	}
 }
 
@@ -126,7 +126,7 @@ func (d *%[1]sDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	}
 	var obj *netbox.%[7]s
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -172,7 +172,8 @@ func (d *%[1]sDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 }
 
 `, g, r.TFType(), "_"+r.Name, lg, "attrs[\"filters\"] = "+strings.TrimSpace(strings.TrimSuffix(strings.TrimPrefix(strings.TrimSpace(filtersAttr), "\"filters\":"), ",")),
-		q(fmt.Sprintf("Reads a single NetBox %s (`%s`) by %s or filters.", humanName(r), r.Path, lookupDoc)), r.ReadType, r.Path, lookupCode(r), lookupDoc)
+		q(withDeprecation(fmt.Sprintf("Reads a single NetBox %s (`%s`) by %s or filters.", humanName(r), r.Path, lookupDoc), r.Deprecated)), r.ReadType, r.Path, lookupCode(r), lookupDoc,
+		deprecationMessage(r.Deprecated))
 
 	// List data source.
 	fmt.Fprintf(&b, `var (
@@ -202,7 +203,7 @@ func (d *%[1]sListDataSource) Metadata(_ context.Context, req datasource.Metadat
 func (d *%[1]sListDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = dsschema.Schema{
 		MarkdownDescription: %[4]s,
-		Attributes: map[string]dsschema.Attribute{
+%[9]s		Attributes: map[string]dsschema.Attribute{
 %[5]s
 			"limit": dsschema.Int64Attribute{
 				MarkdownDescription: "Maximum number of objects to return (default: all).",
@@ -282,7 +283,8 @@ func (d *%[1]sListDataSource) Read(ctx context.Context, req datasource.ReadReque
 	resp.Diagnostics.Append(resp.State.Set(ctx, &cfg)...)
 }
 
-`, g, r.TFPluralType(), "_"+r.Plural, q(fmt.Sprintf("Lists NetBox %s objects (`%s`) matching the given filters.", humanName(r), r.Path)), filtersAttr, lg, r.ReadType, r.Path)
+`, g, r.TFPluralType(), "_"+r.Plural, q(withDeprecation(fmt.Sprintf("Lists NetBox %s objects (`%s`) matching the given filters.", humanName(r), r.Path), r.Deprecated)), filtersAttr, lg, r.ReadType, r.Path,
+		deprecationMessage(r.Deprecated))
 
 	b.WriteString(fromAPIFunc(r, true))
 	return b.String()

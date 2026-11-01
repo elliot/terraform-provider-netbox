@@ -22,9 +22,9 @@ var _ MappedNullable = &BulkCoolingOutflowTemplateRequest{}
 
 // BulkCoolingOutflowTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkCoolingOutflowTemplateRequest struct {
-	Id         int32         `json:"id"`
-	DeviceType NullableInt32 `json:"device_type,omitempty"`
-	ModuleType NullableInt32 `json:"module_type,omitempty"`
+	Id         int64         `json:"id"`
+	DeviceType NullableInt64 `json:"device_type,omitempty"`
+	ModuleType NullableInt64 `json:"module_type,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name string `json:"name"`
 	// Physical label
@@ -34,7 +34,7 @@ type BulkCoolingOutflowTemplateRequest struct {
 	Diameter NullableFloat64 `json:"diameter,omitempty"`
 	// * `mm` - Millimeters * `cm` - Centimeters * `in` - Inches
 	DiameterUnit         NullableString `json:"diameter_unit,omitempty"`
-	CoolingIntake        NullableInt32  `json:"cooling_intake,omitempty"`
+	CoolingIntake        NullableInt64  `json:"cooling_intake,omitempty"`
 	Description          *string        `json:"description,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -45,7 +45,7 @@ type _BulkCoolingOutflowTemplateRequest BulkCoolingOutflowTemplateRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkCoolingOutflowTemplateRequest(id int32, name string) *BulkCoolingOutflowTemplateRequest {
+func NewBulkCoolingOutflowTemplateRequest(id int64, name string) *BulkCoolingOutflowTemplateRequest {
 	this := BulkCoolingOutflowTemplateRequest{}
 	this.Id = id
 	this.Name = name
@@ -61,9 +61,9 @@ func NewBulkCoolingOutflowTemplateRequestWithDefaults() *BulkCoolingOutflowTempl
 }
 
 // GetId returns the Id field value
-func (o *BulkCoolingOutflowTemplateRequest) GetId() int32 {
+func (o *BulkCoolingOutflowTemplateRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -72,7 +72,7 @@ func (o *BulkCoolingOutflowTemplateRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkCoolingOutflowTemplateRequest) GetIdOk() (*int32, bool) {
+func (o *BulkCoolingOutflowTemplateRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -80,14 +80,14 @@ func (o *BulkCoolingOutflowTemplateRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkCoolingOutflowTemplateRequest) SetId(v int32) {
+func (o *BulkCoolingOutflowTemplateRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetDeviceType returns the DeviceType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCoolingOutflowTemplateRequest) GetDeviceType() int32 {
+func (o *BulkCoolingOutflowTemplateRequest) GetDeviceType() int64 {
 	if o == nil || IsNil(o.DeviceType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceType.Get()
@@ -96,7 +96,7 @@ func (o *BulkCoolingOutflowTemplateRequest) GetDeviceType() int32 {
 // GetDeviceTypeOk returns a tuple with the DeviceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCoolingOutflowTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *BulkCoolingOutflowTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -112,8 +112,8 @@ func (o *BulkCoolingOutflowTemplateRequest) HasDeviceType() bool {
 	return false
 }
 
-// SetDeviceType gets a reference to the given NullableInt32 and assigns it to the DeviceType field.
-func (o *BulkCoolingOutflowTemplateRequest) SetDeviceType(v int32) {
+// SetDeviceType gets a reference to the given NullableInt64 and assigns it to the DeviceType field.
+func (o *BulkCoolingOutflowTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType.Set(&v)
 }
 
@@ -128,9 +128,9 @@ func (o *BulkCoolingOutflowTemplateRequest) UnsetDeviceType() {
 }
 
 // GetModuleType returns the ModuleType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCoolingOutflowTemplateRequest) GetModuleType() int32 {
+func (o *BulkCoolingOutflowTemplateRequest) GetModuleType() int64 {
 	if o == nil || IsNil(o.ModuleType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleType.Get()
@@ -139,7 +139,7 @@ func (o *BulkCoolingOutflowTemplateRequest) GetModuleType() int32 {
 // GetModuleTypeOk returns a tuple with the ModuleType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCoolingOutflowTemplateRequest) GetModuleTypeOk() (*int32, bool) {
+func (o *BulkCoolingOutflowTemplateRequest) GetModuleTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -155,8 +155,8 @@ func (o *BulkCoolingOutflowTemplateRequest) HasModuleType() bool {
 	return false
 }
 
-// SetModuleType gets a reference to the given NullableInt32 and assigns it to the ModuleType field.
-func (o *BulkCoolingOutflowTemplateRequest) SetModuleType(v int32) {
+// SetModuleType gets a reference to the given NullableInt64 and assigns it to the ModuleType field.
+func (o *BulkCoolingOutflowTemplateRequest) SetModuleType(v int64) {
 	o.ModuleType.Set(&v)
 }
 
@@ -356,9 +356,9 @@ func (o *BulkCoolingOutflowTemplateRequest) UnsetDiameterUnit() {
 }
 
 // GetCoolingIntake returns the CoolingIntake field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCoolingOutflowTemplateRequest) GetCoolingIntake() int32 {
+func (o *BulkCoolingOutflowTemplateRequest) GetCoolingIntake() int64 {
 	if o == nil || IsNil(o.CoolingIntake.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.CoolingIntake.Get()
@@ -367,7 +367,7 @@ func (o *BulkCoolingOutflowTemplateRequest) GetCoolingIntake() int32 {
 // GetCoolingIntakeOk returns a tuple with the CoolingIntake field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCoolingOutflowTemplateRequest) GetCoolingIntakeOk() (*int32, bool) {
+func (o *BulkCoolingOutflowTemplateRequest) GetCoolingIntakeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -383,8 +383,8 @@ func (o *BulkCoolingOutflowTemplateRequest) HasCoolingIntake() bool {
 	return false
 }
 
-// SetCoolingIntake gets a reference to the given NullableInt32 and assigns it to the CoolingIntake field.
-func (o *BulkCoolingOutflowTemplateRequest) SetCoolingIntake(v int32) {
+// SetCoolingIntake gets a reference to the given NullableInt64 and assigns it to the CoolingIntake field.
+func (o *BulkCoolingOutflowTemplateRequest) SetCoolingIntake(v int64) {
 	o.CoolingIntake.Set(&v)
 }
 

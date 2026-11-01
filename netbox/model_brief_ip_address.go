@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefIPAddress{}
 
 // BriefIPAddress Base serializer class for models inheriting from PrimaryModel.
 type BriefIPAddress struct {
-	Id         int32                   `json:"id"`
+	Id         int64                   `json:"id"`
 	Url        *string                 `json:"url,omitempty"`
 	Display    *string                 `json:"display,omitempty"`
 	Family     *ChoiceInteger          `json:"family,omitempty"`
@@ -41,7 +41,7 @@ type _BriefIPAddress BriefIPAddress
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefIPAddress(id int32) *BriefIPAddress {
+func NewBriefIPAddress(id int64) *BriefIPAddress {
 	this := BriefIPAddress{}
 	this.Id = id
 	return &this
@@ -56,9 +56,9 @@ func NewBriefIPAddressWithDefaults() *BriefIPAddress {
 }
 
 // GetId returns the Id field value
-func (o *BriefIPAddress) GetId() int32 {
+func (o *BriefIPAddress) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -67,7 +67,7 @@ func (o *BriefIPAddress) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefIPAddress) GetIdOk() (*int32, bool) {
+func (o *BriefIPAddress) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,7 +75,7 @@ func (o *BriefIPAddress) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefIPAddress) SetId(v int32) {
+func (o *BriefIPAddress) SetId(v int64) {
 	o.Id = v
 }
 

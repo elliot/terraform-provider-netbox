@@ -23,10 +23,10 @@ var _ MappedNullable = &BulkTokenRequest{}
 
 // BulkTokenRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkTokenRequest struct {
-	Id int32 `json:"id"`
+	Id int64 `json:"id"`
 	// * `1` - v1 * `2` - v2
 	Version     *int32       `json:"version,omitempty"`
-	User        int32        `json:"user"`
+	User        int64        `json:"user"`
 	Description *string      `json:"description,omitempty"`
 	Expires     NullableTime `json:"expires,omitempty"`
 	LastUsed    NullableTime `json:"last_used,omitempty"`
@@ -45,7 +45,7 @@ type _BulkTokenRequest BulkTokenRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkTokenRequest(id int32, user int32) *BulkTokenRequest {
+func NewBulkTokenRequest(id int64, user int64) *BulkTokenRequest {
 	this := BulkTokenRequest{}
 	this.Id = id
 	this.User = user
@@ -61,9 +61,9 @@ func NewBulkTokenRequestWithDefaults() *BulkTokenRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkTokenRequest) GetId() int32 {
+func (o *BulkTokenRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -72,7 +72,7 @@ func (o *BulkTokenRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkTokenRequest) GetIdOk() (*int32, bool) {
+func (o *BulkTokenRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -80,7 +80,7 @@ func (o *BulkTokenRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkTokenRequest) SetId(v int32) {
+func (o *BulkTokenRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -117,9 +117,9 @@ func (o *BulkTokenRequest) SetVersion(v int32) {
 }
 
 // GetUser returns the User field value
-func (o *BulkTokenRequest) GetUser() int32 {
+func (o *BulkTokenRequest) GetUser() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -128,7 +128,7 @@ func (o *BulkTokenRequest) GetUser() int32 {
 
 // GetUserOk returns a tuple with the User field value
 // and a boolean to check if the value has been set.
-func (o *BulkTokenRequest) GetUserOk() (*int32, bool) {
+func (o *BulkTokenRequest) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -136,7 +136,7 @@ func (o *BulkTokenRequest) GetUserOk() (*int32, bool) {
 }
 
 // SetUser sets field value
-func (o *BulkTokenRequest) SetUser(v int32) {
+func (o *BulkTokenRequest) SetUser(v int64) {
 	o.User = v
 }
 

@@ -23,8 +23,8 @@ var _ MappedNullable = &PatchedNotificationGroupRequest{}
 type PatchedNotificationGroupRequest struct {
 	Name                 *string `json:"name,omitempty"`
 	Description          *string `json:"description,omitempty"`
-	Groups               []int32 `json:"groups,omitempty"`
-	Users                []int32 `json:"users,omitempty"`
+	Groups               []int64 `json:"groups,omitempty"`
+	Users                []int64 `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -112,9 +112,9 @@ func (o *PatchedNotificationGroupRequest) SetDescription(v string) {
 }
 
 // GetGroups returns the Groups field value if set, zero value otherwise.
-func (o *PatchedNotificationGroupRequest) GetGroups() []int32 {
+func (o *PatchedNotificationGroupRequest) GetGroups() []int64 {
 	if o == nil || IsNil(o.Groups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Groups
@@ -122,7 +122,7 @@ func (o *PatchedNotificationGroupRequest) GetGroups() []int32 {
 
 // GetGroupsOk returns a tuple with the Groups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedNotificationGroupRequest) GetGroupsOk() ([]int32, bool) {
+func (o *PatchedNotificationGroupRequest) GetGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Groups) {
 		return nil, false
 	}
@@ -138,15 +138,15 @@ func (o *PatchedNotificationGroupRequest) HasGroups() bool {
 	return false
 }
 
-// SetGroups gets a reference to the given []int32 and assigns it to the Groups field.
-func (o *PatchedNotificationGroupRequest) SetGroups(v []int32) {
+// SetGroups gets a reference to the given []int64 and assigns it to the Groups field.
+func (o *PatchedNotificationGroupRequest) SetGroups(v []int64) {
 	o.Groups = v
 }
 
 // GetUsers returns the Users field value if set, zero value otherwise.
-func (o *PatchedNotificationGroupRequest) GetUsers() []int32 {
+func (o *PatchedNotificationGroupRequest) GetUsers() []int64 {
 	if o == nil || IsNil(o.Users) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Users
@@ -154,7 +154,7 @@ func (o *PatchedNotificationGroupRequest) GetUsers() []int32 {
 
 // GetUsersOk returns a tuple with the Users field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedNotificationGroupRequest) GetUsersOk() ([]int32, bool) {
+func (o *PatchedNotificationGroupRequest) GetUsersOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Users) {
 		return nil, false
 	}
@@ -170,8 +170,8 @@ func (o *PatchedNotificationGroupRequest) HasUsers() bool {
 	return false
 }
 
-// SetUsers gets a reference to the given []int32 and assigns it to the Users field.
-func (o *PatchedNotificationGroupRequest) SetUsers(v []int32) {
+// SetUsers gets a reference to the given []int64 and assigns it to the Users field.
+func (o *PatchedNotificationGroupRequest) SetUsers(v []int64) {
 	o.Users = v
 }
 

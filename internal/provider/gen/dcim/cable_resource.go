@@ -49,8 +49,8 @@ var cableStatusValues = []string{
 var cableProfileValues = []string{
 	"single-1c1p", "single-1c2p", "single-1c4p", "single-1c6p", "single-1c8p", "single-1c12p", "single-1c16p", "trunk-2c1p",
 	"trunk-2c2p", "trunk-2c4p", "trunk-2c4p-shuffle", "trunk-2c6p", "trunk-2c8p", "trunk-2c12p", "trunk-4c1p", "trunk-4c2p",
-	"trunk-4c4p", "trunk-4c4p-shuffle", "trunk-4c6p", "trunk-4c8p", "trunk-8c4p", "breakout-1c2p-2c1p", "breakout-1c4p-4c1p", "breakout-1c6p-6c1p",
-	"breakout-1c8p-8c1p", "breakout-2c4p-8c1p-shuffle",
+	"trunk-4c4p", "trunk-4c4p-shuffle", "trunk-4c6p", "trunk-4c8p", "trunk-8c1p", "trunk-8c4p", "trunk-12c1p", "trunk-24c1p",
+	"breakout-1c2p-2c1p", "breakout-1c4p-4c1p", "breakout-1c6p-6c1p", "breakout-1c8p-8c1p", "breakout-2c4p-8c1p-shuffle",
 }
 
 // cableLengthUnitValues lists the valid values of netbox_cable.length_unit.
@@ -202,7 +202,7 @@ func cableResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"profile": schema.StringAttribute{
-			MarkdownDescription: "Profile. Valid values: `single-1c1p`, `single-1c2p`, `single-1c4p`, `single-1c6p`, `single-1c8p`, `single-1c12p`, `single-1c16p`, `trunk-2c1p`, `trunk-2c2p`, `trunk-2c4p`, `trunk-2c4p-shuffle`, `trunk-2c6p`, `trunk-2c8p`, `trunk-2c12p`, `trunk-4c1p`, `trunk-4c2p`, `trunk-4c4p`, `trunk-4c4p-shuffle`, `trunk-4c6p`, `trunk-4c8p`, `trunk-8c4p`, `breakout-1c2p-2c1p`, `breakout-1c4p-4c1p`, `breakout-1c6p-6c1p`, `breakout-1c8p-8c1p`, `breakout-2c4p-8c1p-shuffle`. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Profile. Valid values: `single-1c1p`, `single-1c2p`, `single-1c4p`, `single-1c6p`, `single-1c8p`, `single-1c12p`, `single-1c16p`, `trunk-2c1p`, `trunk-2c2p`, `trunk-2c4p`, `trunk-2c4p-shuffle`, `trunk-2c6p`, `trunk-2c8p`, `trunk-2c12p`, `trunk-4c1p`, `trunk-4c2p`, `trunk-4c4p`, `trunk-4c4p-shuffle`, `trunk-4c6p`, `trunk-4c8p`, `trunk-8c1p`, `trunk-8c4p`, `trunk-12c1p`, `trunk-24c1p`, `breakout-1c2p-2c1p`, `breakout-1c4p-4c1p`, `breakout-1c6p-6c1p`, `breakout-1c8p-8c1p`, `breakout-2c4p-8c1p-shuffle`. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.OneOf(cableProfileValues...)},
@@ -316,7 +316,7 @@ func (r *CableResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -347,7 +347,7 @@ func (r *CableResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -377,7 +377,7 @@ func (r *CableResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -407,7 +407,7 @@ func cableToCreate(ctx context.Context, plan *CableModel, cf *customfields.Cache
 			var items []CableATerminationsItem
 			diags.Append(plan.ATerminations.ElementsAs(ctx, &items, false)...)
 			for _, it := range items {
-				e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), conv.Int32(it.ObjectId))
+				e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), it.ObjectId.ValueInt64())
 				aTerminationsItems = append(aTerminationsItems, *e)
 			}
 		}
@@ -419,7 +419,7 @@ func cableToCreate(ctx context.Context, plan *CableModel, cf *customfields.Cache
 			var items []CableBTerminationsItem
 			diags.Append(plan.BTerminations.ElementsAs(ctx, &items, false)...)
 			for _, it := range items {
-				e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), conv.Int32(it.ObjectId))
+				e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), it.ObjectId.ValueInt64())
 				bTerminationsItems = append(bTerminationsItems, *e)
 			}
 		}
@@ -432,10 +432,10 @@ func cableToCreate(ctx context.Context, plan *CableModel, cf *customfields.Cache
 		body.SetProfile(plan.Profile.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.BundleId) {
-		body.SetBundle(conv.Int32(plan.BundleId))
+		body.SetBundle(plan.BundleId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -453,7 +453,7 @@ func cableToCreate(ctx context.Context, plan *CableModel, cf *customfields.Cache
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -483,7 +483,7 @@ func cableToPatch(ctx context.Context, plan, state *CableModel, cf *customfields
 				var items []CableATerminationsItem
 				diags.Append(plan.ATerminations.ElementsAs(ctx, &items, false)...)
 				for _, it := range items {
-					e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), conv.Int32(it.ObjectId))
+					e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), it.ObjectId.ValueInt64())
 					aTerminationsItems = append(aTerminationsItems, *e)
 				}
 			}
@@ -497,7 +497,7 @@ func cableToPatch(ctx context.Context, plan, state *CableModel, cf *customfields
 				var items []CableBTerminationsItem
 				diags.Append(plan.BTerminations.ElementsAs(ctx, &items, false)...)
 				for _, it := range items {
-					e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), conv.Int32(it.ObjectId))
+					e := netbox.NewGenericObjectRequest(it.ObjectType.ValueString(), it.ObjectId.ValueInt64())
 					bTerminationsItems = append(bTerminationsItems, *e)
 				}
 			}
@@ -518,14 +518,14 @@ func cableToPatch(ctx context.Context, plan, state *CableModel, cf *customfields
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.BundleId.Equal(state.BundleId) {
 		if plan.BundleId.IsNull() {
 			body.SetBundleNil()
 		} else if !plan.BundleId.IsUnknown() {
-			body.SetBundle(conv.Int32(plan.BundleId))
+			body.SetBundle(plan.BundleId.ValueInt64())
 		}
 	}
 	if !plan.Label.Equal(state.Label) {
@@ -557,7 +557,7 @@ func cableToPatch(ctx context.Context, plan, state *CableModel, cf *customfields
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -594,7 +594,7 @@ func cableFromAPI(ctx context.Context, obj *netbox.Cable, prior *CableModel, out
 			src := &items[i]
 			vals = append(vals, CableATerminationsItem{
 				ObjectType: conv.String(src.GetObjectTypeOk()),
-				ObjectId:   conv.Int64From32(src.GetObjectIdOk()),
+				ObjectId:   conv.Int64From64(src.GetObjectIdOk()),
 			})
 		}
 		var priorVal attr.Value
@@ -610,7 +610,7 @@ func cableFromAPI(ctx context.Context, obj *netbox.Cable, prior *CableModel, out
 			src := &items[i]
 			vals = append(vals, CableBTerminationsItem{
 				ObjectType: conv.String(src.GetObjectTypeOk()),
-				ObjectId:   conv.Int64From32(src.GetObjectIdOk()),
+				ObjectId:   conv.Int64From64(src.GetObjectIdOk()),
 			})
 		}
 		var priorVal attr.Value

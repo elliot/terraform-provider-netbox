@@ -23,11 +23,11 @@ var _ MappedNullable = &VLANTranslationRule{}
 
 // VLANTranslationRule Adds support for custom fields and tags.
 type VLANTranslationRule struct {
-	Id         int32   `json:"id"`
+	Id         int64   `json:"id"`
 	Url        *string `json:"url,omitempty"`
 	DisplayUrl *string `json:"display_url,omitempty"`
 	Display    *string `json:"display,omitempty"`
-	Policy     *int32  `json:"policy,omitempty"`
+	Policy     *int64  `json:"policy,omitempty"`
 	// Numeric VLAN ID (1-4094)
 	LocalVid *int32 `json:"local_vid,omitempty"`
 	// Numeric VLAN ID (1-4094)
@@ -46,7 +46,7 @@ type _VLANTranslationRule VLANTranslationRule
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVLANTranslationRule(id int32) *VLANTranslationRule {
+func NewVLANTranslationRule(id int64) *VLANTranslationRule {
 	this := VLANTranslationRule{}
 	this.Id = id
 	return &this
@@ -61,9 +61,9 @@ func NewVLANTranslationRuleWithDefaults() *VLANTranslationRule {
 }
 
 // GetId returns the Id field value
-func (o *VLANTranslationRule) GetId() int32 {
+func (o *VLANTranslationRule) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -72,7 +72,7 @@ func (o *VLANTranslationRule) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *VLANTranslationRule) GetIdOk() (*int32, bool) {
+func (o *VLANTranslationRule) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -80,7 +80,7 @@ func (o *VLANTranslationRule) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *VLANTranslationRule) SetId(v int32) {
+func (o *VLANTranslationRule) SetId(v int64) {
 	o.Id = v
 }
 
@@ -181,9 +181,9 @@ func (o *VLANTranslationRule) SetDisplay(v string) {
 }
 
 // GetPolicy returns the Policy field value if set, zero value otherwise.
-func (o *VLANTranslationRule) GetPolicy() int32 {
+func (o *VLANTranslationRule) GetPolicy() int64 {
 	if o == nil || IsNil(o.Policy) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Policy
@@ -191,7 +191,7 @@ func (o *VLANTranslationRule) GetPolicy() int32 {
 
 // GetPolicyOk returns a tuple with the Policy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VLANTranslationRule) GetPolicyOk() (*int32, bool) {
+func (o *VLANTranslationRule) GetPolicyOk() (*int64, bool) {
 	if o == nil || IsNil(o.Policy) {
 		return nil, false
 	}
@@ -207,8 +207,8 @@ func (o *VLANTranslationRule) HasPolicy() bool {
 	return false
 }
 
-// SetPolicy gets a reference to the given int32 and assigns it to the Policy field.
-func (o *VLANTranslationRule) SetPolicy(v int32) {
+// SetPolicy gets a reference to the given int64 and assigns it to the Policy field.
+func (o *VLANTranslationRule) SetPolicy(v int64) {
 	o.Policy = &v
 }
 

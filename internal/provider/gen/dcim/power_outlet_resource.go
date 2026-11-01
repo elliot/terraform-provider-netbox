@@ -260,7 +260,7 @@ func (r *PowerOutletResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -291,7 +291,7 @@ func (r *PowerOutletResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -321,7 +321,7 @@ func (r *PowerOutletResource) Delete(ctx context.Context, req resource.DeleteReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -341,9 +341,9 @@ func (r *PowerOutletResource) ImportState(ctx context.Context, req resource.Impo
 // powerOutletToCreate builds the WritablePowerOutletRequest request body from the plan.
 func powerOutletToCreate(ctx context.Context, plan *PowerOutletModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritablePowerOutletRequest {
 	const objectType = "dcim.poweroutlet"
-	body := netbox.NewWritablePowerOutletRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
+	body := netbox.NewWritablePowerOutletRequest(plan.DeviceId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.ModuleId) {
-		body.SetModule(conv.Int32(plan.ModuleId))
+		body.SetModule(plan.ModuleId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -358,7 +358,7 @@ func powerOutletToCreate(ctx context.Context, plan *PowerOutletModel, cf *custom
 		body.SetColor(plan.Color.ValueString())
 	}
 	if conv.Known(plan.PowerPortId) {
-		body.SetPowerPort(conv.Int32(plan.PowerPortId))
+		body.SetPowerPort(plan.PowerPortId.ValueInt64())
 	}
 	if conv.Known(plan.FeedLeg) {
 		body.SetFeedLeg(plan.FeedLeg.ValueString())
@@ -370,7 +370,7 @@ func powerOutletToCreate(ctx context.Context, plan *PowerOutletModel, cf *custom
 		body.SetMarkConnected(plan.MarkConnected.ValueBool())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -387,14 +387,14 @@ func powerOutletToPatch(ctx context.Context, plan, state *PowerOutletModel, cf *
 	body := netbox.NewPatchedWritablePowerOutletRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.ModuleId.Equal(state.ModuleId) {
 		if plan.ModuleId.IsNull() {
 			body.SetModuleNil()
 		} else if !plan.ModuleId.IsUnknown() {
-			body.SetModule(conv.Int32(plan.ModuleId))
+			body.SetModule(plan.ModuleId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -426,7 +426,7 @@ func powerOutletToPatch(ctx context.Context, plan, state *PowerOutletModel, cf *
 		if plan.PowerPortId.IsNull() {
 			body.SetPowerPortNil()
 		} else if !plan.PowerPortId.IsUnknown() {
-			body.SetPowerPort(conv.Int32(plan.PowerPortId))
+			body.SetPowerPort(plan.PowerPortId.ValueInt64())
 		}
 	}
 	if !plan.FeedLeg.Equal(state.FeedLeg) {
@@ -448,7 +448,7 @@ func powerOutletToPatch(ctx context.Context, plan, state *PowerOutletModel, cf *
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

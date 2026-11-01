@@ -22,8 +22,8 @@ var _ MappedNullable = &ConsolePortTemplateRequest{}
 
 // ConsolePortTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type ConsolePortTemplateRequest struct {
-	DeviceType NullableInt32 `json:"device_type,omitempty"`
-	ModuleType NullableInt32 `json:"module_type,omitempty"`
+	DeviceType NullableInt64 `json:"device_type,omitempty"`
+	ModuleType NullableInt64 `json:"module_type,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name string `json:"name"`
 	// Physical label
@@ -55,9 +55,9 @@ func NewConsolePortTemplateRequestWithDefaults() *ConsolePortTemplateRequest {
 }
 
 // GetDeviceType returns the DeviceType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConsolePortTemplateRequest) GetDeviceType() int32 {
+func (o *ConsolePortTemplateRequest) GetDeviceType() int64 {
 	if o == nil || IsNil(o.DeviceType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceType.Get()
@@ -66,7 +66,7 @@ func (o *ConsolePortTemplateRequest) GetDeviceType() int32 {
 // GetDeviceTypeOk returns a tuple with the DeviceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConsolePortTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *ConsolePortTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -82,8 +82,8 @@ func (o *ConsolePortTemplateRequest) HasDeviceType() bool {
 	return false
 }
 
-// SetDeviceType gets a reference to the given NullableInt32 and assigns it to the DeviceType field.
-func (o *ConsolePortTemplateRequest) SetDeviceType(v int32) {
+// SetDeviceType gets a reference to the given NullableInt64 and assigns it to the DeviceType field.
+func (o *ConsolePortTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType.Set(&v)
 }
 
@@ -98,9 +98,9 @@ func (o *ConsolePortTemplateRequest) UnsetDeviceType() {
 }
 
 // GetModuleType returns the ModuleType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ConsolePortTemplateRequest) GetModuleType() int32 {
+func (o *ConsolePortTemplateRequest) GetModuleType() int64 {
 	if o == nil || IsNil(o.ModuleType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleType.Get()
@@ -109,7 +109,7 @@ func (o *ConsolePortTemplateRequest) GetModuleType() int32 {
 // GetModuleTypeOk returns a tuple with the ModuleType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ConsolePortTemplateRequest) GetModuleTypeOk() (*int32, bool) {
+func (o *ConsolePortTemplateRequest) GetModuleTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -125,8 +125,8 @@ func (o *ConsolePortTemplateRequest) HasModuleType() bool {
 	return false
 }
 
-// SetModuleType gets a reference to the given NullableInt32 and assigns it to the ModuleType field.
-func (o *ConsolePortTemplateRequest) SetModuleType(v int32) {
+// SetModuleType gets a reference to the given NullableInt64 and assigns it to the ModuleType field.
+func (o *ConsolePortTemplateRequest) SetModuleType(v int64) {
 	o.ModuleType.Set(&v)
 }
 

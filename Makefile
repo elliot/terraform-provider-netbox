@@ -42,7 +42,7 @@ fmt:
 # Hand-written packages only: the regenerated client (netbox/, 1,100+ files) and
 # the generated resources (internal/provider/gen/) carry "Code generated" headers
 # and linting them exhausts CI runner memory without finding anything.
-LINT_PKGS ?= . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./tools/...
+LINT_PKGS ?= . ./internal/acctest/... ./internal/client/... ./internal/conv/... ./internal/customfields/... ./internal/gen/... ./internal/provider ./internal/provider/manual/... ./internal/upgrade/... ./tools/...
 
 # golangci-lint is pinned here (CI reads this value through `make lint-version`) and
 # installed with the repo's own Go toolchain into a local, gitignored bin dir. A
@@ -95,6 +95,14 @@ docs: build-client
 .PHONY: docs-check
 docs-check: build-client
 	go tool tfplugindocs validate --provider-name $(PROVIDER_NAME)
+
+# Compares the working tree's provider schema with a release from the registry
+# (default: the latest; BASE=0.5.0 picks one). ALLOW_BREAKING=1 reports breaking
+# changes without failing. See docs/DEVELOPMENT.md#schema-compatibility.
+BASE ?=
+.PHONY: schema-diff
+schema-diff: build-client
+	./scripts/schema-diff.sh $(BASE)
 
 .PHONY: demo-token
 demo-token:

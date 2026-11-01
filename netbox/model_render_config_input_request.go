@@ -22,7 +22,7 @@ var _ MappedNullable = &RenderConfigInputRequest{}
 // RenderConfigInputRequest Describes the request body for the device/VM /render-config/ endpoints. Any additional keys supplied are passed through as context variables to the rendered template.
 type RenderConfigInputRequest struct {
 	// Optional ID of the ConfigTemplate to render. If omitted, the object's assigned config template is used.
-	ConfigTemplateId     *int32 `json:"config_template_id,omitempty"`
+	ConfigTemplateId     *int64 `json:"config_template_id,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -46,9 +46,9 @@ func NewRenderConfigInputRequestWithDefaults() *RenderConfigInputRequest {
 }
 
 // GetConfigTemplateId returns the ConfigTemplateId field value if set, zero value otherwise.
-func (o *RenderConfigInputRequest) GetConfigTemplateId() int32 {
+func (o *RenderConfigInputRequest) GetConfigTemplateId() int64 {
 	if o == nil || IsNil(o.ConfigTemplateId) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplateId
@@ -56,7 +56,7 @@ func (o *RenderConfigInputRequest) GetConfigTemplateId() int32 {
 
 // GetConfigTemplateIdOk returns a tuple with the ConfigTemplateId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RenderConfigInputRequest) GetConfigTemplateIdOk() (*int32, bool) {
+func (o *RenderConfigInputRequest) GetConfigTemplateIdOk() (*int64, bool) {
 	if o == nil || IsNil(o.ConfigTemplateId) {
 		return nil, false
 	}
@@ -72,8 +72,8 @@ func (o *RenderConfigInputRequest) HasConfigTemplateId() bool {
 	return false
 }
 
-// SetConfigTemplateId gets a reference to the given int32 and assigns it to the ConfigTemplateId field.
-func (o *RenderConfigInputRequest) SetConfigTemplateId(v int32) {
+// SetConfigTemplateId gets a reference to the given int64 and assigns it to the ConfigTemplateId field.
+func (o *RenderConfigInputRequest) SetConfigTemplateId(v int64) {
 	o.ConfigTemplateId = &v
 }
 

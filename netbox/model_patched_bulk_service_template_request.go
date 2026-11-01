@@ -22,7 +22,7 @@ var _ MappedNullable = &PatchedBulkServiceTemplateRequest{}
 
 // PatchedBulkServiceTemplateRequest Shared port-mapping handling for the Service and ServiceTemplate serializers, including backward compatibility for the legacy single-protocol “protocol“/“ports“ representation.  Read: alongside the “port_mappings“ list, a service that uses a single protocol also reports the legacy “protocol“ and “ports“ fields; a multi-protocol service reports “null“ for both (it cannot be expressed in the old single-protocol format).  Write: either format is accepted. When the legacy “protocol“/“ports“ pair is supplied (and “port_mappings“ is not), it is translated into “port_mappings“. Supplying both together is accepted only when the legacy fields agree with what “port_mappings“ implies (e.g. a full-object round-trip that echoes back the read representation); a genuine conflict is rejected as ambiguous.  Subclassing “serializers.Serializer“ (rather than a plain mixin) lets DRF's metaclass collect the fields declared here into the inheriting serializers.
 type PatchedBulkServiceTemplateRequest struct {
-	Id           int32    `json:"id"`
+	Id           int64    `json:"id"`
 	Name         *string  `json:"name,omitempty"`
 	PortMappings []string `json:"port_mappings,omitempty"`
 	// Deprecated; use port_mappings. Reported only for single-protocol services.
@@ -30,7 +30,7 @@ type PatchedBulkServiceTemplateRequest struct {
 	// Deprecated; use port_mappings. Reported only for single-protocol services.
 	Ports                []int32                `json:"ports,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -43,7 +43,7 @@ type _PatchedBulkServiceTemplateRequest PatchedBulkServiceTemplateRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkServiceTemplateRequest(id int32) *PatchedBulkServiceTemplateRequest {
+func NewPatchedBulkServiceTemplateRequest(id int64) *PatchedBulkServiceTemplateRequest {
 	this := PatchedBulkServiceTemplateRequest{}
 	this.Id = id
 	return &this
@@ -58,9 +58,9 @@ func NewPatchedBulkServiceTemplateRequestWithDefaults() *PatchedBulkServiceTempl
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkServiceTemplateRequest) GetId() int32 {
+func (o *PatchedBulkServiceTemplateRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -69,7 +69,7 @@ func (o *PatchedBulkServiceTemplateRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkServiceTemplateRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkServiceTemplateRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -77,7 +77,7 @@ func (o *PatchedBulkServiceTemplateRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkServiceTemplateRequest) SetId(v int32) {
+func (o *PatchedBulkServiceTemplateRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -254,9 +254,9 @@ func (o *PatchedBulkServiceTemplateRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkServiceTemplateRequest) GetOwner() int32 {
+func (o *PatchedBulkServiceTemplateRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -265,7 +265,7 @@ func (o *PatchedBulkServiceTemplateRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkServiceTemplateRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkServiceTemplateRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -281,8 +281,8 @@ func (o *PatchedBulkServiceTemplateRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkServiceTemplateRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkServiceTemplateRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -209,7 +209,7 @@ func (r *DeviceRoleResource) Read(ctx context.Context, req resource.ReadRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -240,7 +240,7 @@ func (r *DeviceRoleResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -270,7 +270,7 @@ func (r *DeviceRoleResource) Delete(ctx context.Context, req resource.DeleteRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -298,10 +298,10 @@ func deviceRoleToCreate(ctx context.Context, plan *DeviceRoleModel, cf *customfi
 		body.SetVmRole(plan.VmRole.ValueBool())
 	}
 	if conv.Known(plan.ConfigTemplateId) {
-		body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+		body.SetConfigTemplate(plan.ConfigTemplateId.ValueInt64())
 	}
 	if conv.Known(plan.ParentId) {
-		body.SetParent(conv.Int32(plan.ParentId))
+		body.SetParent(plan.ParentId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
@@ -313,7 +313,7 @@ func deviceRoleToCreate(ctx context.Context, plan *DeviceRoleModel, cf *customfi
 		body.SetCustomFields(customfields.ToAPI(ctx, plan.CustomFields, cf, objectType, diags))
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -349,14 +349,14 @@ func deviceRoleToPatch(ctx context.Context, plan, state *DeviceRoleModel, cf *cu
 		if plan.ConfigTemplateId.IsNull() {
 			body.SetConfigTemplateNil()
 		} else if !plan.ConfigTemplateId.IsUnknown() {
-			body.SetConfigTemplate(conv.Int32(plan.ConfigTemplateId))
+			body.SetConfigTemplate(plan.ConfigTemplateId.ValueInt64())
 		}
 	}
 	if !plan.ParentId.Equal(state.ParentId) {
 		if plan.ParentId.IsNull() {
 			body.SetParentNil()
 		} else if !plan.ParentId.IsUnknown() {
-			body.SetParent(conv.Int32(plan.ParentId))
+			body.SetParent(plan.ParentId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -378,7 +378,7 @@ func deviceRoleToPatch(ctx context.Context, plan, state *DeviceRoleModel, cf *cu
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

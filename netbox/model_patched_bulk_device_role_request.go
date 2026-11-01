@@ -22,18 +22,18 @@ var _ MappedNullable = &PatchedBulkDeviceRoleRequest{}
 
 // PatchedBulkDeviceRoleRequest Base serializer class for models inheriting from NestedGroupModel.
 type PatchedBulkDeviceRoleRequest struct {
-	Id    int32   `json:"id"`
+	Id    int64   `json:"id"`
 	Name  *string `json:"name,omitempty"`
 	Slug  *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Color *string `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
 	// Virtual machines may be assigned to this role
 	VmRole               *bool                           `json:"vm_role,omitempty"`
-	ConfigTemplate       NullableInt32                   `json:"config_template,omitempty"`
+	ConfigTemplate       NullableInt64                   `json:"config_template,omitempty"`
 	Parent               NullableNestedDeviceRoleRequest `json:"parent,omitempty"`
 	Description          *string                         `json:"description,omitempty"`
 	Tags                 []NestedTagRequest              `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}          `json:"custom_fields,omitempty"`
-	Owner                NullableInt32                   `json:"owner,omitempty"`
+	Owner                NullableInt64                   `json:"owner,omitempty"`
 	Comments             *string                         `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -44,7 +44,7 @@ type _PatchedBulkDeviceRoleRequest PatchedBulkDeviceRoleRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkDeviceRoleRequest(id int32) *PatchedBulkDeviceRoleRequest {
+func NewPatchedBulkDeviceRoleRequest(id int64) *PatchedBulkDeviceRoleRequest {
 	this := PatchedBulkDeviceRoleRequest{}
 	this.Id = id
 	return &this
@@ -59,9 +59,9 @@ func NewPatchedBulkDeviceRoleRequestWithDefaults() *PatchedBulkDeviceRoleRequest
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkDeviceRoleRequest) GetId() int32 {
+func (o *PatchedBulkDeviceRoleRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -70,7 +70,7 @@ func (o *PatchedBulkDeviceRoleRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkDeviceRoleRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkDeviceRoleRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -78,7 +78,7 @@ func (o *PatchedBulkDeviceRoleRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkDeviceRoleRequest) SetId(v int32) {
+func (o *PatchedBulkDeviceRoleRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -211,9 +211,9 @@ func (o *PatchedBulkDeviceRoleRequest) SetVmRole(v bool) {
 }
 
 // GetConfigTemplate returns the ConfigTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkDeviceRoleRequest) GetConfigTemplate() int32 {
+func (o *PatchedBulkDeviceRoleRequest) GetConfigTemplate() int64 {
 	if o == nil || IsNil(o.ConfigTemplate.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ConfigTemplate.Get()
@@ -222,7 +222,7 @@ func (o *PatchedBulkDeviceRoleRequest) GetConfigTemplate() int32 {
 // GetConfigTemplateOk returns a tuple with the ConfigTemplate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkDeviceRoleRequest) GetConfigTemplateOk() (*int32, bool) {
+func (o *PatchedBulkDeviceRoleRequest) GetConfigTemplateOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -238,8 +238,8 @@ func (o *PatchedBulkDeviceRoleRequest) HasConfigTemplate() bool {
 	return false
 }
 
-// SetConfigTemplate gets a reference to the given NullableInt32 and assigns it to the ConfigTemplate field.
-func (o *PatchedBulkDeviceRoleRequest) SetConfigTemplate(v int32) {
+// SetConfigTemplate gets a reference to the given NullableInt64 and assigns it to the ConfigTemplate field.
+func (o *PatchedBulkDeviceRoleRequest) SetConfigTemplate(v int64) {
 	o.ConfigTemplate.Set(&v)
 }
 
@@ -393,9 +393,9 @@ func (o *PatchedBulkDeviceRoleRequest) SetCustomFields(v map[string]interface{})
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkDeviceRoleRequest) GetOwner() int32 {
+func (o *PatchedBulkDeviceRoleRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -404,7 +404,7 @@ func (o *PatchedBulkDeviceRoleRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkDeviceRoleRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkDeviceRoleRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -420,8 +420,8 @@ func (o *PatchedBulkDeviceRoleRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkDeviceRoleRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkDeviceRoleRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -118,6 +118,18 @@ func TestAccIkePolicy_basic(t *testing.T) {
 	})
 }
 
+func TestAccIkePolicy_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_ike_policy",
+		APIPath:      "/api/vpn/ike-policies/",
+		Configs: []string{
+			acctest.Render(t, ikePolicyTestConfigUpdate, name),
+			acctest.Render(t, ikePolicyTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_ike_policy", &resource.Sweeper{
 		Name:         "netbox_ike_policy",

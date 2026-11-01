@@ -23,8 +23,8 @@ var _ MappedNullable = &WritableIPAddressRequest{}
 // WritableIPAddressRequest Base serializer class for models inheriting from PrimaryModel.
 type WritableIPAddressRequest struct {
 	Address string        `json:"address"`
-	Vrf     NullableInt32 `json:"vrf,omitempty"`
-	Tenant  NullableInt32 `json:"tenant,omitempty"`
+	Vrf     NullableInt64 `json:"vrf,omitempty"`
+	Tenant  NullableInt64 `json:"tenant,omitempty"`
 	// The operational status of this IP  * `active` - Active * `reserved` - Reserved * `deprecated` - Deprecated * `dhcp` - DHCP * `slaac` - SLAAC
 	Status *string `json:"status,omitempty"`
 	// The functional role of this IP  * `loopback` - Loopback * `secondary` - Secondary * `anycast` - Anycast * `vip` - VIP * `vrrp` - VRRP * `hsrp` - HSRP * `glbp` - GLBP * `carp` - CARP
@@ -32,11 +32,11 @@ type WritableIPAddressRequest struct {
 	AssignedObjectType NullableString `json:"assigned_object_type,omitempty"`
 	AssignedObjectId   NullableInt64  `json:"assigned_object_id,omitempty"`
 	// The IP for which this address is the \"outside\" IP
-	NatInside NullableInt32 `json:"nat_inside,omitempty"`
+	NatInside NullableInt64 `json:"nat_inside,omitempty"`
 	// Hostname or FQDN (not case-sensitive)
 	DnsName              *string                `json:"dns_name,omitempty" validate:"regexp=^([0-9A-Za-z_-]+|\\*)(\\.[0-9A-Za-z_-]+)*\\.?$"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -88,9 +88,9 @@ func (o *WritableIPAddressRequest) SetAddress(v string) {
 }
 
 // GetVrf returns the Vrf field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableIPAddressRequest) GetVrf() int32 {
+func (o *WritableIPAddressRequest) GetVrf() int64 {
 	if o == nil || IsNil(o.Vrf.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Vrf.Get()
@@ -99,7 +99,7 @@ func (o *WritableIPAddressRequest) GetVrf() int32 {
 // GetVrfOk returns a tuple with the Vrf field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableIPAddressRequest) GetVrfOk() (*int32, bool) {
+func (o *WritableIPAddressRequest) GetVrfOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -115,8 +115,8 @@ func (o *WritableIPAddressRequest) HasVrf() bool {
 	return false
 }
 
-// SetVrf gets a reference to the given NullableInt32 and assigns it to the Vrf field.
-func (o *WritableIPAddressRequest) SetVrf(v int32) {
+// SetVrf gets a reference to the given NullableInt64 and assigns it to the Vrf field.
+func (o *WritableIPAddressRequest) SetVrf(v int64) {
 	o.Vrf.Set(&v)
 }
 
@@ -131,9 +131,9 @@ func (o *WritableIPAddressRequest) UnsetVrf() {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableIPAddressRequest) GetTenant() int32 {
+func (o *WritableIPAddressRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -142,7 +142,7 @@ func (o *WritableIPAddressRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableIPAddressRequest) GetTenantOk() (*int32, bool) {
+func (o *WritableIPAddressRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -158,8 +158,8 @@ func (o *WritableIPAddressRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *WritableIPAddressRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *WritableIPAddressRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -335,9 +335,9 @@ func (o *WritableIPAddressRequest) UnsetAssignedObjectId() {
 }
 
 // GetNatInside returns the NatInside field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableIPAddressRequest) GetNatInside() int32 {
+func (o *WritableIPAddressRequest) GetNatInside() int64 {
 	if o == nil || IsNil(o.NatInside.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.NatInside.Get()
@@ -346,7 +346,7 @@ func (o *WritableIPAddressRequest) GetNatInside() int32 {
 // GetNatInsideOk returns a tuple with the NatInside field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableIPAddressRequest) GetNatInsideOk() (*int32, bool) {
+func (o *WritableIPAddressRequest) GetNatInsideOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -362,8 +362,8 @@ func (o *WritableIPAddressRequest) HasNatInside() bool {
 	return false
 }
 
-// SetNatInside gets a reference to the given NullableInt32 and assigns it to the NatInside field.
-func (o *WritableIPAddressRequest) SetNatInside(v int32) {
+// SetNatInside gets a reference to the given NullableInt64 and assigns it to the NatInside field.
+func (o *WritableIPAddressRequest) SetNatInside(v int64) {
 	o.NatInside.Set(&v)
 }
 
@@ -442,9 +442,9 @@ func (o *WritableIPAddressRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *WritableIPAddressRequest) GetOwner() int32 {
+func (o *WritableIPAddressRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -453,7 +453,7 @@ func (o *WritableIPAddressRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *WritableIPAddressRequest) GetOwnerOk() (*int32, bool) {
+func (o *WritableIPAddressRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -469,8 +469,8 @@ func (o *WritableIPAddressRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *WritableIPAddressRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *WritableIPAddressRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

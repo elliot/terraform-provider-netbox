@@ -84,6 +84,18 @@ func TestAccExportTemplate_basic(t *testing.T) {
 	})
 }
 
+func TestAccExportTemplate_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_export_template",
+		APIPath:      "/api/extras/export-templates/",
+		Configs: []string{
+			acctest.Render(t, exportTemplateTestConfigUpdate, name),
+			acctest.Render(t, exportTemplateTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_export_template", &resource.Sweeper{
 		Name:         "netbox_export_template",

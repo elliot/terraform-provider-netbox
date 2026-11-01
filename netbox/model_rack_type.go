@@ -23,7 +23,7 @@ var _ MappedNullable = &RackType{}
 
 // RackType Base serializer class for models inheriting from PrimaryModel.
 type RackType struct {
-	Id           int32              `json:"id"`
+	Id           int64              `json:"id"`
 	Url          *string            `json:"url,omitempty"`
 	DisplayUrl   *string            `json:"display_url,omitempty"`
 	Display      *string            `json:"display,omitempty"`
@@ -61,7 +61,7 @@ type RackType struct {
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	Created              NullableTime           `json:"created,omitempty"`
 	LastUpdated          NullableTime           `json:"last_updated,omitempty"`
-	RackCount            *int32                 `json:"rack_count,omitempty"`
+	RackCount            *int64                 `json:"rack_count,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -71,7 +71,7 @@ type _RackType RackType
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRackType(id int32) *RackType {
+func NewRackType(id int64) *RackType {
 	this := RackType{}
 	this.Id = id
 	return &this
@@ -86,9 +86,9 @@ func NewRackTypeWithDefaults() *RackType {
 }
 
 // GetId returns the Id field value
-func (o *RackType) GetId() int32 {
+func (o *RackType) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -97,7 +97,7 @@ func (o *RackType) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *RackType) GetIdOk() (*int32, bool) {
+func (o *RackType) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -105,7 +105,7 @@ func (o *RackType) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *RackType) SetId(v int32) {
+func (o *RackType) SetId(v int64) {
 	o.Id = v
 }
 
@@ -1149,9 +1149,9 @@ func (o *RackType) UnsetLastUpdated() {
 }
 
 // GetRackCount returns the RackCount field value if set, zero value otherwise.
-func (o *RackType) GetRackCount() int32 {
+func (o *RackType) GetRackCount() int64 {
 	if o == nil || IsNil(o.RackCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.RackCount
@@ -1159,7 +1159,7 @@ func (o *RackType) GetRackCount() int32 {
 
 // GetRackCountOk returns a tuple with the RackCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *RackType) GetRackCountOk() (*int32, bool) {
+func (o *RackType) GetRackCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.RackCount) {
 		return nil, false
 	}
@@ -1175,8 +1175,8 @@ func (o *RackType) HasRackCount() bool {
 	return false
 }
 
-// SetRackCount gets a reference to the given int32 and assigns it to the RackCount field.
-func (o *RackType) SetRackCount(v int32) {
+// SetRackCount gets a reference to the given int64 and assigns it to the RackCount field.
+func (o *RackType) SetRackCount(v int64) {
 	o.RackCount = &v
 }
 

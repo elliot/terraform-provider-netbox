@@ -206,7 +206,7 @@ func (r *UserResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -237,7 +237,7 @@ func (r *UserResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -267,7 +267,7 @@ func (r *UserResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -306,7 +306,7 @@ func userToCreate(ctx context.Context, plan *UserModel, diags *diag.Diagnostics)
 		body.SetLastLogin(conv.Time(plan.LastLogin, diags))
 	}
 	if conv.Known(plan.GroupIds) {
-		body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+		body.SetGroups(conv.Int64s(ctx, plan.GroupIds, diags))
 	}
 	return body
 }
@@ -356,7 +356,7 @@ func userToPatch(ctx context.Context, plan, state *UserModel, diags *diag.Diagno
 	}
 	if !plan.GroupIds.Equal(state.GroupIds) {
 		if conv.Known(plan.GroupIds) {
-			body.SetGroups(conv.Int32s(ctx, plan.GroupIds, diags))
+			body.SetGroups(conv.Int64s(ctx, plan.GroupIds, diags))
 		}
 	}
 	return body

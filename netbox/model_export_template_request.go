@@ -37,10 +37,10 @@ type ExportTemplateRequest struct {
 	FileExtension *string `json:"file_extension,omitempty"`
 	// Download file as attachment
 	AsAttachment *bool  `json:"as_attachment,omitempty"`
-	DataSource   *int32 `json:"data_source,omitempty"`
+	DataSource   *int64 `json:"data_source,omitempty"`
 	// Enable automatic synchronization of data when the data file is updated
 	AutoSyncEnabled      *bool         `json:"auto_sync_enabled,omitempty"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -332,9 +332,9 @@ func (o *ExportTemplateRequest) SetAsAttachment(v bool) {
 }
 
 // GetDataSource returns the DataSource field value if set, zero value otherwise.
-func (o *ExportTemplateRequest) GetDataSource() int32 {
+func (o *ExportTemplateRequest) GetDataSource() int64 {
 	if o == nil || IsNil(o.DataSource) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DataSource
@@ -342,7 +342,7 @@ func (o *ExportTemplateRequest) GetDataSource() int32 {
 
 // GetDataSourceOk returns a tuple with the DataSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ExportTemplateRequest) GetDataSourceOk() (*int32, bool) {
+func (o *ExportTemplateRequest) GetDataSourceOk() (*int64, bool) {
 	if o == nil || IsNil(o.DataSource) {
 		return nil, false
 	}
@@ -358,8 +358,8 @@ func (o *ExportTemplateRequest) HasDataSource() bool {
 	return false
 }
 
-// SetDataSource gets a reference to the given int32 and assigns it to the DataSource field.
-func (o *ExportTemplateRequest) SetDataSource(v int32) {
+// SetDataSource gets a reference to the given int64 and assigns it to the DataSource field.
+func (o *ExportTemplateRequest) SetDataSource(v int64) {
 	o.DataSource = &v
 }
 
@@ -396,9 +396,9 @@ func (o *ExportTemplateRequest) SetAutoSyncEnabled(v bool) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ExportTemplateRequest) GetOwner() int32 {
+func (o *ExportTemplateRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -407,7 +407,7 @@ func (o *ExportTemplateRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ExportTemplateRequest) GetOwnerOk() (*int32, bool) {
+func (o *ExportTemplateRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -423,8 +423,8 @@ func (o *ExportTemplateRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *ExportTemplateRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *ExportTemplateRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

@@ -69,7 +69,7 @@ Read-Only:
 - `length` (Number) Length. Defaults to the NetBox server default when omitted.
 - `length_unit` (String) Length Unit. Valid values: `km`, `m`, `cm`, `mi`, `ft`, `in`. Defaults to the NetBox server default when omitted.
 - `owner_id` (Number) ID of the Owner (`netbox_owner`).
-- `profile` (String) Profile. Valid values: `single-1c1p`, `single-1c2p`, `single-1c4p`, `single-1c6p`, `single-1c8p`, `single-1c12p`, `single-1c16p`, `trunk-2c1p`, `trunk-2c2p`, `trunk-2c4p`, `trunk-2c4p-shuffle`, `trunk-2c6p`, `trunk-2c8p`, `trunk-2c12p`, `trunk-4c1p`, `trunk-4c2p`, `trunk-4c4p`, `trunk-4c4p-shuffle`, `trunk-4c6p`, `trunk-4c8p`, `trunk-8c4p`, `breakout-1c2p-2c1p`, `breakout-1c4p-4c1p`, `breakout-1c6p-6c1p`, `breakout-1c8p-8c1p`, `breakout-2c4p-8c1p-shuffle`. Defaults to the NetBox server default when omitted.
+- `profile` (String) Profile. Valid values: `single-1c1p`, `single-1c2p`, `single-1c4p`, `single-1c6p`, `single-1c8p`, `single-1c12p`, `single-1c16p`, `trunk-2c1p`, `trunk-2c2p`, `trunk-2c4p`, `trunk-2c4p-shuffle`, `trunk-2c6p`, `trunk-2c8p`, `trunk-2c12p`, `trunk-4c1p`, `trunk-4c2p`, `trunk-4c4p`, `trunk-4c4p-shuffle`, `trunk-4c6p`, `trunk-4c8p`, `trunk-8c1p`, `trunk-8c4p`, `trunk-12c1p`, `trunk-24c1p`, `breakout-1c2p-2c1p`, `breakout-1c4p-4c1p`, `breakout-1c6p-6c1p`, `breakout-1c8p-8c1p`, `breakout-2c4p-8c1p-shuffle`. Defaults to the NetBox server default when omitted.
 - `status` (String) Status. Valid values: `connected`, `planned`, `decommissioning`. Defaults to the NetBox server default when omitted.
 - `tags` (Set of String) Slugs of the tags assigned to this object. Defaults to an empty set.
 - `tenant_id` (Number) ID of the Tenant (`netbox_tenant`).

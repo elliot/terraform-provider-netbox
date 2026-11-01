@@ -22,8 +22,8 @@ var _ MappedNullable = &PatchedBulkRackTypeRequest{}
 
 // PatchedBulkRackTypeRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedBulkRackTypeRequest struct {
-	Id           int32   `json:"id"`
-	Manufacturer *int32  `json:"manufacturer,omitempty"`
+	Id           int64   `json:"id"`
+	Manufacturer *int64  `json:"manufacturer,omitempty"`
 	Model        *string `json:"model,omitempty"`
 	Slug         *string `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description  *string `json:"description,omitempty"`
@@ -56,7 +56,7 @@ type PatchedBulkRackTypeRequest struct {
 	CoolingCapability NullableString `json:"cooling_capability,omitempty"`
 	// Cooling capacity (kW)
 	CoolingCapacity      NullableFloat64        `json:"cooling_capacity,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -69,7 +69,7 @@ type _PatchedBulkRackTypeRequest PatchedBulkRackTypeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkRackTypeRequest(id int32) *PatchedBulkRackTypeRequest {
+func NewPatchedBulkRackTypeRequest(id int64) *PatchedBulkRackTypeRequest {
 	this := PatchedBulkRackTypeRequest{}
 	this.Id = id
 	return &this
@@ -84,9 +84,9 @@ func NewPatchedBulkRackTypeRequestWithDefaults() *PatchedBulkRackTypeRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkRackTypeRequest) GetId() int32 {
+func (o *PatchedBulkRackTypeRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -95,7 +95,7 @@ func (o *PatchedBulkRackTypeRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkRackTypeRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkRackTypeRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -103,14 +103,14 @@ func (o *PatchedBulkRackTypeRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkRackTypeRequest) SetId(v int32) {
+func (o *PatchedBulkRackTypeRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetManufacturer returns the Manufacturer field value if set, zero value otherwise.
-func (o *PatchedBulkRackTypeRequest) GetManufacturer() int32 {
+func (o *PatchedBulkRackTypeRequest) GetManufacturer() int64 {
 	if o == nil || IsNil(o.Manufacturer) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Manufacturer
@@ -118,7 +118,7 @@ func (o *PatchedBulkRackTypeRequest) GetManufacturer() int32 {
 
 // GetManufacturerOk returns a tuple with the Manufacturer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkRackTypeRequest) GetManufacturerOk() (*int32, bool) {
+func (o *PatchedBulkRackTypeRequest) GetManufacturerOk() (*int64, bool) {
 	if o == nil || IsNil(o.Manufacturer) {
 		return nil, false
 	}
@@ -134,8 +134,8 @@ func (o *PatchedBulkRackTypeRequest) HasManufacturer() bool {
 	return false
 }
 
-// SetManufacturer gets a reference to the given int32 and assigns it to the Manufacturer field.
-func (o *PatchedBulkRackTypeRequest) SetManufacturer(v int32) {
+// SetManufacturer gets a reference to the given int64 and assigns it to the Manufacturer field.
+func (o *PatchedBulkRackTypeRequest) SetManufacturer(v int64) {
 	o.Manufacturer = &v
 }
 
@@ -826,9 +826,9 @@ func (o *PatchedBulkRackTypeRequest) UnsetCoolingCapacity() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkRackTypeRequest) GetOwner() int32 {
+func (o *PatchedBulkRackTypeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -837,7 +837,7 @@ func (o *PatchedBulkRackTypeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkRackTypeRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkRackTypeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -853,8 +853,8 @@ func (o *PatchedBulkRackTypeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkRackTypeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkRackTypeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

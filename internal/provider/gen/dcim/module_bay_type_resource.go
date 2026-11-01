@@ -196,7 +196,7 @@ func (r *ModuleBayTypeResource) Read(ctx context.Context, req resource.ReadReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -227,7 +227,7 @@ func (r *ModuleBayTypeResource) Update(ctx context.Context, req resource.UpdateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -257,7 +257,7 @@ func (r *ModuleBayTypeResource) Delete(ctx context.Context, req resource.DeleteR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -279,7 +279,7 @@ func moduleBayTypeToCreate(ctx context.Context, plan *ModuleBayTypeModel, cf *cu
 	const objectType = "dcim.modulebaytype"
 	body := netbox.NewModuleBayTypeRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.ManufacturerId) {
-		body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+		body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 	}
 	if !plan.Color.IsUnknown() {
 		body.SetColor(plan.Color.ValueString())
@@ -288,7 +288,7 @@ func moduleBayTypeToCreate(ctx context.Context, plan *ModuleBayTypeModel, cf *cu
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -320,7 +320,7 @@ func moduleBayTypeToPatch(ctx context.Context, plan, state *ModuleBayTypeModel, 
 		if plan.ManufacturerId.IsNull() {
 			body.SetManufacturerNil()
 		} else if !plan.ManufacturerId.IsUnknown() {
-			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+			body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 		}
 	}
 	if !plan.Color.Equal(state.Color) {
@@ -337,7 +337,7 @@ func moduleBayTypeToPatch(ctx context.Context, plan, state *ModuleBayTypeModel, 
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

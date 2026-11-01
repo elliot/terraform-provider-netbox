@@ -181,7 +181,7 @@ func (r *RouteTargetResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -212,7 +212,7 @@ func (r *RouteTargetResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -242,7 +242,7 @@ func (r *RouteTargetResource) Delete(ctx context.Context, req resource.DeleteReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -264,13 +264,13 @@ func routeTargetToCreate(ctx context.Context, plan *RouteTargetModel, cf *custom
 	const objectType = "ipam.routetarget"
 	body := netbox.NewRouteTargetRequest(plan.Name.ValueString())
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -297,7 +297,7 @@ func routeTargetToPatch(ctx context.Context, plan, state *RouteTargetModel, cf *
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -309,7 +309,7 @@ func routeTargetToPatch(ctx context.Context, plan, state *RouteTargetModel, cf *
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

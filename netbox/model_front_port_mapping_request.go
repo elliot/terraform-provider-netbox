@@ -23,7 +23,7 @@ var _ MappedNullable = &FrontPortMappingRequest{}
 // FrontPortMappingRequest struct for FrontPortMappingRequest
 type FrontPortMappingRequest struct {
 	Position             int32  `json:"position"`
-	RearPort             int32  `json:"rear_port"`
+	RearPort             int64  `json:"rear_port"`
 	RearPortPosition     *int32 `json:"rear_port_position,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -34,7 +34,7 @@ type _FrontPortMappingRequest FrontPortMappingRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFrontPortMappingRequest(position int32, rearPort int32) *FrontPortMappingRequest {
+func NewFrontPortMappingRequest(position int32, rearPort int64) *FrontPortMappingRequest {
 	this := FrontPortMappingRequest{}
 	this.Position = position
 	this.RearPort = rearPort
@@ -78,9 +78,9 @@ func (o *FrontPortMappingRequest) SetPosition(v int32) {
 }
 
 // GetRearPort returns the RearPort field value
-func (o *FrontPortMappingRequest) GetRearPort() int32 {
+func (o *FrontPortMappingRequest) GetRearPort() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -89,7 +89,7 @@ func (o *FrontPortMappingRequest) GetRearPort() int32 {
 
 // GetRearPortOk returns a tuple with the RearPort field value
 // and a boolean to check if the value has been set.
-func (o *FrontPortMappingRequest) GetRearPortOk() (*int32, bool) {
+func (o *FrontPortMappingRequest) GetRearPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -97,7 +97,7 @@ func (o *FrontPortMappingRequest) GetRearPortOk() (*int32, bool) {
 }
 
 // SetRearPort sets field value
-func (o *FrontPortMappingRequest) SetRearPort(v int32) {
+func (o *FrontPortMappingRequest) SetRearPort(v int64) {
 	o.RearPort = v
 }
 

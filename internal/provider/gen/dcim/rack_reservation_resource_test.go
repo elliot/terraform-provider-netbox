@@ -118,6 +118,18 @@ func TestAccRackReservation_basic(t *testing.T) {
 	})
 }
 
+func TestAccRackReservation_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_rack_reservation",
+		APIPath:      "/api/dcim/rack-reservations/",
+		Configs: []string{
+			acctest.Render(t, rackReservationTestConfigUpdate, name),
+			acctest.Render(t, rackReservationTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_rack_reservation", &resource.Sweeper{
 		Name:         "netbox_rack_reservation",

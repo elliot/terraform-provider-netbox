@@ -23,7 +23,7 @@ var _ MappedNullable = &Provider{}
 
 // Provider Base serializer class for models inheriting from PrimaryModel.
 type Provider struct {
-	Id         int32   `json:"id"`
+	Id         int64   `json:"id"`
 	Url        *string `json:"url,omitempty"`
 	DisplayUrl *string `json:"display_url,omitempty"`
 	Display    *string `json:"display,omitempty"`
@@ -49,7 +49,7 @@ type _Provider Provider
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProvider(id int32) *Provider {
+func NewProvider(id int64) *Provider {
 	this := Provider{}
 	this.Id = id
 	return &this
@@ -64,9 +64,9 @@ func NewProviderWithDefaults() *Provider {
 }
 
 // GetId returns the Id field value
-func (o *Provider) GetId() int32 {
+func (o *Provider) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -75,7 +75,7 @@ func (o *Provider) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *Provider) GetIdOk() (*int32, bool) {
+func (o *Provider) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -83,7 +83,7 @@ func (o *Provider) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *Provider) SetId(v int32) {
+func (o *Provider) SetId(v int64) {
 	o.Id = v
 }
 

@@ -106,6 +106,18 @@ func TestAccCluster_basic(t *testing.T) {
 	})
 }
 
+func TestAccCluster_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_cluster",
+		APIPath:      "/api/virtualization/clusters/",
+		Configs: []string{
+			acctest.Render(t, clusterTestConfigUpdate, name),
+			acctest.Render(t, clusterTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_cluster", &resource.Sweeper{
 		Name:         "netbox_cluster",

@@ -170,7 +170,7 @@ func (r *DeviceBayTemplateResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -201,7 +201,7 @@ func (r *DeviceBayTemplateResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -231,7 +231,7 @@ func (r *DeviceBayTemplateResource) Delete(ctx context.Context, req resource.Del
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -250,7 +250,7 @@ func (r *DeviceBayTemplateResource) ImportState(ctx context.Context, req resourc
 
 // deviceBayTemplateToCreate builds the DeviceBayTemplateRequest request body from the plan.
 func deviceBayTemplateToCreate(ctx context.Context, plan *DeviceBayTemplateModel, diags *diag.Diagnostics) *netbox.DeviceBayTemplateRequest {
-	body := netbox.NewDeviceBayTemplateRequest(conv.Int32(plan.DeviceTypeId), plan.Name.ValueString())
+	body := netbox.NewDeviceBayTemplateRequest(plan.DeviceTypeId.ValueInt64(), plan.Name.ValueString())
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
 	}
@@ -268,7 +268,7 @@ func deviceBayTemplateToPatch(ctx context.Context, plan, state *DeviceBayTemplat
 	body := netbox.NewPatchedDeviceBayTemplateRequest()
 	if !plan.DeviceTypeId.Equal(state.DeviceTypeId) {
 		if conv.Known(plan.DeviceTypeId) {
-			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+			body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {

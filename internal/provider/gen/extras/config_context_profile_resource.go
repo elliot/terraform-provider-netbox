@@ -184,7 +184,7 @@ func (r *ConfigContextProfileResource) Read(ctx context.Context, req resource.Re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -215,7 +215,7 @@ func (r *ConfigContextProfileResource) Update(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -256,7 +256,7 @@ func (r *ConfigContextProfileResource) Delete(ctx context.Context, req resource.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -286,13 +286,13 @@ func configContextProfileToCreate(ctx context.Context, plan *ConfigContextProfil
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
 	}
 	if conv.Known(plan.DataSourceId) {
-		body.SetDataSource(conv.Int32(plan.DataSourceId))
+		body.SetDataSource(plan.DataSourceId.ValueInt64())
 	}
 	return body
 }
@@ -324,7 +324,7 @@ func configContextProfileToPatch(ctx context.Context, plan, state *ConfigContext
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -334,7 +334,7 @@ func configContextProfileToPatch(ctx context.Context, plan, state *ConfigContext
 	}
 	if !plan.DataSourceId.Equal(state.DataSourceId) {
 		if conv.Known(plan.DataSourceId) {
-			body.SetDataSource(conv.Int32(plan.DataSourceId))
+			body.SetDataSource(plan.DataSourceId.ValueInt64())
 		}
 	}
 	return body

@@ -23,7 +23,7 @@ var _ MappedNullable = &L2VPN{}
 
 // L2VPN Base serializer class for models inheriting from PrimaryModel.
 type L2VPN struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Url                  *string                `json:"url,omitempty"`
 	DisplayUrl           *string                `json:"display_url,omitempty"`
 	Display              *string                `json:"display,omitempty"`
@@ -51,7 +51,7 @@ type _L2VPN L2VPN
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewL2VPN(id int32) *L2VPN {
+func NewL2VPN(id int64) *L2VPN {
 	this := L2VPN{}
 	this.Id = id
 	return &this
@@ -66,9 +66,9 @@ func NewL2VPNWithDefaults() *L2VPN {
 }
 
 // GetId returns the Id field value
-func (o *L2VPN) GetId() int32 {
+func (o *L2VPN) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -77,7 +77,7 @@ func (o *L2VPN) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *L2VPN) GetIdOk() (*int32, bool) {
+func (o *L2VPN) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -85,7 +85,7 @@ func (o *L2VPN) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *L2VPN) SetId(v int32) {
+func (o *L2VPN) SetId(v int64) {
 	o.Id = v
 }
 

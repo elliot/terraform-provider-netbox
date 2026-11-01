@@ -322,7 +322,7 @@ func (r *RackTypeResource) Read(ctx context.Context, req resource.ReadRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -353,7 +353,7 @@ func (r *RackTypeResource) Update(ctx context.Context, req resource.UpdateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -383,7 +383,7 @@ func (r *RackTypeResource) Delete(ctx context.Context, req resource.DeleteReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -403,7 +403,7 @@ func (r *RackTypeResource) ImportState(ctx context.Context, req resource.ImportS
 // rackTypeToCreate builds the WritableRackTypeRequest request body from the plan.
 func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableRackTypeRequest {
 	const objectType = "dcim.racktype"
-	body := netbox.NewWritableRackTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString(), plan.Slug.ValueString(), plan.FormFactor.ValueString())
+	body := netbox.NewWritableRackTypeRequest(plan.ManufacturerId.ValueInt64(), plan.Model.ValueString(), plan.Slug.ValueString(), plan.FormFactor.ValueString())
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
@@ -450,7 +450,7 @@ func rackTypeToCreate(ctx context.Context, plan *RackTypeModel, cf *customfields
 		body.SetCoolingCapacity(plan.CoolingCapacity.ValueFloat64())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -470,7 +470,7 @@ func rackTypeToPatch(ctx context.Context, plan, state *RackTypeModel, cf *custom
 	body := netbox.NewPatchedWritableRackTypeRequest()
 	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
 		if conv.Known(plan.ManufacturerId) {
-			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+			body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 		}
 	}
 	if !plan.Model.Equal(state.Model) {
@@ -567,7 +567,7 @@ func rackTypeToPatch(ctx context.Context, plan, state *RackTypeModel, cf *custom
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

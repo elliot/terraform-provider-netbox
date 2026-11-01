@@ -109,6 +109,18 @@ func TestAccLocation_basic(t *testing.T) {
 	})
 }
 
+func TestAccLocation_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_location",
+		APIPath:      "/api/dcim/locations/",
+		Configs: []string{
+			acctest.Render(t, locationTestConfigUpdate, name),
+			acctest.Render(t, locationTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_location", &resource.Sweeper{
 		Name:         "netbox_location",

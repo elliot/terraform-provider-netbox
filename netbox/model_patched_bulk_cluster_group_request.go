@@ -22,11 +22,11 @@ var _ MappedNullable = &PatchedBulkClusterGroupRequest{}
 
 // PatchedBulkClusterGroupRequest Base serializer class for models inheriting from OrganizationalModel.
 type PatchedBulkClusterGroupRequest struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Name                 *string                `json:"name,omitempty"`
 	Slug                 *string                `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -39,7 +39,7 @@ type _PatchedBulkClusterGroupRequest PatchedBulkClusterGroupRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkClusterGroupRequest(id int32) *PatchedBulkClusterGroupRequest {
+func NewPatchedBulkClusterGroupRequest(id int64) *PatchedBulkClusterGroupRequest {
 	this := PatchedBulkClusterGroupRequest{}
 	this.Id = id
 	return &this
@@ -54,9 +54,9 @@ func NewPatchedBulkClusterGroupRequestWithDefaults() *PatchedBulkClusterGroupReq
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkClusterGroupRequest) GetId() int32 {
+func (o *PatchedBulkClusterGroupRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *PatchedBulkClusterGroupRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkClusterGroupRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkClusterGroupRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *PatchedBulkClusterGroupRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkClusterGroupRequest) SetId(v int32) {
+func (o *PatchedBulkClusterGroupRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -174,9 +174,9 @@ func (o *PatchedBulkClusterGroupRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkClusterGroupRequest) GetOwner() int32 {
+func (o *PatchedBulkClusterGroupRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -185,7 +185,7 @@ func (o *PatchedBulkClusterGroupRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkClusterGroupRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkClusterGroupRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -201,8 +201,8 @@ func (o *PatchedBulkClusterGroupRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkClusterGroupRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkClusterGroupRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

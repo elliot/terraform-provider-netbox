@@ -22,12 +22,12 @@ var _ MappedNullable = &BulkOwnerRequest{}
 
 // BulkOwnerRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkOwnerRequest struct {
-	Id                   int32         `json:"id"`
+	Id                   int64         `json:"id"`
 	Name                 string        `json:"name"`
-	Group                NullableInt32 `json:"group"`
+	Group                NullableInt64 `json:"group"`
 	Description          *string       `json:"description,omitempty"`
-	UserGroups           []int32       `json:"user_groups,omitempty"`
-	Users                []int32       `json:"users,omitempty"`
+	UserGroups           []int64       `json:"user_groups,omitempty"`
+	Users                []int64       `json:"users,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -37,7 +37,7 @@ type _BulkOwnerRequest BulkOwnerRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkOwnerRequest(id int32, name string, group NullableInt32) *BulkOwnerRequest {
+func NewBulkOwnerRequest(id int64, name string, group NullableInt64) *BulkOwnerRequest {
 	this := BulkOwnerRequest{}
 	this.Id = id
 	this.Name = name
@@ -54,9 +54,9 @@ func NewBulkOwnerRequestWithDefaults() *BulkOwnerRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkOwnerRequest) GetId() int32 {
+func (o *BulkOwnerRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -65,7 +65,7 @@ func (o *BulkOwnerRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkOwnerRequest) GetIdOk() (*int32, bool) {
+func (o *BulkOwnerRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -73,7 +73,7 @@ func (o *BulkOwnerRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkOwnerRequest) SetId(v int32) {
+func (o *BulkOwnerRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -102,10 +102,10 @@ func (o *BulkOwnerRequest) SetName(v string) {
 }
 
 // GetGroup returns the Group field value
-// If the value is explicit nil, the zero value for int32 will be returned
-func (o *BulkOwnerRequest) GetGroup() int32 {
+// If the value is explicit nil, the zero value for int64 will be returned
+func (o *BulkOwnerRequest) GetGroup() int64 {
 	if o == nil || o.Group.Get() == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -115,7 +115,7 @@ func (o *BulkOwnerRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkOwnerRequest) GetGroupOk() (*int32, bool) {
+func (o *BulkOwnerRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -123,7 +123,7 @@ func (o *BulkOwnerRequest) GetGroupOk() (*int32, bool) {
 }
 
 // SetGroup sets field value
-func (o *BulkOwnerRequest) SetGroup(v int32) {
+func (o *BulkOwnerRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -160,9 +160,9 @@ func (o *BulkOwnerRequest) SetDescription(v string) {
 }
 
 // GetUserGroups returns the UserGroups field value if set, zero value otherwise.
-func (o *BulkOwnerRequest) GetUserGroups() []int32 {
+func (o *BulkOwnerRequest) GetUserGroups() []int64 {
 	if o == nil || IsNil(o.UserGroups) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.UserGroups
@@ -170,7 +170,7 @@ func (o *BulkOwnerRequest) GetUserGroups() []int32 {
 
 // GetUserGroupsOk returns a tuple with the UserGroups field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkOwnerRequest) GetUserGroupsOk() ([]int32, bool) {
+func (o *BulkOwnerRequest) GetUserGroupsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.UserGroups) {
 		return nil, false
 	}
@@ -186,15 +186,15 @@ func (o *BulkOwnerRequest) HasUserGroups() bool {
 	return false
 }
 
-// SetUserGroups gets a reference to the given []int32 and assigns it to the UserGroups field.
-func (o *BulkOwnerRequest) SetUserGroups(v []int32) {
+// SetUserGroups gets a reference to the given []int64 and assigns it to the UserGroups field.
+func (o *BulkOwnerRequest) SetUserGroups(v []int64) {
 	o.UserGroups = v
 }
 
 // GetUsers returns the Users field value if set, zero value otherwise.
-func (o *BulkOwnerRequest) GetUsers() []int32 {
+func (o *BulkOwnerRequest) GetUsers() []int64 {
 	if o == nil || IsNil(o.Users) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Users
@@ -202,7 +202,7 @@ func (o *BulkOwnerRequest) GetUsers() []int32 {
 
 // GetUsersOk returns a tuple with the Users field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkOwnerRequest) GetUsersOk() ([]int32, bool) {
+func (o *BulkOwnerRequest) GetUsersOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Users) {
 		return nil, false
 	}
@@ -218,8 +218,8 @@ func (o *BulkOwnerRequest) HasUsers() bool {
 	return false
 }
 
-// SetUsers gets a reference to the given []int32 and assigns it to the Users field.
-func (o *BulkOwnerRequest) SetUsers(v []int32) {
+// SetUsers gets a reference to the given []int64 and assigns it to the Users field.
+func (o *BulkOwnerRequest) SetUsers(v []int64) {
 	o.Users = v
 }
 

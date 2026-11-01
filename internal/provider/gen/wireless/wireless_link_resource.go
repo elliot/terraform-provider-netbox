@@ -262,7 +262,7 @@ func (r *WirelessLinkResource) Read(ctx context.Context, req resource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -293,7 +293,7 @@ func (r *WirelessLinkResource) Update(ctx context.Context, req resource.UpdateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -323,7 +323,7 @@ func (r *WirelessLinkResource) Delete(ctx context.Context, req resource.DeleteRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -343,7 +343,7 @@ func (r *WirelessLinkResource) ImportState(ctx context.Context, req resource.Imp
 // wirelessLinkToCreate builds the WritableWirelessLinkRequest request body from the plan.
 func wirelessLinkToCreate(ctx context.Context, plan *WirelessLinkModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableWirelessLinkRequest {
 	const objectType = "wireless.wirelesslink"
-	body := netbox.NewWritableWirelessLinkRequest(conv.Int32(plan.InterfaceAId), conv.Int32(plan.InterfaceBId))
+	body := netbox.NewWritableWirelessLinkRequest(plan.InterfaceAId.ValueInt64(), plan.InterfaceBId.ValueInt64())
 	if !plan.Ssid.IsUnknown() {
 		body.SetSsid(plan.Ssid.ValueString())
 	}
@@ -351,7 +351,7 @@ func wirelessLinkToCreate(ctx context.Context, plan *WirelessLinkModel, cf *cust
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.AuthType) {
 		body.SetAuthType(plan.AuthType.ValueString())
@@ -372,7 +372,7 @@ func wirelessLinkToCreate(ctx context.Context, plan *WirelessLinkModel, cf *cust
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -392,12 +392,12 @@ func wirelessLinkToPatch(ctx context.Context, plan, state *WirelessLinkModel, cf
 	body := netbox.NewPatchedWritableWirelessLinkRequest()
 	if !plan.InterfaceAId.Equal(state.InterfaceAId) {
 		if conv.Known(plan.InterfaceAId) {
-			body.SetInterfaceA(conv.Int32(plan.InterfaceAId))
+			body.SetInterfaceA(plan.InterfaceAId.ValueInt64())
 		}
 	}
 	if !plan.InterfaceBId.Equal(state.InterfaceBId) {
 		if conv.Known(plan.InterfaceBId) {
-			body.SetInterfaceB(conv.Int32(plan.InterfaceBId))
+			body.SetInterfaceB(plan.InterfaceBId.ValueInt64())
 		}
 	}
 	if !plan.Ssid.Equal(state.Ssid) {
@@ -414,7 +414,7 @@ func wirelessLinkToPatch(ctx context.Context, plan, state *WirelessLinkModel, cf
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.AuthType.Equal(state.AuthType) {
@@ -451,7 +451,7 @@ func wirelessLinkToPatch(ctx context.Context, plan, state *WirelessLinkModel, cf
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefContactRole{}
 
 // BriefContactRole Base serializer class for models inheriting from OrganizationalModel.
 type BriefContactRole struct {
-	Id                   int32   `json:"id"`
+	Id                   int64   `json:"id"`
 	Url                  *string `json:"url,omitempty"`
 	Display              *string `json:"display,omitempty"`
 	Name                 *string `json:"name,omitempty"`
@@ -37,7 +37,7 @@ type _BriefContactRole BriefContactRole
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefContactRole(id int32) *BriefContactRole {
+func NewBriefContactRole(id int64) *BriefContactRole {
 	this := BriefContactRole{}
 	this.Id = id
 	return &this
@@ -52,9 +52,9 @@ func NewBriefContactRoleWithDefaults() *BriefContactRole {
 }
 
 // GetId returns the Id field value
-func (o *BriefContactRole) GetId() int32 {
+func (o *BriefContactRole) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -63,7 +63,7 @@ func (o *BriefContactRole) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BriefContactRole) GetIdOk() (*int32, bool) {
+func (o *BriefContactRole) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *BriefContactRole) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BriefContactRole) SetId(v int32) {
+func (o *BriefContactRole) SetId(v int64) {
 	o.Id = v
 }
 

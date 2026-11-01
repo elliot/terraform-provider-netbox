@@ -236,7 +236,7 @@ func (r *L2vpnResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -267,7 +267,7 @@ func (r *L2vpnResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -297,7 +297,7 @@ func (r *L2vpnResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -325,22 +325,22 @@ func l2vpnToCreate(ctx context.Context, plan *L2vpnModel, cf *customfields.Cache
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.ImportTargetIds) {
-		body.SetImportTargets(conv.Int32s(ctx, plan.ImportTargetIds, diags))
+		body.SetImportTargets(conv.Int64s(ctx, plan.ImportTargetIds, diags))
 	}
 	if conv.Known(plan.ExportTargetIds) {
-		body.SetExportTargets(conv.Int32s(ctx, plan.ExportTargetIds, diags))
+		body.SetExportTargets(conv.Int64s(ctx, plan.ExportTargetIds, diags))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -382,12 +382,12 @@ func l2vpnToPatch(ctx context.Context, plan, state *L2vpnModel, cf *customfields
 	}
 	if !plan.ImportTargetIds.Equal(state.ImportTargetIds) {
 		if conv.Known(plan.ImportTargetIds) {
-			body.SetImportTargets(conv.Int32s(ctx, plan.ImportTargetIds, diags))
+			body.SetImportTargets(conv.Int64s(ctx, plan.ImportTargetIds, diags))
 		}
 	}
 	if !plan.ExportTargetIds.Equal(state.ExportTargetIds) {
 		if conv.Known(plan.ExportTargetIds) {
-			body.SetExportTargets(conv.Int32s(ctx, plan.ExportTargetIds, diags))
+			body.SetExportTargets(conv.Int64s(ctx, plan.ExportTargetIds, diags))
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -399,7 +399,7 @@ func l2vpnToPatch(ctx context.Context, plan, state *L2vpnModel, cf *customfields
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -411,7 +411,7 @@ func l2vpnToPatch(ctx context.Context, plan, state *L2vpnModel, cf *customfields
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

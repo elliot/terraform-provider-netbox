@@ -388,7 +388,7 @@ func (r *RackResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -419,7 +419,7 @@ func (r *RackResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -449,7 +449,7 @@ func (r *RackResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -469,24 +469,24 @@ func (r *RackResource) ImportState(ctx context.Context, req resource.ImportState
 // rackToCreate builds the WritableRackRequest request body from the plan.
 func rackToCreate(ctx context.Context, plan *RackModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableRackRequest {
 	const objectType = "dcim.rack"
-	body := netbox.NewWritableRackRequest(plan.Name.ValueString(), conv.Int32(plan.SiteId))
+	body := netbox.NewWritableRackRequest(plan.Name.ValueString(), plan.SiteId.ValueInt64())
 	if conv.Known(plan.FacilityId) {
 		body.SetFacilityId(plan.FacilityId.ValueString())
 	}
 	if conv.Known(plan.LocationId) {
-		body.SetLocation(conv.Int32(plan.LocationId))
+		body.SetLocation(plan.LocationId.ValueInt64())
 	}
 	if conv.Known(plan.GroupId) {
-		body.SetGroup(conv.Int32(plan.GroupId))
+		body.SetGroup(plan.GroupId.ValueInt64())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.RoleId) {
-		body.SetRole(conv.Int32(plan.RoleId))
+		body.SetRole(plan.RoleId.ValueInt64())
 	}
 	if !plan.Serial.IsUnknown() {
 		body.SetSerial(plan.Serial.ValueString())
@@ -495,7 +495,7 @@ func rackToCreate(ctx context.Context, plan *RackModel, cf *customfields.Cache, 
 		body.SetAssetTag(plan.AssetTag.ValueString())
 	}
 	if conv.Known(plan.RackTypeId) {
-		body.SetRackType(conv.Int32(plan.RackTypeId))
+		body.SetRackType(plan.RackTypeId.ValueInt64())
 	}
 	if conv.Known(plan.FormFactor) {
 		body.SetFormFactor(plan.FormFactor.ValueString())
@@ -549,7 +549,7 @@ func rackToCreate(ctx context.Context, plan *RackModel, cf *customfields.Cache, 
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -581,28 +581,28 @@ func rackToPatch(ctx context.Context, plan, state *RackModel, cf *customfields.C
 	}
 	if !plan.SiteId.Equal(state.SiteId) {
 		if conv.Known(plan.SiteId) {
-			body.SetSite(conv.Int32(plan.SiteId))
+			body.SetSite(plan.SiteId.ValueInt64())
 		}
 	}
 	if !plan.LocationId.Equal(state.LocationId) {
 		if plan.LocationId.IsNull() {
 			body.SetLocationNil()
 		} else if !plan.LocationId.IsUnknown() {
-			body.SetLocation(conv.Int32(plan.LocationId))
+			body.SetLocation(plan.LocationId.ValueInt64())
 		}
 	}
 	if !plan.GroupId.Equal(state.GroupId) {
 		if plan.GroupId.IsNull() {
 			body.SetGroupNil()
 		} else if !plan.GroupId.IsUnknown() {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -614,7 +614,7 @@ func rackToPatch(ctx context.Context, plan, state *RackModel, cf *customfields.C
 		if plan.RoleId.IsNull() {
 			body.SetRoleNil()
 		} else if !plan.RoleId.IsUnknown() {
-			body.SetRole(conv.Int32(plan.RoleId))
+			body.SetRole(plan.RoleId.ValueInt64())
 		}
 	}
 	if !plan.Serial.Equal(state.Serial) {
@@ -633,7 +633,7 @@ func rackToPatch(ctx context.Context, plan, state *RackModel, cf *customfields.C
 		if plan.RackTypeId.IsNull() {
 			body.SetRackTypeNil()
 		} else if !plan.RackTypeId.IsUnknown() {
-			body.SetRackType(conv.Int32(plan.RackTypeId))
+			body.SetRackType(plan.RackTypeId.ValueInt64())
 		}
 	}
 	if !plan.FormFactor.Equal(state.FormFactor) {
@@ -725,7 +725,7 @@ func rackToPatch(ctx context.Context, plan, state *RackModel, cf *customfields.C
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

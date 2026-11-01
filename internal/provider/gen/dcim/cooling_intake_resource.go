@@ -246,7 +246,7 @@ func (r *CoolingIntakeResource) Read(ctx context.Context, req resource.ReadReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -277,7 +277,7 @@ func (r *CoolingIntakeResource) Update(ctx context.Context, req resource.UpdateR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -307,7 +307,7 @@ func (r *CoolingIntakeResource) Delete(ctx context.Context, req resource.DeleteR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -327,9 +327,9 @@ func (r *CoolingIntakeResource) ImportState(ctx context.Context, req resource.Im
 // coolingIntakeToCreate builds the WritableCoolingIntakeRequest request body from the plan.
 func coolingIntakeToCreate(ctx context.Context, plan *CoolingIntakeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCoolingIntakeRequest {
 	const objectType = "dcim.coolingintake"
-	body := netbox.NewWritableCoolingIntakeRequest(conv.Int32(plan.DeviceId), plan.Name.ValueString())
+	body := netbox.NewWritableCoolingIntakeRequest(plan.DeviceId.ValueInt64(), plan.Name.ValueString())
 	if conv.Known(plan.ModuleId) {
-		body.SetModule(conv.Int32(plan.ModuleId))
+		body.SetModule(plan.ModuleId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -350,13 +350,13 @@ func coolingIntakeToCreate(ctx context.Context, plan *CoolingIntakeModel, cf *cu
 		body.SetMaxFlowUnit(plan.MaxFlowUnit.ValueString())
 	}
 	if conv.Known(plan.CoolingOutflowId) {
-		body.SetCoolingOutflow(conv.Int32(plan.CoolingOutflowId))
+		body.SetCoolingOutflow(plan.CoolingOutflowId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if conv.Known(plan.Tags) {
 		body.SetTags(conv.TagsToAPI(ctx, plan.Tags, diags))
@@ -373,14 +373,14 @@ func coolingIntakeToPatch(ctx context.Context, plan, state *CoolingIntakeModel, 
 	body := netbox.NewPatchedWritableCoolingIntakeRequest()
 	if !plan.DeviceId.Equal(state.DeviceId) {
 		if conv.Known(plan.DeviceId) {
-			body.SetDevice(conv.Int32(plan.DeviceId))
+			body.SetDevice(plan.DeviceId.ValueInt64())
 		}
 	}
 	if !plan.ModuleId.Equal(state.ModuleId) {
 		if plan.ModuleId.IsNull() {
 			body.SetModuleNil()
 		} else if !plan.ModuleId.IsUnknown() {
-			body.SetModule(conv.Int32(plan.ModuleId))
+			body.SetModule(plan.ModuleId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -422,7 +422,7 @@ func coolingIntakeToPatch(ctx context.Context, plan, state *CoolingIntakeModel, 
 		if plan.CoolingOutflowId.IsNull() {
 			body.SetCoolingOutflowNil()
 		} else if !plan.CoolingOutflowId.IsUnknown() {
-			body.SetCoolingOutflow(conv.Int32(plan.CoolingOutflowId))
+			body.SetCoolingOutflow(plan.CoolingOutflowId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -434,7 +434,7 @@ func coolingIntakeToPatch(ctx context.Context, plan, state *CoolingIntakeModel, 
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Tags.Equal(state.Tags) {

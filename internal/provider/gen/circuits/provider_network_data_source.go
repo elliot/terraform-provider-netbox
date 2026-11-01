@@ -201,7 +201,7 @@ func (d *ProviderNetworkDataSource) Read(ctx context.Context, req datasource.Rea
 	}
 	var obj *netbox.ProviderNetwork
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return

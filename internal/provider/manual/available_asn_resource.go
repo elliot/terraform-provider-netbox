@@ -122,7 +122,7 @@ func (r *AvailableAsnResource) Read(ctx context.Context, req resource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -150,7 +150,7 @@ func (r *AvailableAsnResource) Update(ctx context.Context, req resource.UpdateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -158,7 +158,7 @@ func (r *AvailableAsnResource) Update(ctx context.Context, req resource.UpdateRe
 	if plan.TenantId.IsNull() {
 		patch.SetTenantNil()
 	} else if !plan.TenantId.IsUnknown() {
-		patch.SetTenant(conv.Int32(plan.TenantId))
+		patch.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		patch.SetDescription(plan.Description.ValueString())
@@ -193,7 +193,7 @@ func (r *AvailableAsnResource) Delete(ctx context.Context, req resource.DeleteRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, ok := int32ID(state.Id, &resp.Diagnostics)
+	id, ok := stateID(state.Id, &resp.Diagnostics)
 	if !ok {
 		return
 	}
@@ -221,7 +221,7 @@ func availableAsnBody(ctx context.Context, b body, plan *AvailableAsnModel, cf *
 
 // availableAsnFromAPI copies the API object into out.
 func availableAsnFromAPI(ctx context.Context, obj *netbox.ASN, prior, out *AvailableAsnModel, diags *diag.Diagnostics) {
-	out.Id = types.Int64Value(int64(obj.GetId()))
+	out.Id = types.Int64Value(obj.GetId())
 	out.Asn = conv.Int64From64(obj.GetAsnOk())
 	out.RirId = conv.BriefID(obj.GetRirOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())

@@ -179,6 +179,12 @@ func writeResourcesDoc(resources []*model.Resource, docsDir string) error {
 		case r.DataSourceOnly:
 			res, note = "", "read-only endpoint"
 		}
+		if r.Deprecated != "" && !r.Skip {
+			note = strings.TrimPrefix(note+"; deprecated: "+r.Deprecated, "; ")
+		}
+		if n := deprecatedAttrs(r); n != "" && !r.Skip {
+			note = strings.TrimPrefix(note+"; deprecated attributes: "+n, "; ")
+		}
 		ds := ""
 		if !r.Skip {
 			ds = "`data." + r.TFType() + "`"
@@ -190,6 +196,24 @@ func writeResourcesDoc(resources []*model.Resource, docsDir string) error {
 		fmt.Fprintf(&b, "| %s | `%s` | %s | %s | %s | %s |\n", r.App, r.Path, res, ds, lds, note)
 	}
 	return os.WriteFile(filepath.Join(docsDir, "RESOURCES.md"), []byte(b.String()), 0o600)
+}
+
+// deprecatedAttrs lists the deprecated attributes of a resource (and of its
+// data sources) for RESOURCES.md.
+func deprecatedAttrs(r *model.Resource) string {
+	var names []string
+	var walk func(prefix string, attrs []model.Attr)
+	walk = func(prefix string, attrs []model.Attr) {
+		for _, a := range attrs {
+			if a.Deprecated != "" {
+				names = append(names, "`"+prefix+a.Name+"`")
+			}
+			walk(prefix+a.Name+".", a.Nested)
+		}
+	}
+	walk("", r.Attrs)
+	walk("", r.ReadOnlyAttrs)
+	return strings.Join(names, ", ")
 }
 
 var appTitles = map[string]string{

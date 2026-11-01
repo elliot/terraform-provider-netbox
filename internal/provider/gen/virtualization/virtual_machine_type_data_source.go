@@ -225,7 +225,7 @@ func (d *VirtualMachineTypeDataSource) Read(ctx context.Context, req datasource.
 	}
 	var obj *netbox.VirtualMachineType
 	if conv.Known(cfg.Id) {
-		id, err := netbox.Int32ID(cfg.Id.ValueInt64())
+		id, err := netbox.Int64ID(cfg.Id.ValueInt64())
 		if err != nil {
 			resp.Diagnostics.AddError("Invalid ID", err.Error())
 			return
@@ -412,5 +412,5 @@ func virtualMachineTypeDataFromAPI(ctx context.Context, obj *netbox.VirtualMachi
 	out.DisplayUrl = conv.String(obj.GetDisplayUrlOk())
 	out.Display = conv.String(obj.GetDisplayOk())
 	out.LastUpdated = conv.RFC3339(obj.GetLastUpdatedOk())
-	out.VirtualMachineCount = conv.Int64From32(obj.GetVirtualMachineCountOk())
+	out.VirtualMachineCount = conv.Int64From64(obj.GetVirtualMachineCountOk())
 }

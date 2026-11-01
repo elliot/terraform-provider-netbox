@@ -22,8 +22,8 @@ var _ MappedNullable = &BulkDeviceBayTemplateRequest{}
 
 // BulkDeviceBayTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type BulkDeviceBayTemplateRequest struct {
-	Id         int32 `json:"id"`
-	DeviceType int32 `json:"device_type"`
+	Id         int64 `json:"id"`
+	DeviceType int64 `json:"device_type"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name string `json:"name"`
 	// Physical label
@@ -39,7 +39,7 @@ type _BulkDeviceBayTemplateRequest BulkDeviceBayTemplateRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkDeviceBayTemplateRequest(id int32, deviceType int32, name string) *BulkDeviceBayTemplateRequest {
+func NewBulkDeviceBayTemplateRequest(id int64, deviceType int64, name string) *BulkDeviceBayTemplateRequest {
 	this := BulkDeviceBayTemplateRequest{}
 	this.Id = id
 	this.DeviceType = deviceType
@@ -56,9 +56,9 @@ func NewBulkDeviceBayTemplateRequestWithDefaults() *BulkDeviceBayTemplateRequest
 }
 
 // GetId returns the Id field value
-func (o *BulkDeviceBayTemplateRequest) GetId() int32 {
+func (o *BulkDeviceBayTemplateRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -67,7 +67,7 @@ func (o *BulkDeviceBayTemplateRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkDeviceBayTemplateRequest) GetIdOk() (*int32, bool) {
+func (o *BulkDeviceBayTemplateRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -75,14 +75,14 @@ func (o *BulkDeviceBayTemplateRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkDeviceBayTemplateRequest) SetId(v int32) {
+func (o *BulkDeviceBayTemplateRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetDeviceType returns the DeviceType field value
-func (o *BulkDeviceBayTemplateRequest) GetDeviceType() int32 {
+func (o *BulkDeviceBayTemplateRequest) GetDeviceType() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -91,7 +91,7 @@ func (o *BulkDeviceBayTemplateRequest) GetDeviceType() int32 {
 
 // GetDeviceTypeOk returns a tuple with the DeviceType field value
 // and a boolean to check if the value has been set.
-func (o *BulkDeviceBayTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *BulkDeviceBayTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -99,7 +99,7 @@ func (o *BulkDeviceBayTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
 }
 
 // SetDeviceType sets field value
-func (o *BulkDeviceBayTemplateRequest) SetDeviceType(v int32) {
+func (o *BulkDeviceBayTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType = v
 }
 

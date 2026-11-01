@@ -209,7 +209,7 @@ func (r *TokenResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -240,7 +240,7 @@ func (r *TokenResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -270,7 +270,7 @@ func (r *TokenResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -289,7 +289,7 @@ func (r *TokenResource) ImportState(ctx context.Context, req resource.ImportStat
 
 // tokenToCreate builds the TokenRequest request body from the plan.
 func tokenToCreate(ctx context.Context, plan *TokenModel, diags *diag.Diagnostics) *netbox.TokenRequest {
-	body := netbox.NewTokenRequest(conv.Int32(plan.UserId))
+	body := netbox.NewTokenRequest(plan.UserId.ValueInt64())
 	if conv.Known(plan.Version) {
 		body.SetVersion(conv.Int32(plan.Version))
 	}
@@ -324,7 +324,7 @@ func tokenToPatch(ctx context.Context, plan, state *TokenModel, diags *diag.Diag
 	}
 	if !plan.UserId.Equal(state.UserId) {
 		if conv.Known(plan.UserId) {
-			body.SetUser(conv.Int32(plan.UserId))
+			body.SetUser(plan.UserId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {

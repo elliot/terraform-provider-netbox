@@ -23,7 +23,7 @@ var _ MappedNullable = &Prefix{}
 
 // Prefix Base serializer class for models inheriting from PrimaryModel.
 type Prefix struct {
-	Id         int32               `json:"id"`
+	Id         int64               `json:"id"`
 	Url        *string             `json:"url,omitempty"`
 	DisplayUrl *string             `json:"display_url,omitempty"`
 	Display    *string             `json:"display,omitempty"`
@@ -31,7 +31,7 @@ type Prefix struct {
 	Prefix     *string             `json:"prefix,omitempty"`
 	Vrf        NullableBriefVRF    `json:"vrf,omitempty"`
 	ScopeType  NullableString      `json:"scope_type,omitempty"`
-	ScopeId    NullableInt32       `json:"scope_id,omitempty"`
+	ScopeId    NullableInt64       `json:"scope_id,omitempty"`
 	Scope      interface{}         `json:"scope,omitempty"`
 	Tenant     NullableBriefTenant `json:"tenant,omitempty"`
 	Vlan       NullableBriefVLAN   `json:"vlan,omitempty"`
@@ -59,7 +59,7 @@ type _Prefix Prefix
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPrefix(id int32) *Prefix {
+func NewPrefix(id int64) *Prefix {
 	this := Prefix{}
 	this.Id = id
 	return &this
@@ -74,9 +74,9 @@ func NewPrefixWithDefaults() *Prefix {
 }
 
 // GetId returns the Id field value
-func (o *Prefix) GetId() int32 {
+func (o *Prefix) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -85,7 +85,7 @@ func (o *Prefix) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *Prefix) GetIdOk() (*int32, bool) {
+func (o *Prefix) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -93,7 +93,7 @@ func (o *Prefix) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *Prefix) SetId(v int32) {
+func (o *Prefix) SetId(v int64) {
 	o.Id = v
 }
 
@@ -344,9 +344,9 @@ func (o *Prefix) UnsetScopeType() {
 }
 
 // GetScopeId returns the ScopeId field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *Prefix) GetScopeId() int32 {
+func (o *Prefix) GetScopeId() int64 {
 	if o == nil || IsNil(o.ScopeId.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ScopeId.Get()
@@ -355,7 +355,7 @@ func (o *Prefix) GetScopeId() int32 {
 // GetScopeIdOk returns a tuple with the ScopeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *Prefix) GetScopeIdOk() (*int32, bool) {
+func (o *Prefix) GetScopeIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -371,8 +371,8 @@ func (o *Prefix) HasScopeId() bool {
 	return false
 }
 
-// SetScopeId gets a reference to the given NullableInt32 and assigns it to the ScopeId field.
-func (o *Prefix) SetScopeId(v int32) {
+// SetScopeId gets a reference to the given NullableInt64 and assigns it to the ScopeId field.
+func (o *Prefix) SetScopeId(v int64) {
 	o.ScopeId.Set(&v)
 }
 

@@ -23,7 +23,7 @@ var _ MappedNullable = &TableConfig{}
 
 // TableConfig Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type TableConfig struct {
-	Id                   int32         `json:"id"`
+	Id                   int64         `json:"id"`
 	Url                  *string       `json:"url,omitempty"`
 	DisplayUrl           *string       `json:"display_url,omitempty"`
 	Display              *string       `json:"display,omitempty"`
@@ -31,7 +31,7 @@ type TableConfig struct {
 	Table                *string       `json:"table,omitempty"`
 	Name                 *string       `json:"name,omitempty"`
 	Description          *string       `json:"description,omitempty"`
-	User                 NullableInt32 `json:"user,omitempty"`
+	User                 NullableInt64 `json:"user,omitempty"`
 	Weight               *int32        `json:"weight,omitempty"`
 	Enabled              *bool         `json:"enabled,omitempty"`
 	Shared               *bool         `json:"shared,omitempty"`
@@ -48,7 +48,7 @@ type _TableConfig TableConfig
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewTableConfig(id int32) *TableConfig {
+func NewTableConfig(id int64) *TableConfig {
 	this := TableConfig{}
 	this.Id = id
 	return &this
@@ -63,9 +63,9 @@ func NewTableConfigWithDefaults() *TableConfig {
 }
 
 // GetId returns the Id field value
-func (o *TableConfig) GetId() int32 {
+func (o *TableConfig) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -74,7 +74,7 @@ func (o *TableConfig) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *TableConfig) GetIdOk() (*int32, bool) {
+func (o *TableConfig) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -82,7 +82,7 @@ func (o *TableConfig) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *TableConfig) SetId(v int32) {
+func (o *TableConfig) SetId(v int64) {
 	o.Id = v
 }
 
@@ -311,9 +311,9 @@ func (o *TableConfig) SetDescription(v string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TableConfig) GetUser() int32 {
+func (o *TableConfig) GetUser() int64 {
 	if o == nil || IsNil(o.User.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.User.Get()
@@ -322,7 +322,7 @@ func (o *TableConfig) GetUser() int32 {
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TableConfig) GetUserOk() (*int32, bool) {
+func (o *TableConfig) GetUserOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -338,8 +338,8 @@ func (o *TableConfig) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given NullableInt32 and assigns it to the User field.
-func (o *TableConfig) SetUser(v int32) {
+// SetUser gets a reference to the given NullableInt64 and assigns it to the User field.
+func (o *TableConfig) SetUser(v int64) {
 	o.User.Set(&v)
 }
 

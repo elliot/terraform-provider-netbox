@@ -152,7 +152,7 @@ func (r *FhrpGroupAssignmentResource) Read(ctx context.Context, req resource.Rea
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -183,7 +183,7 @@ func (r *FhrpGroupAssignmentResource) Update(ctx context.Context, req resource.U
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -213,7 +213,7 @@ func (r *FhrpGroupAssignmentResource) Delete(ctx context.Context, req resource.D
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -232,7 +232,7 @@ func (r *FhrpGroupAssignmentResource) ImportState(ctx context.Context, req resou
 
 // fhrpGroupAssignmentToCreate builds the FHRPGroupAssignmentRequest request body from the plan.
 func fhrpGroupAssignmentToCreate(ctx context.Context, plan *FhrpGroupAssignmentModel, diags *diag.Diagnostics) *netbox.FHRPGroupAssignmentRequest {
-	body := netbox.NewFHRPGroupAssignmentRequest(conv.Int32(plan.GroupId), plan.InterfaceType.ValueString(), plan.InterfaceId.ValueInt64(), conv.Int32(plan.Priority))
+	body := netbox.NewFHRPGroupAssignmentRequest(plan.GroupId.ValueInt64(), plan.InterfaceType.ValueString(), plan.InterfaceId.ValueInt64(), conv.Int32(plan.Priority))
 	return body
 }
 
@@ -241,7 +241,7 @@ func fhrpGroupAssignmentToPatch(ctx context.Context, plan, state *FhrpGroupAssig
 	body := netbox.NewPatchedFHRPGroupAssignmentRequest()
 	if !plan.GroupId.Equal(state.GroupId) {
 		if conv.Known(plan.GroupId) {
-			body.SetGroup(conv.Int32(plan.GroupId))
+			body.SetGroup(plan.GroupId.ValueInt64())
 		}
 	}
 	if !plan.InterfaceType.Equal(state.InterfaceType) {

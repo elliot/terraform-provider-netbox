@@ -102,6 +102,18 @@ func TestAccCoolingIntakeTemplate_basic(t *testing.T) {
 	})
 }
 
+func TestAccCoolingIntakeTemplate_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_cooling_intake_template",
+		APIPath:      "/api/dcim/cooling-intake-templates/",
+		Configs: []string{
+			acctest.Render(t, coolingIntakeTemplateTestConfigUpdate, name),
+			acctest.Render(t, coolingIntakeTemplateTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_cooling_intake_template", &resource.Sweeper{
 		Name:         "netbox_cooling_intake_template",

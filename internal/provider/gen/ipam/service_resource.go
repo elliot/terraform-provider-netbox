@@ -202,7 +202,7 @@ func (r *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -233,7 +233,7 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -263,7 +263,7 @@ func (r *ServiceResource) Delete(ctx context.Context, req resource.DeleteRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -288,13 +288,13 @@ func serviceToCreate(ctx context.Context, plan *ServiceModel, cf *customfields.C
 		body.SetPortMappings(conv.Strings(ctx, plan.PortMappings, diags))
 	}
 	if conv.Known(plan.IpaddressIds) {
-		body.SetIpaddresses(conv.Int32s(ctx, plan.IpaddressIds, diags))
+		body.SetIpaddresses(conv.Int64s(ctx, plan.IpaddressIds, diags))
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -334,7 +334,7 @@ func serviceToPatch(ctx context.Context, plan, state *ServiceModel, cf *customfi
 	}
 	if !plan.IpaddressIds.Equal(state.IpaddressIds) {
 		if conv.Known(plan.IpaddressIds) {
-			body.SetIpaddresses(conv.Int32s(ctx, plan.IpaddressIds, diags))
+			body.SetIpaddresses(conv.Int64s(ctx, plan.IpaddressIds, diags))
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -346,7 +346,7 @@ func serviceToPatch(ctx context.Context, plan, state *ServiceModel, cf *customfi
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

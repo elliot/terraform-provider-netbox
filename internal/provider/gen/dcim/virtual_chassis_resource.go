@@ -189,7 +189,7 @@ func (r *VirtualChassisResource) Read(ctx context.Context, req resource.ReadRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -220,7 +220,7 @@ func (r *VirtualChassisResource) Update(ctx context.Context, req resource.Update
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -250,7 +250,7 @@ func (r *VirtualChassisResource) Delete(ctx context.Context, req resource.Delete
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -275,13 +275,13 @@ func virtualChassisToCreate(ctx context.Context, plan *VirtualChassisModel, cf *
 		body.SetDomain(plan.Domain.ValueString())
 	}
 	if conv.Known(plan.MasterId) {
-		body.SetMaster(conv.Int32(plan.MasterId))
+		body.SetMaster(plan.MasterId.ValueInt64())
 	}
 	if !plan.Description.IsUnknown() {
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -313,7 +313,7 @@ func virtualChassisToPatch(ctx context.Context, plan, state *VirtualChassisModel
 		if plan.MasterId.IsNull() {
 			body.SetMasterNil()
 		} else if !plan.MasterId.IsUnknown() {
-			body.SetMaster(conv.Int32(plan.MasterId))
+			body.SetMaster(plan.MasterId.ValueInt64())
 		}
 	}
 	if !plan.Description.Equal(state.Description) {
@@ -325,7 +325,7 @@ func virtualChassisToPatch(ctx context.Context, plan, state *VirtualChassisModel
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

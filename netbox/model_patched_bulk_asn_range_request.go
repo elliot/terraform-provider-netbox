@@ -22,15 +22,15 @@ var _ MappedNullable = &PatchedBulkASNRangeRequest{}
 
 // PatchedBulkASNRangeRequest Base serializer class for models inheriting from OrganizationalModel.
 type PatchedBulkASNRangeRequest struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Name                 *string                `json:"name,omitempty"`
 	Slug                 *string                `json:"slug,omitempty" validate:"regexp=^[-a-zA-Z0-9_]+$"`
-	Rir                  *int32                 `json:"rir,omitempty"`
+	Rir                  *int64                 `json:"rir,omitempty"`
 	Start                *int64                 `json:"start,omitempty"`
 	End                  *int64                 `json:"end,omitempty"`
-	Tenant               NullableInt32          `json:"tenant,omitempty"`
+	Tenant               NullableInt64          `json:"tenant,omitempty"`
 	Description          *string                `json:"description,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -43,7 +43,7 @@ type _PatchedBulkASNRangeRequest PatchedBulkASNRangeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkASNRangeRequest(id int32) *PatchedBulkASNRangeRequest {
+func NewPatchedBulkASNRangeRequest(id int64) *PatchedBulkASNRangeRequest {
 	this := PatchedBulkASNRangeRequest{}
 	this.Id = id
 	return &this
@@ -58,9 +58,9 @@ func NewPatchedBulkASNRangeRequestWithDefaults() *PatchedBulkASNRangeRequest {
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkASNRangeRequest) GetId() int32 {
+func (o *PatchedBulkASNRangeRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -69,7 +69,7 @@ func (o *PatchedBulkASNRangeRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkASNRangeRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkASNRangeRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -77,7 +77,7 @@ func (o *PatchedBulkASNRangeRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkASNRangeRequest) SetId(v int32) {
+func (o *PatchedBulkASNRangeRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -146,9 +146,9 @@ func (o *PatchedBulkASNRangeRequest) SetSlug(v string) {
 }
 
 // GetRir returns the Rir field value if set, zero value otherwise.
-func (o *PatchedBulkASNRangeRequest) GetRir() int32 {
+func (o *PatchedBulkASNRangeRequest) GetRir() int64 {
 	if o == nil || IsNil(o.Rir) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Rir
@@ -156,7 +156,7 @@ func (o *PatchedBulkASNRangeRequest) GetRir() int32 {
 
 // GetRirOk returns a tuple with the Rir field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkASNRangeRequest) GetRirOk() (*int32, bool) {
+func (o *PatchedBulkASNRangeRequest) GetRirOk() (*int64, bool) {
 	if o == nil || IsNil(o.Rir) {
 		return nil, false
 	}
@@ -172,8 +172,8 @@ func (o *PatchedBulkASNRangeRequest) HasRir() bool {
 	return false
 }
 
-// SetRir gets a reference to the given int32 and assigns it to the Rir field.
-func (o *PatchedBulkASNRangeRequest) SetRir(v int32) {
+// SetRir gets a reference to the given int64 and assigns it to the Rir field.
+func (o *PatchedBulkASNRangeRequest) SetRir(v int64) {
 	o.Rir = &v
 }
 
@@ -242,9 +242,9 @@ func (o *PatchedBulkASNRangeRequest) SetEnd(v int64) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkASNRangeRequest) GetTenant() int32 {
+func (o *PatchedBulkASNRangeRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -253,7 +253,7 @@ func (o *PatchedBulkASNRangeRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkASNRangeRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedBulkASNRangeRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -269,8 +269,8 @@ func (o *PatchedBulkASNRangeRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedBulkASNRangeRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedBulkASNRangeRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -317,9 +317,9 @@ func (o *PatchedBulkASNRangeRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkASNRangeRequest) GetOwner() int32 {
+func (o *PatchedBulkASNRangeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -328,7 +328,7 @@ func (o *PatchedBulkASNRangeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkASNRangeRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedBulkASNRangeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -344,8 +344,8 @@ func (o *PatchedBulkASNRangeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedBulkASNRangeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedBulkASNRangeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

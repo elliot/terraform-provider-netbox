@@ -23,7 +23,7 @@ var _ MappedNullable = &FHRPGroupAssignment{}
 
 // FHRPGroupAssignment Adds support for custom fields and tags.
 type FHRPGroupAssignment struct {
-	Id                   int32           `json:"id"`
+	Id                   int64           `json:"id"`
 	Url                  *string         `json:"url,omitempty"`
 	Display              *string         `json:"display,omitempty"`
 	Group                *BriefFHRPGroup `json:"group,omitempty"`
@@ -42,7 +42,7 @@ type _FHRPGroupAssignment FHRPGroupAssignment
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFHRPGroupAssignment(id int32) *FHRPGroupAssignment {
+func NewFHRPGroupAssignment(id int64) *FHRPGroupAssignment {
 	this := FHRPGroupAssignment{}
 	this.Id = id
 	return &this
@@ -57,9 +57,9 @@ func NewFHRPGroupAssignmentWithDefaults() *FHRPGroupAssignment {
 }
 
 // GetId returns the Id field value
-func (o *FHRPGroupAssignment) GetId() int32 {
+func (o *FHRPGroupAssignment) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -68,7 +68,7 @@ func (o *FHRPGroupAssignment) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *FHRPGroupAssignment) GetIdOk() (*int32, bool) {
+func (o *FHRPGroupAssignment) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -76,7 +76,7 @@ func (o *FHRPGroupAssignment) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *FHRPGroupAssignment) SetId(v int32) {
+func (o *FHRPGroupAssignment) SetId(v int64) {
 	o.Id = v
 }
 

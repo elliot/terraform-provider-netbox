@@ -284,7 +284,7 @@ func (r *InterfaceTemplateResource) Read(ctx context.Context, req resource.ReadR
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -315,7 +315,7 @@ func (r *InterfaceTemplateResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -345,7 +345,7 @@ func (r *InterfaceTemplateResource) Delete(ctx context.Context, req resource.Del
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -366,10 +366,10 @@ func (r *InterfaceTemplateResource) ImportState(ctx context.Context, req resourc
 func interfaceTemplateToCreate(ctx context.Context, plan *InterfaceTemplateModel, diags *diag.Diagnostics) *netbox.WritableInterfaceTemplateRequest {
 	body := netbox.NewWritableInterfaceTemplateRequest(plan.Name.ValueString(), plan.Type.ValueString())
 	if conv.Known(plan.DeviceTypeId) {
-		body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+		body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 	}
 	if conv.Known(plan.ModuleTypeId) {
-		body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+		body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 	}
 	if !plan.Label.IsUnknown() {
 		body.SetLabel(plan.Label.ValueString())
@@ -390,10 +390,10 @@ func interfaceTemplateToCreate(ctx context.Context, plan *InterfaceTemplateModel
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.ParentId) {
-		body.SetParent(conv.Int32(plan.ParentId))
+		body.SetParent(plan.ParentId.ValueInt64())
 	}
 	if conv.Known(plan.BridgeId) {
-		body.SetBridge(conv.Int32(plan.BridgeId))
+		body.SetBridge(plan.BridgeId.ValueInt64())
 	}
 	if conv.Known(plan.PoeMode) {
 		body.SetPoeMode(plan.PoeMode.ValueString())
@@ -414,14 +414,14 @@ func interfaceTemplateToPatch(ctx context.Context, plan, state *InterfaceTemplat
 		if plan.DeviceTypeId.IsNull() {
 			body.SetDeviceTypeNil()
 		} else if !plan.DeviceTypeId.IsUnknown() {
-			body.SetDeviceType(conv.Int32(plan.DeviceTypeId))
+			body.SetDeviceType(plan.DeviceTypeId.ValueInt64())
 		}
 	}
 	if !plan.ModuleTypeId.Equal(state.ModuleTypeId) {
 		if plan.ModuleTypeId.IsNull() {
 			body.SetModuleTypeNil()
 		} else if !plan.ModuleTypeId.IsUnknown() {
-			body.SetModuleType(conv.Int32(plan.ModuleTypeId))
+			body.SetModuleType(plan.ModuleTypeId.ValueInt64())
 		}
 	}
 	if !plan.Name.Equal(state.Name) {
@@ -468,14 +468,14 @@ func interfaceTemplateToPatch(ctx context.Context, plan, state *InterfaceTemplat
 		if plan.ParentId.IsNull() {
 			body.SetParentNil()
 		} else if !plan.ParentId.IsUnknown() {
-			body.SetParent(conv.Int32(plan.ParentId))
+			body.SetParent(plan.ParentId.ValueInt64())
 		}
 	}
 	if !plan.BridgeId.Equal(state.BridgeId) {
 		if plan.BridgeId.IsNull() {
 			body.SetBridgeNil()
 		} else if !plan.BridgeId.IsUnknown() {
-			body.SetBridge(conv.Int32(plan.BridgeId))
+			body.SetBridge(plan.BridgeId.ValueInt64())
 		}
 	}
 	if !plan.PoeMode.Equal(state.PoeMode) {

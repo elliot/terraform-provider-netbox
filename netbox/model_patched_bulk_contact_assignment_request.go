@@ -22,11 +22,11 @@ var _ MappedNullable = &PatchedBulkContactAssignmentRequest{}
 
 // PatchedBulkContactAssignmentRequest Adds support for custom fields and tags.
 type PatchedBulkContactAssignmentRequest struct {
-	Id         int32         `json:"id"`
+	Id         int64         `json:"id"`
 	ObjectType *string       `json:"object_type,omitempty"`
 	ObjectId   *int64        `json:"object_id,omitempty"`
-	Contact    *int32        `json:"contact,omitempty"`
-	Role       NullableInt32 `json:"role,omitempty"`
+	Contact    *int64        `json:"contact,omitempty"`
+	Role       NullableInt64 `json:"role,omitempty"`
 	// * `primary` - Primary * `secondary` - Secondary * `tertiary` - Tertiary * `inactive` - Inactive
 	Priority             *string                `json:"priority,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
@@ -40,7 +40,7 @@ type _PatchedBulkContactAssignmentRequest PatchedBulkContactAssignmentRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPatchedBulkContactAssignmentRequest(id int32) *PatchedBulkContactAssignmentRequest {
+func NewPatchedBulkContactAssignmentRequest(id int64) *PatchedBulkContactAssignmentRequest {
 	this := PatchedBulkContactAssignmentRequest{}
 	this.Id = id
 	return &this
@@ -55,9 +55,9 @@ func NewPatchedBulkContactAssignmentRequestWithDefaults() *PatchedBulkContactAss
 }
 
 // GetId returns the Id field value
-func (o *PatchedBulkContactAssignmentRequest) GetId() int32 {
+func (o *PatchedBulkContactAssignmentRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -66,7 +66,7 @@ func (o *PatchedBulkContactAssignmentRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkContactAssignmentRequest) GetIdOk() (*int32, bool) {
+func (o *PatchedBulkContactAssignmentRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -74,7 +74,7 @@ func (o *PatchedBulkContactAssignmentRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *PatchedBulkContactAssignmentRequest) SetId(v int32) {
+func (o *PatchedBulkContactAssignmentRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -143,9 +143,9 @@ func (o *PatchedBulkContactAssignmentRequest) SetObjectId(v int64) {
 }
 
 // GetContact returns the Contact field value if set, zero value otherwise.
-func (o *PatchedBulkContactAssignmentRequest) GetContact() int32 {
+func (o *PatchedBulkContactAssignmentRequest) GetContact() int64 {
 	if o == nil || IsNil(o.Contact) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Contact
@@ -153,7 +153,7 @@ func (o *PatchedBulkContactAssignmentRequest) GetContact() int32 {
 
 // GetContactOk returns a tuple with the Contact field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedBulkContactAssignmentRequest) GetContactOk() (*int32, bool) {
+func (o *PatchedBulkContactAssignmentRequest) GetContactOk() (*int64, bool) {
 	if o == nil || IsNil(o.Contact) {
 		return nil, false
 	}
@@ -169,15 +169,15 @@ func (o *PatchedBulkContactAssignmentRequest) HasContact() bool {
 	return false
 }
 
-// SetContact gets a reference to the given int32 and assigns it to the Contact field.
-func (o *PatchedBulkContactAssignmentRequest) SetContact(v int32) {
+// SetContact gets a reference to the given int64 and assigns it to the Contact field.
+func (o *PatchedBulkContactAssignmentRequest) SetContact(v int64) {
 	o.Contact = &v
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedBulkContactAssignmentRequest) GetRole() int32 {
+func (o *PatchedBulkContactAssignmentRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -186,7 +186,7 @@ func (o *PatchedBulkContactAssignmentRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedBulkContactAssignmentRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedBulkContactAssignmentRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -202,8 +202,8 @@ func (o *PatchedBulkContactAssignmentRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedBulkContactAssignmentRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedBulkContactAssignmentRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 

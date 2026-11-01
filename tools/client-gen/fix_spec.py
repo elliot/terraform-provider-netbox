@@ -12,7 +12,7 @@ Transformations (in order):
   1. Request bodies of the form ``oneOf: [X, array<X>]`` (bulk create) are
      collapsed to ``X``.
   2. Foreign keys written as ``oneOf: [integer, Brief*Request]`` are collapsed
-     to ``type: integer`` (nullable preserved). Terraform always writes IDs.
+     to ``type: integer`` (nullable and format preserved). Terraform always writes IDs.
      Likewise ``oneOf`` of two string branches (colour, dns_name, email, link)
      collapses to a plain string.
   3. Read-side choice objects ``{value: <enum>, label: <enum>}`` are hoisted to
@@ -116,6 +116,9 @@ def collapse_fk_oneof(schemas):
             refs = [s for s in one if "$ref" in s or "allOf" in s]
             if len(ints) == 1 and len(refs) == 1 and len(one) == 2:
                 new = {"type": "integer"}
+                # Keep the width: NetBox 4.7.4+ declares IDs as int64.
+                if "format" in ints[0]:
+                    new["format"] = ints[0]["format"]
                 if prop.get("nullable") or any(s.get("nullable") for s in one):
                     new["nullable"] = True
                 for k in ("description", "title"):

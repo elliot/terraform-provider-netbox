@@ -21,7 +21,7 @@ var _ MappedNullable = &PatchedDeviceBayTemplateRequest{}
 
 // PatchedDeviceBayTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedDeviceBayTemplateRequest struct {
-	DeviceType *int32 `json:"device_type,omitempty"`
+	DeviceType *int64 `json:"device_type,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name *string `json:"name,omitempty"`
 	// Physical label
@@ -51,9 +51,9 @@ func NewPatchedDeviceBayTemplateRequestWithDefaults() *PatchedDeviceBayTemplateR
 }
 
 // GetDeviceType returns the DeviceType field value if set, zero value otherwise.
-func (o *PatchedDeviceBayTemplateRequest) GetDeviceType() int32 {
+func (o *PatchedDeviceBayTemplateRequest) GetDeviceType() int64 {
 	if o == nil || IsNil(o.DeviceType) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceType
@@ -61,7 +61,7 @@ func (o *PatchedDeviceBayTemplateRequest) GetDeviceType() int32 {
 
 // GetDeviceTypeOk returns a tuple with the DeviceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedDeviceBayTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *PatchedDeviceBayTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil || IsNil(o.DeviceType) {
 		return nil, false
 	}
@@ -77,8 +77,8 @@ func (o *PatchedDeviceBayTemplateRequest) HasDeviceType() bool {
 	return false
 }
 
-// SetDeviceType gets a reference to the given int32 and assigns it to the DeviceType field.
-func (o *PatchedDeviceBayTemplateRequest) SetDeviceType(v int32) {
+// SetDeviceType gets a reference to the given int64 and assigns it to the DeviceType field.
+func (o *PatchedDeviceBayTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType = &v
 }
 

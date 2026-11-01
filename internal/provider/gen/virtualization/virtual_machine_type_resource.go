@@ -203,7 +203,7 @@ func (r *VirtualMachineTypeResource) Read(ctx context.Context, req resource.Read
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -234,7 +234,7 @@ func (r *VirtualMachineTypeResource) Update(ctx context.Context, req resource.Up
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -264,7 +264,7 @@ func (r *VirtualMachineTypeResource) Delete(ctx context.Context, req resource.De
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -286,7 +286,7 @@ func virtualMachineTypeToCreate(ctx context.Context, plan *VirtualMachineTypeMod
 	const objectType = "virtualization.virtualmachinetype"
 	body := netbox.NewVirtualMachineTypeRequest(plan.Name.ValueString(), plan.Slug.ValueString())
 	if conv.Known(plan.DefaultPlatformId) {
-		body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
+		body.SetDefaultPlatform(plan.DefaultPlatformId.ValueInt64())
 	}
 	if conv.Known(plan.DefaultVcpus) {
 		body.SetDefaultVcpus(plan.DefaultVcpus.ValueFloat64())
@@ -298,7 +298,7 @@ func virtualMachineTypeToCreate(ctx context.Context, plan *VirtualMachineTypeMod
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -330,7 +330,7 @@ func virtualMachineTypeToPatch(ctx context.Context, plan, state *VirtualMachineT
 		if plan.DefaultPlatformId.IsNull() {
 			body.SetDefaultPlatformNil()
 		} else if !plan.DefaultPlatformId.IsUnknown() {
-			body.SetDefaultPlatform(conv.Int32(plan.DefaultPlatformId))
+			body.SetDefaultPlatform(plan.DefaultPlatformId.ValueInt64())
 		}
 	}
 	if !plan.DefaultVcpus.Equal(state.DefaultVcpus) {
@@ -352,7 +352,7 @@ func virtualMachineTypeToPatch(ctx context.Context, plan, state *VirtualMachineT
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

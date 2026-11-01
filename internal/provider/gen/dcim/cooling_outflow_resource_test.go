@@ -139,6 +139,18 @@ func TestAccCoolingOutflow_basic(t *testing.T) {
 	})
 }
 
+func TestAccCoolingOutflow_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_cooling_outflow",
+		APIPath:      "/api/dcim/cooling-outflows/",
+		Configs: []string{
+			acctest.Render(t, coolingOutflowTestConfigUpdate, name),
+			acctest.Render(t, coolingOutflowTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_cooling_outflow", &resource.Sweeper{
 		Name:         "netbox_cooling_outflow",

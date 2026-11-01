@@ -201,7 +201,7 @@ func (r *PrimaryIpResource) detectVersion(ctx context.Context, m *primaryIpModel
 	if conv.Known(m.IpAddressVersion) {
 		return m.IpAddressVersion.ValueInt64(), true
 	}
-	id, ok := int32ID(m.IpAddressId, diags)
+	id, ok := stateID(m.IpAddressId, diags)
 	if !ok {
 		return 0, false
 	}

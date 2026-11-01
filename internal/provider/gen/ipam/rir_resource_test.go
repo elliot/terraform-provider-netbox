@@ -81,6 +81,18 @@ func TestAccRir_basic(t *testing.T) {
 	})
 }
 
+func TestAccRir_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_rir",
+		APIPath:      "/api/ipam/rirs/",
+		Configs: []string{
+			acctest.Render(t, rirTestConfigUpdate, name),
+			acctest.Render(t, rirTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_rir", &resource.Sweeper{
 		Name:         "netbox_rir",

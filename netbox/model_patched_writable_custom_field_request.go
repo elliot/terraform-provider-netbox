@@ -62,8 +62,8 @@ type PatchedWritableCustomFieldRequest struct {
 	ValidationRegex *string `json:"validation_regex,omitempty"`
 	// A JSON schema definition for validating the custom field value
 	ValidationSchema     interface{}   `json:"validation_schema,omitempty"`
-	ChoiceSet            NullableInt32 `json:"choice_set,omitempty"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	ChoiceSet            NullableInt64 `json:"choice_set,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	Comments             *string       `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -828,9 +828,9 @@ func (o *PatchedWritableCustomFieldRequest) SetValidationSchema(v interface{}) {
 }
 
 // GetChoiceSet returns the ChoiceSet field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableCustomFieldRequest) GetChoiceSet() int32 {
+func (o *PatchedWritableCustomFieldRequest) GetChoiceSet() int64 {
 	if o == nil || IsNil(o.ChoiceSet.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ChoiceSet.Get()
@@ -839,7 +839,7 @@ func (o *PatchedWritableCustomFieldRequest) GetChoiceSet() int32 {
 // GetChoiceSetOk returns a tuple with the ChoiceSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableCustomFieldRequest) GetChoiceSetOk() (*int32, bool) {
+func (o *PatchedWritableCustomFieldRequest) GetChoiceSetOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -855,8 +855,8 @@ func (o *PatchedWritableCustomFieldRequest) HasChoiceSet() bool {
 	return false
 }
 
-// SetChoiceSet gets a reference to the given NullableInt32 and assigns it to the ChoiceSet field.
-func (o *PatchedWritableCustomFieldRequest) SetChoiceSet(v int32) {
+// SetChoiceSet gets a reference to the given NullableInt64 and assigns it to the ChoiceSet field.
+func (o *PatchedWritableCustomFieldRequest) SetChoiceSet(v int64) {
 	o.ChoiceSet.Set(&v)
 }
 
@@ -871,9 +871,9 @@ func (o *PatchedWritableCustomFieldRequest) UnsetChoiceSet() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableCustomFieldRequest) GetOwner() int32 {
+func (o *PatchedWritableCustomFieldRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -882,7 +882,7 @@ func (o *PatchedWritableCustomFieldRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableCustomFieldRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableCustomFieldRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -898,8 +898,8 @@ func (o *PatchedWritableCustomFieldRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableCustomFieldRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableCustomFieldRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

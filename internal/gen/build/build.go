@@ -215,6 +215,14 @@ func (b *Builder) buildResource(r *model.Resource) error {
 	if o.Description != "" {
 		r.Description = o.Description
 	}
+	r.Deprecated = o.Deprecated.Resolve(list.Deprecated, DefaultResourceDeprecation)
+	if o.SchemaVersion < 0 {
+		return fmt.Errorf("schema_version must not be negative")
+	}
+	if o.SchemaVersion > 0 && r.DataSourceOnly {
+		return fmt.Errorf("schema_version needs a resource; %s is a read-only endpoint", r.Path)
+	}
+	r.SchemaVersion = o.SchemaVersion
 	r.ReadType = naming.GoType(r.ReadSchema)
 
 	readSchema := doc.Components.Schemas[r.ReadSchema]
@@ -257,6 +265,7 @@ func (b *Builder) buildResource(r *model.Resource) error {
 				b.warn("%s.%s: read-only property skipped", r.Name, pname)
 				continue
 			}
+			applyDeprecation(&ro, readSchema.Properties[pname].Deprecated, o.Attributes[pname])
 			r.Attrs = append(r.Attrs, ro)
 		}
 	} else {
@@ -303,6 +312,7 @@ func (b *Builder) buildResource(r *model.Resource) error {
 				continue
 			}
 			ao := o.Attributes[pname]
+			applyDeprecation(&ro, prop.Deprecated, ao)
 			switch {
 			case pname == "url" || pname == "created":
 				r.Attrs = append(r.Attrs, ro)
@@ -378,6 +388,10 @@ func (b *Builder) buildResource(r *model.Resource) error {
 		r.Test.Skip = o.Test.Skip
 		r.Test.Checks = o.Test.Checks
 		r.Test.ImportVerifyIgnore = append(r.Test.ImportVerifyIgnore, o.Test.ImportVerifyIgnore...)
+		if u := o.Test.Upgrade; u != nil {
+			r.Test.UpgradeSkip = u.Skip
+			r.Test.UpgradeConfig = u.Config
+		}
 	}
 	return nil
 }
@@ -431,6 +445,8 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 	}
 	switch {
 	case kind != "":
+		// A forced kind skips type detection; keep the client's integer width.
+		a.Int64 = rs.Type == "integer" && rs.Format == "int64"
 	case pname == "tags" && rs.Type == "array" && rs.Items != nil && openapi.RefName(rs.Items.Ref) == "NestedTagRequest":
 		kind = model.KindTags
 	case pname == "custom_fields":
@@ -441,6 +457,7 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 			switch {
 			case alt.Type == "integer":
 				ints++
+				a.Int64 = alt.Format == "int64"
 			case alt.Ref != "" || len(alt.AllOf) > 0:
 				refs++
 			case alt.Type == "string":
@@ -644,6 +661,10 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 			markReadOnly(a)
 		}
 	}
+	applyDeprecation(a, prop.Deprecated || (readProp != nil && readProp.Deprecated), ao)
+	if a.Deprecated != "" && a.Required {
+		return nil, fmt.Errorf("%s.%s: a required attribute cannot be deprecated (users could not stop setting it); make it optional first", r.Name, pname)
+	}
 	// NetBox stores GPS coordinates as xx.yyyyyy decimals; reject finer input
 	// instead of letting the server round it into a diff.
 	if a.Kind == model.KindFloat && a.Precision == 0 && geoCoordinates[pname] {
@@ -665,6 +686,23 @@ func (b *Builder) classify(r *model.Resource, pname string, prop *openapi.Schema
 		a.Description += " Colon notation, e.g. `50:01:43:80:12:34:56:78`; NetBox stores it in upper case."
 	}
 	return a, nil
+}
+
+// Default deprecation messages, used when the spec marks a property or a list
+// operation deprecated (or an override sets `deprecated: true`) without a message.
+const (
+	DefaultAttributeDeprecation = "NetBox marks this field as deprecated. The attribute is kept until the next major release of the provider and removed then."
+	DefaultResourceDeprecation  = "NetBox marks this object type as deprecated. It is kept until the next major release of the provider and removed then."
+)
+
+// applyDeprecation sets the deprecation message of an attribute from the
+// spec flag and the attribute override.
+func applyDeprecation(a *model.Attr, specDeprecated bool, ao *overrides.Attribute) {
+	var d overrides.Deprecation
+	if ao != nil {
+		d = ao.Deprecated
+	}
+	a.Deprecated = d.Resolve(specDeprecated, DefaultAttributeDeprecation)
 }
 
 // geoCoordinates are the API properties holding GPS coordinates, which NetBox

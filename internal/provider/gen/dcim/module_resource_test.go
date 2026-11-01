@@ -150,6 +150,18 @@ func TestAccModule_basic(t *testing.T) {
 	})
 }
 
+func TestAccModule_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_module",
+		APIPath:      "/api/dcim/modules/",
+		Configs: []string{
+			acctest.Render(t, moduleTestConfigUpdate, name),
+			acctest.Render(t, moduleTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_module", &resource.Sweeper{
 		Name:         "netbox_module",

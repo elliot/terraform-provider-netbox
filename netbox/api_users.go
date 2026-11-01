@@ -103,7 +103,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this group.
 		@return ApiUsersGroupsDestroyRequest
 	*/
-	UsersGroupsDestroy(ctx context.Context, id int32) ApiUsersGroupsDestroyRequest
+	UsersGroupsDestroy(ctx context.Context, id int64) ApiUsersGroupsDestroyRequest
 
 	// UsersGroupsDestroyExecute executes the request
 	UsersGroupsDestroyExecute(r ApiUsersGroupsDestroyRequest) (*http.Response, error)
@@ -131,7 +131,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this group.
 		@return ApiUsersGroupsPartialUpdateRequest
 	*/
-	UsersGroupsPartialUpdate(ctx context.Context, id int32) ApiUsersGroupsPartialUpdateRequest
+	UsersGroupsPartialUpdate(ctx context.Context, id int64) ApiUsersGroupsPartialUpdateRequest
 
 	// UsersGroupsPartialUpdateExecute executes the request
 	//  @return Group
@@ -146,7 +146,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this group.
 		@return ApiUsersGroupsRetrieveRequest
 	*/
-	UsersGroupsRetrieve(ctx context.Context, id int32) ApiUsersGroupsRetrieveRequest
+	UsersGroupsRetrieve(ctx context.Context, id int64) ApiUsersGroupsRetrieveRequest
 
 	// UsersGroupsRetrieveExecute executes the request
 	//  @return Group
@@ -161,7 +161,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this group.
 		@return ApiUsersGroupsUpdateRequest
 	*/
-	UsersGroupsUpdate(ctx context.Context, id int32) ApiUsersGroupsUpdateRequest
+	UsersGroupsUpdate(ctx context.Context, id int64) ApiUsersGroupsUpdateRequest
 
 	// UsersGroupsUpdateExecute executes the request
 	//  @return Group
@@ -231,7 +231,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this owner group.
 		@return ApiUsersOwnerGroupsDestroyRequest
 	*/
-	UsersOwnerGroupsDestroy(ctx context.Context, id int32) ApiUsersOwnerGroupsDestroyRequest
+	UsersOwnerGroupsDestroy(ctx context.Context, id int64) ApiUsersOwnerGroupsDestroyRequest
 
 	// UsersOwnerGroupsDestroyExecute executes the request
 	UsersOwnerGroupsDestroyExecute(r ApiUsersOwnerGroupsDestroyRequest) (*http.Response, error)
@@ -259,7 +259,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this owner group.
 		@return ApiUsersOwnerGroupsPartialUpdateRequest
 	*/
-	UsersOwnerGroupsPartialUpdate(ctx context.Context, id int32) ApiUsersOwnerGroupsPartialUpdateRequest
+	UsersOwnerGroupsPartialUpdate(ctx context.Context, id int64) ApiUsersOwnerGroupsPartialUpdateRequest
 
 	// UsersOwnerGroupsPartialUpdateExecute executes the request
 	//  @return OwnerGroup
@@ -274,7 +274,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this owner group.
 		@return ApiUsersOwnerGroupsRetrieveRequest
 	*/
-	UsersOwnerGroupsRetrieve(ctx context.Context, id int32) ApiUsersOwnerGroupsRetrieveRequest
+	UsersOwnerGroupsRetrieve(ctx context.Context, id int64) ApiUsersOwnerGroupsRetrieveRequest
 
 	// UsersOwnerGroupsRetrieveExecute executes the request
 	//  @return OwnerGroup
@@ -289,7 +289,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this owner group.
 		@return ApiUsersOwnerGroupsUpdateRequest
 	*/
-	UsersOwnerGroupsUpdate(ctx context.Context, id int32) ApiUsersOwnerGroupsUpdateRequest
+	UsersOwnerGroupsUpdate(ctx context.Context, id int64) ApiUsersOwnerGroupsUpdateRequest
 
 	// UsersOwnerGroupsUpdateExecute executes the request
 	//  @return OwnerGroup
@@ -359,7 +359,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this owner.
 		@return ApiUsersOwnersDestroyRequest
 	*/
-	UsersOwnersDestroy(ctx context.Context, id int32) ApiUsersOwnersDestroyRequest
+	UsersOwnersDestroy(ctx context.Context, id int64) ApiUsersOwnersDestroyRequest
 
 	// UsersOwnersDestroyExecute executes the request
 	UsersOwnersDestroyExecute(r ApiUsersOwnersDestroyRequest) (*http.Response, error)
@@ -387,7 +387,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this owner.
 		@return ApiUsersOwnersPartialUpdateRequest
 	*/
-	UsersOwnersPartialUpdate(ctx context.Context, id int32) ApiUsersOwnersPartialUpdateRequest
+	UsersOwnersPartialUpdate(ctx context.Context, id int64) ApiUsersOwnersPartialUpdateRequest
 
 	// UsersOwnersPartialUpdateExecute executes the request
 	//  @return Owner
@@ -402,7 +402,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this owner.
 		@return ApiUsersOwnersRetrieveRequest
 	*/
-	UsersOwnersRetrieve(ctx context.Context, id int32) ApiUsersOwnersRetrieveRequest
+	UsersOwnersRetrieve(ctx context.Context, id int64) ApiUsersOwnersRetrieveRequest
 
 	// UsersOwnersRetrieveExecute executes the request
 	//  @return Owner
@@ -417,7 +417,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this owner.
 		@return ApiUsersOwnersUpdateRequest
 	*/
-	UsersOwnersUpdate(ctx context.Context, id int32) ApiUsersOwnersUpdateRequest
+	UsersOwnersUpdate(ctx context.Context, id int64) ApiUsersOwnersUpdateRequest
 
 	// UsersOwnersUpdateExecute executes the request
 	//  @return Owner
@@ -487,7 +487,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this permission.
 		@return ApiUsersPermissionsDestroyRequest
 	*/
-	UsersPermissionsDestroy(ctx context.Context, id int32) ApiUsersPermissionsDestroyRequest
+	UsersPermissionsDestroy(ctx context.Context, id int64) ApiUsersPermissionsDestroyRequest
 
 	// UsersPermissionsDestroyExecute executes the request
 	UsersPermissionsDestroyExecute(r ApiUsersPermissionsDestroyRequest) (*http.Response, error)
@@ -515,7 +515,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this permission.
 		@return ApiUsersPermissionsPartialUpdateRequest
 	*/
-	UsersPermissionsPartialUpdate(ctx context.Context, id int32) ApiUsersPermissionsPartialUpdateRequest
+	UsersPermissionsPartialUpdate(ctx context.Context, id int64) ApiUsersPermissionsPartialUpdateRequest
 
 	// UsersPermissionsPartialUpdateExecute executes the request
 	//  @return ObjectPermission
@@ -530,7 +530,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this permission.
 		@return ApiUsersPermissionsRetrieveRequest
 	*/
-	UsersPermissionsRetrieve(ctx context.Context, id int32) ApiUsersPermissionsRetrieveRequest
+	UsersPermissionsRetrieve(ctx context.Context, id int64) ApiUsersPermissionsRetrieveRequest
 
 	// UsersPermissionsRetrieveExecute executes the request
 	//  @return ObjectPermission
@@ -545,7 +545,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this permission.
 		@return ApiUsersPermissionsUpdateRequest
 	*/
-	UsersPermissionsUpdate(ctx context.Context, id int32) ApiUsersPermissionsUpdateRequest
+	UsersPermissionsUpdate(ctx context.Context, id int64) ApiUsersPermissionsUpdateRequest
 
 	// UsersPermissionsUpdateExecute executes the request
 	//  @return ObjectPermission
@@ -615,7 +615,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this token.
 		@return ApiUsersTokensDestroyRequest
 	*/
-	UsersTokensDestroy(ctx context.Context, id int32) ApiUsersTokensDestroyRequest
+	UsersTokensDestroy(ctx context.Context, id int64) ApiUsersTokensDestroyRequest
 
 	// UsersTokensDestroyExecute executes the request
 	UsersTokensDestroyExecute(r ApiUsersTokensDestroyRequest) (*http.Response, error)
@@ -643,7 +643,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this token.
 		@return ApiUsersTokensPartialUpdateRequest
 	*/
-	UsersTokensPartialUpdate(ctx context.Context, id int32) ApiUsersTokensPartialUpdateRequest
+	UsersTokensPartialUpdate(ctx context.Context, id int64) ApiUsersTokensPartialUpdateRequest
 
 	// UsersTokensPartialUpdateExecute executes the request
 	//  @return Token
@@ -672,7 +672,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this token.
 		@return ApiUsersTokensRetrieveRequest
 	*/
-	UsersTokensRetrieve(ctx context.Context, id int32) ApiUsersTokensRetrieveRequest
+	UsersTokensRetrieve(ctx context.Context, id int64) ApiUsersTokensRetrieveRequest
 
 	// UsersTokensRetrieveExecute executes the request
 	//  @return Token
@@ -687,7 +687,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this token.
 		@return ApiUsersTokensUpdateRequest
 	*/
-	UsersTokensUpdate(ctx context.Context, id int32) ApiUsersTokensUpdateRequest
+	UsersTokensUpdate(ctx context.Context, id int64) ApiUsersTokensUpdateRequest
 
 	// UsersTokensUpdateExecute executes the request
 	//  @return Token
@@ -757,7 +757,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this user.
 		@return ApiUsersUsersDestroyRequest
 	*/
-	UsersUsersDestroy(ctx context.Context, id int32) ApiUsersUsersDestroyRequest
+	UsersUsersDestroy(ctx context.Context, id int64) ApiUsersUsersDestroyRequest
 
 	// UsersUsersDestroyExecute executes the request
 	UsersUsersDestroyExecute(r ApiUsersUsersDestroyRequest) (*http.Response, error)
@@ -785,7 +785,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this user.
 		@return ApiUsersUsersPartialUpdateRequest
 	*/
-	UsersUsersPartialUpdate(ctx context.Context, id int32) ApiUsersUsersPartialUpdateRequest
+	UsersUsersPartialUpdate(ctx context.Context, id int64) ApiUsersUsersPartialUpdateRequest
 
 	// UsersUsersPartialUpdateExecute executes the request
 	//  @return User
@@ -800,7 +800,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this user.
 		@return ApiUsersUsersRetrieveRequest
 	*/
-	UsersUsersRetrieve(ctx context.Context, id int32) ApiUsersUsersRetrieveRequest
+	UsersUsersRetrieve(ctx context.Context, id int64) ApiUsersUsersRetrieveRequest
 
 	// UsersUsersRetrieveExecute executes the request
 	//  @return User
@@ -815,7 +815,7 @@ type UsersAPI interface {
 		@param id A unique integer value identifying this user.
 		@return ApiUsersUsersUpdateRequest
 	*/
-	UsersUsersUpdate(ctx context.Context, id int32) ApiUsersUsersUpdateRequest
+	UsersUsersUpdate(ctx context.Context, id int64) ApiUsersUsersUpdateRequest
 
 	// UsersUsersUpdateExecute executes the request
 	//  @return User
@@ -1460,7 +1460,7 @@ func (a *UsersAPIService) UsersGroupsCreateExecute(r ApiUsersGroupsCreateRequest
 type ApiUsersGroupsDestroyRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiUsersGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -1476,7 +1476,7 @@ Delete a group object.
 	@param id A unique integer value identifying this group.
 	@return ApiUsersGroupsDestroyRequest
 */
-func (a *UsersAPIService) UsersGroupsDestroy(ctx context.Context, id int32) ApiUsersGroupsDestroyRequest {
+func (a *UsersAPIService) UsersGroupsDestroy(ctx context.Context, id int64) ApiUsersGroupsDestroyRequest {
 	return ApiUsersGroupsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -1581,13 +1581,13 @@ type ApiUsersGroupsListRequest struct {
 	descriptionNisw      *[]string
 	descriptionRegex     *[]string
 	fields               *string
-	id                   *[]int32
+	id                   *[]int64
 	idEmpty              *bool
-	idGt                 *[]int32
-	idGte                *[]int32
-	idLt                 *[]int32
-	idLte                *[]int32
-	idN                  *[]int32
+	idGt                 *[]int64
+	idGte                *[]int64
+	idLt                 *[]int64
+	idLte                *[]int64
+	idN                  *[]int64
 	limit                *int32
 	name                 *[]string
 	nameEmpty            *bool
@@ -1602,21 +1602,21 @@ type ApiUsersGroupsListRequest struct {
 	nameNiew             *[]string
 	nameNisw             *[]string
 	nameRegex            *[]string
-	notificationGroupId  *[]int32
-	notificationGroupIdN *[]int32
+	notificationGroupId  *[]int64
+	notificationGroupIdN *[]int64
 	offset               *int32
 	omit                 *string
 	ordering             *string
 	owner                *[]string
 	ownerN               *[]string
-	ownerId              *[]int32
-	ownerIdN             *[]int32
-	permissionId         *[]int32
-	permissionIdN        *[]int32
+	ownerId              *[]int64
+	ownerIdN             *[]int64
+	permissionId         *[]int64
+	permissionIdN        *[]int64
 	q                    *string
 	start                *int32
-	userId               *[]int32
-	userIdN              *[]int32
+	userId               *[]int64
+	userIdN              *[]int64
 }
 
 // Return only brief fields for each object.
@@ -1696,7 +1696,7 @@ func (r ApiUsersGroupsListRequest) Fields(fields string) ApiUsersGroupsListReque
 	return r
 }
 
-func (r ApiUsersGroupsListRequest) Id(id []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) Id(id []int64) ApiUsersGroupsListRequest {
 	r.id = &id
 	return r
 }
@@ -1706,27 +1706,27 @@ func (r ApiUsersGroupsListRequest) IdEmpty(idEmpty bool) ApiUsersGroupsListReque
 	return r
 }
 
-func (r ApiUsersGroupsListRequest) IdGt(idGt []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) IdGt(idGt []int64) ApiUsersGroupsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiUsersGroupsListRequest) IdGte(idGte []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) IdGte(idGte []int64) ApiUsersGroupsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiUsersGroupsListRequest) IdLt(idLt []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) IdLt(idLt []int64) ApiUsersGroupsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiUsersGroupsListRequest) IdLte(idLte []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) IdLte(idLte []int64) ApiUsersGroupsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiUsersGroupsListRequest) IdN(idN []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) IdN(idN []int64) ApiUsersGroupsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -1803,13 +1803,13 @@ func (r ApiUsersGroupsListRequest) NameRegex(nameRegex []string) ApiUsersGroupsL
 }
 
 // Notification group (ID)
-func (r ApiUsersGroupsListRequest) NotificationGroupId(notificationGroupId []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) NotificationGroupId(notificationGroupId []int64) ApiUsersGroupsListRequest {
 	r.notificationGroupId = &notificationGroupId
 	return r
 }
 
 // Notification group (ID)
-func (r ApiUsersGroupsListRequest) NotificationGroupIdN(notificationGroupIdN []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) NotificationGroupIdN(notificationGroupIdN []int64) ApiUsersGroupsListRequest {
 	r.notificationGroupIdN = &notificationGroupIdN
 	return r
 }
@@ -1845,25 +1845,25 @@ func (r ApiUsersGroupsListRequest) OwnerN(ownerN []string) ApiUsersGroupsListReq
 }
 
 // Owner (ID)
-func (r ApiUsersGroupsListRequest) OwnerId(ownerId []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) OwnerId(ownerId []int64) ApiUsersGroupsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiUsersGroupsListRequest) OwnerIdN(ownerIdN []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) OwnerIdN(ownerIdN []int64) ApiUsersGroupsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
 
 // Permission (ID)
-func (r ApiUsersGroupsListRequest) PermissionId(permissionId []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) PermissionId(permissionId []int64) ApiUsersGroupsListRequest {
 	r.permissionId = &permissionId
 	return r
 }
 
 // Permission (ID)
-func (r ApiUsersGroupsListRequest) PermissionIdN(permissionIdN []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) PermissionIdN(permissionIdN []int64) ApiUsersGroupsListRequest {
 	r.permissionIdN = &permissionIdN
 	return r
 }
@@ -1881,13 +1881,13 @@ func (r ApiUsersGroupsListRequest) Start(start int32) ApiUsersGroupsListRequest 
 }
 
 // User (ID)
-func (r ApiUsersGroupsListRequest) UserId(userId []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) UserId(userId []int64) ApiUsersGroupsListRequest {
 	r.userId = &userId
 	return r
 }
 
 // User (ID)
-func (r ApiUsersGroupsListRequest) UserIdN(userIdN []int32) ApiUsersGroupsListRequest {
+func (r ApiUsersGroupsListRequest) UserIdN(userIdN []int64) ApiUsersGroupsListRequest {
 	r.userIdN = &userIdN
 	return r
 }
@@ -2477,7 +2477,7 @@ func (a *UsersAPIService) UsersGroupsListExecute(r ApiUsersGroupsListRequest) (*
 type ApiUsersGroupsPartialUpdateRequest struct {
 	ctx                 context.Context
 	ApiService          UsersAPI
-	id                  int32
+	id                  int64
 	patchedGroupRequest *PatchedGroupRequest
 }
 
@@ -2499,7 +2499,7 @@ Patch a group object.
 	@param id A unique integer value identifying this group.
 	@return ApiUsersGroupsPartialUpdateRequest
 */
-func (a *UsersAPIService) UsersGroupsPartialUpdate(ctx context.Context, id int32) ApiUsersGroupsPartialUpdateRequest {
+func (a *UsersAPIService) UsersGroupsPartialUpdate(ctx context.Context, id int64) ApiUsersGroupsPartialUpdateRequest {
 	return ApiUsersGroupsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -2603,7 +2603,7 @@ func (a *UsersAPIService) UsersGroupsPartialUpdateExecute(r ApiUsersGroupsPartia
 type ApiUsersGroupsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -2640,7 +2640,7 @@ Get a group object.
 	@param id A unique integer value identifying this group.
 	@return ApiUsersGroupsRetrieveRequest
 */
-func (a *UsersAPIService) UsersGroupsRetrieve(ctx context.Context, id int32) ApiUsersGroupsRetrieveRequest {
+func (a *UsersAPIService) UsersGroupsRetrieve(ctx context.Context, id int64) ApiUsersGroupsRetrieveRequest {
 	return ApiUsersGroupsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -2751,7 +2751,7 @@ func (a *UsersAPIService) UsersGroupsRetrieveExecute(r ApiUsersGroupsRetrieveReq
 type ApiUsersGroupsUpdateRequest struct {
 	ctx          context.Context
 	ApiService   UsersAPI
-	id           int32
+	id           int64
 	groupRequest *GroupRequest
 }
 
@@ -2773,7 +2773,7 @@ Put a group object.
 	@param id A unique integer value identifying this group.
 	@return ApiUsersGroupsUpdateRequest
 */
-func (a *UsersAPIService) UsersGroupsUpdate(ctx context.Context, id int32) ApiUsersGroupsUpdateRequest {
+func (a *UsersAPIService) UsersGroupsUpdate(ctx context.Context, id int64) ApiUsersGroupsUpdateRequest {
 	return ApiUsersGroupsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3368,7 +3368,7 @@ func (a *UsersAPIService) UsersOwnerGroupsCreateExecute(r ApiUsersOwnerGroupsCre
 type ApiUsersOwnerGroupsDestroyRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiUsersOwnerGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -3384,7 +3384,7 @@ Delete a owner group object.
 	@param id A unique integer value identifying this owner group.
 	@return ApiUsersOwnerGroupsDestroyRequest
 */
-func (a *UsersAPIService) UsersOwnerGroupsDestroy(ctx context.Context, id int32) ApiUsersOwnerGroupsDestroyRequest {
+func (a *UsersAPIService) UsersOwnerGroupsDestroy(ctx context.Context, id int64) ApiUsersOwnerGroupsDestroyRequest {
 	return ApiUsersOwnerGroupsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3489,13 +3489,13 @@ type ApiUsersOwnerGroupsListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	limit             *int32
 	name              *[]string
 	nameEmpty         *bool
@@ -3594,7 +3594,7 @@ func (r ApiUsersOwnerGroupsListRequest) Fields(fields string) ApiUsersOwnerGroup
 	return r
 }
 
-func (r ApiUsersOwnerGroupsListRequest) Id(id []int32) ApiUsersOwnerGroupsListRequest {
+func (r ApiUsersOwnerGroupsListRequest) Id(id []int64) ApiUsersOwnerGroupsListRequest {
 	r.id = &id
 	return r
 }
@@ -3604,27 +3604,27 @@ func (r ApiUsersOwnerGroupsListRequest) IdEmpty(idEmpty bool) ApiUsersOwnerGroup
 	return r
 }
 
-func (r ApiUsersOwnerGroupsListRequest) IdGt(idGt []int32) ApiUsersOwnerGroupsListRequest {
+func (r ApiUsersOwnerGroupsListRequest) IdGt(idGt []int64) ApiUsersOwnerGroupsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiUsersOwnerGroupsListRequest) IdGte(idGte []int32) ApiUsersOwnerGroupsListRequest {
+func (r ApiUsersOwnerGroupsListRequest) IdGte(idGte []int64) ApiUsersOwnerGroupsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiUsersOwnerGroupsListRequest) IdLt(idLt []int32) ApiUsersOwnerGroupsListRequest {
+func (r ApiUsersOwnerGroupsListRequest) IdLt(idLt []int64) ApiUsersOwnerGroupsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiUsersOwnerGroupsListRequest) IdLte(idLte []int32) ApiUsersOwnerGroupsListRequest {
+func (r ApiUsersOwnerGroupsListRequest) IdLte(idLte []int64) ApiUsersOwnerGroupsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiUsersOwnerGroupsListRequest) IdN(idN []int32) ApiUsersOwnerGroupsListRequest {
+func (r ApiUsersOwnerGroupsListRequest) IdN(idN []int64) ApiUsersOwnerGroupsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -4205,7 +4205,7 @@ func (a *UsersAPIService) UsersOwnerGroupsListExecute(r ApiUsersOwnerGroupsListR
 type ApiUsersOwnerGroupsPartialUpdateRequest struct {
 	ctx                      context.Context
 	ApiService               UsersAPI
-	id                       int32
+	id                       int64
 	patchedOwnerGroupRequest *PatchedOwnerGroupRequest
 }
 
@@ -4227,7 +4227,7 @@ Patch a owner group object.
 	@param id A unique integer value identifying this owner group.
 	@return ApiUsersOwnerGroupsPartialUpdateRequest
 */
-func (a *UsersAPIService) UsersOwnerGroupsPartialUpdate(ctx context.Context, id int32) ApiUsersOwnerGroupsPartialUpdateRequest {
+func (a *UsersAPIService) UsersOwnerGroupsPartialUpdate(ctx context.Context, id int64) ApiUsersOwnerGroupsPartialUpdateRequest {
 	return ApiUsersOwnerGroupsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -4331,7 +4331,7 @@ func (a *UsersAPIService) UsersOwnerGroupsPartialUpdateExecute(r ApiUsersOwnerGr
 type ApiUsersOwnerGroupsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -4368,7 +4368,7 @@ Get a owner group object.
 	@param id A unique integer value identifying this owner group.
 	@return ApiUsersOwnerGroupsRetrieveRequest
 */
-func (a *UsersAPIService) UsersOwnerGroupsRetrieve(ctx context.Context, id int32) ApiUsersOwnerGroupsRetrieveRequest {
+func (a *UsersAPIService) UsersOwnerGroupsRetrieve(ctx context.Context, id int64) ApiUsersOwnerGroupsRetrieveRequest {
 	return ApiUsersOwnerGroupsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -4479,7 +4479,7 @@ func (a *UsersAPIService) UsersOwnerGroupsRetrieveExecute(r ApiUsersOwnerGroupsR
 type ApiUsersOwnerGroupsUpdateRequest struct {
 	ctx               context.Context
 	ApiService        UsersAPI
-	id                int32
+	id                int64
 	ownerGroupRequest *OwnerGroupRequest
 }
 
@@ -4501,7 +4501,7 @@ Put a owner group object.
 	@param id A unique integer value identifying this owner group.
 	@return ApiUsersOwnerGroupsUpdateRequest
 */
-func (a *UsersAPIService) UsersOwnerGroupsUpdate(ctx context.Context, id int32) ApiUsersOwnerGroupsUpdateRequest {
+func (a *UsersAPIService) UsersOwnerGroupsUpdate(ctx context.Context, id int64) ApiUsersOwnerGroupsUpdateRequest {
 	return ApiUsersOwnerGroupsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -5096,7 +5096,7 @@ func (a *UsersAPIService) UsersOwnersCreateExecute(r ApiUsersOwnersCreateRequest
 type ApiUsersOwnersDestroyRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiUsersOwnersDestroyRequest) Execute() (*http.Response, error) {
@@ -5112,7 +5112,7 @@ Delete a owner object.
 	@param id A unique integer value identifying this owner.
 	@return ApiUsersOwnersDestroyRequest
 */
-func (a *UsersAPIService) UsersOwnersDestroy(ctx context.Context, id int32) ApiUsersOwnersDestroyRequest {
+func (a *UsersAPIService) UsersOwnersDestroy(ctx context.Context, id int64) ApiUsersOwnersDestroyRequest {
 	return ApiUsersOwnersDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -5219,15 +5219,15 @@ type ApiUsersOwnersListRequest struct {
 	fields            *string
 	group             *[]string
 	groupN            *[]string
-	groupId           *[]*int32
-	groupIdN          *[]*int32
-	id                *[]int32
+	groupId           *[]*int64
+	groupIdN          *[]*int64
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	limit             *int32
 	name              *[]string
 	nameEmpty         *bool
@@ -5251,10 +5251,10 @@ type ApiUsersOwnersListRequest struct {
 	userN             *[]string
 	userGroup         *[]string
 	userGroupN        *[]string
-	userGroupId       *[]int32
-	userGroupIdN      *[]int32
-	userId            *[]int32
-	userIdN           *[]int32
+	userGroupId       *[]int64
+	userGroupIdN      *[]int64
+	userId            *[]int64
+	userIdN           *[]int64
 }
 
 // Return only brief fields for each object.
@@ -5347,18 +5347,18 @@ func (r ApiUsersOwnersListRequest) GroupN(groupN []string) ApiUsersOwnersListReq
 }
 
 // Group (ID)
-func (r ApiUsersOwnersListRequest) GroupId(groupId []*int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) GroupId(groupId []*int64) ApiUsersOwnersListRequest {
 	r.groupId = &groupId
 	return r
 }
 
 // Group (ID)
-func (r ApiUsersOwnersListRequest) GroupIdN(groupIdN []*int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) GroupIdN(groupIdN []*int64) ApiUsersOwnersListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiUsersOwnersListRequest) Id(id []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) Id(id []int64) ApiUsersOwnersListRequest {
 	r.id = &id
 	return r
 }
@@ -5368,27 +5368,27 @@ func (r ApiUsersOwnersListRequest) IdEmpty(idEmpty bool) ApiUsersOwnersListReque
 	return r
 }
 
-func (r ApiUsersOwnersListRequest) IdGt(idGt []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) IdGt(idGt []int64) ApiUsersOwnersListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiUsersOwnersListRequest) IdGte(idGte []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) IdGte(idGte []int64) ApiUsersOwnersListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiUsersOwnersListRequest) IdLt(idLt []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) IdLt(idLt []int64) ApiUsersOwnersListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiUsersOwnersListRequest) IdLte(idLte []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) IdLte(idLte []int64) ApiUsersOwnersListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiUsersOwnersListRequest) IdN(idN []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) IdN(idN []int64) ApiUsersOwnersListRequest {
 	r.idN = &idN
 	return r
 }
@@ -5519,25 +5519,25 @@ func (r ApiUsersOwnersListRequest) UserGroupN(userGroupN []string) ApiUsersOwner
 }
 
 // User group (ID)
-func (r ApiUsersOwnersListRequest) UserGroupId(userGroupId []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) UserGroupId(userGroupId []int64) ApiUsersOwnersListRequest {
 	r.userGroupId = &userGroupId
 	return r
 }
 
 // User group (ID)
-func (r ApiUsersOwnersListRequest) UserGroupIdN(userGroupIdN []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) UserGroupIdN(userGroupIdN []int64) ApiUsersOwnersListRequest {
 	r.userGroupIdN = &userGroupIdN
 	return r
 }
 
 // User (ID)
-func (r ApiUsersOwnersListRequest) UserId(userId []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) UserId(userId []int64) ApiUsersOwnersListRequest {
 	r.userId = &userId
 	return r
 }
 
 // User (ID)
-func (r ApiUsersOwnersListRequest) UserIdN(userIdN []int32) ApiUsersOwnersListRequest {
+func (r ApiUsersOwnersListRequest) UserIdN(userIdN []int64) ApiUsersOwnersListRequest {
 	r.userIdN = &userIdN
 	return r
 }
@@ -6149,7 +6149,7 @@ func (a *UsersAPIService) UsersOwnersListExecute(r ApiUsersOwnersListRequest) (*
 type ApiUsersOwnersPartialUpdateRequest struct {
 	ctx                 context.Context
 	ApiService          UsersAPI
-	id                  int32
+	id                  int64
 	patchedOwnerRequest *PatchedOwnerRequest
 }
 
@@ -6171,7 +6171,7 @@ Patch a owner object.
 	@param id A unique integer value identifying this owner.
 	@return ApiUsersOwnersPartialUpdateRequest
 */
-func (a *UsersAPIService) UsersOwnersPartialUpdate(ctx context.Context, id int32) ApiUsersOwnersPartialUpdateRequest {
+func (a *UsersAPIService) UsersOwnersPartialUpdate(ctx context.Context, id int64) ApiUsersOwnersPartialUpdateRequest {
 	return ApiUsersOwnersPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6275,7 +6275,7 @@ func (a *UsersAPIService) UsersOwnersPartialUpdateExecute(r ApiUsersOwnersPartia
 type ApiUsersOwnersRetrieveRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -6312,7 +6312,7 @@ Get a owner object.
 	@param id A unique integer value identifying this owner.
 	@return ApiUsersOwnersRetrieveRequest
 */
-func (a *UsersAPIService) UsersOwnersRetrieve(ctx context.Context, id int32) ApiUsersOwnersRetrieveRequest {
+func (a *UsersAPIService) UsersOwnersRetrieve(ctx context.Context, id int64) ApiUsersOwnersRetrieveRequest {
 	return ApiUsersOwnersRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6423,7 +6423,7 @@ func (a *UsersAPIService) UsersOwnersRetrieveExecute(r ApiUsersOwnersRetrieveReq
 type ApiUsersOwnersUpdateRequest struct {
 	ctx          context.Context
 	ApiService   UsersAPI
-	id           int32
+	id           int64
 	ownerRequest *OwnerRequest
 }
 
@@ -6445,7 +6445,7 @@ Put a owner object.
 	@param id A unique integer value identifying this owner.
 	@return ApiUsersOwnersUpdateRequest
 */
-func (a *UsersAPIService) UsersOwnersUpdate(ctx context.Context, id int32) ApiUsersOwnersUpdateRequest {
+func (a *UsersAPIService) UsersOwnersUpdate(ctx context.Context, id int64) ApiUsersOwnersUpdateRequest {
 	return ApiUsersOwnersUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -7040,7 +7040,7 @@ func (a *UsersAPIService) UsersPermissionsCreateExecute(r ApiUsersPermissionsCre
 type ApiUsersPermissionsDestroyRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiUsersPermissionsDestroyRequest) Execute() (*http.Response, error) {
@@ -7056,7 +7056,7 @@ Delete a permission object.
 	@param id A unique integer value identifying this permission.
 	@return ApiUsersPermissionsDestroyRequest
 */
-func (a *UsersAPIService) UsersPermissionsDestroy(ctx context.Context, id int32) ApiUsersPermissionsDestroyRequest {
+func (a *UsersAPIService) UsersPermissionsDestroy(ctx context.Context, id int64) ApiUsersPermissionsDestroyRequest {
 	return ApiUsersPermissionsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -7168,15 +7168,15 @@ type ApiUsersPermissionsListRequest struct {
 	fields            *string
 	group             *[]string
 	groupN            *[]string
-	groupId           *[]int32
-	groupIdN          *[]int32
-	id                *[]int32
+	groupId           *[]int64
+	groupIdN          *[]int64
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	limit             *int32
 	name              *[]string
 	nameEmpty         *bool
@@ -7214,8 +7214,8 @@ type ApiUsersPermissionsListRequest struct {
 	start             *int32
 	user              *[]string
 	userN             *[]string
-	userId            *[]int32
-	userIdN           *[]int32
+	userId            *[]int64
+	userIdN           *[]int64
 }
 
 // Return only brief fields for each object.
@@ -7333,18 +7333,18 @@ func (r ApiUsersPermissionsListRequest) GroupN(groupN []string) ApiUsersPermissi
 }
 
 // Group
-func (r ApiUsersPermissionsListRequest) GroupId(groupId []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) GroupId(groupId []int64) ApiUsersPermissionsListRequest {
 	r.groupId = &groupId
 	return r
 }
 
 // Group
-func (r ApiUsersPermissionsListRequest) GroupIdN(groupIdN []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) GroupIdN(groupIdN []int64) ApiUsersPermissionsListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiUsersPermissionsListRequest) Id(id []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) Id(id []int64) ApiUsersPermissionsListRequest {
 	r.id = &id
 	return r
 }
@@ -7354,27 +7354,27 @@ func (r ApiUsersPermissionsListRequest) IdEmpty(idEmpty bool) ApiUsersPermission
 	return r
 }
 
-func (r ApiUsersPermissionsListRequest) IdGt(idGt []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) IdGt(idGt []int64) ApiUsersPermissionsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiUsersPermissionsListRequest) IdGte(idGte []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) IdGte(idGte []int64) ApiUsersPermissionsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiUsersPermissionsListRequest) IdLt(idLt []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) IdLt(idLt []int64) ApiUsersPermissionsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiUsersPermissionsListRequest) IdLte(idLte []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) IdLte(idLte []int64) ApiUsersPermissionsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiUsersPermissionsListRequest) IdN(idN []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) IdN(idN []int64) ApiUsersPermissionsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -7573,13 +7573,13 @@ func (r ApiUsersPermissionsListRequest) UserN(userN []string) ApiUsersPermission
 }
 
 // User
-func (r ApiUsersPermissionsListRequest) UserId(userId []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) UserId(userId []int64) ApiUsersPermissionsListRequest {
 	r.userId = &userId
 	return r
 }
 
 // User
-func (r ApiUsersPermissionsListRequest) UserIdN(userIdN []int32) ApiUsersPermissionsListRequest {
+func (r ApiUsersPermissionsListRequest) UserIdN(userIdN []int64) ApiUsersPermissionsListRequest {
 	r.userIdN = &userIdN
 	return r
 }
@@ -8338,7 +8338,7 @@ func (a *UsersAPIService) UsersPermissionsListExecute(r ApiUsersPermissionsListR
 type ApiUsersPermissionsPartialUpdateRequest struct {
 	ctx                            context.Context
 	ApiService                     UsersAPI
-	id                             int32
+	id                             int64
 	patchedObjectPermissionRequest *PatchedObjectPermissionRequest
 }
 
@@ -8360,7 +8360,7 @@ Patch a permission object.
 	@param id A unique integer value identifying this permission.
 	@return ApiUsersPermissionsPartialUpdateRequest
 */
-func (a *UsersAPIService) UsersPermissionsPartialUpdate(ctx context.Context, id int32) ApiUsersPermissionsPartialUpdateRequest {
+func (a *UsersAPIService) UsersPermissionsPartialUpdate(ctx context.Context, id int64) ApiUsersPermissionsPartialUpdateRequest {
 	return ApiUsersPermissionsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -8464,7 +8464,7 @@ func (a *UsersAPIService) UsersPermissionsPartialUpdateExecute(r ApiUsersPermiss
 type ApiUsersPermissionsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -8501,7 +8501,7 @@ Get a permission object.
 	@param id A unique integer value identifying this permission.
 	@return ApiUsersPermissionsRetrieveRequest
 */
-func (a *UsersAPIService) UsersPermissionsRetrieve(ctx context.Context, id int32) ApiUsersPermissionsRetrieveRequest {
+func (a *UsersAPIService) UsersPermissionsRetrieve(ctx context.Context, id int64) ApiUsersPermissionsRetrieveRequest {
 	return ApiUsersPermissionsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -8612,7 +8612,7 @@ func (a *UsersAPIService) UsersPermissionsRetrieveExecute(r ApiUsersPermissionsR
 type ApiUsersPermissionsUpdateRequest struct {
 	ctx                     context.Context
 	ApiService              UsersAPI
-	id                      int32
+	id                      int64
 	objectPermissionRequest *ObjectPermissionRequest
 }
 
@@ -8634,7 +8634,7 @@ Put a permission object.
 	@param id A unique integer value identifying this permission.
 	@return ApiUsersPermissionsUpdateRequest
 */
-func (a *UsersAPIService) UsersPermissionsUpdate(ctx context.Context, id int32) ApiUsersPermissionsUpdateRequest {
+func (a *UsersAPIService) UsersPermissionsUpdate(ctx context.Context, id int64) ApiUsersPermissionsUpdateRequest {
 	return ApiUsersPermissionsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -9229,7 +9229,7 @@ func (a *UsersAPIService) UsersTokensCreateExecute(r ApiUsersTokensCreateRequest
 type ApiUsersTokensDestroyRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiUsersTokensDestroyRequest) Execute() (*http.Response, error) {
@@ -9245,7 +9245,7 @@ Delete a token object.
 	@param id A unique integer value identifying this token.
 	@return ApiUsersTokensDestroyRequest
 */
-func (a *UsersAPIService) UsersTokensDestroy(ctx context.Context, id int32) ApiUsersTokensDestroyRequest {
+func (a *UsersAPIService) UsersTokensDestroy(ctx context.Context, id int64) ApiUsersTokensDestroyRequest {
 	return ApiUsersTokensDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -9357,13 +9357,13 @@ type ApiUsersTokensListRequest struct {
 	expiresGte        *time.Time
 	expiresLte        *time.Time
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	key               *[]string
 	keyEmpty          *bool
 	keyIc             *[]string
@@ -9395,8 +9395,8 @@ type ApiUsersTokensListRequest struct {
 	start             *int32
 	user              *[]string
 	userN             *[]string
-	userId            *[]int32
-	userIdN           *[]int32
+	userId            *[]int64
+	userIdN           *[]int64
 	version           *int32
 	versionIc         *[]int32
 	versionIe         *[]int32
@@ -9524,7 +9524,7 @@ func (r ApiUsersTokensListRequest) Fields(fields string) ApiUsersTokensListReque
 	return r
 }
 
-func (r ApiUsersTokensListRequest) Id(id []int32) ApiUsersTokensListRequest {
+func (r ApiUsersTokensListRequest) Id(id []int64) ApiUsersTokensListRequest {
 	r.id = &id
 	return r
 }
@@ -9534,27 +9534,27 @@ func (r ApiUsersTokensListRequest) IdEmpty(idEmpty bool) ApiUsersTokensListReque
 	return r
 }
 
-func (r ApiUsersTokensListRequest) IdGt(idGt []int32) ApiUsersTokensListRequest {
+func (r ApiUsersTokensListRequest) IdGt(idGt []int64) ApiUsersTokensListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiUsersTokensListRequest) IdGte(idGte []int32) ApiUsersTokensListRequest {
+func (r ApiUsersTokensListRequest) IdGte(idGte []int64) ApiUsersTokensListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiUsersTokensListRequest) IdLt(idLt []int32) ApiUsersTokensListRequest {
+func (r ApiUsersTokensListRequest) IdLt(idLt []int64) ApiUsersTokensListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiUsersTokensListRequest) IdLte(idLte []int32) ApiUsersTokensListRequest {
+func (r ApiUsersTokensListRequest) IdLte(idLte []int64) ApiUsersTokensListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiUsersTokensListRequest) IdN(idN []int32) ApiUsersTokensListRequest {
+func (r ApiUsersTokensListRequest) IdN(idN []int64) ApiUsersTokensListRequest {
 	r.idN = &idN
 	return r
 }
@@ -9723,13 +9723,13 @@ func (r ApiUsersTokensListRequest) UserN(userN []string) ApiUsersTokensListReque
 }
 
 // User
-func (r ApiUsersTokensListRequest) UserId(userId []int32) ApiUsersTokensListRequest {
+func (r ApiUsersTokensListRequest) UserId(userId []int64) ApiUsersTokensListRequest {
 	r.userId = &userId
 	return r
 }
 
 // User
-func (r ApiUsersTokensListRequest) UserIdN(userIdN []int32) ApiUsersTokensListRequest {
+func (r ApiUsersTokensListRequest) UserIdN(userIdN []int64) ApiUsersTokensListRequest {
 	r.userIdN = &userIdN
 	return r
 }
@@ -10538,7 +10538,7 @@ func (a *UsersAPIService) UsersTokensListExecute(r ApiUsersTokensListRequest) (*
 type ApiUsersTokensPartialUpdateRequest struct {
 	ctx                 context.Context
 	ApiService          UsersAPI
-	id                  int32
+	id                  int64
 	patchedTokenRequest *PatchedTokenRequest
 }
 
@@ -10560,7 +10560,7 @@ Patch a token object.
 	@param id A unique integer value identifying this token.
 	@return ApiUsersTokensPartialUpdateRequest
 */
-func (a *UsersAPIService) UsersTokensPartialUpdate(ctx context.Context, id int32) ApiUsersTokensPartialUpdateRequest {
+func (a *UsersAPIService) UsersTokensPartialUpdate(ctx context.Context, id int64) ApiUsersTokensPartialUpdateRequest {
 	return ApiUsersTokensPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -10789,7 +10789,7 @@ func (a *UsersAPIService) UsersTokensProvisionCreateExecute(r ApiUsersTokensProv
 type ApiUsersTokensRetrieveRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -10826,7 +10826,7 @@ Get a token object.
 	@param id A unique integer value identifying this token.
 	@return ApiUsersTokensRetrieveRequest
 */
-func (a *UsersAPIService) UsersTokensRetrieve(ctx context.Context, id int32) ApiUsersTokensRetrieveRequest {
+func (a *UsersAPIService) UsersTokensRetrieve(ctx context.Context, id int64) ApiUsersTokensRetrieveRequest {
 	return ApiUsersTokensRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -10937,7 +10937,7 @@ func (a *UsersAPIService) UsersTokensRetrieveExecute(r ApiUsersTokensRetrieveReq
 type ApiUsersTokensUpdateRequest struct {
 	ctx          context.Context
 	ApiService   UsersAPI
-	id           int32
+	id           int64
 	tokenRequest *TokenRequest
 }
 
@@ -10959,7 +10959,7 @@ Put a token object.
 	@param id A unique integer value identifying this token.
 	@return ApiUsersTokensUpdateRequest
 */
-func (a *UsersAPIService) UsersTokensUpdate(ctx context.Context, id int32) ApiUsersTokensUpdateRequest {
+func (a *UsersAPIService) UsersTokensUpdate(ctx context.Context, id int64) ApiUsersTokensUpdateRequest {
 	return ApiUsersTokensUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -11554,7 +11554,7 @@ func (a *UsersAPIService) UsersUsersCreateExecute(r ApiUsersUsersCreateRequest) 
 type ApiUsersUsersDestroyRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiUsersUsersDestroyRequest) Execute() (*http.Response, error) {
@@ -11570,7 +11570,7 @@ Delete a user object.
 	@param id A unique integer value identifying this user.
 	@return ApiUsersUsersDestroyRequest
 */
-func (a *UsersAPIService) UsersUsersDestroy(ctx context.Context, id int32) ApiUsersUsersDestroyRequest {
+func (a *UsersAPIService) UsersUsersDestroy(ctx context.Context, id int64) ApiUsersUsersDestroyRequest {
 	return ApiUsersUsersDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -11697,15 +11697,15 @@ type ApiUsersUsersListRequest struct {
 	firstNameRegex       *[]string
 	group                *[]string
 	groupN               *[]string
-	groupId              *[]int32
-	groupIdN             *[]int32
-	id                   *[]int32
+	groupId              *[]int64
+	groupIdN             *[]int64
+	id                   *[]int64
 	idEmpty              *bool
-	idGt                 *[]int32
-	idGte                *[]int32
-	idLt                 *[]int32
-	idLte                *[]int32
-	idN                  *[]int32
+	idGt                 *[]int64
+	idGte                *[]int64
+	idLt                 *[]int64
+	idLte                *[]int64
+	idN                  *[]int64
 	isActive             *bool
 	isSuperuser          *bool
 	lastLogin            *[]time.Time
@@ -11729,17 +11729,17 @@ type ApiUsersUsersListRequest struct {
 	lastNameNisw         *[]string
 	lastNameRegex        *[]string
 	limit                *int32
-	notificationGroupId  *[]int32
-	notificationGroupIdN *[]int32
+	notificationGroupId  *[]int64
+	notificationGroupIdN *[]int64
 	offset               *int32
 	omit                 *string
 	ordering             *string
 	owner                *[]string
 	ownerN               *[]string
-	ownerId              *[]int32
-	ownerIdN             *[]int32
-	permissionId         *[]int32
-	permissionIdN        *[]int32
+	ownerId              *[]int64
+	ownerIdN             *[]int64
+	permissionId         *[]int64
+	permissionIdN        *[]int64
 	q                    *string
 	start                *int32
 	username             *[]string
@@ -11947,18 +11947,18 @@ func (r ApiUsersUsersListRequest) GroupN(groupN []string) ApiUsersUsersListReque
 }
 
 // Group
-func (r ApiUsersUsersListRequest) GroupId(groupId []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) GroupId(groupId []int64) ApiUsersUsersListRequest {
 	r.groupId = &groupId
 	return r
 }
 
 // Group
-func (r ApiUsersUsersListRequest) GroupIdN(groupIdN []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) GroupIdN(groupIdN []int64) ApiUsersUsersListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiUsersUsersListRequest) Id(id []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) Id(id []int64) ApiUsersUsersListRequest {
 	r.id = &id
 	return r
 }
@@ -11968,27 +11968,27 @@ func (r ApiUsersUsersListRequest) IdEmpty(idEmpty bool) ApiUsersUsersListRequest
 	return r
 }
 
-func (r ApiUsersUsersListRequest) IdGt(idGt []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) IdGt(idGt []int64) ApiUsersUsersListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiUsersUsersListRequest) IdGte(idGte []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) IdGte(idGte []int64) ApiUsersUsersListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiUsersUsersListRequest) IdLt(idLt []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) IdLt(idLt []int64) ApiUsersUsersListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiUsersUsersListRequest) IdLte(idLte []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) IdLte(idLte []int64) ApiUsersUsersListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiUsersUsersListRequest) IdN(idN []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) IdN(idN []int64) ApiUsersUsersListRequest {
 	r.idN = &idN
 	return r
 }
@@ -12110,13 +12110,13 @@ func (r ApiUsersUsersListRequest) Limit(limit int32) ApiUsersUsersListRequest {
 }
 
 // Notification group (ID)
-func (r ApiUsersUsersListRequest) NotificationGroupId(notificationGroupId []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) NotificationGroupId(notificationGroupId []int64) ApiUsersUsersListRequest {
 	r.notificationGroupId = &notificationGroupId
 	return r
 }
 
 // Notification group (ID)
-func (r ApiUsersUsersListRequest) NotificationGroupIdN(notificationGroupIdN []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) NotificationGroupIdN(notificationGroupIdN []int64) ApiUsersUsersListRequest {
 	r.notificationGroupIdN = &notificationGroupIdN
 	return r
 }
@@ -12152,25 +12152,25 @@ func (r ApiUsersUsersListRequest) OwnerN(ownerN []string) ApiUsersUsersListReque
 }
 
 // Owner (ID)
-func (r ApiUsersUsersListRequest) OwnerId(ownerId []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) OwnerId(ownerId []int64) ApiUsersUsersListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiUsersUsersListRequest) OwnerIdN(ownerIdN []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) OwnerIdN(ownerIdN []int64) ApiUsersUsersListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
 
 // Permission (ID)
-func (r ApiUsersUsersListRequest) PermissionId(permissionId []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) PermissionId(permissionId []int64) ApiUsersUsersListRequest {
 	r.permissionId = &permissionId
 	return r
 }
 
 // Permission (ID)
-func (r ApiUsersUsersListRequest) PermissionIdN(permissionIdN []int32) ApiUsersUsersListRequest {
+func (r ApiUsersUsersListRequest) PermissionIdN(permissionIdN []int64) ApiUsersUsersListRequest {
 	r.permissionIdN = &permissionIdN
 	return r
 }
@@ -13273,7 +13273,7 @@ func (a *UsersAPIService) UsersUsersListExecute(r ApiUsersUsersListRequest) (*Pa
 type ApiUsersUsersPartialUpdateRequest struct {
 	ctx                context.Context
 	ApiService         UsersAPI
-	id                 int32
+	id                 int64
 	patchedUserRequest *PatchedUserRequest
 }
 
@@ -13295,7 +13295,7 @@ Patch a user object.
 	@param id A unique integer value identifying this user.
 	@return ApiUsersUsersPartialUpdateRequest
 */
-func (a *UsersAPIService) UsersUsersPartialUpdate(ctx context.Context, id int32) ApiUsersUsersPartialUpdateRequest {
+func (a *UsersAPIService) UsersUsersPartialUpdate(ctx context.Context, id int64) ApiUsersUsersPartialUpdateRequest {
 	return ApiUsersUsersPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -13399,7 +13399,7 @@ func (a *UsersAPIService) UsersUsersPartialUpdateExecute(r ApiUsersUsersPartialU
 type ApiUsersUsersRetrieveRequest struct {
 	ctx        context.Context
 	ApiService UsersAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -13436,7 +13436,7 @@ Get a user object.
 	@param id A unique integer value identifying this user.
 	@return ApiUsersUsersRetrieveRequest
 */
-func (a *UsersAPIService) UsersUsersRetrieve(ctx context.Context, id int32) ApiUsersUsersRetrieveRequest {
+func (a *UsersAPIService) UsersUsersRetrieve(ctx context.Context, id int64) ApiUsersUsersRetrieveRequest {
 	return ApiUsersUsersRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -13547,7 +13547,7 @@ func (a *UsersAPIService) UsersUsersRetrieveExecute(r ApiUsersUsersRetrieveReque
 type ApiUsersUsersUpdateRequest struct {
 	ctx         context.Context
 	ApiService  UsersAPI
-	id          int32
+	id          int64
 	userRequest *UserRequest
 }
 
@@ -13569,7 +13569,7 @@ Put a user object.
 	@param id A unique integer value identifying this user.
 	@return ApiUsersUsersUpdateRequest
 */
-func (a *UsersAPIService) UsersUsersUpdate(ctx context.Context, id int32) ApiUsersUsersUpdateRequest {
+func (a *UsersAPIService) UsersUsersUpdate(ctx context.Context, id int64) ApiUsersUsersUpdateRequest {
 	return ApiUsersUsersUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,

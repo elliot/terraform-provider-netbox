@@ -262,7 +262,7 @@ func (r *ModuleTypeResource) Read(ctx context.Context, req resource.ReadRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -293,7 +293,7 @@ func (r *ModuleTypeResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -334,7 +334,7 @@ func (r *ModuleTypeResource) Delete(ctx context.Context, req resource.DeleteRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -354,9 +354,9 @@ func (r *ModuleTypeResource) ImportState(ctx context.Context, req resource.Impor
 // moduleTypeToCreate builds the WritableModuleTypeRequest request body from the plan.
 func moduleTypeToCreate(ctx context.Context, plan *ModuleTypeModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableModuleTypeRequest {
 	const objectType = "dcim.moduletype"
-	body := netbox.NewWritableModuleTypeRequest(conv.Int32(plan.ManufacturerId), plan.Model.ValueString())
+	body := netbox.NewWritableModuleTypeRequest(plan.ManufacturerId.ValueInt64(), plan.Model.ValueString())
 	if conv.Known(plan.ProfileId) {
-		body.SetProfile(conv.Int32(plan.ProfileId))
+		body.SetProfile(plan.ProfileId.ValueInt64())
 	}
 	if !plan.PartNumber.IsUnknown() {
 		body.SetPartNumber(plan.PartNumber.ValueString())
@@ -383,10 +383,10 @@ func moduleTypeToCreate(ctx context.Context, plan *ModuleTypeModel, cf *customfi
 		body.SetAttributes(conv.JSONToAPI(plan.Attributes, diags))
 	}
 	if conv.Known(plan.ModuleBayTypeIds) {
-		body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
+		body.SetModuleBayTypes(conv.Int64s(ctx, plan.ModuleBayTypeIds, diags))
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -408,12 +408,12 @@ func moduleTypeToPatch(ctx context.Context, plan, state *ModuleTypeModel, cf *cu
 		if plan.ProfileId.IsNull() {
 			body.SetProfileNil()
 		} else if !plan.ProfileId.IsUnknown() {
-			body.SetProfile(conv.Int32(plan.ProfileId))
+			body.SetProfile(plan.ProfileId.ValueInt64())
 		}
 	}
 	if !plan.ManufacturerId.Equal(state.ManufacturerId) {
 		if conv.Known(plan.ManufacturerId) {
-			body.SetManufacturer(conv.Int32(plan.ManufacturerId))
+			body.SetManufacturer(plan.ManufacturerId.ValueInt64())
 		}
 	}
 	if !plan.Model.Equal(state.Model) {
@@ -465,14 +465,14 @@ func moduleTypeToPatch(ctx context.Context, plan, state *ModuleTypeModel, cf *cu
 	}
 	if !plan.ModuleBayTypeIds.Equal(state.ModuleBayTypeIds) {
 		if conv.Known(plan.ModuleBayTypeIds) {
-			body.SetModuleBayTypes(conv.Int32s(ctx, plan.ModuleBayTypeIds, diags))
+			body.SetModuleBayTypes(conv.Int64s(ctx, plan.ModuleBayTypeIds, diags))
 		}
 	}
 	if !plan.OwnerId.Equal(state.OwnerId) {
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

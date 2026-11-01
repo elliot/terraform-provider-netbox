@@ -22,7 +22,7 @@ var _ MappedNullable = &BulkWebhookRequest{}
 
 // BulkWebhookRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type BulkWebhookRequest struct {
-	Id          int32   `json:"id"`
+	Id          int64   `json:"id"`
 	Name        string  `json:"name"`
 	Description *string `json:"description,omitempty"`
 	// This URL will be called using the HTTP method defined when the webhook is called. Must be http:// or https://. Jinja2 template processing is supported (with the same context as the request body) for part or all of the URL.
@@ -44,7 +44,7 @@ type BulkWebhookRequest struct {
 	// The maximum time (in seconds) to wait for a response before failing the request. Leave blank to use the system default (60 seconds).
 	Timeout              NullableInt32          `json:"timeout,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -55,7 +55,7 @@ type _BulkWebhookRequest BulkWebhookRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkWebhookRequest(id int32, name string, payloadUrl string) *BulkWebhookRequest {
+func NewBulkWebhookRequest(id int64, name string, payloadUrl string) *BulkWebhookRequest {
 	this := BulkWebhookRequest{}
 	this.Id = id
 	this.Name = name
@@ -72,9 +72,9 @@ func NewBulkWebhookRequestWithDefaults() *BulkWebhookRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkWebhookRequest) GetId() int32 {
+func (o *BulkWebhookRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -83,7 +83,7 @@ func (o *BulkWebhookRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkWebhookRequest) GetIdOk() (*int32, bool) {
+func (o *BulkWebhookRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -91,7 +91,7 @@ func (o *BulkWebhookRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkWebhookRequest) SetId(v int32) {
+func (o *BulkWebhookRequest) SetId(v int64) {
 	o.Id = v
 }
 
@@ -486,9 +486,9 @@ func (o *BulkWebhookRequest) SetCustomFields(v map[string]interface{}) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkWebhookRequest) GetOwner() int32 {
+func (o *BulkWebhookRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -497,7 +497,7 @@ func (o *BulkWebhookRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkWebhookRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkWebhookRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -513,8 +513,8 @@ func (o *BulkWebhookRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkWebhookRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkWebhookRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

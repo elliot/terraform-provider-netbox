@@ -63,8 +63,8 @@ type CustomFieldRequest struct {
 	ValidationRegex *string `json:"validation_regex,omitempty"`
 	// A JSON schema definition for validating the custom field value
 	ValidationSchema     interface{}   `json:"validation_schema,omitempty"`
-	ChoiceSet            NullableInt32 `json:"choice_set,omitempty"`
-	Owner                NullableInt32 `json:"owner,omitempty"`
+	ChoiceSet            NullableInt64 `json:"choice_set,omitempty"`
+	Owner                NullableInt64 `json:"owner,omitempty"`
 	Comments             *string       `json:"comments,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -815,9 +815,9 @@ func (o *CustomFieldRequest) SetValidationSchema(v interface{}) {
 }
 
 // GetChoiceSet returns the ChoiceSet field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CustomFieldRequest) GetChoiceSet() int32 {
+func (o *CustomFieldRequest) GetChoiceSet() int64 {
 	if o == nil || IsNil(o.ChoiceSet.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ChoiceSet.Get()
@@ -826,7 +826,7 @@ func (o *CustomFieldRequest) GetChoiceSet() int32 {
 // GetChoiceSetOk returns a tuple with the ChoiceSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CustomFieldRequest) GetChoiceSetOk() (*int32, bool) {
+func (o *CustomFieldRequest) GetChoiceSetOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -842,8 +842,8 @@ func (o *CustomFieldRequest) HasChoiceSet() bool {
 	return false
 }
 
-// SetChoiceSet gets a reference to the given NullableInt32 and assigns it to the ChoiceSet field.
-func (o *CustomFieldRequest) SetChoiceSet(v int32) {
+// SetChoiceSet gets a reference to the given NullableInt64 and assigns it to the ChoiceSet field.
+func (o *CustomFieldRequest) SetChoiceSet(v int64) {
 	o.ChoiceSet.Set(&v)
 }
 
@@ -858,9 +858,9 @@ func (o *CustomFieldRequest) UnsetChoiceSet() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *CustomFieldRequest) GetOwner() int32 {
+func (o *CustomFieldRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -869,7 +869,7 @@ func (o *CustomFieldRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CustomFieldRequest) GetOwnerOk() (*int32, bool) {
+func (o *CustomFieldRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -885,8 +885,8 @@ func (o *CustomFieldRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *CustomFieldRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *CustomFieldRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

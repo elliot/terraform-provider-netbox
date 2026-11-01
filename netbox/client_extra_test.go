@@ -129,11 +129,11 @@ func TestChoiceStringDecodesUnknownValue(t *testing.T) {
 	}
 }
 
-func TestInt32ID(t *testing.T) {
-	if _, err := Int32ID(1 << 40); err == nil {
+func TestInt64ID(t *testing.T) {
+	if _, err := Int64ID(-1); err == nil {
 		t.Fatal("expected range error")
 	}
-	if v, err := Int32ID(42); err != nil || v != 42 {
+	if v, err := Int64ID(1 << 40); err != nil || v != 1<<40 {
 		t.Fatal("unexpected", v, err)
 	}
 }

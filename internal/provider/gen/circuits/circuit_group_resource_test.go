@@ -86,6 +86,18 @@ func TestAccCircuitGroup_basic(t *testing.T) {
 	})
 }
 
+func TestAccCircuitGroup_upgrade(t *testing.T) {
+	name := acctest.RandName()
+	acctest.UpgradeTest(t, acctest.UpgradeCase{
+		ResourceType: "netbox_circuit_group",
+		APIPath:      "/api/circuits/circuit-groups/",
+		Configs: []string{
+			acctest.Render(t, circuitGroupTestConfigUpdate, name),
+			acctest.Render(t, circuitGroupTestConfigBasic, name),
+		},
+	})
+}
+
 func init() {
 	resource.AddTestSweepers("netbox_circuit_group", &resource.Sweeper{
 		Name:         "netbox_circuit_group",

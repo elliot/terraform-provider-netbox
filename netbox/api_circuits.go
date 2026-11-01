@@ -89,7 +89,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this Circuit group assignment.
 		@return ApiCircuitsCircuitGroupAssignmentsDestroyRequest
 	*/
-	CircuitsCircuitGroupAssignmentsDestroy(ctx context.Context, id int32) ApiCircuitsCircuitGroupAssignmentsDestroyRequest
+	CircuitsCircuitGroupAssignmentsDestroy(ctx context.Context, id int64) ApiCircuitsCircuitGroupAssignmentsDestroyRequest
 
 	// CircuitsCircuitGroupAssignmentsDestroyExecute executes the request
 	CircuitsCircuitGroupAssignmentsDestroyExecute(r ApiCircuitsCircuitGroupAssignmentsDestroyRequest) (*http.Response, error)
@@ -117,7 +117,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this Circuit group assignment.
 		@return ApiCircuitsCircuitGroupAssignmentsPartialUpdateRequest
 	*/
-	CircuitsCircuitGroupAssignmentsPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitGroupAssignmentsPartialUpdateRequest
+	CircuitsCircuitGroupAssignmentsPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitGroupAssignmentsPartialUpdateRequest
 
 	// CircuitsCircuitGroupAssignmentsPartialUpdateExecute executes the request
 	//  @return CircuitGroupAssignment
@@ -132,7 +132,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this Circuit group assignment.
 		@return ApiCircuitsCircuitGroupAssignmentsRetrieveRequest
 	*/
-	CircuitsCircuitGroupAssignmentsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitGroupAssignmentsRetrieveRequest
+	CircuitsCircuitGroupAssignmentsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitGroupAssignmentsRetrieveRequest
 
 	// CircuitsCircuitGroupAssignmentsRetrieveExecute executes the request
 	//  @return CircuitGroupAssignment
@@ -147,7 +147,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this Circuit group assignment.
 		@return ApiCircuitsCircuitGroupAssignmentsUpdateRequest
 	*/
-	CircuitsCircuitGroupAssignmentsUpdate(ctx context.Context, id int32) ApiCircuitsCircuitGroupAssignmentsUpdateRequest
+	CircuitsCircuitGroupAssignmentsUpdate(ctx context.Context, id int64) ApiCircuitsCircuitGroupAssignmentsUpdateRequest
 
 	// CircuitsCircuitGroupAssignmentsUpdateExecute executes the request
 	//  @return CircuitGroupAssignment
@@ -217,7 +217,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit group.
 		@return ApiCircuitsCircuitGroupsDestroyRequest
 	*/
-	CircuitsCircuitGroupsDestroy(ctx context.Context, id int32) ApiCircuitsCircuitGroupsDestroyRequest
+	CircuitsCircuitGroupsDestroy(ctx context.Context, id int64) ApiCircuitsCircuitGroupsDestroyRequest
 
 	// CircuitsCircuitGroupsDestroyExecute executes the request
 	CircuitsCircuitGroupsDestroyExecute(r ApiCircuitsCircuitGroupsDestroyRequest) (*http.Response, error)
@@ -245,7 +245,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit group.
 		@return ApiCircuitsCircuitGroupsPartialUpdateRequest
 	*/
-	CircuitsCircuitGroupsPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitGroupsPartialUpdateRequest
+	CircuitsCircuitGroupsPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitGroupsPartialUpdateRequest
 
 	// CircuitsCircuitGroupsPartialUpdateExecute executes the request
 	//  @return CircuitGroup
@@ -260,7 +260,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit group.
 		@return ApiCircuitsCircuitGroupsRetrieveRequest
 	*/
-	CircuitsCircuitGroupsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitGroupsRetrieveRequest
+	CircuitsCircuitGroupsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitGroupsRetrieveRequest
 
 	// CircuitsCircuitGroupsRetrieveExecute executes the request
 	//  @return CircuitGroup
@@ -275,7 +275,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit group.
 		@return ApiCircuitsCircuitGroupsUpdateRequest
 	*/
-	CircuitsCircuitGroupsUpdate(ctx context.Context, id int32) ApiCircuitsCircuitGroupsUpdateRequest
+	CircuitsCircuitGroupsUpdate(ctx context.Context, id int64) ApiCircuitsCircuitGroupsUpdateRequest
 
 	// CircuitsCircuitGroupsUpdateExecute executes the request
 	//  @return CircuitGroup
@@ -345,7 +345,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit termination.
 		@return ApiCircuitsCircuitTerminationsDestroyRequest
 	*/
-	CircuitsCircuitTerminationsDestroy(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsDestroyRequest
+	CircuitsCircuitTerminationsDestroy(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsDestroyRequest
 
 	// CircuitsCircuitTerminationsDestroyExecute executes the request
 	CircuitsCircuitTerminationsDestroyExecute(r ApiCircuitsCircuitTerminationsDestroyRequest) (*http.Response, error)
@@ -373,7 +373,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit termination.
 		@return ApiCircuitsCircuitTerminationsPartialUpdateRequest
 	*/
-	CircuitsCircuitTerminationsPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsPartialUpdateRequest
+	CircuitsCircuitTerminationsPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsPartialUpdateRequest
 
 	// CircuitsCircuitTerminationsPartialUpdateExecute executes the request
 	//  @return CircuitTermination
@@ -388,7 +388,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit termination.
 		@return ApiCircuitsCircuitTerminationsPathsRetrieveRequest
 	*/
-	CircuitsCircuitTerminationsPathsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsPathsRetrieveRequest
+	CircuitsCircuitTerminationsPathsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsPathsRetrieveRequest
 
 	// CircuitsCircuitTerminationsPathsRetrieveExecute executes the request
 	//  @return CircuitTermination
@@ -403,7 +403,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit termination.
 		@return ApiCircuitsCircuitTerminationsRetrieveRequest
 	*/
-	CircuitsCircuitTerminationsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsRetrieveRequest
+	CircuitsCircuitTerminationsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsRetrieveRequest
 
 	// CircuitsCircuitTerminationsRetrieveExecute executes the request
 	//  @return CircuitTermination
@@ -418,7 +418,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit termination.
 		@return ApiCircuitsCircuitTerminationsUpdateRequest
 	*/
-	CircuitsCircuitTerminationsUpdate(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsUpdateRequest
+	CircuitsCircuitTerminationsUpdate(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsUpdateRequest
 
 	// CircuitsCircuitTerminationsUpdateExecute executes the request
 	//  @return CircuitTermination
@@ -488,7 +488,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit type.
 		@return ApiCircuitsCircuitTypesDestroyRequest
 	*/
-	CircuitsCircuitTypesDestroy(ctx context.Context, id int32) ApiCircuitsCircuitTypesDestroyRequest
+	CircuitsCircuitTypesDestroy(ctx context.Context, id int64) ApiCircuitsCircuitTypesDestroyRequest
 
 	// CircuitsCircuitTypesDestroyExecute executes the request
 	CircuitsCircuitTypesDestroyExecute(r ApiCircuitsCircuitTypesDestroyRequest) (*http.Response, error)
@@ -516,7 +516,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit type.
 		@return ApiCircuitsCircuitTypesPartialUpdateRequest
 	*/
-	CircuitsCircuitTypesPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitTypesPartialUpdateRequest
+	CircuitsCircuitTypesPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitTypesPartialUpdateRequest
 
 	// CircuitsCircuitTypesPartialUpdateExecute executes the request
 	//  @return CircuitType
@@ -531,7 +531,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit type.
 		@return ApiCircuitsCircuitTypesRetrieveRequest
 	*/
-	CircuitsCircuitTypesRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitTypesRetrieveRequest
+	CircuitsCircuitTypesRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitTypesRetrieveRequest
 
 	// CircuitsCircuitTypesRetrieveExecute executes the request
 	//  @return CircuitType
@@ -546,7 +546,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit type.
 		@return ApiCircuitsCircuitTypesUpdateRequest
 	*/
-	CircuitsCircuitTypesUpdate(ctx context.Context, id int32) ApiCircuitsCircuitTypesUpdateRequest
+	CircuitsCircuitTypesUpdate(ctx context.Context, id int64) ApiCircuitsCircuitTypesUpdateRequest
 
 	// CircuitsCircuitTypesUpdateExecute executes the request
 	//  @return CircuitType
@@ -616,7 +616,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit.
 		@return ApiCircuitsCircuitsDestroyRequest
 	*/
-	CircuitsCircuitsDestroy(ctx context.Context, id int32) ApiCircuitsCircuitsDestroyRequest
+	CircuitsCircuitsDestroy(ctx context.Context, id int64) ApiCircuitsCircuitsDestroyRequest
 
 	// CircuitsCircuitsDestroyExecute executes the request
 	CircuitsCircuitsDestroyExecute(r ApiCircuitsCircuitsDestroyRequest) (*http.Response, error)
@@ -644,7 +644,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit.
 		@return ApiCircuitsCircuitsPartialUpdateRequest
 	*/
-	CircuitsCircuitsPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitsPartialUpdateRequest
+	CircuitsCircuitsPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitsPartialUpdateRequest
 
 	// CircuitsCircuitsPartialUpdateExecute executes the request
 	//  @return Circuit
@@ -659,7 +659,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit.
 		@return ApiCircuitsCircuitsRetrieveRequest
 	*/
-	CircuitsCircuitsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitsRetrieveRequest
+	CircuitsCircuitsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitsRetrieveRequest
 
 	// CircuitsCircuitsRetrieveExecute executes the request
 	//  @return Circuit
@@ -674,7 +674,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this circuit.
 		@return ApiCircuitsCircuitsUpdateRequest
 	*/
-	CircuitsCircuitsUpdate(ctx context.Context, id int32) ApiCircuitsCircuitsUpdateRequest
+	CircuitsCircuitsUpdate(ctx context.Context, id int64) ApiCircuitsCircuitsUpdateRequest
 
 	// CircuitsCircuitsUpdateExecute executes the request
 	//  @return Circuit
@@ -744,7 +744,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider account.
 		@return ApiCircuitsProviderAccountsDestroyRequest
 	*/
-	CircuitsProviderAccountsDestroy(ctx context.Context, id int32) ApiCircuitsProviderAccountsDestroyRequest
+	CircuitsProviderAccountsDestroy(ctx context.Context, id int64) ApiCircuitsProviderAccountsDestroyRequest
 
 	// CircuitsProviderAccountsDestroyExecute executes the request
 	CircuitsProviderAccountsDestroyExecute(r ApiCircuitsProviderAccountsDestroyRequest) (*http.Response, error)
@@ -772,7 +772,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider account.
 		@return ApiCircuitsProviderAccountsPartialUpdateRequest
 	*/
-	CircuitsProviderAccountsPartialUpdate(ctx context.Context, id int32) ApiCircuitsProviderAccountsPartialUpdateRequest
+	CircuitsProviderAccountsPartialUpdate(ctx context.Context, id int64) ApiCircuitsProviderAccountsPartialUpdateRequest
 
 	// CircuitsProviderAccountsPartialUpdateExecute executes the request
 	//  @return ProviderAccount
@@ -787,7 +787,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider account.
 		@return ApiCircuitsProviderAccountsRetrieveRequest
 	*/
-	CircuitsProviderAccountsRetrieve(ctx context.Context, id int32) ApiCircuitsProviderAccountsRetrieveRequest
+	CircuitsProviderAccountsRetrieve(ctx context.Context, id int64) ApiCircuitsProviderAccountsRetrieveRequest
 
 	// CircuitsProviderAccountsRetrieveExecute executes the request
 	//  @return ProviderAccount
@@ -802,7 +802,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider account.
 		@return ApiCircuitsProviderAccountsUpdateRequest
 	*/
-	CircuitsProviderAccountsUpdate(ctx context.Context, id int32) ApiCircuitsProviderAccountsUpdateRequest
+	CircuitsProviderAccountsUpdate(ctx context.Context, id int64) ApiCircuitsProviderAccountsUpdateRequest
 
 	// CircuitsProviderAccountsUpdateExecute executes the request
 	//  @return ProviderAccount
@@ -872,7 +872,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider network.
 		@return ApiCircuitsProviderNetworksDestroyRequest
 	*/
-	CircuitsProviderNetworksDestroy(ctx context.Context, id int32) ApiCircuitsProviderNetworksDestroyRequest
+	CircuitsProviderNetworksDestroy(ctx context.Context, id int64) ApiCircuitsProviderNetworksDestroyRequest
 
 	// CircuitsProviderNetworksDestroyExecute executes the request
 	CircuitsProviderNetworksDestroyExecute(r ApiCircuitsProviderNetworksDestroyRequest) (*http.Response, error)
@@ -900,7 +900,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider network.
 		@return ApiCircuitsProviderNetworksPartialUpdateRequest
 	*/
-	CircuitsProviderNetworksPartialUpdate(ctx context.Context, id int32) ApiCircuitsProviderNetworksPartialUpdateRequest
+	CircuitsProviderNetworksPartialUpdate(ctx context.Context, id int64) ApiCircuitsProviderNetworksPartialUpdateRequest
 
 	// CircuitsProviderNetworksPartialUpdateExecute executes the request
 	//  @return ProviderNetwork
@@ -915,7 +915,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider network.
 		@return ApiCircuitsProviderNetworksRetrieveRequest
 	*/
-	CircuitsProviderNetworksRetrieve(ctx context.Context, id int32) ApiCircuitsProviderNetworksRetrieveRequest
+	CircuitsProviderNetworksRetrieve(ctx context.Context, id int64) ApiCircuitsProviderNetworksRetrieveRequest
 
 	// CircuitsProviderNetworksRetrieveExecute executes the request
 	//  @return ProviderNetwork
@@ -930,7 +930,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider network.
 		@return ApiCircuitsProviderNetworksUpdateRequest
 	*/
-	CircuitsProviderNetworksUpdate(ctx context.Context, id int32) ApiCircuitsProviderNetworksUpdateRequest
+	CircuitsProviderNetworksUpdate(ctx context.Context, id int64) ApiCircuitsProviderNetworksUpdateRequest
 
 	// CircuitsProviderNetworksUpdateExecute executes the request
 	//  @return ProviderNetwork
@@ -1000,7 +1000,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider.
 		@return ApiCircuitsProvidersDestroyRequest
 	*/
-	CircuitsProvidersDestroy(ctx context.Context, id int32) ApiCircuitsProvidersDestroyRequest
+	CircuitsProvidersDestroy(ctx context.Context, id int64) ApiCircuitsProvidersDestroyRequest
 
 	// CircuitsProvidersDestroyExecute executes the request
 	CircuitsProvidersDestroyExecute(r ApiCircuitsProvidersDestroyRequest) (*http.Response, error)
@@ -1028,7 +1028,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider.
 		@return ApiCircuitsProvidersPartialUpdateRequest
 	*/
-	CircuitsProvidersPartialUpdate(ctx context.Context, id int32) ApiCircuitsProvidersPartialUpdateRequest
+	CircuitsProvidersPartialUpdate(ctx context.Context, id int64) ApiCircuitsProvidersPartialUpdateRequest
 
 	// CircuitsProvidersPartialUpdateExecute executes the request
 	//  @return Provider
@@ -1043,7 +1043,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider.
 		@return ApiCircuitsProvidersRetrieveRequest
 	*/
-	CircuitsProvidersRetrieve(ctx context.Context, id int32) ApiCircuitsProvidersRetrieveRequest
+	CircuitsProvidersRetrieve(ctx context.Context, id int64) ApiCircuitsProvidersRetrieveRequest
 
 	// CircuitsProvidersRetrieveExecute executes the request
 	//  @return Provider
@@ -1058,7 +1058,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this provider.
 		@return ApiCircuitsProvidersUpdateRequest
 	*/
-	CircuitsProvidersUpdate(ctx context.Context, id int32) ApiCircuitsProvidersUpdateRequest
+	CircuitsProvidersUpdate(ctx context.Context, id int64) ApiCircuitsProvidersUpdateRequest
 
 	// CircuitsProvidersUpdateExecute executes the request
 	//  @return Provider
@@ -1128,7 +1128,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit termination.
 		@return ApiCircuitsVirtualCircuitTerminationsDestroyRequest
 	*/
-	CircuitsVirtualCircuitTerminationsDestroy(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsDestroyRequest
+	CircuitsVirtualCircuitTerminationsDestroy(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsDestroyRequest
 
 	// CircuitsVirtualCircuitTerminationsDestroyExecute executes the request
 	CircuitsVirtualCircuitTerminationsDestroyExecute(r ApiCircuitsVirtualCircuitTerminationsDestroyRequest) (*http.Response, error)
@@ -1156,7 +1156,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit termination.
 		@return ApiCircuitsVirtualCircuitTerminationsPartialUpdateRequest
 	*/
-	CircuitsVirtualCircuitTerminationsPartialUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsPartialUpdateRequest
+	CircuitsVirtualCircuitTerminationsPartialUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsPartialUpdateRequest
 
 	// CircuitsVirtualCircuitTerminationsPartialUpdateExecute executes the request
 	//  @return VirtualCircuitTermination
@@ -1171,7 +1171,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit termination.
 		@return ApiCircuitsVirtualCircuitTerminationsPathsRetrieveRequest
 	*/
-	CircuitsVirtualCircuitTerminationsPathsRetrieve(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsPathsRetrieveRequest
+	CircuitsVirtualCircuitTerminationsPathsRetrieve(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsPathsRetrieveRequest
 
 	// CircuitsVirtualCircuitTerminationsPathsRetrieveExecute executes the request
 	//  @return VirtualCircuitTermination
@@ -1186,7 +1186,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit termination.
 		@return ApiCircuitsVirtualCircuitTerminationsRetrieveRequest
 	*/
-	CircuitsVirtualCircuitTerminationsRetrieve(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsRetrieveRequest
+	CircuitsVirtualCircuitTerminationsRetrieve(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsRetrieveRequest
 
 	// CircuitsVirtualCircuitTerminationsRetrieveExecute executes the request
 	//  @return VirtualCircuitTermination
@@ -1201,7 +1201,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit termination.
 		@return ApiCircuitsVirtualCircuitTerminationsUpdateRequest
 	*/
-	CircuitsVirtualCircuitTerminationsUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsUpdateRequest
+	CircuitsVirtualCircuitTerminationsUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsUpdateRequest
 
 	// CircuitsVirtualCircuitTerminationsUpdateExecute executes the request
 	//  @return VirtualCircuitTermination
@@ -1271,7 +1271,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit type.
 		@return ApiCircuitsVirtualCircuitTypesDestroyRequest
 	*/
-	CircuitsVirtualCircuitTypesDestroy(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTypesDestroyRequest
+	CircuitsVirtualCircuitTypesDestroy(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTypesDestroyRequest
 
 	// CircuitsVirtualCircuitTypesDestroyExecute executes the request
 	CircuitsVirtualCircuitTypesDestroyExecute(r ApiCircuitsVirtualCircuitTypesDestroyRequest) (*http.Response, error)
@@ -1299,7 +1299,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit type.
 		@return ApiCircuitsVirtualCircuitTypesPartialUpdateRequest
 	*/
-	CircuitsVirtualCircuitTypesPartialUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTypesPartialUpdateRequest
+	CircuitsVirtualCircuitTypesPartialUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTypesPartialUpdateRequest
 
 	// CircuitsVirtualCircuitTypesPartialUpdateExecute executes the request
 	//  @return VirtualCircuitType
@@ -1314,7 +1314,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit type.
 		@return ApiCircuitsVirtualCircuitTypesRetrieveRequest
 	*/
-	CircuitsVirtualCircuitTypesRetrieve(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTypesRetrieveRequest
+	CircuitsVirtualCircuitTypesRetrieve(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTypesRetrieveRequest
 
 	// CircuitsVirtualCircuitTypesRetrieveExecute executes the request
 	//  @return VirtualCircuitType
@@ -1329,7 +1329,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit type.
 		@return ApiCircuitsVirtualCircuitTypesUpdateRequest
 	*/
-	CircuitsVirtualCircuitTypesUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTypesUpdateRequest
+	CircuitsVirtualCircuitTypesUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTypesUpdateRequest
 
 	// CircuitsVirtualCircuitTypesUpdateExecute executes the request
 	//  @return VirtualCircuitType
@@ -1399,7 +1399,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit.
 		@return ApiCircuitsVirtualCircuitsDestroyRequest
 	*/
-	CircuitsVirtualCircuitsDestroy(ctx context.Context, id int32) ApiCircuitsVirtualCircuitsDestroyRequest
+	CircuitsVirtualCircuitsDestroy(ctx context.Context, id int64) ApiCircuitsVirtualCircuitsDestroyRequest
 
 	// CircuitsVirtualCircuitsDestroyExecute executes the request
 	CircuitsVirtualCircuitsDestroyExecute(r ApiCircuitsVirtualCircuitsDestroyRequest) (*http.Response, error)
@@ -1427,7 +1427,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit.
 		@return ApiCircuitsVirtualCircuitsPartialUpdateRequest
 	*/
-	CircuitsVirtualCircuitsPartialUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitsPartialUpdateRequest
+	CircuitsVirtualCircuitsPartialUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitsPartialUpdateRequest
 
 	// CircuitsVirtualCircuitsPartialUpdateExecute executes the request
 	//  @return VirtualCircuit
@@ -1442,7 +1442,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit.
 		@return ApiCircuitsVirtualCircuitsRetrieveRequest
 	*/
-	CircuitsVirtualCircuitsRetrieve(ctx context.Context, id int32) ApiCircuitsVirtualCircuitsRetrieveRequest
+	CircuitsVirtualCircuitsRetrieve(ctx context.Context, id int64) ApiCircuitsVirtualCircuitsRetrieveRequest
 
 	// CircuitsVirtualCircuitsRetrieveExecute executes the request
 	//  @return VirtualCircuit
@@ -1457,7 +1457,7 @@ type CircuitsAPI interface {
 		@param id A unique integer value identifying this virtual circuit.
 		@return ApiCircuitsVirtualCircuitsUpdateRequest
 	*/
-	CircuitsVirtualCircuitsUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitsUpdateRequest
+	CircuitsVirtualCircuitsUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitsUpdateRequest
 
 	// CircuitsVirtualCircuitsUpdateExecute executes the request
 	//  @return VirtualCircuit
@@ -1958,7 +1958,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsCreateExecute(r ApiC
 type ApiCircuitsCircuitGroupAssignmentsDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsCircuitGroupAssignmentsDestroyRequest) Execute() (*http.Response, error) {
@@ -1974,7 +1974,7 @@ Delete a Circuit group assignment object.
 	@param id A unique integer value identifying this Circuit group assignment.
 	@return ApiCircuitsCircuitGroupAssignmentsDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsDestroy(ctx context.Context, id int32) ApiCircuitsCircuitGroupAssignmentsDestroyRequest {
+func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsDestroy(ctx context.Context, id int64) ApiCircuitsCircuitGroupAssignmentsDestroyRequest {
 	return ApiCircuitsCircuitGroupAssignmentsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -2066,7 +2066,7 @@ type ApiCircuitsCircuitGroupAssignmentsListRequest struct {
 	ApiService        CircuitsAPI
 	brief             *bool
 	circuit           *[]string
-	circuitId         *[]int32
+	circuitId         *[]int64
 	created           *[]time.Time
 	createdEmpty      *bool
 	createdGt         *[]time.Time
@@ -2078,15 +2078,15 @@ type ApiCircuitsCircuitGroupAssignmentsListRequest struct {
 	fields            *string
 	group             *[]string
 	groupN            *[]string
-	groupId           *[]int32
-	groupIdN          *[]int32
-	id                *[]int32
+	groupId           *[]int64
+	groupIdN          *[]int64
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -2095,13 +2095,13 @@ type ApiCircuitsCircuitGroupAssignmentsListRequest struct {
 	lastUpdatedLte    *[]time.Time
 	lastUpdatedN      *[]time.Time
 	limit             *int32
-	memberId          *[]int32
+	memberId          *[]int64
 	memberIdEmpty     *bool
-	memberIdGt        *[]int32
-	memberIdGte       *[]int32
-	memberIdLt        *[]int32
-	memberIdLte       *[]int32
-	memberIdN         *[]int32
+	memberIdGt        *[]int64
+	memberIdGte       *[]int64
+	memberIdLt        *[]int64
+	memberIdLte       *[]int64
+	memberIdN         *[]int64
 	memberType        *[]string
 	memberTypeN       *[]string
 	memberTypeId      *[]int32
@@ -2124,18 +2124,18 @@ type ApiCircuitsCircuitGroupAssignmentsListRequest struct {
 	priorityNisw      *[]string
 	priorityRegex     *[]string
 	provider          *[]string
-	providerId        *[]int32
+	providerId        *[]int64
 	q                 *string
 	start             *int32
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 	virtualCircuit    *[]string
-	virtualCircuitId  *[]int32
+	virtualCircuitId  *[]int64
 }
 
 // Return only brief fields for each object.
@@ -2149,7 +2149,7 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) Circuit(circuit []string)
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) CircuitId(circuitId []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) CircuitId(circuitId []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.circuitId = &circuitId
 	return r
 }
@@ -2213,18 +2213,18 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) GroupN(groupN []string) A
 }
 
 // Circuit group (ID)
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) GroupId(groupId []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) GroupId(groupId []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.groupId = &groupId
 	return r
 }
 
 // Circuit group (ID)
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) GroupIdN(groupIdN []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) GroupIdN(groupIdN []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.groupIdN = &groupIdN
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) Id(id []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) Id(id []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.id = &id
 	return r
 }
@@ -2234,27 +2234,27 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdEmpty(idEmpty bool) Api
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdGt(idGt []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdGt(idGt []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdGte(idGte []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdGte(idGte []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdLt(idLt []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdLt(idLt []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdLte(idLte []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdLte(idLte []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdN(idN []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) IdN(idN []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -2300,7 +2300,7 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) Limit(limit int32) ApiCir
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberId(memberId []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberId(memberId []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.memberId = &memberId
 	return r
 }
@@ -2310,27 +2310,27 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdEmpty(memberIdEmp
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdGt(memberIdGt []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdGt(memberIdGt []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.memberIdGt = &memberIdGt
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdGte(memberIdGte []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdGte(memberIdGte []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.memberIdGte = &memberIdGte
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdLt(memberIdLt []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdLt(memberIdLt []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.memberIdLt = &memberIdLt
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdLte(memberIdLte []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdLte(memberIdLte []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.memberIdLte = &memberIdLte
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdN(memberIdN []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) MemberIdN(memberIdN []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.memberIdN = &memberIdN
 	return r
 }
@@ -2450,7 +2450,7 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) Provider(provider []strin
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) ProviderId(providerId []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) ProviderId(providerId []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.providerId = &providerId
 	return r
 }
@@ -2482,17 +2482,17 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) TagN(tagN []string) ApiCi
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) TagId(tagId []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) TagId(tagId []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) TagIdN(tagIdN []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) TagIdN(tagIdN []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -2507,7 +2507,7 @@ func (r ApiCircuitsCircuitGroupAssignmentsListRequest) VirtualCircuit(virtualCir
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupAssignmentsListRequest) VirtualCircuitId(virtualCircuitId []int32) ApiCircuitsCircuitGroupAssignmentsListRequest {
+func (r ApiCircuitsCircuitGroupAssignmentsListRequest) VirtualCircuitId(virtualCircuitId []int64) ApiCircuitsCircuitGroupAssignmentsListRequest {
 	r.virtualCircuitId = &virtualCircuitId
 	return r
 }
@@ -3272,7 +3272,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsListExecute(r ApiCir
 type ApiCircuitsCircuitGroupAssignmentsPartialUpdateRequest struct {
 	ctx                                          context.Context
 	ApiService                                   CircuitsAPI
-	id                                           int32
+	id                                           int64
 	patchedWritableCircuitGroupAssignmentRequest *PatchedWritableCircuitGroupAssignmentRequest
 }
 
@@ -3294,7 +3294,7 @@ Patch a Circuit group assignment object.
 	@param id A unique integer value identifying this Circuit group assignment.
 	@return ApiCircuitsCircuitGroupAssignmentsPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitGroupAssignmentsPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitGroupAssignmentsPartialUpdateRequest {
 	return ApiCircuitsCircuitGroupAssignmentsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3398,7 +3398,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsPartialUpdateExecute
 type ApiCircuitsCircuitGroupAssignmentsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -3435,7 +3435,7 @@ Get a Circuit group assignment object.
 	@param id A unique integer value identifying this Circuit group assignment.
 	@return ApiCircuitsCircuitGroupAssignmentsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitGroupAssignmentsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitGroupAssignmentsRetrieveRequest {
 	return ApiCircuitsCircuitGroupAssignmentsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -3546,7 +3546,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsRetrieveExecute(r Ap
 type ApiCircuitsCircuitGroupAssignmentsUpdateRequest struct {
 	ctx                                   context.Context
 	ApiService                            CircuitsAPI
-	id                                    int32
+	id                                    int64
 	writableCircuitGroupAssignmentRequest *WritableCircuitGroupAssignmentRequest
 }
 
@@ -3568,7 +3568,7 @@ Put a Circuit group assignment object.
 	@param id A unique integer value identifying this Circuit group assignment.
 	@return ApiCircuitsCircuitGroupAssignmentsUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsUpdate(ctx context.Context, id int32) ApiCircuitsCircuitGroupAssignmentsUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitGroupAssignmentsUpdate(ctx context.Context, id int64) ApiCircuitsCircuitGroupAssignmentsUpdateRequest {
 	return ApiCircuitsCircuitGroupAssignmentsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -4163,7 +4163,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupsCreateExecute(r ApiCircuitsCir
 type ApiCircuitsCircuitGroupsDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsCircuitGroupsDestroyRequest) Execute() (*http.Response, error) {
@@ -4179,7 +4179,7 @@ Delete a circuit group object.
 	@param id A unique integer value identifying this circuit group.
 	@return ApiCircuitsCircuitGroupsDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitGroupsDestroy(ctx context.Context, id int32) ApiCircuitsCircuitGroupsDestroyRequest {
+func (a *CircuitsAPIService) CircuitsCircuitGroupsDestroy(ctx context.Context, id int64) ApiCircuitsCircuitGroupsDestroyRequest {
 	return ApiCircuitsCircuitGroupsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -4292,13 +4292,13 @@ type ApiCircuitsCircuitGroupsListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -4328,10 +4328,10 @@ type ApiCircuitsCircuitGroupsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -4350,17 +4350,17 @@ type ApiCircuitsCircuitGroupsListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	tenant            *[]string
 	tenantN           *[]string
 	tenantGroup       *[]string
 	tenantGroupN      *[]string
-	tenantGroupId     *[]string
-	tenantGroupIdN    *[]string
-	tenantId          *[]*int32
-	tenantIdN         *[]*int32
+	tenantGroupId     *[]int64
+	tenantGroupIdN    *[]int64
+	tenantId          *[]*int64
+	tenantIdN         *[]*int64
 	updatedByRequest  *string
 }
 
@@ -4481,7 +4481,7 @@ func (r ApiCircuitsCircuitGroupsListRequest) Fields(fields string) ApiCircuitsCi
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) Id(id []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) Id(id []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.id = &id
 	return r
 }
@@ -4491,27 +4491,27 @@ func (r ApiCircuitsCircuitGroupsListRequest) IdEmpty(idEmpty bool) ApiCircuitsCi
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) IdGt(idGt []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) IdGt(idGt []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) IdGte(idGte []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) IdGte(idGte []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) IdLt(idLt []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) IdLt(idLt []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) IdLte(idLte []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) IdLte(idLte []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) IdN(idN []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) IdN(idN []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -4670,25 +4670,25 @@ func (r ApiCircuitsCircuitGroupsListRequest) OwnerGroupN(ownerGroupN []string) A
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsCircuitGroupsListRequest) OwnerGroupId(ownerGroupId []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) OwnerGroupId(ownerGroupId []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsCircuitGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsCircuitGroupsListRequest) OwnerId(ownerId []*int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) OwnerId(ownerId []*int64) ApiCircuitsCircuitGroupsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsCircuitGroupsListRequest) OwnerIdN(ownerIdN []*int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) OwnerIdN(ownerIdN []*int64) ApiCircuitsCircuitGroupsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -4785,17 +4785,17 @@ func (r ApiCircuitsCircuitGroupsListRequest) TagN(tagN []string) ApiCircuitsCirc
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) TagId(tagId []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) TagId(tagId []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) TagIdN(tagIdN []int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) TagIdN(tagIdN []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -4812,34 +4812,38 @@ func (r ApiCircuitsCircuitGroupsListRequest) TenantN(tenantN []string) ApiCircui
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiCircuitsCircuitGroupsListRequest) TenantGroup(tenantGroup []string) ApiCircuitsCircuitGroupsListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiCircuitsCircuitGroupsListRequest) TenantGroupN(tenantGroupN []string) ApiCircuitsCircuitGroupsListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) TenantGroupId(tenantGroupId []string) ApiCircuitsCircuitGroupsListRequest {
+// Tenant Group (ID)
+func (r ApiCircuitsCircuitGroupsListRequest) TenantGroupId(tenantGroupId []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiCircuitsCircuitGroupsListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiCircuitsCircuitGroupsListRequest {
+// Tenant Group (ID)
+func (r ApiCircuitsCircuitGroupsListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiCircuitsCircuitGroupsListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiCircuitsCircuitGroupsListRequest) TenantId(tenantId []*int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) TenantId(tenantId []*int64) ApiCircuitsCircuitGroupsListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiCircuitsCircuitGroupsListRequest) TenantIdN(tenantIdN []*int32) ApiCircuitsCircuitGroupsListRequest {
+func (r ApiCircuitsCircuitGroupsListRequest) TenantIdN(tenantIdN []*int64) ApiCircuitsCircuitGroupsListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -5848,7 +5852,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupsListExecute(r ApiCircuitsCircu
 type ApiCircuitsCircuitGroupsPartialUpdateRequest struct {
 	ctx                        context.Context
 	ApiService                 CircuitsAPI
-	id                         int32
+	id                         int64
 	patchedCircuitGroupRequest *PatchedCircuitGroupRequest
 }
 
@@ -5870,7 +5874,7 @@ Patch a circuit group object.
 	@param id A unique integer value identifying this circuit group.
 	@return ApiCircuitsCircuitGroupsPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitGroupsPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitGroupsPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitGroupsPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitGroupsPartialUpdateRequest {
 	return ApiCircuitsCircuitGroupsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -5974,7 +5978,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupsPartialUpdateExecute(r ApiCirc
 type ApiCircuitsCircuitGroupsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -6011,7 +6015,7 @@ Get a circuit group object.
 	@param id A unique integer value identifying this circuit group.
 	@return ApiCircuitsCircuitGroupsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitGroupsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitGroupsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsCircuitGroupsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitGroupsRetrieveRequest {
 	return ApiCircuitsCircuitGroupsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6122,7 +6126,7 @@ func (a *CircuitsAPIService) CircuitsCircuitGroupsRetrieveExecute(r ApiCircuitsC
 type ApiCircuitsCircuitGroupsUpdateRequest struct {
 	ctx                 context.Context
 	ApiService          CircuitsAPI
-	id                  int32
+	id                  int64
 	circuitGroupRequest *CircuitGroupRequest
 }
 
@@ -6144,7 +6148,7 @@ Put a circuit group object.
 	@param id A unique integer value identifying this circuit group.
 	@return ApiCircuitsCircuitGroupsUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitGroupsUpdate(ctx context.Context, id int32) ApiCircuitsCircuitGroupsUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitGroupsUpdate(ctx context.Context, id int64) ApiCircuitsCircuitGroupsUpdateRequest {
 	return ApiCircuitsCircuitGroupsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6739,7 +6743,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTerminationsCreateExecute(r ApiCircu
 type ApiCircuitsCircuitTerminationsDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsCircuitTerminationsDestroyRequest) Execute() (*http.Response, error) {
@@ -6755,7 +6759,7 @@ Delete a circuit termination object.
 	@param id A unique integer value identifying this circuit termination.
 	@return ApiCircuitsCircuitTerminationsDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTerminationsDestroy(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsDestroyRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTerminationsDestroy(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsDestroyRequest {
 	return ApiCircuitsCircuitTerminationsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -6866,11 +6870,11 @@ type ApiCircuitsCircuitTerminationsListRequest struct {
 	cableEndNiew        *[]string
 	cableEndNisw        *[]string
 	cableEndRegex       *[]string
-	cableId             *[]*int32
-	cableIdN            *[]*int32
+	cableId             *[]*int64
+	cableIdN            *[]*int64
 	cabled              *bool
-	circuitId           *[]int32
-	circuitIdN          *[]int32
+	circuitId           *[]int64
+	circuitIdN          *[]int64
 	created             *[]time.Time
 	createdEmpty        *bool
 	createdGt           *[]time.Time
@@ -6893,13 +6897,13 @@ type ApiCircuitsCircuitTerminationsListRequest struct {
 	descriptionNisw     *[]string
 	descriptionRegex    *[]string
 	fields              *string
-	id                  *[]int32
+	id                  *[]int64
 	idEmpty             *bool
-	idGt                *[]int32
-	idGte               *[]int32
-	idLt                *[]int32
-	idLte               *[]int32
-	idN                 *[]int32
+	idGt                *[]int64
+	idGte               *[]int64
+	idLt                *[]int64
+	idLte               *[]int64
+	idN                 *[]int64
 	lastUpdated         *[]time.Time
 	lastUpdatedEmpty    *bool
 	lastUpdatedGt       *[]time.Time
@@ -6910,8 +6914,8 @@ type ApiCircuitsCircuitTerminationsListRequest struct {
 	limit               *int32
 	location            *[]string
 	locationN           *[]string
-	locationId          *[]string
-	locationIdN         *[]string
+	locationId          *[]int64
+	locationIdN         *[]int64
 	markConnected       *bool
 	modifiedByRequest   *string
 	occupied            *bool
@@ -6940,30 +6944,32 @@ type ApiCircuitsCircuitTerminationsListRequest struct {
 	ppInfoRegex         *[]string
 	provider            *[]string
 	providerN           *[]string
-	providerId          *[]int32
-	providerIdN         *[]int32
-	providerNetworkId   *[]int32
-	providerNetworkIdN  *[]int32
+	providerId          *[]int64
+	providerIdN         *[]int64
+	providerNetwork     *[]string
+	providerNetworkN    *[]string
+	providerNetworkId   *[]int64
+	providerNetworkIdN  *[]int64
 	q                   *string
 	region              *[]string
 	regionN             *[]string
-	regionId            *[]string
-	regionIdN           *[]string
+	regionId            *[]int64
+	regionIdN           *[]int64
 	site                *[]string
 	siteN               *[]string
 	siteGroup           *[]string
 	siteGroupN          *[]string
-	siteGroupId         *[]string
-	siteGroupIdN        *[]string
-	siteId              *[]int32
-	siteIdN             *[]int32
+	siteGroupId         *[]int64
+	siteGroupIdN        *[]int64
+	siteId              *[]int64
+	siteIdN             *[]int64
 	start               *int32
 	tag                 *[]string
 	tagAny              *[]string
 	tagN                *[]string
-	tagId               *[]int32
-	tagIdAny            *[]int32
-	tagIdN              *[]int32
+	tagId               *[]int64
+	tagIdAny            *[]int64
+	tagIdN              *[]int64
 	termSide            *string
 	termSideEmpty       *bool
 	termSideIc          *[]string
@@ -6977,13 +6983,13 @@ type ApiCircuitsCircuitTerminationsListRequest struct {
 	termSideNiew        *[]string
 	termSideNisw        *[]string
 	termSideRegex       *[]string
-	terminationId       *[]int32
+	terminationId       *[]int64
 	terminationIdEmpty  *bool
-	terminationIdGt     *[]int32
-	terminationIdGte    *[]int32
-	terminationIdLt     *[]int32
-	terminationIdLte    *[]int32
-	terminationIdN      *[]int32
+	terminationIdGt     *[]int64
+	terminationIdGte    *[]int64
+	terminationIdLt     *[]int64
+	terminationIdLte    *[]int64
+	terminationIdN      *[]int64
 	terminationType     *[]string
 	terminationTypeN    *[]string
 	updatedByRequest    *string
@@ -7118,13 +7124,13 @@ func (r ApiCircuitsCircuitTerminationsListRequest) CableEndRegex(cableEndRegex [
 }
 
 // Cable (ID)
-func (r ApiCircuitsCircuitTerminationsListRequest) CableId(cableId []*int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) CableId(cableId []*int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.cableId = &cableId
 	return r
 }
 
 // Cable (ID)
-func (r ApiCircuitsCircuitTerminationsListRequest) CableIdN(cableIdN []*int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) CableIdN(cableIdN []*int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.cableIdN = &cableIdN
 	return r
 }
@@ -7135,13 +7141,13 @@ func (r ApiCircuitsCircuitTerminationsListRequest) Cabled(cabled bool) ApiCircui
 }
 
 // Circuit
-func (r ApiCircuitsCircuitTerminationsListRequest) CircuitId(circuitId []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) CircuitId(circuitId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.circuitId = &circuitId
 	return r
 }
 
 // Circuit
-func (r ApiCircuitsCircuitTerminationsListRequest) CircuitIdN(circuitIdN []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) CircuitIdN(circuitIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.circuitIdN = &circuitIdN
 	return r
 }
@@ -7257,7 +7263,7 @@ func (r ApiCircuitsCircuitTerminationsListRequest) Fields(fields string) ApiCirc
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) Id(id []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) Id(id []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.id = &id
 	return r
 }
@@ -7267,27 +7273,27 @@ func (r ApiCircuitsCircuitTerminationsListRequest) IdEmpty(idEmpty bool) ApiCirc
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) IdGt(idGt []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) IdGt(idGt []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) IdGte(idGte []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) IdGte(idGte []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) IdLt(idLt []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) IdLt(idLt []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) IdLte(idLte []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) IdLte(idLte []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) IdN(idN []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) IdN(idN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -7333,22 +7339,26 @@ func (r ApiCircuitsCircuitTerminationsListRequest) Limit(limit int32) ApiCircuit
 	return r
 }
 
+// Location (slug)
 func (r ApiCircuitsCircuitTerminationsListRequest) Location(location []string) ApiCircuitsCircuitTerminationsListRequest {
 	r.location = &location
 	return r
 }
 
+// Location (slug)
 func (r ApiCircuitsCircuitTerminationsListRequest) LocationN(locationN []string) ApiCircuitsCircuitTerminationsListRequest {
 	r.locationN = &locationN
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) LocationId(locationId []string) ApiCircuitsCircuitTerminationsListRequest {
+// Location (ID)
+func (r ApiCircuitsCircuitTerminationsListRequest) LocationId(locationId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.locationId = &locationId
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) LocationIdN(locationIdN []string) ApiCircuitsCircuitTerminationsListRequest {
+// Location (ID)
+func (r ApiCircuitsCircuitTerminationsListRequest) LocationIdN(locationIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.locationIdN = &locationIdN
 	return r
 }
@@ -7499,25 +7509,37 @@ func (r ApiCircuitsCircuitTerminationsListRequest) ProviderN(providerN []string)
 }
 
 // Provider (ID)
-func (r ApiCircuitsCircuitTerminationsListRequest) ProviderId(providerId []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) ProviderId(providerId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.providerId = &providerId
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsCircuitTerminationsListRequest) ProviderIdN(providerIdN []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) ProviderIdN(providerIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.providerIdN = &providerIdN
 	return r
 }
 
+// Provider network (name)
+func (r ApiCircuitsCircuitTerminationsListRequest) ProviderNetwork(providerNetwork []string) ApiCircuitsCircuitTerminationsListRequest {
+	r.providerNetwork = &providerNetwork
+	return r
+}
+
+// Provider network (name)
+func (r ApiCircuitsCircuitTerminationsListRequest) ProviderNetworkN(providerNetworkN []string) ApiCircuitsCircuitTerminationsListRequest {
+	r.providerNetworkN = &providerNetworkN
+	return r
+}
+
 // ProviderNetwork (ID)
-func (r ApiCircuitsCircuitTerminationsListRequest) ProviderNetworkId(providerNetworkId []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) ProviderNetworkId(providerNetworkId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.providerNetworkId = &providerNetworkId
 	return r
 }
 
 // ProviderNetwork (ID)
-func (r ApiCircuitsCircuitTerminationsListRequest) ProviderNetworkIdN(providerNetworkIdN []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) ProviderNetworkIdN(providerNetworkIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.providerNetworkIdN = &providerNetworkIdN
 	return r
 }
@@ -7528,22 +7550,26 @@ func (r ApiCircuitsCircuitTerminationsListRequest) Q(q string) ApiCircuitsCircui
 	return r
 }
 
+// Region (slug)
 func (r ApiCircuitsCircuitTerminationsListRequest) Region(region []string) ApiCircuitsCircuitTerminationsListRequest {
 	r.region = &region
 	return r
 }
 
+// Region (slug)
 func (r ApiCircuitsCircuitTerminationsListRequest) RegionN(regionN []string) ApiCircuitsCircuitTerminationsListRequest {
 	r.regionN = &regionN
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) RegionId(regionId []string) ApiCircuitsCircuitTerminationsListRequest {
+// Region (ID)
+func (r ApiCircuitsCircuitTerminationsListRequest) RegionId(regionId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.regionId = &regionId
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) RegionIdN(regionIdN []string) ApiCircuitsCircuitTerminationsListRequest {
+// Region (ID)
+func (r ApiCircuitsCircuitTerminationsListRequest) RegionIdN(regionIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.regionIdN = &regionIdN
 	return r
 }
@@ -7560,34 +7586,38 @@ func (r ApiCircuitsCircuitTerminationsListRequest) SiteN(siteN []string) ApiCirc
 	return r
 }
 
+// Site group (slug)
 func (r ApiCircuitsCircuitTerminationsListRequest) SiteGroup(siteGroup []string) ApiCircuitsCircuitTerminationsListRequest {
 	r.siteGroup = &siteGroup
 	return r
 }
 
+// Site group (slug)
 func (r ApiCircuitsCircuitTerminationsListRequest) SiteGroupN(siteGroupN []string) ApiCircuitsCircuitTerminationsListRequest {
 	r.siteGroupN = &siteGroupN
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) SiteGroupId(siteGroupId []string) ApiCircuitsCircuitTerminationsListRequest {
+// Site group (ID)
+func (r ApiCircuitsCircuitTerminationsListRequest) SiteGroupId(siteGroupId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.siteGroupId = &siteGroupId
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) SiteGroupIdN(siteGroupIdN []string) ApiCircuitsCircuitTerminationsListRequest {
+// Site group (ID)
+func (r ApiCircuitsCircuitTerminationsListRequest) SiteGroupIdN(siteGroupIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.siteGroupIdN = &siteGroupIdN
 	return r
 }
 
 // Site (ID)
-func (r ApiCircuitsCircuitTerminationsListRequest) SiteId(siteId []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) SiteId(siteId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.siteId = &siteId
 	return r
 }
 
 // Site (ID)
-func (r ApiCircuitsCircuitTerminationsListRequest) SiteIdN(siteIdN []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) SiteIdN(siteIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.siteIdN = &siteIdN
 	return r
 }
@@ -7613,17 +7643,17 @@ func (r ApiCircuitsCircuitTerminationsListRequest) TagN(tagN []string) ApiCircui
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TagId(tagId []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TagId(tagId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TagIdN(tagIdN []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TagIdN(tagIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -7695,7 +7725,7 @@ func (r ApiCircuitsCircuitTerminationsListRequest) TermSideRegex(termSideRegex [
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TerminationId(terminationId []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TerminationId(terminationId []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.terminationId = &terminationId
 	return r
 }
@@ -7705,27 +7735,27 @@ func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdEmpty(terminatio
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdGt(terminationIdGt []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdGt(terminationIdGt []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.terminationIdGt = &terminationIdGt
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdGte(terminationIdGte []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdGte(terminationIdGte []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.terminationIdGte = &terminationIdGte
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdLt(terminationIdLt []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdLt(terminationIdLt []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.terminationIdLt = &terminationIdLt
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdLte(terminationIdLte []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdLte(terminationIdLte []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.terminationIdLte = &terminationIdLte
 	return r
 }
 
-func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdN(terminationIdN []int32) ApiCircuitsCircuitTerminationsListRequest {
+func (r ApiCircuitsCircuitTerminationsListRequest) TerminationIdN(terminationIdN []int64) ApiCircuitsCircuitTerminationsListRequest {
 	r.terminationIdN = &terminationIdN
 	return r
 }
@@ -8785,6 +8815,28 @@ func (a *CircuitsAPIService) CircuitsCircuitTerminationsListExecute(r ApiCircuit
 			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_id__n", t, "form", "multi")
 		}
 	}
+	if r.providerNetwork != nil {
+		t := *r.providerNetwork
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network", t, "form", "multi")
+		}
+	}
+	if r.providerNetworkN != nil {
+		t := *r.providerNetworkN
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network__n", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network__n", t, "form", "multi")
+		}
+	}
 	if r.providerNetworkId != nil {
 		t := *r.providerNetworkId
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -9499,7 +9551,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTerminationsListExecute(r ApiCircuit
 type ApiCircuitsCircuitTerminationsPartialUpdateRequest struct {
 	ctx                              context.Context
 	ApiService                       CircuitsAPI
-	id                               int32
+	id                               int64
 	patchedCircuitTerminationRequest *PatchedCircuitTerminationRequest
 }
 
@@ -9521,7 +9573,7 @@ Patch a circuit termination object.
 	@param id A unique integer value identifying this circuit termination.
 	@return ApiCircuitsCircuitTerminationsPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTerminationsPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTerminationsPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsPartialUpdateRequest {
 	return ApiCircuitsCircuitTerminationsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -9625,7 +9677,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTerminationsPartialUpdateExecute(r A
 type ApiCircuitsCircuitTerminationsPathsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -9662,7 +9714,7 @@ Return all CablePaths which traverse a given pass-through port.
 	@param id A unique integer value identifying this circuit termination.
 	@return ApiCircuitsCircuitTerminationsPathsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTerminationsPathsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsPathsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTerminationsPathsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsPathsRetrieveRequest {
 	return ApiCircuitsCircuitTerminationsPathsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -9773,7 +9825,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTerminationsPathsRetrieveExecute(r A
 type ApiCircuitsCircuitTerminationsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -9810,7 +9862,7 @@ Get a circuit termination object.
 	@param id A unique integer value identifying this circuit termination.
 	@return ApiCircuitsCircuitTerminationsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTerminationsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTerminationsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsRetrieveRequest {
 	return ApiCircuitsCircuitTerminationsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -9921,7 +9973,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTerminationsRetrieveExecute(r ApiCir
 type ApiCircuitsCircuitTerminationsUpdateRequest struct {
 	ctx                       context.Context
 	ApiService                CircuitsAPI
-	id                        int32
+	id                        int64
 	circuitTerminationRequest *CircuitTerminationRequest
 }
 
@@ -9943,7 +9995,7 @@ Put a circuit termination object.
 	@param id A unique integer value identifying this circuit termination.
 	@return ApiCircuitsCircuitTerminationsUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTerminationsUpdate(ctx context.Context, id int32) ApiCircuitsCircuitTerminationsUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTerminationsUpdate(ctx context.Context, id int64) ApiCircuitsCircuitTerminationsUpdateRequest {
 	return ApiCircuitsCircuitTerminationsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -10538,7 +10590,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTypesCreateExecute(r ApiCircuitsCirc
 type ApiCircuitsCircuitTypesDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsCircuitTypesDestroyRequest) Execute() (*http.Response, error) {
@@ -10554,7 +10606,7 @@ Delete a circuit type object.
 	@param id A unique integer value identifying this circuit type.
 	@return ApiCircuitsCircuitTypesDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTypesDestroy(ctx context.Context, id int32) ApiCircuitsCircuitTypesDestroyRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTypesDestroy(ctx context.Context, id int64) ApiCircuitsCircuitTypesDestroyRequest {
 	return ApiCircuitsCircuitTypesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -10680,13 +10732,13 @@ type ApiCircuitsCircuitTypesListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -10716,10 +10768,10 @@ type ApiCircuitsCircuitTypesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -10738,9 +10790,9 @@ type ApiCircuitsCircuitTypesListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -10926,7 +10978,7 @@ func (r ApiCircuitsCircuitTypesListRequest) Fields(fields string) ApiCircuitsCir
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) Id(id []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) Id(id []int64) ApiCircuitsCircuitTypesListRequest {
 	r.id = &id
 	return r
 }
@@ -10936,27 +10988,27 @@ func (r ApiCircuitsCircuitTypesListRequest) IdEmpty(idEmpty bool) ApiCircuitsCir
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) IdGt(idGt []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) IdGt(idGt []int64) ApiCircuitsCircuitTypesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) IdGte(idGte []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) IdGte(idGte []int64) ApiCircuitsCircuitTypesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) IdLt(idLt []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) IdLt(idLt []int64) ApiCircuitsCircuitTypesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) IdLte(idLte []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) IdLte(idLte []int64) ApiCircuitsCircuitTypesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) IdN(idN []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) IdN(idN []int64) ApiCircuitsCircuitTypesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -11115,25 +11167,25 @@ func (r ApiCircuitsCircuitTypesListRequest) OwnerGroupN(ownerGroupN []string) Ap
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsCircuitTypesListRequest) OwnerGroupId(ownerGroupId []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) OwnerGroupId(ownerGroupId []int64) ApiCircuitsCircuitTypesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsCircuitTypesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCircuitsCircuitTypesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsCircuitTypesListRequest) OwnerId(ownerId []*int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) OwnerId(ownerId []*int64) ApiCircuitsCircuitTypesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsCircuitTypesListRequest) OwnerIdN(ownerIdN []*int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) OwnerIdN(ownerIdN []*int64) ApiCircuitsCircuitTypesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -11230,17 +11282,17 @@ func (r ApiCircuitsCircuitTypesListRequest) TagN(tagN []string) ApiCircuitsCircu
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) TagId(tagId []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) TagId(tagId []int64) ApiCircuitsCircuitTypesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsCircuitTypesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsCircuitTypesListRequest) TagIdN(tagIdN []int32) ApiCircuitsCircuitTypesListRequest {
+func (r ApiCircuitsCircuitTypesListRequest) TagIdN(tagIdN []int64) ApiCircuitsCircuitTypesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -12296,7 +12348,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTypesListExecute(r ApiCircuitsCircui
 type ApiCircuitsCircuitTypesPartialUpdateRequest struct {
 	ctx                       context.Context
 	ApiService                CircuitsAPI
-	id                        int32
+	id                        int64
 	patchedCircuitTypeRequest *PatchedCircuitTypeRequest
 }
 
@@ -12318,7 +12370,7 @@ Patch a circuit type object.
 	@param id A unique integer value identifying this circuit type.
 	@return ApiCircuitsCircuitTypesPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTypesPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitTypesPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTypesPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitTypesPartialUpdateRequest {
 	return ApiCircuitsCircuitTypesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -12422,7 +12474,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTypesPartialUpdateExecute(r ApiCircu
 type ApiCircuitsCircuitTypesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -12459,7 +12511,7 @@ Get a circuit type object.
 	@param id A unique integer value identifying this circuit type.
 	@return ApiCircuitsCircuitTypesRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTypesRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitTypesRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTypesRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitTypesRetrieveRequest {
 	return ApiCircuitsCircuitTypesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -12570,7 +12622,7 @@ func (a *CircuitsAPIService) CircuitsCircuitTypesRetrieveExecute(r ApiCircuitsCi
 type ApiCircuitsCircuitTypesUpdateRequest struct {
 	ctx                context.Context
 	ApiService         CircuitsAPI
-	id                 int32
+	id                 int64
 	circuitTypeRequest *CircuitTypeRequest
 }
 
@@ -12592,7 +12644,7 @@ Put a circuit type object.
 	@param id A unique integer value identifying this circuit type.
 	@return ApiCircuitsCircuitTypesUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitTypesUpdate(ctx context.Context, id int32) ApiCircuitsCircuitTypesUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitTypesUpdate(ctx context.Context, id int64) ApiCircuitsCircuitTypesUpdateRequest {
 	return ApiCircuitsCircuitTypesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -13187,7 +13239,7 @@ func (a *CircuitsAPIService) CircuitsCircuitsCreateExecute(r ApiCircuitsCircuits
 type ApiCircuitsCircuitsDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsCircuitsDestroyRequest) Execute() (*http.Response, error) {
@@ -13203,7 +13255,7 @@ Delete a circuit object.
 	@param id A unique integer value identifying this circuit.
 	@return ApiCircuitsCircuitsDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitsDestroy(ctx context.Context, id int32) ApiCircuitsCircuitsDestroyRequest {
+func (a *CircuitsAPIService) CircuitsCircuitsDestroy(ctx context.Context, id int64) ApiCircuitsCircuitsDestroyRequest {
 	return ApiCircuitsCircuitsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -13314,12 +13366,12 @@ type ApiCircuitsCircuitsListRequest struct {
 	commitRateLt         *[]int32
 	commitRateLte        *[]int32
 	commitRateN          *[]int32
-	contact              *[]int32
-	contactN             *[]int32
-	contactGroup         *[]string
-	contactGroupN        *[]string
-	contactRole          *[]int32
-	contactRoleN         *[]int32
+	contact              *[]int64
+	contactN             *[]int64
+	contactGroup         *[]int64
+	contactGroupN        *[]int64
+	contactRole          *[]int64
+	contactRoleN         *[]int64
 	created              *[]time.Time
 	createdEmpty         *bool
 	createdGt            *[]time.Time
@@ -13362,13 +13414,13 @@ type ApiCircuitsCircuitsListRequest struct {
 	distanceUnitNisw     *[]string
 	distanceUnitRegex    *[]string
 	fields               *string
-	id                   *[]int32
+	id                   *[]int64
 	idEmpty              *bool
-	idGt                 *[]int32
-	idGte                *[]int32
-	idLt                 *[]int32
-	idLte                *[]int32
-	idN                  *[]int32
+	idGt                 *[]int64
+	idGte                *[]int64
+	idLt                 *[]int64
+	idLte                *[]int64
+	idN                  *[]int64
 	installDate          *[]string
 	installDateEmpty     *bool
 	installDateGt        *[]string
@@ -13384,8 +13436,8 @@ type ApiCircuitsCircuitsListRequest struct {
 	lastUpdatedLte       *[]time.Time
 	lastUpdatedN         *[]time.Time
 	limit                *int32
-	locationId           *[]int32
-	locationIdN          *[]int32
+	locationId           *[]int64
+	locationIdN          *[]int64
 	modifiedByRequest    *string
 	offset               *int32
 	omit                 *string
@@ -13394,33 +13446,35 @@ type ApiCircuitsCircuitsListRequest struct {
 	ownerN               *[]string
 	ownerGroup           *[]string
 	ownerGroupN          *[]string
-	ownerGroupId         *[]int32
-	ownerGroupIdN        *[]int32
-	ownerId              *[]*int32
-	ownerIdN             *[]*int32
+	ownerGroupId         *[]int64
+	ownerGroupIdN        *[]int64
+	ownerId              *[]*int64
+	ownerIdN             *[]*int64
 	provider             *[]string
 	providerN            *[]string
 	providerAccount      *[]string
 	providerAccountN     *[]string
-	providerAccountId    *[]int32
-	providerAccountIdN   *[]int32
-	providerId           *[]int32
-	providerIdN          *[]int32
-	providerNetworkId    *[]int32
-	providerNetworkIdN   *[]int32
+	providerAccountId    *[]int64
+	providerAccountIdN   *[]int64
+	providerId           *[]int64
+	providerIdN          *[]int64
+	providerNetwork      *[]string
+	providerNetworkN     *[]string
+	providerNetworkId    *[]int64
+	providerNetworkIdN   *[]int64
 	q                    *string
 	region               *[]string
 	regionN              *[]string
-	regionId             *[]string
-	regionIdN            *[]string
+	regionId             *[]int64
+	regionIdN            *[]int64
 	site                 *[]string
 	siteN                *[]string
 	siteGroup            *[]string
 	siteGroupN           *[]string
-	siteGroupId          *[]string
-	siteGroupIdN         *[]string
-	siteId               *[]int32
-	siteIdN              *[]int32
+	siteGroupId          *[]int64
+	siteGroupIdN         *[]int64
+	siteId               *[]int64
+	siteIdN              *[]int64
 	start                *int32
 	status               *[]string
 	statusEmpty          *bool
@@ -13438,19 +13492,19 @@ type ApiCircuitsCircuitsListRequest struct {
 	tag                  *[]string
 	tagAny               *[]string
 	tagN                 *[]string
-	tagId                *[]int32
-	tagIdAny             *[]int32
-	tagIdN               *[]int32
+	tagId                *[]int64
+	tagIdAny             *[]int64
+	tagIdN               *[]int64
 	tenant               *[]string
 	tenantN              *[]string
 	tenantGroup          *[]string
 	tenantGroupN         *[]string
-	tenantGroupId        *[]string
-	tenantGroupIdN       *[]string
-	tenantId             *[]*int32
-	tenantIdN            *[]*int32
-	terminationAId       *[]*int32
-	terminationAIdN      *[]*int32
+	tenantGroupId        *[]int64
+	tenantGroupIdN       *[]int64
+	tenantId             *[]*int64
+	tenantIdN            *[]*int64
+	terminationAId       *[]*int64
+	terminationAIdN      *[]*int64
 	terminationDate      *[]string
 	terminationDateEmpty *bool
 	terminationDateGt    *[]string
@@ -13458,12 +13512,12 @@ type ApiCircuitsCircuitsListRequest struct {
 	terminationDateLt    *[]string
 	terminationDateLte   *[]string
 	terminationDateN     *[]string
-	terminationZId       *[]*int32
-	terminationZIdN      *[]*int32
+	terminationZId       *[]*int64
+	terminationZIdN      *[]*int64
 	type_                *[]string
 	typeN                *[]string
-	typeId               *[]int32
-	typeIdN              *[]int32
+	typeId               *[]int64
+	typeIdN              *[]int64
 	updatedByRequest     *string
 }
 
@@ -13574,35 +13628,37 @@ func (r ApiCircuitsCircuitsListRequest) CommitRateN(commitRateN []int32) ApiCirc
 }
 
 // Contact
-func (r ApiCircuitsCircuitsListRequest) Contact(contact []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) Contact(contact []int64) ApiCircuitsCircuitsListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiCircuitsCircuitsListRequest) ContactN(contactN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ContactN(contactN []int64) ApiCircuitsCircuitsListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) ContactGroup(contactGroup []string) ApiCircuitsCircuitsListRequest {
+// Contact group
+func (r ApiCircuitsCircuitsListRequest) ContactGroup(contactGroup []int64) ApiCircuitsCircuitsListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) ContactGroupN(contactGroupN []string) ApiCircuitsCircuitsListRequest {
+// Contact group
+func (r ApiCircuitsCircuitsListRequest) ContactGroupN(contactGroupN []int64) ApiCircuitsCircuitsListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiCircuitsCircuitsListRequest) ContactRole(contactRole []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ContactRole(contactRole []int64) ApiCircuitsCircuitsListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiCircuitsCircuitsListRequest) ContactRoleN(contactRoleN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ContactRoleN(contactRoleN []int64) ApiCircuitsCircuitsListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -13820,7 +13876,7 @@ func (r ApiCircuitsCircuitsListRequest) Fields(fields string) ApiCircuitsCircuit
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) Id(id []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) Id(id []int64) ApiCircuitsCircuitsListRequest {
 	r.id = &id
 	return r
 }
@@ -13830,27 +13886,27 @@ func (r ApiCircuitsCircuitsListRequest) IdEmpty(idEmpty bool) ApiCircuitsCircuit
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) IdGt(idGt []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) IdGt(idGt []int64) ApiCircuitsCircuitsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) IdGte(idGte []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) IdGte(idGte []int64) ApiCircuitsCircuitsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) IdLt(idLt []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) IdLt(idLt []int64) ApiCircuitsCircuitsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) IdLte(idLte []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) IdLte(idLte []int64) ApiCircuitsCircuitsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) IdN(idN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) IdN(idN []int64) ApiCircuitsCircuitsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -13932,13 +13988,13 @@ func (r ApiCircuitsCircuitsListRequest) Limit(limit int32) ApiCircuitsCircuitsLi
 }
 
 // Location (ID)
-func (r ApiCircuitsCircuitsListRequest) LocationId(locationId []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) LocationId(locationId []int64) ApiCircuitsCircuitsListRequest {
 	r.locationId = &locationId
 	return r
 }
 
 // Location (ID)
-func (r ApiCircuitsCircuitsListRequest) LocationIdN(locationIdN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) LocationIdN(locationIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.locationIdN = &locationIdN
 	return r
 }
@@ -13991,25 +14047,25 @@ func (r ApiCircuitsCircuitsListRequest) OwnerGroupN(ownerGroupN []string) ApiCir
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsCircuitsListRequest) OwnerGroupId(ownerGroupId []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) OwnerGroupId(ownerGroupId []int64) ApiCircuitsCircuitsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsCircuitsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsCircuitsListRequest) OwnerId(ownerId []*int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) OwnerId(ownerId []*int64) ApiCircuitsCircuitsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsCircuitsListRequest) OwnerIdN(ownerIdN []*int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) OwnerIdN(ownerIdN []*int64) ApiCircuitsCircuitsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -14039,37 +14095,49 @@ func (r ApiCircuitsCircuitsListRequest) ProviderAccountN(providerAccountN []stri
 }
 
 // Provider account (ID)
-func (r ApiCircuitsCircuitsListRequest) ProviderAccountId(providerAccountId []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ProviderAccountId(providerAccountId []int64) ApiCircuitsCircuitsListRequest {
 	r.providerAccountId = &providerAccountId
 	return r
 }
 
 // Provider account (ID)
-func (r ApiCircuitsCircuitsListRequest) ProviderAccountIdN(providerAccountIdN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ProviderAccountIdN(providerAccountIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.providerAccountIdN = &providerAccountIdN
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsCircuitsListRequest) ProviderId(providerId []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ProviderId(providerId []int64) ApiCircuitsCircuitsListRequest {
 	r.providerId = &providerId
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsCircuitsListRequest) ProviderIdN(providerIdN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ProviderIdN(providerIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.providerIdN = &providerIdN
 	return r
 }
 
+// Provider network (name)
+func (r ApiCircuitsCircuitsListRequest) ProviderNetwork(providerNetwork []string) ApiCircuitsCircuitsListRequest {
+	r.providerNetwork = &providerNetwork
+	return r
+}
+
+// Provider network (name)
+func (r ApiCircuitsCircuitsListRequest) ProviderNetworkN(providerNetworkN []string) ApiCircuitsCircuitsListRequest {
+	r.providerNetworkN = &providerNetworkN
+	return r
+}
+
 // Provider network (ID)
-func (r ApiCircuitsCircuitsListRequest) ProviderNetworkId(providerNetworkId []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ProviderNetworkId(providerNetworkId []int64) ApiCircuitsCircuitsListRequest {
 	r.providerNetworkId = &providerNetworkId
 	return r
 }
 
 // Provider network (ID)
-func (r ApiCircuitsCircuitsListRequest) ProviderNetworkIdN(providerNetworkIdN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) ProviderNetworkIdN(providerNetworkIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.providerNetworkIdN = &providerNetworkIdN
 	return r
 }
@@ -14080,22 +14148,26 @@ func (r ApiCircuitsCircuitsListRequest) Q(q string) ApiCircuitsCircuitsListReque
 	return r
 }
 
+// Region (slug)
 func (r ApiCircuitsCircuitsListRequest) Region(region []string) ApiCircuitsCircuitsListRequest {
 	r.region = &region
 	return r
 }
 
+// Region (slug)
 func (r ApiCircuitsCircuitsListRequest) RegionN(regionN []string) ApiCircuitsCircuitsListRequest {
 	r.regionN = &regionN
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) RegionId(regionId []string) ApiCircuitsCircuitsListRequest {
+// Region (ID)
+func (r ApiCircuitsCircuitsListRequest) RegionId(regionId []int64) ApiCircuitsCircuitsListRequest {
 	r.regionId = &regionId
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) RegionIdN(regionIdN []string) ApiCircuitsCircuitsListRequest {
+// Region (ID)
+func (r ApiCircuitsCircuitsListRequest) RegionIdN(regionIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.regionIdN = &regionIdN
 	return r
 }
@@ -14112,34 +14184,38 @@ func (r ApiCircuitsCircuitsListRequest) SiteN(siteN []string) ApiCircuitsCircuit
 	return r
 }
 
+// Site group (slug)
 func (r ApiCircuitsCircuitsListRequest) SiteGroup(siteGroup []string) ApiCircuitsCircuitsListRequest {
 	r.siteGroup = &siteGroup
 	return r
 }
 
+// Site group (slug)
 func (r ApiCircuitsCircuitsListRequest) SiteGroupN(siteGroupN []string) ApiCircuitsCircuitsListRequest {
 	r.siteGroupN = &siteGroupN
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) SiteGroupId(siteGroupId []string) ApiCircuitsCircuitsListRequest {
+// Site group (ID)
+func (r ApiCircuitsCircuitsListRequest) SiteGroupId(siteGroupId []int64) ApiCircuitsCircuitsListRequest {
 	r.siteGroupId = &siteGroupId
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) SiteGroupIdN(siteGroupIdN []string) ApiCircuitsCircuitsListRequest {
+// Site group (ID)
+func (r ApiCircuitsCircuitsListRequest) SiteGroupIdN(siteGroupIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.siteGroupIdN = &siteGroupIdN
 	return r
 }
 
 // Site (ID)
-func (r ApiCircuitsCircuitsListRequest) SiteId(siteId []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) SiteId(siteId []int64) ApiCircuitsCircuitsListRequest {
 	r.siteId = &siteId
 	return r
 }
 
 // Site (ID)
-func (r ApiCircuitsCircuitsListRequest) SiteIdN(siteIdN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) SiteIdN(siteIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.siteIdN = &siteIdN
 	return r
 }
@@ -14230,17 +14306,17 @@ func (r ApiCircuitsCircuitsListRequest) TagN(tagN []string) ApiCircuitsCircuitsL
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) TagId(tagId []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TagId(tagId []int64) ApiCircuitsCircuitsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsCircuitsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) TagIdN(tagIdN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TagIdN(tagIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -14257,46 +14333,50 @@ func (r ApiCircuitsCircuitsListRequest) TenantN(tenantN []string) ApiCircuitsCir
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiCircuitsCircuitsListRequest) TenantGroup(tenantGroup []string) ApiCircuitsCircuitsListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiCircuitsCircuitsListRequest) TenantGroupN(tenantGroupN []string) ApiCircuitsCircuitsListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) TenantGroupId(tenantGroupId []string) ApiCircuitsCircuitsListRequest {
+// Tenant Group (ID)
+func (r ApiCircuitsCircuitsListRequest) TenantGroupId(tenantGroupId []int64) ApiCircuitsCircuitsListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiCircuitsCircuitsListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiCircuitsCircuitsListRequest {
+// Tenant Group (ID)
+func (r ApiCircuitsCircuitsListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiCircuitsCircuitsListRequest) TenantId(tenantId []*int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TenantId(tenantId []*int64) ApiCircuitsCircuitsListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiCircuitsCircuitsListRequest) TenantIdN(tenantIdN []*int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TenantIdN(tenantIdN []*int64) ApiCircuitsCircuitsListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
 
 // Termination A (ID)
-func (r ApiCircuitsCircuitsListRequest) TerminationAId(terminationAId []*int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TerminationAId(terminationAId []*int64) ApiCircuitsCircuitsListRequest {
 	r.terminationAId = &terminationAId
 	return r
 }
 
 // Termination A (ID)
-func (r ApiCircuitsCircuitsListRequest) TerminationAIdN(terminationAIdN []*int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TerminationAIdN(terminationAIdN []*int64) ApiCircuitsCircuitsListRequest {
 	r.terminationAIdN = &terminationAIdN
 	return r
 }
@@ -14337,13 +14417,13 @@ func (r ApiCircuitsCircuitsListRequest) TerminationDateN(terminationDateN []stri
 }
 
 // Termination A (ID)
-func (r ApiCircuitsCircuitsListRequest) TerminationZId(terminationZId []*int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TerminationZId(terminationZId []*int64) ApiCircuitsCircuitsListRequest {
 	r.terminationZId = &terminationZId
 	return r
 }
 
 // Termination A (ID)
-func (r ApiCircuitsCircuitsListRequest) TerminationZIdN(terminationZIdN []*int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TerminationZIdN(terminationZIdN []*int64) ApiCircuitsCircuitsListRequest {
 	r.terminationZIdN = &terminationZIdN
 	return r
 }
@@ -14361,13 +14441,13 @@ func (r ApiCircuitsCircuitsListRequest) TypeN(typeN []string) ApiCircuitsCircuit
 }
 
 // Circuit type (ID)
-func (r ApiCircuitsCircuitsListRequest) TypeId(typeId []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TypeId(typeId []int64) ApiCircuitsCircuitsListRequest {
 	r.typeId = &typeId
 	return r
 }
 
 // Circuit type (ID)
-func (r ApiCircuitsCircuitsListRequest) TypeIdN(typeIdN []int32) ApiCircuitsCircuitsListRequest {
+func (r ApiCircuitsCircuitsListRequest) TypeIdN(typeIdN []int64) ApiCircuitsCircuitsListRequest {
 	r.typeIdN = &typeIdN
 	return r
 }
@@ -15509,6 +15589,28 @@ func (a *CircuitsAPIService) CircuitsCircuitsListExecute(r ApiCircuitsCircuitsLi
 			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_id__n", t, "form", "multi")
 		}
 	}
+	if r.providerNetwork != nil {
+		t := *r.providerNetwork
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network", t, "form", "multi")
+		}
+	}
+	if r.providerNetworkN != nil {
+		t := *r.providerNetworkN
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network__n", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network__n", t, "form", "multi")
+		}
+	}
 	if r.providerNetworkId != nil {
 		t := *r.providerNetworkId
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -16189,7 +16291,7 @@ func (a *CircuitsAPIService) CircuitsCircuitsListExecute(r ApiCircuitsCircuitsLi
 type ApiCircuitsCircuitsPartialUpdateRequest struct {
 	ctx                           context.Context
 	ApiService                    CircuitsAPI
-	id                            int32
+	id                            int64
 	patchedWritableCircuitRequest *PatchedWritableCircuitRequest
 }
 
@@ -16211,7 +16313,7 @@ Patch a circuit object.
 	@param id A unique integer value identifying this circuit.
 	@return ApiCircuitsCircuitsPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitsPartialUpdate(ctx context.Context, id int32) ApiCircuitsCircuitsPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitsPartialUpdate(ctx context.Context, id int64) ApiCircuitsCircuitsPartialUpdateRequest {
 	return ApiCircuitsCircuitsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -16315,7 +16417,7 @@ func (a *CircuitsAPIService) CircuitsCircuitsPartialUpdateExecute(r ApiCircuitsC
 type ApiCircuitsCircuitsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -16352,7 +16454,7 @@ Get a circuit object.
 	@param id A unique integer value identifying this circuit.
 	@return ApiCircuitsCircuitsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitsRetrieve(ctx context.Context, id int32) ApiCircuitsCircuitsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsCircuitsRetrieve(ctx context.Context, id int64) ApiCircuitsCircuitsRetrieveRequest {
 	return ApiCircuitsCircuitsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -16463,7 +16565,7 @@ func (a *CircuitsAPIService) CircuitsCircuitsRetrieveExecute(r ApiCircuitsCircui
 type ApiCircuitsCircuitsUpdateRequest struct {
 	ctx                    context.Context
 	ApiService             CircuitsAPI
-	id                     int32
+	id                     int64
 	writableCircuitRequest *WritableCircuitRequest
 }
 
@@ -16485,7 +16587,7 @@ Put a circuit object.
 	@param id A unique integer value identifying this circuit.
 	@return ApiCircuitsCircuitsUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsCircuitsUpdate(ctx context.Context, id int32) ApiCircuitsCircuitsUpdateRequest {
+func (a *CircuitsAPIService) CircuitsCircuitsUpdate(ctx context.Context, id int64) ApiCircuitsCircuitsUpdateRequest {
 	return ApiCircuitsCircuitsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -17080,7 +17182,7 @@ func (a *CircuitsAPIService) CircuitsProviderAccountsCreateExecute(r ApiCircuits
 type ApiCircuitsProviderAccountsDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsProviderAccountsDestroyRequest) Execute() (*http.Response, error) {
@@ -17096,7 +17198,7 @@ Delete a provider account object.
 	@param id A unique integer value identifying this provider account.
 	@return ApiCircuitsProviderAccountsDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsProviderAccountsDestroy(ctx context.Context, id int32) ApiCircuitsProviderAccountsDestroyRequest {
+func (a *CircuitsAPIService) CircuitsProviderAccountsDestroy(ctx context.Context, id int64) ApiCircuitsProviderAccountsDestroyRequest {
 	return ApiCircuitsProviderAccountsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -17200,12 +17302,12 @@ type ApiCircuitsProviderAccountsListRequest struct {
 	accountNisw       *[]string
 	accountRegex      *[]string
 	brief             *bool
-	contact           *[]int32
-	contactN          *[]int32
-	contactGroup      *[]string
-	contactGroupN     *[]string
-	contactRole       *[]int32
-	contactRoleN      *[]int32
+	contact           *[]int64
+	contactN          *[]int64
+	contactGroup      *[]int64
+	contactGroupN     *[]int64
+	contactRole       *[]int64
+	contactRoleN      *[]int64
 	created           *[]time.Time
 	createdEmpty      *bool
 	createdGt         *[]time.Time
@@ -17228,13 +17330,13 @@ type ApiCircuitsProviderAccountsListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -17264,22 +17366,22 @@ type ApiCircuitsProviderAccountsListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	provider          *[]string
 	providerN         *[]string
-	providerId        *[]int32
-	providerIdN       *[]int32
+	providerId        *[]int64
+	providerIdN       *[]int64
 	q                 *string
 	start             *int32
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -17355,35 +17457,37 @@ func (r ApiCircuitsProviderAccountsListRequest) Brief(brief bool) ApiCircuitsPro
 }
 
 // Contact
-func (r ApiCircuitsProviderAccountsListRequest) Contact(contact []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) Contact(contact []int64) ApiCircuitsProviderAccountsListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiCircuitsProviderAccountsListRequest) ContactN(contactN []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) ContactN(contactN []int64) ApiCircuitsProviderAccountsListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) ContactGroup(contactGroup []string) ApiCircuitsProviderAccountsListRequest {
+// Contact group
+func (r ApiCircuitsProviderAccountsListRequest) ContactGroup(contactGroup []int64) ApiCircuitsProviderAccountsListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) ContactGroupN(contactGroupN []string) ApiCircuitsProviderAccountsListRequest {
+// Contact group
+func (r ApiCircuitsProviderAccountsListRequest) ContactGroupN(contactGroupN []int64) ApiCircuitsProviderAccountsListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiCircuitsProviderAccountsListRequest) ContactRole(contactRole []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) ContactRole(contactRole []int64) ApiCircuitsProviderAccountsListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiCircuitsProviderAccountsListRequest) ContactRoleN(contactRoleN []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) ContactRoleN(contactRoleN []int64) ApiCircuitsProviderAccountsListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -17499,7 +17603,7 @@ func (r ApiCircuitsProviderAccountsListRequest) Fields(fields string) ApiCircuit
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) Id(id []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) Id(id []int64) ApiCircuitsProviderAccountsListRequest {
 	r.id = &id
 	return r
 }
@@ -17509,27 +17613,27 @@ func (r ApiCircuitsProviderAccountsListRequest) IdEmpty(idEmpty bool) ApiCircuit
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) IdGt(idGt []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) IdGt(idGt []int64) ApiCircuitsProviderAccountsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) IdGte(idGte []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) IdGte(idGte []int64) ApiCircuitsProviderAccountsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) IdLt(idLt []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) IdLt(idLt []int64) ApiCircuitsProviderAccountsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) IdLte(idLte []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) IdLte(idLte []int64) ApiCircuitsProviderAccountsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) IdN(idN []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) IdN(idN []int64) ApiCircuitsProviderAccountsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -17688,25 +17792,25 @@ func (r ApiCircuitsProviderAccountsListRequest) OwnerGroupN(ownerGroupN []string
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsProviderAccountsListRequest) OwnerGroupId(ownerGroupId []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) OwnerGroupId(ownerGroupId []int64) ApiCircuitsProviderAccountsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsProviderAccountsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCircuitsProviderAccountsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsProviderAccountsListRequest) OwnerId(ownerId []*int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) OwnerId(ownerId []*int64) ApiCircuitsProviderAccountsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsProviderAccountsListRequest) OwnerIdN(ownerIdN []*int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) OwnerIdN(ownerIdN []*int64) ApiCircuitsProviderAccountsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -17724,13 +17828,13 @@ func (r ApiCircuitsProviderAccountsListRequest) ProviderN(providerN []string) Ap
 }
 
 // Provider (ID)
-func (r ApiCircuitsProviderAccountsListRequest) ProviderId(providerId []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) ProviderId(providerId []int64) ApiCircuitsProviderAccountsListRequest {
 	r.providerId = &providerId
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsProviderAccountsListRequest) ProviderIdN(providerIdN []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) ProviderIdN(providerIdN []int64) ApiCircuitsProviderAccountsListRequest {
 	r.providerIdN = &providerIdN
 	return r
 }
@@ -17762,17 +17866,17 @@ func (r ApiCircuitsProviderAccountsListRequest) TagN(tagN []string) ApiCircuitsP
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) TagId(tagId []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) TagId(tagId []int64) ApiCircuitsProviderAccountsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsProviderAccountsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsProviderAccountsListRequest) TagIdN(tagIdN []int32) ApiCircuitsProviderAccountsListRequest {
+func (r ApiCircuitsProviderAccountsListRequest) TagIdN(tagIdN []int64) ApiCircuitsProviderAccountsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -18803,7 +18907,7 @@ func (a *CircuitsAPIService) CircuitsProviderAccountsListExecute(r ApiCircuitsPr
 type ApiCircuitsProviderAccountsPartialUpdateRequest struct {
 	ctx                           context.Context
 	ApiService                    CircuitsAPI
-	id                            int32
+	id                            int64
 	patchedProviderAccountRequest *PatchedProviderAccountRequest
 }
 
@@ -18825,7 +18929,7 @@ Patch a provider account object.
 	@param id A unique integer value identifying this provider account.
 	@return ApiCircuitsProviderAccountsPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsProviderAccountsPartialUpdate(ctx context.Context, id int32) ApiCircuitsProviderAccountsPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsProviderAccountsPartialUpdate(ctx context.Context, id int64) ApiCircuitsProviderAccountsPartialUpdateRequest {
 	return ApiCircuitsProviderAccountsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -18929,7 +19033,7 @@ func (a *CircuitsAPIService) CircuitsProviderAccountsPartialUpdateExecute(r ApiC
 type ApiCircuitsProviderAccountsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -18966,7 +19070,7 @@ Get a provider account object.
 	@param id A unique integer value identifying this provider account.
 	@return ApiCircuitsProviderAccountsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsProviderAccountsRetrieve(ctx context.Context, id int32) ApiCircuitsProviderAccountsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsProviderAccountsRetrieve(ctx context.Context, id int64) ApiCircuitsProviderAccountsRetrieveRequest {
 	return ApiCircuitsProviderAccountsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -19077,7 +19181,7 @@ func (a *CircuitsAPIService) CircuitsProviderAccountsRetrieveExecute(r ApiCircui
 type ApiCircuitsProviderAccountsUpdateRequest struct {
 	ctx                    context.Context
 	ApiService             CircuitsAPI
-	id                     int32
+	id                     int64
 	providerAccountRequest *ProviderAccountRequest
 }
 
@@ -19099,7 +19203,7 @@ Put a provider account object.
 	@param id A unique integer value identifying this provider account.
 	@return ApiCircuitsProviderAccountsUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsProviderAccountsUpdate(ctx context.Context, id int32) ApiCircuitsProviderAccountsUpdateRequest {
+func (a *CircuitsAPIService) CircuitsProviderAccountsUpdate(ctx context.Context, id int64) ApiCircuitsProviderAccountsUpdateRequest {
 	return ApiCircuitsProviderAccountsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -19694,7 +19798,7 @@ func (a *CircuitsAPIService) CircuitsProviderNetworksCreateExecute(r ApiCircuits
 type ApiCircuitsProviderNetworksDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsProviderNetworksDestroyRequest) Execute() (*http.Response, error) {
@@ -19710,7 +19814,7 @@ Delete a provider network object.
 	@param id A unique integer value identifying this provider network.
 	@return ApiCircuitsProviderNetworksDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsProviderNetworksDestroy(ctx context.Context, id int32) ApiCircuitsProviderNetworksDestroyRequest {
+func (a *CircuitsAPIService) CircuitsProviderNetworksDestroy(ctx context.Context, id int64) ApiCircuitsProviderNetworksDestroyRequest {
 	return ApiCircuitsProviderNetworksDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -19823,13 +19927,13 @@ type ApiCircuitsProviderNetworksListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -19859,14 +19963,14 @@ type ApiCircuitsProviderNetworksListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	provider          *[]string
 	providerN         *[]string
-	providerId        *[]int32
-	providerIdN       *[]int32
+	providerId        *[]int64
+	providerIdN       *[]int64
 	q                 *string
 	serviceId         *[]string
 	serviceIdEmpty    *bool
@@ -19885,9 +19989,9 @@ type ApiCircuitsProviderNetworksListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -20008,7 +20112,7 @@ func (r ApiCircuitsProviderNetworksListRequest) Fields(fields string) ApiCircuit
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) Id(id []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) Id(id []int64) ApiCircuitsProviderNetworksListRequest {
 	r.id = &id
 	return r
 }
@@ -20018,27 +20122,27 @@ func (r ApiCircuitsProviderNetworksListRequest) IdEmpty(idEmpty bool) ApiCircuit
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) IdGt(idGt []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) IdGt(idGt []int64) ApiCircuitsProviderNetworksListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) IdGte(idGte []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) IdGte(idGte []int64) ApiCircuitsProviderNetworksListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) IdLt(idLt []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) IdLt(idLt []int64) ApiCircuitsProviderNetworksListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) IdLte(idLte []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) IdLte(idLte []int64) ApiCircuitsProviderNetworksListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) IdN(idN []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) IdN(idN []int64) ApiCircuitsProviderNetworksListRequest {
 	r.idN = &idN
 	return r
 }
@@ -20197,25 +20301,25 @@ func (r ApiCircuitsProviderNetworksListRequest) OwnerGroupN(ownerGroupN []string
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsProviderNetworksListRequest) OwnerGroupId(ownerGroupId []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) OwnerGroupId(ownerGroupId []int64) ApiCircuitsProviderNetworksListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsProviderNetworksListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCircuitsProviderNetworksListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsProviderNetworksListRequest) OwnerId(ownerId []*int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) OwnerId(ownerId []*int64) ApiCircuitsProviderNetworksListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsProviderNetworksListRequest) OwnerIdN(ownerIdN []*int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) OwnerIdN(ownerIdN []*int64) ApiCircuitsProviderNetworksListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -20233,13 +20337,13 @@ func (r ApiCircuitsProviderNetworksListRequest) ProviderN(providerN []string) Ap
 }
 
 // Provider (ID)
-func (r ApiCircuitsProviderNetworksListRequest) ProviderId(providerId []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) ProviderId(providerId []int64) ApiCircuitsProviderNetworksListRequest {
 	r.providerId = &providerId
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsProviderNetworksListRequest) ProviderIdN(providerIdN []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) ProviderIdN(providerIdN []int64) ApiCircuitsProviderNetworksListRequest {
 	r.providerIdN = &providerIdN
 	return r
 }
@@ -20336,17 +20440,17 @@ func (r ApiCircuitsProviderNetworksListRequest) TagN(tagN []string) ApiCircuitsP
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) TagId(tagId []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) TagId(tagId []int64) ApiCircuitsProviderNetworksListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsProviderNetworksListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsProviderNetworksListRequest) TagIdN(tagIdN []int32) ApiCircuitsProviderNetworksListRequest {
+func (r ApiCircuitsProviderNetworksListRequest) TagIdN(tagIdN []int64) ApiCircuitsProviderNetworksListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -21311,7 +21415,7 @@ func (a *CircuitsAPIService) CircuitsProviderNetworksListExecute(r ApiCircuitsPr
 type ApiCircuitsProviderNetworksPartialUpdateRequest struct {
 	ctx                           context.Context
 	ApiService                    CircuitsAPI
-	id                            int32
+	id                            int64
 	patchedProviderNetworkRequest *PatchedProviderNetworkRequest
 }
 
@@ -21333,7 +21437,7 @@ Patch a provider network object.
 	@param id A unique integer value identifying this provider network.
 	@return ApiCircuitsProviderNetworksPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsProviderNetworksPartialUpdate(ctx context.Context, id int32) ApiCircuitsProviderNetworksPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsProviderNetworksPartialUpdate(ctx context.Context, id int64) ApiCircuitsProviderNetworksPartialUpdateRequest {
 	return ApiCircuitsProviderNetworksPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -21437,7 +21541,7 @@ func (a *CircuitsAPIService) CircuitsProviderNetworksPartialUpdateExecute(r ApiC
 type ApiCircuitsProviderNetworksRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -21474,7 +21578,7 @@ Get a provider network object.
 	@param id A unique integer value identifying this provider network.
 	@return ApiCircuitsProviderNetworksRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsProviderNetworksRetrieve(ctx context.Context, id int32) ApiCircuitsProviderNetworksRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsProviderNetworksRetrieve(ctx context.Context, id int64) ApiCircuitsProviderNetworksRetrieveRequest {
 	return ApiCircuitsProviderNetworksRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -21585,7 +21689,7 @@ func (a *CircuitsAPIService) CircuitsProviderNetworksRetrieveExecute(r ApiCircui
 type ApiCircuitsProviderNetworksUpdateRequest struct {
 	ctx                    context.Context
 	ApiService             CircuitsAPI
-	id                     int32
+	id                     int64
 	providerNetworkRequest *ProviderNetworkRequest
 }
 
@@ -21607,7 +21711,7 @@ Put a provider network object.
 	@param id A unique integer value identifying this provider network.
 	@return ApiCircuitsProviderNetworksUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsProviderNetworksUpdate(ctx context.Context, id int32) ApiCircuitsProviderNetworksUpdateRequest {
+func (a *CircuitsAPIService) CircuitsProviderNetworksUpdate(ctx context.Context, id int64) ApiCircuitsProviderNetworksUpdateRequest {
 	return ApiCircuitsProviderNetworksUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -22202,7 +22306,7 @@ func (a *CircuitsAPIService) CircuitsProvidersCreateExecute(r ApiCircuitsProvide
 type ApiCircuitsProvidersDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsProvidersDestroyRequest) Execute() (*http.Response, error) {
@@ -22218,7 +22322,7 @@ Delete a provider object.
 	@param id A unique integer value identifying this provider.
 	@return ApiCircuitsProvidersDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsProvidersDestroy(ctx context.Context, id int32) ApiCircuitsProvidersDestroyRequest {
+func (a *CircuitsAPIService) CircuitsProvidersDestroy(ctx context.Context, id int64) ApiCircuitsProvidersDestroyRequest {
 	return ApiCircuitsProvidersDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -22310,15 +22414,15 @@ type ApiCircuitsProvidersListRequest struct {
 	ApiService        CircuitsAPI
 	asn               *[]int64
 	asnN              *[]int64
-	asnId             *[]int32
-	asnIdN            *[]int32
+	asnId             *[]int64
+	asnIdN            *[]int64
 	brief             *bool
-	contact           *[]int32
-	contactN          *[]int32
-	contactGroup      *[]string
-	contactGroupN     *[]string
-	contactRole       *[]int32
-	contactRoleN      *[]int32
+	contact           *[]int64
+	contactN          *[]int64
+	contactGroup      *[]int64
+	contactGroupN     *[]int64
+	contactRole       *[]int64
+	contactRoleN      *[]int64
 	created           *[]time.Time
 	createdEmpty      *bool
 	createdGt         *[]time.Time
@@ -22341,13 +22445,13 @@ type ApiCircuitsProvidersListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -22377,23 +22481,23 @@ type ApiCircuitsProvidersListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	region            *[]string
 	regionN           *[]string
-	regionId          *[]string
-	regionIdN         *[]string
+	regionId          *[]int64
+	regionIdN         *[]int64
 	site              *[]string
 	siteN             *[]string
 	siteGroup         *[]string
 	siteGroupN        *[]string
-	siteGroupId       *[]string
-	siteGroupIdN      *[]string
-	siteId            *[]int32
-	siteIdN           *[]int32
+	siteGroupId       *[]int64
+	siteGroupIdN      *[]int64
+	siteId            *[]int64
+	siteIdN           *[]int64
 	slug              *[]string
 	slugEmpty         *bool
 	slugIc            *[]string
@@ -22411,9 +22515,9 @@ type ApiCircuitsProvidersListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -22430,13 +22534,13 @@ func (r ApiCircuitsProvidersListRequest) AsnN(asnN []int64) ApiCircuitsProviders
 }
 
 // ASN (ID)
-func (r ApiCircuitsProvidersListRequest) AsnId(asnId []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) AsnId(asnId []int64) ApiCircuitsProvidersListRequest {
 	r.asnId = &asnId
 	return r
 }
 
 // ASN (ID)
-func (r ApiCircuitsProvidersListRequest) AsnIdN(asnIdN []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) AsnIdN(asnIdN []int64) ApiCircuitsProvidersListRequest {
 	r.asnIdN = &asnIdN
 	return r
 }
@@ -22448,35 +22552,37 @@ func (r ApiCircuitsProvidersListRequest) Brief(brief bool) ApiCircuitsProvidersL
 }
 
 // Contact
-func (r ApiCircuitsProvidersListRequest) Contact(contact []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) Contact(contact []int64) ApiCircuitsProvidersListRequest {
 	r.contact = &contact
 	return r
 }
 
 // Contact
-func (r ApiCircuitsProvidersListRequest) ContactN(contactN []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) ContactN(contactN []int64) ApiCircuitsProvidersListRequest {
 	r.contactN = &contactN
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) ContactGroup(contactGroup []string) ApiCircuitsProvidersListRequest {
+// Contact group
+func (r ApiCircuitsProvidersListRequest) ContactGroup(contactGroup []int64) ApiCircuitsProvidersListRequest {
 	r.contactGroup = &contactGroup
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) ContactGroupN(contactGroupN []string) ApiCircuitsProvidersListRequest {
+// Contact group
+func (r ApiCircuitsProvidersListRequest) ContactGroupN(contactGroupN []int64) ApiCircuitsProvidersListRequest {
 	r.contactGroupN = &contactGroupN
 	return r
 }
 
 // Contact Role
-func (r ApiCircuitsProvidersListRequest) ContactRole(contactRole []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) ContactRole(contactRole []int64) ApiCircuitsProvidersListRequest {
 	r.contactRole = &contactRole
 	return r
 }
 
 // Contact Role
-func (r ApiCircuitsProvidersListRequest) ContactRoleN(contactRoleN []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) ContactRoleN(contactRoleN []int64) ApiCircuitsProvidersListRequest {
 	r.contactRoleN = &contactRoleN
 	return r
 }
@@ -22592,7 +22698,7 @@ func (r ApiCircuitsProvidersListRequest) Fields(fields string) ApiCircuitsProvid
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) Id(id []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) Id(id []int64) ApiCircuitsProvidersListRequest {
 	r.id = &id
 	return r
 }
@@ -22602,27 +22708,27 @@ func (r ApiCircuitsProvidersListRequest) IdEmpty(idEmpty bool) ApiCircuitsProvid
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) IdGt(idGt []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) IdGt(idGt []int64) ApiCircuitsProvidersListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) IdGte(idGte []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) IdGte(idGte []int64) ApiCircuitsProvidersListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) IdLt(idLt []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) IdLt(idLt []int64) ApiCircuitsProvidersListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) IdLte(idLte []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) IdLte(idLte []int64) ApiCircuitsProvidersListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) IdN(idN []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) IdN(idN []int64) ApiCircuitsProvidersListRequest {
 	r.idN = &idN
 	return r
 }
@@ -22781,25 +22887,25 @@ func (r ApiCircuitsProvidersListRequest) OwnerGroupN(ownerGroupN []string) ApiCi
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsProvidersListRequest) OwnerGroupId(ownerGroupId []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) OwnerGroupId(ownerGroupId []int64) ApiCircuitsProvidersListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsProvidersListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCircuitsProvidersListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsProvidersListRequest) OwnerId(ownerId []*int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) OwnerId(ownerId []*int64) ApiCircuitsProvidersListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsProvidersListRequest) OwnerIdN(ownerIdN []*int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) OwnerIdN(ownerIdN []*int64) ApiCircuitsProvidersListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -22810,22 +22916,26 @@ func (r ApiCircuitsProvidersListRequest) Q(q string) ApiCircuitsProvidersListReq
 	return r
 }
 
+// Region (slug)
 func (r ApiCircuitsProvidersListRequest) Region(region []string) ApiCircuitsProvidersListRequest {
 	r.region = &region
 	return r
 }
 
+// Region (slug)
 func (r ApiCircuitsProvidersListRequest) RegionN(regionN []string) ApiCircuitsProvidersListRequest {
 	r.regionN = &regionN
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) RegionId(regionId []string) ApiCircuitsProvidersListRequest {
+// Region (ID)
+func (r ApiCircuitsProvidersListRequest) RegionId(regionId []int64) ApiCircuitsProvidersListRequest {
 	r.regionId = &regionId
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) RegionIdN(regionIdN []string) ApiCircuitsProvidersListRequest {
+// Region (ID)
+func (r ApiCircuitsProvidersListRequest) RegionIdN(regionIdN []int64) ApiCircuitsProvidersListRequest {
 	r.regionIdN = &regionIdN
 	return r
 }
@@ -22842,34 +22952,38 @@ func (r ApiCircuitsProvidersListRequest) SiteN(siteN []string) ApiCircuitsProvid
 	return r
 }
 
+// Site group (slug)
 func (r ApiCircuitsProvidersListRequest) SiteGroup(siteGroup []string) ApiCircuitsProvidersListRequest {
 	r.siteGroup = &siteGroup
 	return r
 }
 
+// Site group (slug)
 func (r ApiCircuitsProvidersListRequest) SiteGroupN(siteGroupN []string) ApiCircuitsProvidersListRequest {
 	r.siteGroupN = &siteGroupN
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) SiteGroupId(siteGroupId []string) ApiCircuitsProvidersListRequest {
+// Site group (ID)
+func (r ApiCircuitsProvidersListRequest) SiteGroupId(siteGroupId []int64) ApiCircuitsProvidersListRequest {
 	r.siteGroupId = &siteGroupId
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) SiteGroupIdN(siteGroupIdN []string) ApiCircuitsProvidersListRequest {
+// Site group (ID)
+func (r ApiCircuitsProvidersListRequest) SiteGroupIdN(siteGroupIdN []int64) ApiCircuitsProvidersListRequest {
 	r.siteGroupIdN = &siteGroupIdN
 	return r
 }
 
 // Site
-func (r ApiCircuitsProvidersListRequest) SiteId(siteId []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) SiteId(siteId []int64) ApiCircuitsProvidersListRequest {
 	r.siteId = &siteId
 	return r
 }
 
 // Site
-func (r ApiCircuitsProvidersListRequest) SiteIdN(siteIdN []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) SiteIdN(siteIdN []int64) ApiCircuitsProvidersListRequest {
 	r.siteIdN = &siteIdN
 	return r
 }
@@ -22960,17 +23074,17 @@ func (r ApiCircuitsProvidersListRequest) TagN(tagN []string) ApiCircuitsProvider
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) TagId(tagId []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) TagId(tagId []int64) ApiCircuitsProvidersListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsProvidersListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsProvidersListRequest) TagIdN(tagIdN []int32) ApiCircuitsProvidersListRequest {
+func (r ApiCircuitsProvidersListRequest) TagIdN(tagIdN []int64) ApiCircuitsProvidersListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -24133,7 +24247,7 @@ func (a *CircuitsAPIService) CircuitsProvidersListExecute(r ApiCircuitsProviders
 type ApiCircuitsProvidersPartialUpdateRequest struct {
 	ctx                    context.Context
 	ApiService             CircuitsAPI
-	id                     int32
+	id                     int64
 	patchedProviderRequest *PatchedProviderRequest
 }
 
@@ -24155,7 +24269,7 @@ Patch a provider object.
 	@param id A unique integer value identifying this provider.
 	@return ApiCircuitsProvidersPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsProvidersPartialUpdate(ctx context.Context, id int32) ApiCircuitsProvidersPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsProvidersPartialUpdate(ctx context.Context, id int64) ApiCircuitsProvidersPartialUpdateRequest {
 	return ApiCircuitsProvidersPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -24259,7 +24373,7 @@ func (a *CircuitsAPIService) CircuitsProvidersPartialUpdateExecute(r ApiCircuits
 type ApiCircuitsProvidersRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -24296,7 +24410,7 @@ Get a provider object.
 	@param id A unique integer value identifying this provider.
 	@return ApiCircuitsProvidersRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsProvidersRetrieve(ctx context.Context, id int32) ApiCircuitsProvidersRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsProvidersRetrieve(ctx context.Context, id int64) ApiCircuitsProvidersRetrieveRequest {
 	return ApiCircuitsProvidersRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -24407,7 +24521,7 @@ func (a *CircuitsAPIService) CircuitsProvidersRetrieveExecute(r ApiCircuitsProvi
 type ApiCircuitsProvidersUpdateRequest struct {
 	ctx             context.Context
 	ApiService      CircuitsAPI
-	id              int32
+	id              int64
 	providerRequest *ProviderRequest
 }
 
@@ -24429,7 +24543,7 @@ Put a provider object.
 	@param id A unique integer value identifying this provider.
 	@return ApiCircuitsProvidersUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsProvidersUpdate(ctx context.Context, id int32) ApiCircuitsProvidersUpdateRequest {
+func (a *CircuitsAPIService) CircuitsProvidersUpdate(ctx context.Context, id int64) ApiCircuitsProvidersUpdateRequest {
 	return ApiCircuitsProvidersUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -25024,7 +25138,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsCreateExecute(r A
 type ApiCircuitsVirtualCircuitTerminationsDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsVirtualCircuitTerminationsDestroyRequest) Execute() (*http.Response, error) {
@@ -25040,7 +25154,7 @@ Delete a virtual circuit termination object.
 	@param id A unique integer value identifying this virtual circuit termination.
 	@return ApiCircuitsVirtualCircuitTerminationsDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsDestroy(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsDestroyRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsDestroy(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsDestroyRequest {
 	return ApiCircuitsVirtualCircuitTerminationsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -25153,15 +25267,15 @@ type ApiCircuitsVirtualCircuitTerminationsListRequest struct {
 	descriptionNisw    *[]string
 	descriptionRegex   *[]string
 	fields             *string
-	id                 *[]int32
+	id                 *[]int64
 	idEmpty            *bool
-	idGt               *[]int32
-	idGte              *[]int32
-	idLt               *[]int32
-	idLte              *[]int32
-	idN                *[]int32
-	interfaceId        *[]int32
-	interfaceIdN       *[]int32
+	idGt               *[]int64
+	idGte              *[]int64
+	idLt               *[]int64
+	idLte              *[]int64
+	idN                *[]int64
+	interfaceId        *[]int64
+	interfaceIdN       *[]int64
 	lastUpdated        *[]time.Time
 	lastUpdatedEmpty   *bool
 	lastUpdatedGt      *[]time.Time
@@ -25178,12 +25292,14 @@ type ApiCircuitsVirtualCircuitTerminationsListRequest struct {
 	providerN          *[]string
 	providerAccount    *[]string
 	providerAccountN   *[]string
-	providerAccountId  *[]int32
-	providerAccountIdN *[]int32
-	providerId         *[]int32
-	providerIdN        *[]int32
-	providerNetworkId  *[]int32
-	providerNetworkIdN *[]int32
+	providerAccountId  *[]int64
+	providerAccountIdN *[]int64
+	providerId         *[]int64
+	providerIdN        *[]int64
+	providerNetwork    *[]string
+	providerNetworkN   *[]string
+	providerNetworkId  *[]int64
+	providerNetworkIdN *[]int64
 	q                  *string
 	role               *[]string
 	roleEmpty          *bool
@@ -25202,12 +25318,12 @@ type ApiCircuitsVirtualCircuitTerminationsListRequest struct {
 	tag                *[]string
 	tagAny             *[]string
 	tagN               *[]string
-	tagId              *[]int32
-	tagIdAny           *[]int32
-	tagIdN             *[]int32
+	tagId              *[]int64
+	tagIdAny           *[]int64
+	tagIdN             *[]int64
 	updatedByRequest   *string
-	virtualCircuitId   *[]int32
-	virtualCircuitIdN  *[]int32
+	virtualCircuitId   *[]int64
+	virtualCircuitIdN  *[]int64
 }
 
 // Return only brief fields for each object.
@@ -25327,7 +25443,7 @@ func (r ApiCircuitsVirtualCircuitTerminationsListRequest) Fields(fields string) 
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) Id(id []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) Id(id []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.id = &id
 	return r
 }
@@ -25337,39 +25453,39 @@ func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdEmpty(idEmpty bool) 
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdGt(idGt []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdGt(idGt []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdGte(idGte []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdGte(idGte []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdLt(idLt []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdLt(idLt []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdLte(idLte []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdLte(idLte []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdN(idN []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) IdN(idN []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.idN = &idN
 	return r
 }
 
 // Interface (ID)
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) InterfaceId(interfaceId []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) InterfaceId(interfaceId []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.interfaceId = &interfaceId
 	return r
 }
 
 // Interface (ID)
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) InterfaceIdN(interfaceIdN []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) InterfaceIdN(interfaceIdN []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.interfaceIdN = &interfaceIdN
 	return r
 }
@@ -25463,37 +25579,49 @@ func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderAccountN(provi
 }
 
 // Provider account (ID)
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderAccountId(providerAccountId []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderAccountId(providerAccountId []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.providerAccountId = &providerAccountId
 	return r
 }
 
 // Provider account (ID)
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderAccountIdN(providerAccountIdN []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderAccountIdN(providerAccountIdN []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.providerAccountIdN = &providerAccountIdN
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderId(providerId []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderId(providerId []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.providerId = &providerId
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderIdN(providerIdN []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderIdN(providerIdN []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.providerIdN = &providerIdN
 	return r
 }
 
+// Provider network (name)
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderNetwork(providerNetwork []string) ApiCircuitsVirtualCircuitTerminationsListRequest {
+	r.providerNetwork = &providerNetwork
+	return r
+}
+
+// Provider network (name)
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderNetworkN(providerNetworkN []string) ApiCircuitsVirtualCircuitTerminationsListRequest {
+	r.providerNetworkN = &providerNetworkN
+	return r
+}
+
 // Provider network (ID)
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderNetworkId(providerNetworkId []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderNetworkId(providerNetworkId []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.providerNetworkId = &providerNetworkId
 	return r
 }
 
 // Provider network (ID)
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderNetworkIdN(providerNetworkIdN []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) ProviderNetworkIdN(providerNetworkIdN []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.providerNetworkIdN = &providerNetworkIdN
 	return r
 }
@@ -25590,17 +25718,17 @@ func (r ApiCircuitsVirtualCircuitTerminationsListRequest) TagN(tagN []string) Ap
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) TagId(tagId []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) TagId(tagId []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) TagIdN(tagIdN []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) TagIdN(tagIdN []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -25611,13 +25739,13 @@ func (r ApiCircuitsVirtualCircuitTerminationsListRequest) UpdatedByRequest(updat
 }
 
 // Virtual circuit
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) VirtualCircuitId(virtualCircuitId []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) VirtualCircuitId(virtualCircuitId []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.virtualCircuitId = &virtualCircuitId
 	return r
 }
 
 // Virtual circuit
-func (r ApiCircuitsVirtualCircuitTerminationsListRequest) VirtualCircuitIdN(virtualCircuitIdN []int32) ApiCircuitsVirtualCircuitTerminationsListRequest {
+func (r ApiCircuitsVirtualCircuitTerminationsListRequest) VirtualCircuitIdN(virtualCircuitIdN []int64) ApiCircuitsVirtualCircuitTerminationsListRequest {
 	r.virtualCircuitIdN = &virtualCircuitIdN
 	return r
 }
@@ -26139,6 +26267,28 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsListExecute(r Api
 			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_id__n", t, "form", "multi")
 		}
 	}
+	if r.providerNetwork != nil {
+		t := *r.providerNetwork
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network", t, "form", "multi")
+		}
+	}
+	if r.providerNetworkN != nil {
+		t := *r.providerNetworkN
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network__n", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network__n", t, "form", "multi")
+		}
+	}
 	if r.providerNetworkId != nil {
 		t := *r.providerNetworkId
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -26464,7 +26614,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsListExecute(r Api
 type ApiCircuitsVirtualCircuitTerminationsPartialUpdateRequest struct {
 	ctx                                             context.Context
 	ApiService                                      CircuitsAPI
-	id                                              int32
+	id                                              int64
 	patchedWritableVirtualCircuitTerminationRequest *PatchedWritableVirtualCircuitTerminationRequest
 }
 
@@ -26486,7 +26636,7 @@ Patch a virtual circuit termination object.
 	@param id A unique integer value identifying this virtual circuit termination.
 	@return ApiCircuitsVirtualCircuitTerminationsPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsPartialUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsPartialUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsPartialUpdateRequest {
 	return ApiCircuitsVirtualCircuitTerminationsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -26590,7 +26740,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsPartialUpdateExec
 type ApiCircuitsVirtualCircuitTerminationsPathsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -26627,7 +26777,7 @@ Return all CablePaths which traverse a given pass-through port.
 	@param id A unique integer value identifying this virtual circuit termination.
 	@return ApiCircuitsVirtualCircuitTerminationsPathsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsPathsRetrieve(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsPathsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsPathsRetrieve(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsPathsRetrieveRequest {
 	return ApiCircuitsVirtualCircuitTerminationsPathsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -26738,7 +26888,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsPathsRetrieveExec
 type ApiCircuitsVirtualCircuitTerminationsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -26775,7 +26925,7 @@ Get a virtual circuit termination object.
 	@param id A unique integer value identifying this virtual circuit termination.
 	@return ApiCircuitsVirtualCircuitTerminationsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsRetrieve(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsRetrieve(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsRetrieveRequest {
 	return ApiCircuitsVirtualCircuitTerminationsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -26886,7 +27036,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsRetrieveExecute(r
 type ApiCircuitsVirtualCircuitTerminationsUpdateRequest struct {
 	ctx                                      context.Context
 	ApiService                               CircuitsAPI
-	id                                       int32
+	id                                       int64
 	writableVirtualCircuitTerminationRequest *WritableVirtualCircuitTerminationRequest
 }
 
@@ -26908,7 +27058,7 @@ Put a virtual circuit termination object.
 	@param id A unique integer value identifying this virtual circuit termination.
 	@return ApiCircuitsVirtualCircuitTerminationsUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTerminationsUpdateRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTerminationsUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTerminationsUpdateRequest {
 	return ApiCircuitsVirtualCircuitTerminationsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -27503,7 +27653,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesCreateExecute(r ApiCircu
 type ApiCircuitsVirtualCircuitTypesDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsVirtualCircuitTypesDestroyRequest) Execute() (*http.Response, error) {
@@ -27519,7 +27669,7 @@ Delete a virtual circuit type object.
 	@param id A unique integer value identifying this virtual circuit type.
 	@return ApiCircuitsVirtualCircuitTypesDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesDestroy(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTypesDestroyRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesDestroy(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTypesDestroyRequest {
 	return ApiCircuitsVirtualCircuitTypesDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -27645,13 +27795,13 @@ type ApiCircuitsVirtualCircuitTypesListRequest struct {
 	descriptionNisw   *[]string
 	descriptionRegex  *[]string
 	fields            *string
-	id                *[]int32
+	id                *[]int64
 	idEmpty           *bool
-	idGt              *[]int32
-	idGte             *[]int32
-	idLt              *[]int32
-	idLte             *[]int32
-	idN               *[]int32
+	idGt              *[]int64
+	idGte             *[]int64
+	idLt              *[]int64
+	idLte             *[]int64
+	idN               *[]int64
 	lastUpdated       *[]time.Time
 	lastUpdatedEmpty  *bool
 	lastUpdatedGt     *[]time.Time
@@ -27681,10 +27831,10 @@ type ApiCircuitsVirtualCircuitTypesListRequest struct {
 	ownerN            *[]string
 	ownerGroup        *[]string
 	ownerGroupN       *[]string
-	ownerGroupId      *[]int32
-	ownerGroupIdN     *[]int32
-	ownerId           *[]*int32
-	ownerIdN          *[]*int32
+	ownerGroupId      *[]int64
+	ownerGroupIdN     *[]int64
+	ownerId           *[]*int64
+	ownerIdN          *[]*int64
 	q                 *string
 	slug              *[]string
 	slugEmpty         *bool
@@ -27703,9 +27853,9 @@ type ApiCircuitsVirtualCircuitTypesListRequest struct {
 	tag               *[]string
 	tagAny            *[]string
 	tagN              *[]string
-	tagId             *[]int32
-	tagIdAny          *[]int32
-	tagIdN            *[]int32
+	tagId             *[]int64
+	tagIdAny          *[]int64
+	tagIdN            *[]int64
 	updatedByRequest  *string
 }
 
@@ -27891,7 +28041,7 @@ func (r ApiCircuitsVirtualCircuitTypesListRequest) Fields(fields string) ApiCirc
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) Id(id []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) Id(id []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.id = &id
 	return r
 }
@@ -27901,27 +28051,27 @@ func (r ApiCircuitsVirtualCircuitTypesListRequest) IdEmpty(idEmpty bool) ApiCirc
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) IdGt(idGt []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) IdGt(idGt []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) IdGte(idGte []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) IdGte(idGte []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) IdLt(idLt []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) IdLt(idLt []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) IdLte(idLte []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) IdLte(idLte []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) IdN(idN []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) IdN(idN []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.idN = &idN
 	return r
 }
@@ -28080,25 +28230,25 @@ func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerGroupN(ownerGroupN []str
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerGroupId(ownerGroupId []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerGroupId(ownerGroupId []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerId(ownerId []*int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerId(ownerId []*int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerIdN(ownerIdN []*int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) OwnerIdN(ownerIdN []*int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -28195,17 +28345,17 @@ func (r ApiCircuitsVirtualCircuitTypesListRequest) TagN(tagN []string) ApiCircui
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) TagId(tagId []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) TagId(tagId []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitTypesListRequest) TagIdN(tagIdN []int32) ApiCircuitsVirtualCircuitTypesListRequest {
+func (r ApiCircuitsVirtualCircuitTypesListRequest) TagIdN(tagIdN []int64) ApiCircuitsVirtualCircuitTypesListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -29261,7 +29411,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesListExecute(r ApiCircuit
 type ApiCircuitsVirtualCircuitTypesPartialUpdateRequest struct {
 	ctx                              context.Context
 	ApiService                       CircuitsAPI
-	id                               int32
+	id                               int64
 	patchedVirtualCircuitTypeRequest *PatchedVirtualCircuitTypeRequest
 }
 
@@ -29283,7 +29433,7 @@ Patch a virtual circuit type object.
 	@param id A unique integer value identifying this virtual circuit type.
 	@return ApiCircuitsVirtualCircuitTypesPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesPartialUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTypesPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesPartialUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTypesPartialUpdateRequest {
 	return ApiCircuitsVirtualCircuitTypesPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -29387,7 +29537,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesPartialUpdateExecute(r A
 type ApiCircuitsVirtualCircuitTypesRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -29424,7 +29574,7 @@ Get a virtual circuit type object.
 	@param id A unique integer value identifying this virtual circuit type.
 	@return ApiCircuitsVirtualCircuitTypesRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesRetrieve(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTypesRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesRetrieve(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTypesRetrieveRequest {
 	return ApiCircuitsVirtualCircuitTypesRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -29535,7 +29685,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesRetrieveExecute(r ApiCir
 type ApiCircuitsVirtualCircuitTypesUpdateRequest struct {
 	ctx                       context.Context
 	ApiService                CircuitsAPI
-	id                        int32
+	id                        int64
 	virtualCircuitTypeRequest *VirtualCircuitTypeRequest
 }
 
@@ -29557,7 +29707,7 @@ Put a virtual circuit type object.
 	@param id A unique integer value identifying this virtual circuit type.
 	@return ApiCircuitsVirtualCircuitTypesUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitTypesUpdateRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitTypesUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitTypesUpdateRequest {
 	return ApiCircuitsVirtualCircuitTypesUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -30152,7 +30302,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitsCreateExecute(r ApiCircuitsV
 type ApiCircuitsVirtualCircuitsDestroyRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 }
 
 func (r ApiCircuitsVirtualCircuitsDestroyRequest) Execute() (*http.Response, error) {
@@ -30168,7 +30318,7 @@ Delete a virtual circuit object.
 	@param id A unique integer value identifying this virtual circuit.
 	@return ApiCircuitsVirtualCircuitsDestroyRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitsDestroy(ctx context.Context, id int32) ApiCircuitsVirtualCircuitsDestroyRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitsDestroy(ctx context.Context, id int64) ApiCircuitsVirtualCircuitsDestroyRequest {
 	return ApiCircuitsVirtualCircuitsDestroyRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -30294,13 +30444,13 @@ type ApiCircuitsVirtualCircuitsListRequest struct {
 	descriptionNisw    *[]string
 	descriptionRegex   *[]string
 	fields             *string
-	id                 *[]int32
+	id                 *[]int64
 	idEmpty            *bool
-	idGt               *[]int32
-	idGte              *[]int32
-	idLt               *[]int32
-	idLte              *[]int32
-	idN                *[]int32
+	idGt               *[]int64
+	idGte              *[]int64
+	idLt               *[]int64
+	idLte              *[]int64
+	idN                *[]int64
 	lastUpdated        *[]time.Time
 	lastUpdatedEmpty   *bool
 	lastUpdatedGt      *[]time.Time
@@ -30317,20 +30467,22 @@ type ApiCircuitsVirtualCircuitsListRequest struct {
 	ownerN             *[]string
 	ownerGroup         *[]string
 	ownerGroupN        *[]string
-	ownerGroupId       *[]int32
-	ownerGroupIdN      *[]int32
-	ownerId            *[]*int32
-	ownerIdN           *[]*int32
+	ownerGroupId       *[]int64
+	ownerGroupIdN      *[]int64
+	ownerId            *[]*int64
+	ownerIdN           *[]*int64
 	provider           *[]string
 	providerN          *[]string
 	providerAccount    *[]string
 	providerAccountN   *[]string
-	providerAccountId  *[]int32
-	providerAccountIdN *[]int32
-	providerId         *[]int32
-	providerIdN        *[]int32
-	providerNetworkId  *[]int32
-	providerNetworkIdN *[]int32
+	providerAccountId  *[]int64
+	providerAccountIdN *[]int64
+	providerId         *[]int64
+	providerIdN        *[]int64
+	providerNetwork    *[]string
+	providerNetworkN   *[]string
+	providerNetworkId  *[]int64
+	providerNetworkIdN *[]int64
 	q                  *string
 	start              *int32
 	status             *[]string
@@ -30349,21 +30501,21 @@ type ApiCircuitsVirtualCircuitsListRequest struct {
 	tag                *[]string
 	tagAny             *[]string
 	tagN               *[]string
-	tagId              *[]int32
-	tagIdAny           *[]int32
-	tagIdN             *[]int32
+	tagId              *[]int64
+	tagIdAny           *[]int64
+	tagIdN             *[]int64
 	tenant             *[]string
 	tenantN            *[]string
 	tenantGroup        *[]string
 	tenantGroupN       *[]string
-	tenantGroupId      *[]string
-	tenantGroupIdN     *[]string
-	tenantId           *[]*int32
-	tenantIdN          *[]*int32
+	tenantGroupId      *[]int64
+	tenantGroupIdN     *[]int64
+	tenantId           *[]*int64
+	tenantIdN          *[]*int64
 	type_              *[]string
 	typeN              *[]string
-	typeId             *[]int32
-	typeIdN            *[]int32
+	typeId             *[]int64
+	typeIdN            *[]int64
 	updatedByRequest   *string
 }
 
@@ -30549,7 +30701,7 @@ func (r ApiCircuitsVirtualCircuitsListRequest) Fields(fields string) ApiCircuits
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) Id(id []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) Id(id []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.id = &id
 	return r
 }
@@ -30559,27 +30711,27 @@ func (r ApiCircuitsVirtualCircuitsListRequest) IdEmpty(idEmpty bool) ApiCircuits
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) IdGt(idGt []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) IdGt(idGt []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.idGt = &idGt
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) IdGte(idGte []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) IdGte(idGte []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.idGte = &idGte
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) IdLt(idLt []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) IdLt(idLt []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.idLt = &idLt
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) IdLte(idLte []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) IdLte(idLte []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.idLte = &idLte
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) IdN(idN []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) IdN(idN []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.idN = &idN
 	return r
 }
@@ -30673,25 +30825,25 @@ func (r ApiCircuitsVirtualCircuitsListRequest) OwnerGroupN(ownerGroupN []string)
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) OwnerGroupId(ownerGroupId []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) OwnerGroupId(ownerGroupId []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.ownerGroupId = &ownerGroupId
 	return r
 }
 
 // Owner Group (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) OwnerGroupIdN(ownerGroupIdN []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) OwnerGroupIdN(ownerGroupIdN []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.ownerGroupIdN = &ownerGroupIdN
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) OwnerId(ownerId []*int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) OwnerId(ownerId []*int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.ownerId = &ownerId
 	return r
 }
 
 // Owner (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) OwnerIdN(ownerIdN []*int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) OwnerIdN(ownerIdN []*int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.ownerIdN = &ownerIdN
 	return r
 }
@@ -30721,37 +30873,49 @@ func (r ApiCircuitsVirtualCircuitsListRequest) ProviderAccountN(providerAccountN
 }
 
 // Provider account (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) ProviderAccountId(providerAccountId []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) ProviderAccountId(providerAccountId []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.providerAccountId = &providerAccountId
 	return r
 }
 
 // Provider account (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) ProviderAccountIdN(providerAccountIdN []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) ProviderAccountIdN(providerAccountIdN []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.providerAccountIdN = &providerAccountIdN
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) ProviderId(providerId []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) ProviderId(providerId []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.providerId = &providerId
 	return r
 }
 
 // Provider (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) ProviderIdN(providerIdN []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) ProviderIdN(providerIdN []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.providerIdN = &providerIdN
 	return r
 }
 
+// Provider network (name)
+func (r ApiCircuitsVirtualCircuitsListRequest) ProviderNetwork(providerNetwork []string) ApiCircuitsVirtualCircuitsListRequest {
+	r.providerNetwork = &providerNetwork
+	return r
+}
+
+// Provider network (name)
+func (r ApiCircuitsVirtualCircuitsListRequest) ProviderNetworkN(providerNetworkN []string) ApiCircuitsVirtualCircuitsListRequest {
+	r.providerNetworkN = &providerNetworkN
+	return r
+}
+
 // Provider network (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) ProviderNetworkId(providerNetworkId []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) ProviderNetworkId(providerNetworkId []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.providerNetworkId = &providerNetworkId
 	return r
 }
 
 // Provider network (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) ProviderNetworkIdN(providerNetworkIdN []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) ProviderNetworkIdN(providerNetworkIdN []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.providerNetworkIdN = &providerNetworkIdN
 	return r
 }
@@ -30848,17 +31012,17 @@ func (r ApiCircuitsVirtualCircuitsListRequest) TagN(tagN []string) ApiCircuitsVi
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) TagId(tagId []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) TagId(tagId []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.tagId = &tagId
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) TagIdAny(tagIdAny []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) TagIdAny(tagIdAny []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.tagIdAny = &tagIdAny
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) TagIdN(tagIdN []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) TagIdN(tagIdN []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.tagIdN = &tagIdN
 	return r
 }
@@ -30875,34 +31039,38 @@ func (r ApiCircuitsVirtualCircuitsListRequest) TenantN(tenantN []string) ApiCirc
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiCircuitsVirtualCircuitsListRequest) TenantGroup(tenantGroup []string) ApiCircuitsVirtualCircuitsListRequest {
 	r.tenantGroup = &tenantGroup
 	return r
 }
 
+// Tenant Group (slug)
 func (r ApiCircuitsVirtualCircuitsListRequest) TenantGroupN(tenantGroupN []string) ApiCircuitsVirtualCircuitsListRequest {
 	r.tenantGroupN = &tenantGroupN
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) TenantGroupId(tenantGroupId []string) ApiCircuitsVirtualCircuitsListRequest {
+// Tenant Group (ID)
+func (r ApiCircuitsVirtualCircuitsListRequest) TenantGroupId(tenantGroupId []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.tenantGroupId = &tenantGroupId
 	return r
 }
 
-func (r ApiCircuitsVirtualCircuitsListRequest) TenantGroupIdN(tenantGroupIdN []string) ApiCircuitsVirtualCircuitsListRequest {
+// Tenant Group (ID)
+func (r ApiCircuitsVirtualCircuitsListRequest) TenantGroupIdN(tenantGroupIdN []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.tenantGroupIdN = &tenantGroupIdN
 	return r
 }
 
 // Tenant (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) TenantId(tenantId []*int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) TenantId(tenantId []*int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.tenantId = &tenantId
 	return r
 }
 
 // Tenant (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) TenantIdN(tenantIdN []*int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) TenantIdN(tenantIdN []*int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.tenantIdN = &tenantIdN
 	return r
 }
@@ -30920,13 +31088,13 @@ func (r ApiCircuitsVirtualCircuitsListRequest) TypeN(typeN []string) ApiCircuits
 }
 
 // Virtual circuit type (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) TypeId(typeId []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) TypeId(typeId []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.typeId = &typeId
 	return r
 }
 
 // Virtual circuit type (ID)
-func (r ApiCircuitsVirtualCircuitsListRequest) TypeIdN(typeIdN []int32) ApiCircuitsVirtualCircuitsListRequest {
+func (r ApiCircuitsVirtualCircuitsListRequest) TypeIdN(typeIdN []int64) ApiCircuitsVirtualCircuitsListRequest {
 	r.typeIdN = &typeIdN
 	return r
 }
@@ -31654,6 +31822,28 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitsListExecute(r ApiCircuitsVir
 			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_id__n", t, "form", "multi")
 		}
 	}
+	if r.providerNetwork != nil {
+		t := *r.providerNetwork
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network", t, "form", "multi")
+		}
+	}
+	if r.providerNetworkN != nil {
+		t := *r.providerNetworkN
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network__n", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "provider_network__n", t, "form", "multi")
+		}
+	}
 	if r.providerNetworkId != nil {
 		t := *r.providerNetworkId
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -32089,7 +32279,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitsListExecute(r ApiCircuitsVir
 type ApiCircuitsVirtualCircuitsPartialUpdateRequest struct {
 	ctx                                  context.Context
 	ApiService                           CircuitsAPI
-	id                                   int32
+	id                                   int64
 	patchedWritableVirtualCircuitRequest *PatchedWritableVirtualCircuitRequest
 }
 
@@ -32111,7 +32301,7 @@ Patch a virtual circuit object.
 	@param id A unique integer value identifying this virtual circuit.
 	@return ApiCircuitsVirtualCircuitsPartialUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitsPartialUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitsPartialUpdateRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitsPartialUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitsPartialUpdateRequest {
 	return ApiCircuitsVirtualCircuitsPartialUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -32215,7 +32405,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitsPartialUpdateExecute(r ApiCi
 type ApiCircuitsVirtualCircuitsRetrieveRequest struct {
 	ctx        context.Context
 	ApiService CircuitsAPI
-	id         int32
+	id         int64
 	brief      *bool
 	fields     *string
 	omit       *string
@@ -32252,7 +32442,7 @@ Get a virtual circuit object.
 	@param id A unique integer value identifying this virtual circuit.
 	@return ApiCircuitsVirtualCircuitsRetrieveRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitsRetrieve(ctx context.Context, id int32) ApiCircuitsVirtualCircuitsRetrieveRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitsRetrieve(ctx context.Context, id int64) ApiCircuitsVirtualCircuitsRetrieveRequest {
 	return ApiCircuitsVirtualCircuitsRetrieveRequest{
 		ApiService: a,
 		ctx:        ctx,
@@ -32363,7 +32553,7 @@ func (a *CircuitsAPIService) CircuitsVirtualCircuitsRetrieveExecute(r ApiCircuit
 type ApiCircuitsVirtualCircuitsUpdateRequest struct {
 	ctx                           context.Context
 	ApiService                    CircuitsAPI
-	id                            int32
+	id                            int64
 	writableVirtualCircuitRequest *WritableVirtualCircuitRequest
 }
 
@@ -32385,7 +32575,7 @@ Put a virtual circuit object.
 	@param id A unique integer value identifying this virtual circuit.
 	@return ApiCircuitsVirtualCircuitsUpdateRequest
 */
-func (a *CircuitsAPIService) CircuitsVirtualCircuitsUpdate(ctx context.Context, id int32) ApiCircuitsVirtualCircuitsUpdateRequest {
+func (a *CircuitsAPIService) CircuitsVirtualCircuitsUpdate(ctx context.Context, id int64) ApiCircuitsVirtualCircuitsUpdateRequest {
 	return ApiCircuitsVirtualCircuitsUpdateRequest{
 		ApiService: a,
 		ctx:        ctx,

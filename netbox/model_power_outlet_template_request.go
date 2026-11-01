@@ -22,8 +22,8 @@ var _ MappedNullable = &PowerOutletTemplateRequest{}
 
 // PowerOutletTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PowerOutletTemplateRequest struct {
-	DeviceType NullableInt32 `json:"device_type,omitempty"`
-	ModuleType NullableInt32 `json:"module_type,omitempty"`
+	DeviceType NullableInt64 `json:"device_type,omitempty"`
+	ModuleType NullableInt64 `json:"module_type,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name string `json:"name"`
 	// Physical label
@@ -31,7 +31,7 @@ type PowerOutletTemplateRequest struct {
 	// * `iec-60320-c5` - C5 * `iec-60320-c7` - C7 * `iec-60320-c13` - C13 * `iec-60320-c15` - C15 * `iec-60320-c17` - C17 * `iec-60320-c19` - C19 * `iec-60320-c21` - C21 * `iec-60309-p-n-e-4h` - P+N+E 4H * `iec-60309-p-n-e-6h` - P+N+E 6H * `iec-60309-p-n-e-9h` - P+N+E 9H * `iec-60309-2p-e-4h` - 2P+E 4H * `iec-60309-2p-e-6h` - 2P+E 6H * `iec-60309-2p-e-9h` - 2P+E 9H * `iec-60309-3p-e-4h` - 3P+E 4H * `iec-60309-3p-e-6h` - 3P+E 6H * `iec-60309-3p-e-9h` - 3P+E 9H * `iec-60309-3p-n-e-4h` - 3P+N+E 4H * `iec-60309-3p-n-e-6h` - 3P+N+E 6H * `iec-60309-3p-n-e-9h` - 3P+N+E 9H * `iec-60906-1` - IEC 60906-1 * `nbr-14136-10a` - 2P+T 10A (NBR 14136) * `nbr-14136-20a` - 2P+T 20A (NBR 14136) * `nema-1-15r` - NEMA 1-15R * `nema-5-15r` - NEMA 5-15R * `nema-5-20r` - NEMA 5-20R * `nema-5-30r` - NEMA 5-30R * `nema-5-50r` - NEMA 5-50R * `nema-6-15r` - NEMA 6-15R * `nema-6-20r` - NEMA 6-20R * `nema-6-30r` - NEMA 6-30R * `nema-6-50r` - NEMA 6-50R * `nema-10-30r` - NEMA 10-30R * `nema-10-50r` - NEMA 10-50R * `nema-14-20r` - NEMA 14-20R * `nema-14-30r` - NEMA 14-30R * `nema-14-50r` - NEMA 14-50R * `nema-14-60r` - NEMA 14-60R * `nema-15-15r` - NEMA 15-15R * `nema-15-20r` - NEMA 15-20R * `nema-15-30r` - NEMA 15-30R * `nema-15-50r` - NEMA 15-50R * `nema-15-60r` - NEMA 15-60R * `nema-l1-15r` - NEMA L1-15R * `nema-l5-15r` - NEMA L5-15R * `nema-l5-20r` - NEMA L5-20R * `nema-l5-30r` - NEMA L5-30R * `nema-l5-50r` - NEMA L5-50R * `nema-l6-15r` - NEMA L6-15R * `nema-l6-20r` - NEMA L6-20R * `nema-l6-30r` - NEMA L6-30R * `nema-l6-50r` - NEMA L6-50R * `nema-l10-30r` - NEMA L10-30R * `nema-l14-20r` - NEMA L14-20R * `nema-l14-30r` - NEMA L14-30R * `nema-l14-50r` - NEMA L14-50R * `nema-l14-60r` - NEMA L14-60R * `nema-l15-20r` - NEMA L15-20R * `nema-l15-30r` - NEMA L15-30R * `nema-l15-50r` - NEMA L15-50R * `nema-l15-60r` - NEMA L15-60R * `nema-l21-20r` - NEMA L21-20R * `nema-l21-30r` - NEMA L21-30R * `nema-l22-20r` - NEMA L22-20R * `nema-l22-30r` - NEMA L22-30R * `CS6360C` - CS6360C * `CS6364C` - CS6364C * `CS8164C` - CS8164C * `CS8264C` - CS8264C * `CS8364C` - CS8364C * `CS8464C` - CS8464C * `ita-e` - ITA Type E (CEE 7/5) * `ita-f` - ITA Type F (CEE 7/3) * `ita-g` - ITA Type G (BS 1363) * `ita-h` - ITA Type H * `ita-i` - ITA Type I * `ita-j` - ITA Type J * `ita-k` - ITA Type K * `ita-l` - ITA Type L (CEI 23-50) * `ita-m` - ITA Type M (BS 546) * `ita-n` - ITA Type N * `ita-o` - ITA Type O * `ita-multistandard` - ITA Multistandard * `usb-a` - USB Type A * `usb-micro-b` - USB Micro B * `usb-c` - USB Type C * `molex-micro-fit-1x2` - Molex Micro-Fit 1x2 * `molex-micro-fit-2x2` - Molex Micro-Fit 2x2 * `molex-micro-fit-2x3` - Molex Micro-Fit 2x3 * `molex-micro-fit-2x4` - Molex Micro-Fit 2x4 * `dc-terminal` - DC Terminal * `eaton-c39` - Eaton C39 * `hdot-cx` - HDOT Cx * `saf-d-grid` - Saf-D-Grid * `neutrik-powercon-20a` - Neutrik powerCON (20A) * `neutrik-powercon-32a` - Neutrik powerCON (32A) * `neutrik-powercon-true1` - Neutrik powerCON TRUE1 * `neutrik-powercon-true1-top` - Neutrik powerCON TRUE1 TOP * `ubiquiti-smartpower` - Ubiquiti SmartPower * `hardwired` - Hardwired * `other` - Other
 	Type      NullableString `json:"type,omitempty"`
 	Color     *string        `json:"color,omitempty" validate:"regexp=^[0-9a-f]{6}$"`
-	PowerPort NullableInt32  `json:"power_port,omitempty"`
+	PowerPort NullableInt64  `json:"power_port,omitempty"`
 	// * `A` - A * `B` - B * `C` - C
 	FeedLeg              NullableString `json:"feed_leg,omitempty"`
 	Description          *string        `json:"description,omitempty"`
@@ -59,9 +59,9 @@ func NewPowerOutletTemplateRequestWithDefaults() *PowerOutletTemplateRequest {
 }
 
 // GetDeviceType returns the DeviceType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PowerOutletTemplateRequest) GetDeviceType() int32 {
+func (o *PowerOutletTemplateRequest) GetDeviceType() int64 {
 	if o == nil || IsNil(o.DeviceType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceType.Get()
@@ -70,7 +70,7 @@ func (o *PowerOutletTemplateRequest) GetDeviceType() int32 {
 // GetDeviceTypeOk returns a tuple with the DeviceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PowerOutletTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *PowerOutletTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -86,8 +86,8 @@ func (o *PowerOutletTemplateRequest) HasDeviceType() bool {
 	return false
 }
 
-// SetDeviceType gets a reference to the given NullableInt32 and assigns it to the DeviceType field.
-func (o *PowerOutletTemplateRequest) SetDeviceType(v int32) {
+// SetDeviceType gets a reference to the given NullableInt64 and assigns it to the DeviceType field.
+func (o *PowerOutletTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType.Set(&v)
 }
 
@@ -102,9 +102,9 @@ func (o *PowerOutletTemplateRequest) UnsetDeviceType() {
 }
 
 // GetModuleType returns the ModuleType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PowerOutletTemplateRequest) GetModuleType() int32 {
+func (o *PowerOutletTemplateRequest) GetModuleType() int64 {
 	if o == nil || IsNil(o.ModuleType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleType.Get()
@@ -113,7 +113,7 @@ func (o *PowerOutletTemplateRequest) GetModuleType() int32 {
 // GetModuleTypeOk returns a tuple with the ModuleType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PowerOutletTemplateRequest) GetModuleTypeOk() (*int32, bool) {
+func (o *PowerOutletTemplateRequest) GetModuleTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -129,8 +129,8 @@ func (o *PowerOutletTemplateRequest) HasModuleType() bool {
 	return false
 }
 
-// SetModuleType gets a reference to the given NullableInt32 and assigns it to the ModuleType field.
-func (o *PowerOutletTemplateRequest) SetModuleType(v int32) {
+// SetModuleType gets a reference to the given NullableInt64 and assigns it to the ModuleType field.
+func (o *PowerOutletTemplateRequest) SetModuleType(v int64) {
 	o.ModuleType.Set(&v)
 }
 
@@ -276,9 +276,9 @@ func (o *PowerOutletTemplateRequest) SetColor(v string) {
 }
 
 // GetPowerPort returns the PowerPort field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PowerOutletTemplateRequest) GetPowerPort() int32 {
+func (o *PowerOutletTemplateRequest) GetPowerPort() int64 {
 	if o == nil || IsNil(o.PowerPort.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.PowerPort.Get()
@@ -287,7 +287,7 @@ func (o *PowerOutletTemplateRequest) GetPowerPort() int32 {
 // GetPowerPortOk returns a tuple with the PowerPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PowerOutletTemplateRequest) GetPowerPortOk() (*int32, bool) {
+func (o *PowerOutletTemplateRequest) GetPowerPortOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -303,8 +303,8 @@ func (o *PowerOutletTemplateRequest) HasPowerPort() bool {
 	return false
 }
 
-// SetPowerPort gets a reference to the given NullableInt32 and assigns it to the PowerPort field.
-func (o *PowerOutletTemplateRequest) SetPowerPort(v int32) {
+// SetPowerPort gets a reference to the given NullableInt64 and assigns it to the PowerPort field.
+func (o *PowerOutletTemplateRequest) SetPowerPort(v int64) {
 	o.PowerPort.Set(&v)
 }
 

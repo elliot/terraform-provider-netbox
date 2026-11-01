@@ -22,7 +22,7 @@ var _ MappedNullable = &BulkOperationEntryError{}
 // BulkOperationEntryError The failure of a single object within a bulk operation.
 type BulkOperationEntryError struct {
 	// The ID of the object which failed. Present once the entry has been matched to an object; mutually exclusive with `index`.
-	Id *int32 `json:"id,omitempty"`
+	Id *int64 `json:"id,omitempty"`
 	// The zero-based position of the entry within the submitted list. Used where no object has been identified for the entry: always for creations, and for updates and deletions where the entry itself could not be interpreted (e.g. a missing or non-numeric `id`). Mutually exclusive with `id`.
 	Index *int32 `json:"index,omitempty"`
 	// The errors for this entry, keyed by field name. Values are ordinarily arrays of messages. Errors which pertain to no particular field -- model validation, protection rules, restricted tags, object-level permissions, or the shape of the entry itself -- all appear under the single key `__all__`.
@@ -50,9 +50,9 @@ func NewBulkOperationEntryErrorWithDefaults() *BulkOperationEntryError {
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *BulkOperationEntryError) GetId() int32 {
+func (o *BulkOperationEntryError) GetId() int64 {
 	if o == nil || IsNil(o.Id) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Id
@@ -60,7 +60,7 @@ func (o *BulkOperationEntryError) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *BulkOperationEntryError) GetIdOk() (*int32, bool) {
+func (o *BulkOperationEntryError) GetIdOk() (*int64, bool) {
 	if o == nil || IsNil(o.Id) {
 		return nil, false
 	}
@@ -76,8 +76,8 @@ func (o *BulkOperationEntryError) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given int32 and assigns it to the Id field.
-func (o *BulkOperationEntryError) SetId(v int32) {
+// SetId gets a reference to the given int64 and assigns it to the Id field.
+func (o *BulkOperationEntryError) SetId(v int64) {
 	o.Id = &v
 }
 

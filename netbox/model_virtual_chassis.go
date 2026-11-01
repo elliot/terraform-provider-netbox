@@ -23,7 +23,7 @@ var _ MappedNullable = &VirtualChassis{}
 
 // VirtualChassis Base serializer class for models inheriting from PrimaryModel.
 type VirtualChassis struct {
-	Id                   int32                  `json:"id"`
+	Id                   int64                  `json:"id"`
 	Url                  *string                `json:"url,omitempty"`
 	DisplayUrl           *string                `json:"display_url,omitempty"`
 	Display              *string                `json:"display,omitempty"`
@@ -37,7 +37,7 @@ type VirtualChassis struct {
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
 	Created              NullableTime           `json:"created,omitempty"`
 	LastUpdated          NullableTime           `json:"last_updated,omitempty"`
-	MemberCount          *int32                 `json:"member_count,omitempty"`
+	MemberCount          *int64                 `json:"member_count,omitempty"`
 	Members              []NestedDevice         `json:"members,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -48,7 +48,7 @@ type _VirtualChassis VirtualChassis
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewVirtualChassis(id int32) *VirtualChassis {
+func NewVirtualChassis(id int64) *VirtualChassis {
 	this := VirtualChassis{}
 	this.Id = id
 	return &this
@@ -63,9 +63,9 @@ func NewVirtualChassisWithDefaults() *VirtualChassis {
 }
 
 // GetId returns the Id field value
-func (o *VirtualChassis) GetId() int32 {
+func (o *VirtualChassis) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -74,7 +74,7 @@ func (o *VirtualChassis) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *VirtualChassis) GetIdOk() (*int32, bool) {
+func (o *VirtualChassis) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -82,7 +82,7 @@ func (o *VirtualChassis) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *VirtualChassis) SetId(v int32) {
+func (o *VirtualChassis) SetId(v int64) {
 	o.Id = v
 }
 
@@ -547,9 +547,9 @@ func (o *VirtualChassis) UnsetLastUpdated() {
 }
 
 // GetMemberCount returns the MemberCount field value if set, zero value otherwise.
-func (o *VirtualChassis) GetMemberCount() int32 {
+func (o *VirtualChassis) GetMemberCount() int64 {
 	if o == nil || IsNil(o.MemberCount) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.MemberCount
@@ -557,7 +557,7 @@ func (o *VirtualChassis) GetMemberCount() int32 {
 
 // GetMemberCountOk returns a tuple with the MemberCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *VirtualChassis) GetMemberCountOk() (*int32, bool) {
+func (o *VirtualChassis) GetMemberCountOk() (*int64, bool) {
 	if o == nil || IsNil(o.MemberCount) {
 		return nil, false
 	}
@@ -573,8 +573,8 @@ func (o *VirtualChassis) HasMemberCount() bool {
 	return false
 }
 
-// SetMemberCount gets a reference to the given int32 and assigns it to the MemberCount field.
-func (o *VirtualChassis) SetMemberCount(v int32) {
+// SetMemberCount gets a reference to the given int64 and assigns it to the MemberCount field.
+func (o *VirtualChassis) SetMemberCount(v int64) {
 	o.MemberCount = &v
 }
 

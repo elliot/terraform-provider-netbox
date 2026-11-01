@@ -23,10 +23,10 @@ var _ MappedNullable = &PatchedWritableIPSecPolicyRequest{}
 type PatchedWritableIPSecPolicyRequest struct {
 	Name        *string `json:"name,omitempty"`
 	Description *string `json:"description,omitempty"`
-	Proposals   []int32 `json:"proposals,omitempty"`
+	Proposals   []int64 `json:"proposals,omitempty"`
 	// Diffie-Hellman group for Perfect Forward Secrecy  * `1` - Group 1 * `2` - Group 2 * `5` - Group 5 * `14` - Group 14 * `15` - Group 15 * `16` - Group 16 * `17` - Group 17 * `18` - Group 18 * `19` - Group 19 * `20` - Group 20 * `21` - Group 21 * `22` - Group 22 * `23` - Group 23 * `24` - Group 24 * `25` - Group 25 * `26` - Group 26 * `27` - Group 27 * `28` - Group 28 * `29` - Group 29 * `30` - Group 30 * `31` - Group 31 * `32` - Group 32 * `33` - Group 33 * `34` - Group 34
 	PfsGroup             NullableInt32          `json:"pfs_group,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -117,9 +117,9 @@ func (o *PatchedWritableIPSecPolicyRequest) SetDescription(v string) {
 }
 
 // GetProposals returns the Proposals field value if set, zero value otherwise.
-func (o *PatchedWritableIPSecPolicyRequest) GetProposals() []int32 {
+func (o *PatchedWritableIPSecPolicyRequest) GetProposals() []int64 {
 	if o == nil || IsNil(o.Proposals) {
-		var ret []int32
+		var ret []int64
 		return ret
 	}
 	return o.Proposals
@@ -127,7 +127,7 @@ func (o *PatchedWritableIPSecPolicyRequest) GetProposals() []int32 {
 
 // GetProposalsOk returns a tuple with the Proposals field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *PatchedWritableIPSecPolicyRequest) GetProposalsOk() ([]int32, bool) {
+func (o *PatchedWritableIPSecPolicyRequest) GetProposalsOk() ([]int64, bool) {
 	if o == nil || IsNil(o.Proposals) {
 		return nil, false
 	}
@@ -143,8 +143,8 @@ func (o *PatchedWritableIPSecPolicyRequest) HasProposals() bool {
 	return false
 }
 
-// SetProposals gets a reference to the given []int32 and assigns it to the Proposals field.
-func (o *PatchedWritableIPSecPolicyRequest) SetProposals(v []int32) {
+// SetProposals gets a reference to the given []int64 and assigns it to the Proposals field.
+func (o *PatchedWritableIPSecPolicyRequest) SetProposals(v []int64) {
 	o.Proposals = v
 }
 
@@ -192,9 +192,9 @@ func (o *PatchedWritableIPSecPolicyRequest) UnsetPfsGroup() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableIPSecPolicyRequest) GetOwner() int32 {
+func (o *PatchedWritableIPSecPolicyRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -203,7 +203,7 @@ func (o *PatchedWritableIPSecPolicyRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableIPSecPolicyRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableIPSecPolicyRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -219,8 +219,8 @@ func (o *PatchedWritableIPSecPolicyRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableIPSecPolicyRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableIPSecPolicyRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

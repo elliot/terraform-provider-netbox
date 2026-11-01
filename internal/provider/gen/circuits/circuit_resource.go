@@ -247,7 +247,7 @@ func (r *CircuitResource) Read(ctx context.Context, req resource.ReadRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -278,7 +278,7 @@ func (r *CircuitResource) Update(ctx context.Context, req resource.UpdateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -308,7 +308,7 @@ func (r *CircuitResource) Delete(ctx context.Context, req resource.DeleteRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -328,15 +328,15 @@ func (r *CircuitResource) ImportState(ctx context.Context, req resource.ImportSt
 // circuitToCreate builds the WritableCircuitRequest request body from the plan.
 func circuitToCreate(ctx context.Context, plan *CircuitModel, cf *customfields.Cache, diags *diag.Diagnostics) *netbox.WritableCircuitRequest {
 	const objectType = "circuits.circuit"
-	body := netbox.NewWritableCircuitRequest(plan.Cid.ValueString(), conv.Int32(plan.ProviderId), conv.Int32(plan.TypeId))
+	body := netbox.NewWritableCircuitRequest(plan.Cid.ValueString(), plan.ProviderId.ValueInt64(), plan.TypeId.ValueInt64())
 	if conv.Known(plan.ProviderAccountId) {
-		body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
+		body.SetProviderAccount(plan.ProviderAccountId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.InstallDate) {
 		body.SetInstallDate(plan.InstallDate.ValueString())
@@ -357,7 +357,7 @@ func circuitToCreate(ctx context.Context, plan *CircuitModel, cf *customfields.C
 		body.SetDistanceUnit(plan.DistanceUnit.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -382,19 +382,19 @@ func circuitToPatch(ctx context.Context, plan, state *CircuitModel, cf *customfi
 	}
 	if !plan.ProviderId.Equal(state.ProviderId) {
 		if conv.Known(plan.ProviderId) {
-			body.SetProvider(conv.Int32(plan.ProviderId))
+			body.SetProvider(plan.ProviderId.ValueInt64())
 		}
 	}
 	if !plan.ProviderAccountId.Equal(state.ProviderAccountId) {
 		if plan.ProviderAccountId.IsNull() {
 			body.SetProviderAccountNil()
 		} else if !plan.ProviderAccountId.IsUnknown() {
-			body.SetProviderAccount(conv.Int32(plan.ProviderAccountId))
+			body.SetProviderAccount(plan.ProviderAccountId.ValueInt64())
 		}
 	}
 	if !plan.TypeId.Equal(state.TypeId) {
 		if conv.Known(plan.TypeId) {
-			body.SetType(conv.Int32(plan.TypeId))
+			body.SetType(plan.TypeId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -406,7 +406,7 @@ func circuitToPatch(ctx context.Context, plan, state *CircuitModel, cf *customfi
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.InstallDate.Equal(state.InstallDate) {
@@ -447,7 +447,7 @@ func circuitToPatch(ctx context.Context, plan, state *CircuitModel, cf *customfi
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {

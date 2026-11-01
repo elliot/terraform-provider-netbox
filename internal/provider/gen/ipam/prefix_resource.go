@@ -235,7 +235,7 @@ func (r *PrefixResource) Read(ctx context.Context, req resource.ReadRequest, res
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -266,7 +266,7 @@ func (r *PrefixResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -296,7 +296,7 @@ func (r *PrefixResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	id, err := netbox.Int32ID(state.Id.ValueInt64())
+	id, err := netbox.Int64ID(state.Id.ValueInt64())
 	if err != nil {
 		resp.Diagnostics.AddError("Invalid ID", err.Error())
 		return
@@ -318,25 +318,25 @@ func prefixToCreate(ctx context.Context, plan *PrefixModel, cf *customfields.Cac
 	const objectType = "ipam.prefix"
 	body := netbox.NewWritablePrefixRequest(plan.Prefix.ValueString())
 	if conv.Known(plan.VrfId) {
-		body.SetVrf(conv.Int32(plan.VrfId))
+		body.SetVrf(plan.VrfId.ValueInt64())
 	}
 	if conv.Known(plan.ScopeType) {
 		body.SetScopeType(plan.ScopeType.ValueString())
 	}
 	if conv.Known(plan.ScopeId) {
-		body.SetScopeId(conv.Int32(plan.ScopeId))
+		body.SetScopeId(plan.ScopeId.ValueInt64())
 	}
 	if conv.Known(plan.TenantId) {
-		body.SetTenant(conv.Int32(plan.TenantId))
+		body.SetTenant(plan.TenantId.ValueInt64())
 	}
 	if conv.Known(plan.VlanId) {
-		body.SetVlan(conv.Int32(plan.VlanId))
+		body.SetVlan(plan.VlanId.ValueInt64())
 	}
 	if conv.Known(plan.Status) {
 		body.SetStatus(plan.Status.ValueString())
 	}
 	if conv.Known(plan.RoleId) {
-		body.SetRole(conv.Int32(plan.RoleId))
+		body.SetRole(plan.RoleId.ValueInt64())
 	}
 	if conv.Known(plan.IsPool) {
 		body.SetIsPool(plan.IsPool.ValueBool())
@@ -348,7 +348,7 @@ func prefixToCreate(ctx context.Context, plan *PrefixModel, cf *customfields.Cac
 		body.SetDescription(plan.Description.ValueString())
 	}
 	if conv.Known(plan.OwnerId) {
-		body.SetOwner(conv.Int32(plan.OwnerId))
+		body.SetOwner(plan.OwnerId.ValueInt64())
 	}
 	if !plan.Comments.IsUnknown() {
 		body.SetComments(plan.Comments.ValueString())
@@ -375,7 +375,7 @@ func prefixToPatch(ctx context.Context, plan, state *PrefixModel, cf *customfiel
 		if plan.VrfId.IsNull() {
 			body.SetVrfNil()
 		} else if !plan.VrfId.IsUnknown() {
-			body.SetVrf(conv.Int32(plan.VrfId))
+			body.SetVrf(plan.VrfId.ValueInt64())
 		}
 	}
 	if !plan.ScopeType.Equal(state.ScopeType) {
@@ -387,21 +387,21 @@ func prefixToPatch(ctx context.Context, plan, state *PrefixModel, cf *customfiel
 	}
 	if !plan.ScopeId.Equal(state.ScopeId) {
 		if conv.Known(plan.ScopeId) {
-			body.SetScopeId(conv.Int32(plan.ScopeId))
+			body.SetScopeId(plan.ScopeId.ValueInt64())
 		}
 	}
 	if !plan.TenantId.Equal(state.TenantId) {
 		if plan.TenantId.IsNull() {
 			body.SetTenantNil()
 		} else if !plan.TenantId.IsUnknown() {
-			body.SetTenant(conv.Int32(plan.TenantId))
+			body.SetTenant(plan.TenantId.ValueInt64())
 		}
 	}
 	if !plan.VlanId.Equal(state.VlanId) {
 		if plan.VlanId.IsNull() {
 			body.SetVlanNil()
 		} else if !plan.VlanId.IsUnknown() {
-			body.SetVlan(conv.Int32(plan.VlanId))
+			body.SetVlan(plan.VlanId.ValueInt64())
 		}
 	}
 	if !plan.Status.Equal(state.Status) {
@@ -413,7 +413,7 @@ func prefixToPatch(ctx context.Context, plan, state *PrefixModel, cf *customfiel
 		if plan.RoleId.IsNull() {
 			body.SetRoleNil()
 		} else if !plan.RoleId.IsUnknown() {
-			body.SetRole(conv.Int32(plan.RoleId))
+			body.SetRole(plan.RoleId.ValueInt64())
 		}
 	}
 	if !plan.IsPool.Equal(state.IsPool) {
@@ -435,7 +435,7 @@ func prefixToPatch(ctx context.Context, plan, state *PrefixModel, cf *customfiel
 		if plan.OwnerId.IsNull() {
 			body.SetOwnerNil()
 		} else if !plan.OwnerId.IsUnknown() {
-			body.SetOwner(conv.Int32(plan.OwnerId))
+			body.SetOwner(plan.OwnerId.ValueInt64())
 		}
 	}
 	if !plan.Comments.Equal(state.Comments) {
@@ -467,7 +467,7 @@ func prefixFromAPI(ctx context.Context, obj *netbox.Prefix, prior *PrefixModel, 
 	out.Prefix = conv.StringKeep(conv.String(obj.GetPrefixOk()), conv.PriorString(prior, func(m *PrefixModel) types.String { return m.Prefix }), false)
 	out.VrfId = conv.BriefID(obj.GetVrfOk())
 	out.ScopeType = conv.StringKeep(conv.String(obj.GetScopeTypeOk()), conv.PriorString(prior, func(m *PrefixModel) types.String { return m.ScopeType }), false)
-	out.ScopeId = conv.Int64From32(obj.GetScopeIdOk())
+	out.ScopeId = conv.Int64From64(obj.GetScopeIdOk())
 	out.TenantId = conv.BriefID(obj.GetTenantOk())
 	out.VlanId = conv.BriefID(obj.GetVlanOk())
 	out.Status = conv.Choice(obj.GetStatusOk())

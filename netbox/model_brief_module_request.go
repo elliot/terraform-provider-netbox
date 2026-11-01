@@ -22,7 +22,7 @@ var _ MappedNullable = &BriefModuleRequest{}
 
 // BriefModuleRequest Base serializer class for models inheriting from PrimaryModel.
 type BriefModuleRequest struct {
-	Device               int32                  `json:"device"`
+	Device               int64                  `json:"device"`
 	ModuleBay            NestedModuleBayRequest `json:"module_bay"`
 	AdditionalProperties map[string]interface{}
 }
@@ -33,7 +33,7 @@ type _BriefModuleRequest BriefModuleRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBriefModuleRequest(device int32, moduleBay NestedModuleBayRequest) *BriefModuleRequest {
+func NewBriefModuleRequest(device int64, moduleBay NestedModuleBayRequest) *BriefModuleRequest {
 	this := BriefModuleRequest{}
 	this.Device = device
 	this.ModuleBay = moduleBay
@@ -49,9 +49,9 @@ func NewBriefModuleRequestWithDefaults() *BriefModuleRequest {
 }
 
 // GetDevice returns the Device field value
-func (o *BriefModuleRequest) GetDevice() int32 {
+func (o *BriefModuleRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -60,7 +60,7 @@ func (o *BriefModuleRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *BriefModuleRequest) GetDeviceOk() (*int32, bool) {
+func (o *BriefModuleRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -68,7 +68,7 @@ func (o *BriefModuleRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *BriefModuleRequest) SetDevice(v int32) {
+func (o *BriefModuleRequest) SetDevice(v int64) {
 	o.Device = v
 }
 

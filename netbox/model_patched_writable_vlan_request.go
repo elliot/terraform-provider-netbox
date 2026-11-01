@@ -21,20 +21,20 @@ var _ MappedNullable = &PatchedWritableVLANRequest{}
 
 // PatchedWritableVLANRequest Base serializer class for models inheriting from PrimaryModel.
 type PatchedWritableVLANRequest struct {
-	Site  NullableInt32 `json:"site,omitempty"`
-	Group NullableInt32 `json:"group,omitempty"`
+	Site  NullableInt64 `json:"site,omitempty"`
+	Group NullableInt64 `json:"group,omitempty"`
 	// Numeric VLAN ID (1-4094)
 	Vid    *int32        `json:"vid,omitempty"`
 	Name   *string       `json:"name,omitempty"`
-	Tenant NullableInt32 `json:"tenant,omitempty"`
+	Tenant NullableInt64 `json:"tenant,omitempty"`
 	// Operational status of this VLAN  * `active` - Active * `reserved` - Reserved * `deprecated` - Deprecated
 	Status      *string       `json:"status,omitempty"`
-	Role        NullableInt32 `json:"role,omitempty"`
+	Role        NullableInt64 `json:"role,omitempty"`
 	Description *string       `json:"description,omitempty"`
 	// Customer/service VLAN designation (for Q-in-Q/IEEE 802.1ad)  * `svlan` - Service * `cvlan` - Customer
 	QinqRole             NullableString         `json:"qinq_role,omitempty"`
-	QinqSvlan            NullableInt32          `json:"qinq_svlan,omitempty"`
-	Owner                NullableInt32          `json:"owner,omitempty"`
+	QinqSvlan            NullableInt64          `json:"qinq_svlan,omitempty"`
+	Owner                NullableInt64          `json:"owner,omitempty"`
 	Comments             *string                `json:"comments,omitempty"`
 	Tags                 []NestedTagRequest     `json:"tags,omitempty"`
 	CustomFields         map[string]interface{} `json:"custom_fields,omitempty"`
@@ -61,9 +61,9 @@ func NewPatchedWritableVLANRequestWithDefaults() *PatchedWritableVLANRequest {
 }
 
 // GetSite returns the Site field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVLANRequest) GetSite() int32 {
+func (o *PatchedWritableVLANRequest) GetSite() int64 {
 	if o == nil || IsNil(o.Site.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Site.Get()
@@ -72,7 +72,7 @@ func (o *PatchedWritableVLANRequest) GetSite() int32 {
 // GetSiteOk returns a tuple with the Site field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVLANRequest) GetSiteOk() (*int32, bool) {
+func (o *PatchedWritableVLANRequest) GetSiteOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -88,8 +88,8 @@ func (o *PatchedWritableVLANRequest) HasSite() bool {
 	return false
 }
 
-// SetSite gets a reference to the given NullableInt32 and assigns it to the Site field.
-func (o *PatchedWritableVLANRequest) SetSite(v int32) {
+// SetSite gets a reference to the given NullableInt64 and assigns it to the Site field.
+func (o *PatchedWritableVLANRequest) SetSite(v int64) {
 	o.Site.Set(&v)
 }
 
@@ -104,9 +104,9 @@ func (o *PatchedWritableVLANRequest) UnsetSite() {
 }
 
 // GetGroup returns the Group field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVLANRequest) GetGroup() int32 {
+func (o *PatchedWritableVLANRequest) GetGroup() int64 {
 	if o == nil || IsNil(o.Group.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Group.Get()
@@ -115,7 +115,7 @@ func (o *PatchedWritableVLANRequest) GetGroup() int32 {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVLANRequest) GetGroupOk() (*int32, bool) {
+func (o *PatchedWritableVLANRequest) GetGroupOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -131,8 +131,8 @@ func (o *PatchedWritableVLANRequest) HasGroup() bool {
 	return false
 }
 
-// SetGroup gets a reference to the given NullableInt32 and assigns it to the Group field.
-func (o *PatchedWritableVLANRequest) SetGroup(v int32) {
+// SetGroup gets a reference to the given NullableInt64 and assigns it to the Group field.
+func (o *PatchedWritableVLANRequest) SetGroup(v int64) {
 	o.Group.Set(&v)
 }
 
@@ -211,9 +211,9 @@ func (o *PatchedWritableVLANRequest) SetName(v string) {
 }
 
 // GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVLANRequest) GetTenant() int32 {
+func (o *PatchedWritableVLANRequest) GetTenant() int64 {
 	if o == nil || IsNil(o.Tenant.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Tenant.Get()
@@ -222,7 +222,7 @@ func (o *PatchedWritableVLANRequest) GetTenant() int32 {
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVLANRequest) GetTenantOk() (*int32, bool) {
+func (o *PatchedWritableVLANRequest) GetTenantOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -238,8 +238,8 @@ func (o *PatchedWritableVLANRequest) HasTenant() bool {
 	return false
 }
 
-// SetTenant gets a reference to the given NullableInt32 and assigns it to the Tenant field.
-func (o *PatchedWritableVLANRequest) SetTenant(v int32) {
+// SetTenant gets a reference to the given NullableInt64 and assigns it to the Tenant field.
+func (o *PatchedWritableVLANRequest) SetTenant(v int64) {
 	o.Tenant.Set(&v)
 }
 
@@ -286,9 +286,9 @@ func (o *PatchedWritableVLANRequest) SetStatus(v string) {
 }
 
 // GetRole returns the Role field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVLANRequest) GetRole() int32 {
+func (o *PatchedWritableVLANRequest) GetRole() int64 {
 	if o == nil || IsNil(o.Role.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Role.Get()
@@ -297,7 +297,7 @@ func (o *PatchedWritableVLANRequest) GetRole() int32 {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVLANRequest) GetRoleOk() (*int32, bool) {
+func (o *PatchedWritableVLANRequest) GetRoleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -313,8 +313,8 @@ func (o *PatchedWritableVLANRequest) HasRole() bool {
 	return false
 }
 
-// SetRole gets a reference to the given NullableInt32 and assigns it to the Role field.
-func (o *PatchedWritableVLANRequest) SetRole(v int32) {
+// SetRole gets a reference to the given NullableInt64 and assigns it to the Role field.
+func (o *PatchedWritableVLANRequest) SetRole(v int64) {
 	o.Role.Set(&v)
 }
 
@@ -404,9 +404,9 @@ func (o *PatchedWritableVLANRequest) UnsetQinqRole() {
 }
 
 // GetQinqSvlan returns the QinqSvlan field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVLANRequest) GetQinqSvlan() int32 {
+func (o *PatchedWritableVLANRequest) GetQinqSvlan() int64 {
 	if o == nil || IsNil(o.QinqSvlan.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.QinqSvlan.Get()
@@ -415,7 +415,7 @@ func (o *PatchedWritableVLANRequest) GetQinqSvlan() int32 {
 // GetQinqSvlanOk returns a tuple with the QinqSvlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVLANRequest) GetQinqSvlanOk() (*int32, bool) {
+func (o *PatchedWritableVLANRequest) GetQinqSvlanOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -431,8 +431,8 @@ func (o *PatchedWritableVLANRequest) HasQinqSvlan() bool {
 	return false
 }
 
-// SetQinqSvlan gets a reference to the given NullableInt32 and assigns it to the QinqSvlan field.
-func (o *PatchedWritableVLANRequest) SetQinqSvlan(v int32) {
+// SetQinqSvlan gets a reference to the given NullableInt64 and assigns it to the QinqSvlan field.
+func (o *PatchedWritableVLANRequest) SetQinqSvlan(v int64) {
 	o.QinqSvlan.Set(&v)
 }
 
@@ -447,9 +447,9 @@ func (o *PatchedWritableVLANRequest) UnsetQinqSvlan() {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableVLANRequest) GetOwner() int32 {
+func (o *PatchedWritableVLANRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -458,7 +458,7 @@ func (o *PatchedWritableVLANRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableVLANRequest) GetOwnerOk() (*int32, bool) {
+func (o *PatchedWritableVLANRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -474,8 +474,8 @@ func (o *PatchedWritableVLANRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *PatchedWritableVLANRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *PatchedWritableVLANRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 

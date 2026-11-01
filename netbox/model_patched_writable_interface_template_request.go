@@ -21,8 +21,8 @@ var _ MappedNullable = &PatchedWritableInterfaceTemplateRequest{}
 
 // PatchedWritableInterfaceTemplateRequest Extends the built-in ModelSerializer to enforce calling full_clean() on a copy of the associated instance during validation. (DRF does not do this by default; see https://github.com/encode/django-rest-framework/issues/3144)  Serializers may declare `model_clean_fields` in Meta, naming scalar model fields whose clean()-normalized values must reach the database. DRF builds a fresh instance from the validated data on create, discarding what clean() wrote.
 type PatchedWritableInterfaceTemplateRequest struct {
-	DeviceType NullableInt32 `json:"device_type,omitempty"`
-	ModuleType NullableInt32 `json:"module_type,omitempty"`
+	DeviceType NullableInt64 `json:"device_type,omitempty"`
+	ModuleType NullableInt64 `json:"module_type,omitempty"`
 	// {module} is accepted as a substitution for the module bay position when attached to a module type.
 	Name *string `json:"name,omitempty"`
 	// Physical label
@@ -36,8 +36,8 @@ type PatchedWritableInterfaceTemplateRequest struct {
 	Enabled     *bool         `json:"enabled,omitempty"`
 	MgmtOnly    *bool         `json:"mgmt_only,omitempty"`
 	Description *string       `json:"description,omitempty"`
-	Parent      NullableInt32 `json:"parent,omitempty"`
-	Bridge      NullableInt32 `json:"bridge,omitempty"`
+	Parent      NullableInt64 `json:"parent,omitempty"`
+	Bridge      NullableInt64 `json:"bridge,omitempty"`
 	// * `pd` - PD * `pse` - PSE
 	PoeMode NullableString `json:"poe_mode,omitempty"`
 	// * `type1-ieee802.3af` - 802.3af (Type 1) * `type2-ieee802.3at` - 802.3at (Type 2) * `type3-ieee802.3bt` - 802.3bt (Type 3) * `type4-ieee802.3bt` - 802.3bt (Type 4) * `passive-24v-2pair` - Passive 24V (2-pair) * `passive-24v-4pair` - Passive 24V (4-pair) * `passive-48v-2pair` - Passive 48V (2-pair) * `passive-48v-4pair` - Passive 48V (4-pair)
@@ -67,9 +67,9 @@ func NewPatchedWritableInterfaceTemplateRequestWithDefaults() *PatchedWritableIn
 }
 
 // GetDeviceType returns the DeviceType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableInterfaceTemplateRequest) GetDeviceType() int32 {
+func (o *PatchedWritableInterfaceTemplateRequest) GetDeviceType() int64 {
 	if o == nil || IsNil(o.DeviceType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.DeviceType.Get()
@@ -78,7 +78,7 @@ func (o *PatchedWritableInterfaceTemplateRequest) GetDeviceType() int32 {
 // GetDeviceTypeOk returns a tuple with the DeviceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableInterfaceTemplateRequest) GetDeviceTypeOk() (*int32, bool) {
+func (o *PatchedWritableInterfaceTemplateRequest) GetDeviceTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -94,8 +94,8 @@ func (o *PatchedWritableInterfaceTemplateRequest) HasDeviceType() bool {
 	return false
 }
 
-// SetDeviceType gets a reference to the given NullableInt32 and assigns it to the DeviceType field.
-func (o *PatchedWritableInterfaceTemplateRequest) SetDeviceType(v int32) {
+// SetDeviceType gets a reference to the given NullableInt64 and assigns it to the DeviceType field.
+func (o *PatchedWritableInterfaceTemplateRequest) SetDeviceType(v int64) {
 	o.DeviceType.Set(&v)
 }
 
@@ -110,9 +110,9 @@ func (o *PatchedWritableInterfaceTemplateRequest) UnsetDeviceType() {
 }
 
 // GetModuleType returns the ModuleType field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableInterfaceTemplateRequest) GetModuleType() int32 {
+func (o *PatchedWritableInterfaceTemplateRequest) GetModuleType() int64 {
 	if o == nil || IsNil(o.ModuleType.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.ModuleType.Get()
@@ -121,7 +121,7 @@ func (o *PatchedWritableInterfaceTemplateRequest) GetModuleType() int32 {
 // GetModuleTypeOk returns a tuple with the ModuleType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableInterfaceTemplateRequest) GetModuleTypeOk() (*int32, bool) {
+func (o *PatchedWritableInterfaceTemplateRequest) GetModuleTypeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -137,8 +137,8 @@ func (o *PatchedWritableInterfaceTemplateRequest) HasModuleType() bool {
 	return false
 }
 
-// SetModuleType gets a reference to the given NullableInt32 and assigns it to the ModuleType field.
-func (o *PatchedWritableInterfaceTemplateRequest) SetModuleType(v int32) {
+// SetModuleType gets a reference to the given NullableInt64 and assigns it to the ModuleType field.
+func (o *PatchedWritableInterfaceTemplateRequest) SetModuleType(v int64) {
 	o.ModuleType.Set(&v)
 }
 
@@ -431,9 +431,9 @@ func (o *PatchedWritableInterfaceTemplateRequest) SetDescription(v string) {
 }
 
 // GetParent returns the Parent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableInterfaceTemplateRequest) GetParent() int32 {
+func (o *PatchedWritableInterfaceTemplateRequest) GetParent() int64 {
 	if o == nil || IsNil(o.Parent.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Parent.Get()
@@ -442,7 +442,7 @@ func (o *PatchedWritableInterfaceTemplateRequest) GetParent() int32 {
 // GetParentOk returns a tuple with the Parent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableInterfaceTemplateRequest) GetParentOk() (*int32, bool) {
+func (o *PatchedWritableInterfaceTemplateRequest) GetParentOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -458,8 +458,8 @@ func (o *PatchedWritableInterfaceTemplateRequest) HasParent() bool {
 	return false
 }
 
-// SetParent gets a reference to the given NullableInt32 and assigns it to the Parent field.
-func (o *PatchedWritableInterfaceTemplateRequest) SetParent(v int32) {
+// SetParent gets a reference to the given NullableInt64 and assigns it to the Parent field.
+func (o *PatchedWritableInterfaceTemplateRequest) SetParent(v int64) {
 	o.Parent.Set(&v)
 }
 
@@ -474,9 +474,9 @@ func (o *PatchedWritableInterfaceTemplateRequest) UnsetParent() {
 }
 
 // GetBridge returns the Bridge field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *PatchedWritableInterfaceTemplateRequest) GetBridge() int32 {
+func (o *PatchedWritableInterfaceTemplateRequest) GetBridge() int64 {
 	if o == nil || IsNil(o.Bridge.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Bridge.Get()
@@ -485,7 +485,7 @@ func (o *PatchedWritableInterfaceTemplateRequest) GetBridge() int32 {
 // GetBridgeOk returns a tuple with the Bridge field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *PatchedWritableInterfaceTemplateRequest) GetBridgeOk() (*int32, bool) {
+func (o *PatchedWritableInterfaceTemplateRequest) GetBridgeOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -501,8 +501,8 @@ func (o *PatchedWritableInterfaceTemplateRequest) HasBridge() bool {
 	return false
 }
 
-// SetBridge gets a reference to the given NullableInt32 and assigns it to the Bridge field.
-func (o *PatchedWritableInterfaceTemplateRequest) SetBridge(v int32) {
+// SetBridge gets a reference to the given NullableInt64 and assigns it to the Bridge field.
+func (o *PatchedWritableInterfaceTemplateRequest) SetBridge(v int64) {
 	o.Bridge.Set(&v)
 }
 

@@ -22,9 +22,9 @@ var _ MappedNullable = &BulkCoolingIntakeRequest{}
 
 // BulkCoolingIntakeRequest Adds an `owner` field for models which have a ForeignKey to users.Owner.
 type BulkCoolingIntakeRequest struct {
-	Id     int32         `json:"id"`
-	Device int32         `json:"device"`
-	Module NullableInt32 `json:"module,omitempty"`
+	Id     int64         `json:"id"`
+	Device int64         `json:"device"`
+	Module NullableInt64 `json:"module,omitempty"`
 	Name   string        `json:"name"`
 	// Physical label
 	Label *string `json:"label,omitempty"`
@@ -38,7 +38,7 @@ type BulkCoolingIntakeRequest struct {
 	MaxFlowUnit          NullableString                      `json:"max_flow_unit,omitempty"`
 	CoolingOutflow       NullableNestedCoolingOutflowRequest `json:"cooling_outflow,omitempty"`
 	Description          *string                             `json:"description,omitempty"`
-	Owner                NullableInt32                       `json:"owner,omitempty"`
+	Owner                NullableInt64                       `json:"owner,omitempty"`
 	Tags                 []NestedTagRequest                  `json:"tags,omitempty"`
 	CustomFields         map[string]interface{}              `json:"custom_fields,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -50,7 +50,7 @@ type _BulkCoolingIntakeRequest BulkCoolingIntakeRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBulkCoolingIntakeRequest(id int32, device int32, name string) *BulkCoolingIntakeRequest {
+func NewBulkCoolingIntakeRequest(id int64, device int64, name string) *BulkCoolingIntakeRequest {
 	this := BulkCoolingIntakeRequest{}
 	this.Id = id
 	this.Device = device
@@ -67,9 +67,9 @@ func NewBulkCoolingIntakeRequestWithDefaults() *BulkCoolingIntakeRequest {
 }
 
 // GetId returns the Id field value
-func (o *BulkCoolingIntakeRequest) GetId() int32 {
+func (o *BulkCoolingIntakeRequest) GetId() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -78,7 +78,7 @@ func (o *BulkCoolingIntakeRequest) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *BulkCoolingIntakeRequest) GetIdOk() (*int32, bool) {
+func (o *BulkCoolingIntakeRequest) GetIdOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -86,14 +86,14 @@ func (o *BulkCoolingIntakeRequest) GetIdOk() (*int32, bool) {
 }
 
 // SetId sets field value
-func (o *BulkCoolingIntakeRequest) SetId(v int32) {
+func (o *BulkCoolingIntakeRequest) SetId(v int64) {
 	o.Id = v
 }
 
 // GetDevice returns the Device field value
-func (o *BulkCoolingIntakeRequest) GetDevice() int32 {
+func (o *BulkCoolingIntakeRequest) GetDevice() int64 {
 	if o == nil {
-		var ret int32
+		var ret int64
 		return ret
 	}
 
@@ -102,7 +102,7 @@ func (o *BulkCoolingIntakeRequest) GetDevice() int32 {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *BulkCoolingIntakeRequest) GetDeviceOk() (*int32, bool) {
+func (o *BulkCoolingIntakeRequest) GetDeviceOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -110,14 +110,14 @@ func (o *BulkCoolingIntakeRequest) GetDeviceOk() (*int32, bool) {
 }
 
 // SetDevice sets field value
-func (o *BulkCoolingIntakeRequest) SetDevice(v int32) {
+func (o *BulkCoolingIntakeRequest) SetDevice(v int64) {
 	o.Device = v
 }
 
 // GetModule returns the Module field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCoolingIntakeRequest) GetModule() int32 {
+func (o *BulkCoolingIntakeRequest) GetModule() int64 {
 	if o == nil || IsNil(o.Module.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Module.Get()
@@ -126,7 +126,7 @@ func (o *BulkCoolingIntakeRequest) GetModule() int32 {
 // GetModuleOk returns a tuple with the Module field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCoolingIntakeRequest) GetModuleOk() (*int32, bool) {
+func (o *BulkCoolingIntakeRequest) GetModuleOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -142,8 +142,8 @@ func (o *BulkCoolingIntakeRequest) HasModule() bool {
 	return false
 }
 
-// SetModule gets a reference to the given NullableInt32 and assigns it to the Module field.
-func (o *BulkCoolingIntakeRequest) SetModule(v int32) {
+// SetModule gets a reference to the given NullableInt64 and assigns it to the Module field.
+func (o *BulkCoolingIntakeRequest) SetModule(v int64) {
 	o.Module.Set(&v)
 }
 
@@ -504,9 +504,9 @@ func (o *BulkCoolingIntakeRequest) SetDescription(v string) {
 }
 
 // GetOwner returns the Owner field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *BulkCoolingIntakeRequest) GetOwner() int32 {
+func (o *BulkCoolingIntakeRequest) GetOwner() int64 {
 	if o == nil || IsNil(o.Owner.Get()) {
-		var ret int32
+		var ret int64
 		return ret
 	}
 	return *o.Owner.Get()
@@ -515,7 +515,7 @@ func (o *BulkCoolingIntakeRequest) GetOwner() int32 {
 // GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *BulkCoolingIntakeRequest) GetOwnerOk() (*int32, bool) {
+func (o *BulkCoolingIntakeRequest) GetOwnerOk() (*int64, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -531,8 +531,8 @@ func (o *BulkCoolingIntakeRequest) HasOwner() bool {
 	return false
 }
 
-// SetOwner gets a reference to the given NullableInt32 and assigns it to the Owner field.
-func (o *BulkCoolingIntakeRequest) SetOwner(v int32) {
+// SetOwner gets a reference to the given NullableInt64 and assigns it to the Owner field.
+func (o *BulkCoolingIntakeRequest) SetOwner(v int64) {
 	o.Owner.Set(&v)
 }
 
