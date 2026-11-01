@@ -1,8 +1,10 @@
 name: Schema diff
 
-# Compares the provider schema of the pull request with the latest release on
-# the Terraform Registry (scripts/schema-diff.sh, tools/schema-diff) and writes
-# the report to the job summary. Breaking changes fail the check unless the PR
+# Compares the provider schema of the pull request with the commit it merges
+# into (scripts/schema-diff.sh with BASE_REF, tools/schema-diff) and writes the
+# report to the job summary. Comparing with the base rather than the latest
+# release means a breaking change already on main (pending release) is not
+# reported again on every later pull request. Breaking changes fail the check unless the PR
 # title marks them with `!` (feat!: ..., fix(ipam)!: ...), which cliff.toml
 # lists under "Breaking changes" and which requires a major version after 1.0.
 # `edited` re-runs the check when the title changes; no paths filter, so the
@@ -28,6 +30,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # The merge commit and its first parent, the base it merges into.
+          fetch-depth: 2
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
@@ -49,10 +53,11 @@ jobs:
           terraform_version: "1.16.*"
           terraform_wrapper: false
       - run: go mod download
-      - name: Compare with the latest release
+      - name: Compare with the base branch
         env:
           TITLE: ${{ github.event.pull_request.title }}
           SCHEMA_DIFF_NEW_LABEL: this pull request
+          BASE_REF: HEAD^1
         run: |
           re='^[a-z]+(\([^)]*\))?!:'
           if [[ "$TITLE" =~ $re ]]; then
