@@ -6,6 +6,17 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-02
+
+### Changed
+
+- First stable release. From 1.0 the provider follows the
+  [versioning policy](https://github.com/elliot/terraform-provider-netbox/blob/main/docs/VERSIONING.md):
+  breaking changes only in a new major version, deprecated attributes kept until then, and each release pinned
+  to one NetBox spec (4.7.4 for this release; NetBox 4.5 and 4.6 supported on a best-effort basis). Pin the
+  provider with `version = "~> 1.0"`. There are no schema or behaviour changes from 0.6.0, so upgrading needs
+  no configuration or state changes.
+
 ## [0.6.0] - 2026-11-01
 
 The last 0.x release before 1.0: it finishes the pre-1.0 attribute renames, so upgrading needs a few
@@ -254,7 +265,8 @@ with `source = "elliot/netbox"`; the network mirror and `scripts/install.sh` rem
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.6.0...v1.0.0
 [0.6.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.1...v0.5.0
 [0.4.1]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.0...v0.4.1

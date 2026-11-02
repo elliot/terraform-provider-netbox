@@ -187,7 +187,7 @@ Notes column.
 property for a release; the new property is generated automatically and the
 old one only needs the override. A provider-side rename of one API property
 (two Terraform names for the same field) is not supported by the generator
-yet, so rename attributes before 1.0 or in a major release.
+yet, so such renames wait for a major release.
 
 **Type or shape change.** Bump `schema_version` on the resource and write a
 state upgrader by hand:

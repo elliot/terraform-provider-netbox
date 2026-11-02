@@ -1,7 +1,7 @@
 # Versioning and compatibility policy
 
-This policy applies from `v1.0.0`. Before 1.0, minor releases may still contain breaking changes; they are
-listed under *Breaking changes* in the [changelog](../CHANGELOG.md).
+This policy applies from `v1.0.0`. Releases before 1.0 could contain breaking changes in minor releases; they
+are listed under *Breaking changes* in the [changelog](../CHANGELOG.md).
 
 ## Semantic versioning
 
