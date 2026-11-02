@@ -1,6 +1,6 @@
 # Roadmap, todos and sharp edges
 
-Status as of `v0.5.0` (2026-11-01; NetBox 4.7.4 support is merged on `main` and unreleased). Items that have
+Status as of `v1.0.0` (NetBox 4.7.4). Items that have
 been actioned are removed from this file; `CHANGELOG.md` is the record of what shipped.
 
 ## Where things stand
@@ -12,24 +12,13 @@ been actioned are removed from this file; `CHANGELOG.md` is the record of what s
 | Acceptance | nightly workflow on `main` (docker-compose, 12 shards, one pinned NetBox each) green since `v0.5.0`; the 4.7.4 bump passed on its PR. The workflow also runs on `workflow_dispatch` and on PRs labelled `run-acceptance` |
 | Per-app validation reports | [validation/](validation/README.md) (historical; superseded by the nightly acceptance run) |
 | CI | build, lint (hand-written packages), generated code and docs up to date, `tfplugindocs validate`, unit tests on Terraform 1.12 (minimum) / 1.15 / 1.16 / 1.17, GoReleaser snapshot with network-mirror and install-script smoke test, client regeneration drift check (pinned openapi-generator jar checksum), daily NetBox release watch (`netbox-watch.yml`), zizmor workflow audit, CodeQL, PR auto-labelling; actions pinned to SHAs, least-privilege tokens, Renovate weekly with a 7-day cooldown (Dependency Dashboard: issue #46) |
-| Release | `v0.5.0` is the latest release. GitHub Releases with eight platform zips, GPG-signed `SHA256SUMS` (verified for `v0.4.0`, `v0.4.1`, `v0.5.0`) and SLSA build provenance attestations for every asset; network mirror at `https://elliot.github.io/terraform-provider-netbox/` and `scripts/install.sh` for off-registry installs; see [INSTALL.md](INSTALL.md) |
+| Release | `v1.0.0` is the latest release, the first under the [versioning policy](VERSIONING.md). GitHub Releases with eight platform zips, GPG-signed `SHA256SUMS` and SLSA build provenance attestations for every asset; network mirror at `https://elliot.github.io/terraform-provider-netbox/` and `scripts/install.sh` for off-registry installs; see [INSTALL.md](INSTALL.md) |
 | Registry | live at [registry.terraform.io/providers/elliot/netbox](https://registry.terraform.io/providers/elliot/netbox) (community tier) with every signed release from `v0.1.1`; `terraform init` installs from it without CLI configuration |
 
-## v1.0
+## Maintainer checklist
 
-Remaining work before `v1.0.0`; the compatibility promise is described in [VERSIONING.md](VERSIONING.md).
-
-- Remaining repository settings from the maintainer checklist in [SECURITY.md](../SECURITY.md): the "require
-  full-length commit SHA" Actions policy, read-only default workflow permissions and private vulnerability
-  reporting (maintainer only).
-
-Release PR checklist for `v1.0.0`:
-
-- [ ] Drop the "Status: pre-1.0" banner from `README.md`.
-- [ ] Bump the version pins to `~> 1.0` in `README.md`, `docs/INSTALL.md`, `templates/index.md.tmpl` (if it
-      carries one) and `examples/provider/provider.tf`, then `make docs`.
-- [ ] Run **Prepare release** with the explicit version `1.0.0` (git-cliff would otherwise propose a 0.x
-      version, see [DEVELOPMENT.md](DEVELOPMENT.md#releasing)).
+- Repository settings still open from [SECURITY.md](../SECURITY.md): the "require full-length commit SHA"
+  Actions policy, read-only default workflow permissions and private vulnerability reporting.
 
 ## 1.x
 

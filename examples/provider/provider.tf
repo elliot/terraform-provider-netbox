@@ -2,7 +2,7 @@ terraform {
   required_providers {
     netbox = {
       source  = "elliot/netbox"
-      version = "~> 0.5"
+      version = "~> 1.0"
     }
   }
 }

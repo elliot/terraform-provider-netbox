@@ -2,8 +2,9 @@
 
 ## Supported versions
 
-Security fixes land on `main` and ship in the next release. Only the latest minor release line receives
-fixes while the provider is pre-1.0.
+Security fixes land on `main` and ship in the next release of the current major version (`1.x`). Only the
+latest minor release receives fixes; upgrading within `1.x` never needs configuration changes (see
+[docs/VERSIONING.md](docs/VERSIONING.md)).
 
 ## Reporting a vulnerability
 

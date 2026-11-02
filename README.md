@@ -16,7 +16,7 @@ instance through its REST API. It is built on the Terraform Plugin Framework (pr
 resource, a single-object data source and a list data source (see [docs/RESOURCES.md](docs/RESOURCES.md)
 for the current list).
 
-> **Status: pre-1.0.** Names, attributes and behaviour may still change between minor releases; see the [changelog](CHANGELOG.md) and the [versioning policy](docs/VERSIONING.md) that applies from 1.0.
+> **Status: stable (1.x).** Releases follow semantic versioning: breaking changes only in a new major version, after a deprecation period; see the [versioning policy](docs/VERSIONING.md) and the [changelog](CHANGELOG.md).
 
 ### Supported NetBox versions
 
@@ -102,7 +102,7 @@ terraform {
   required_providers {
     netbox = {
       source  = "elliot/netbox"
-      version = "~> 0.5"
+      version = "~> 1.0"
     }
   }
 }
@@ -125,7 +125,7 @@ terraform {
   required_providers {
     netbox = {
       source  = "elliot/netbox"
-      version = "~> 0.5"
+      version = "~> 1.0"
     }
   }
 }
