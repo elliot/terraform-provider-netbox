@@ -172,7 +172,7 @@ jobs:
             latest) UPGRADE_FROM=$(curl -sS -f --retry 3 https://registry.terraform.io/v1/providers/elliot/netbox | jq -r '.version') ;;
           esac
           if ! [[ "$UPGRADE_FROM" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
-            echo "::error::upgrade_from must be latest, none or a version such as 0.5.0"
+            echo "::error::upgrade_from must be latest, none or a version such as 1.0.0"
             exit 1
           fi
           echo "version=$UPGRADE_FROM" >> "$GITHUB_OUTPUT"

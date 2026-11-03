@@ -45,7 +45,7 @@ verifies mirror downloads with the `h1:` hashes in the lock file.
 ```sh
 curl -fsSL https://raw.githubusercontent.com/elliot/terraform-provider-netbox/main/scripts/install.sh | sh
 # or a specific release:
-VERSION=0.5.0 sh scripts/install.sh
+VERSION=1.0.0 sh scripts/install.sh
 ```
 
 The script detects the OS and CPU, downloads the zip and `SHA256SUMS` from the GitHub Release, verifies
@@ -99,8 +99,8 @@ which gives a self-contained directory.
 A filesystem mirror is a directory in either layout Terraform understands:
 
 ```
-registry.terraform.io/elliot/netbox/terraform-provider-netbox_0.5.0_linux_amd64.zip   # packed
-registry.terraform.io/elliot/netbox/0.5.0/linux_amd64/terraform-provider-netbox_v0.5.0 # unpacked
+registry.terraform.io/elliot/netbox/terraform-provider-netbox_1.0.0_linux_amd64.zip   # packed
+registry.terraform.io/elliot/netbox/1.0.0/linux_amd64/terraform-provider-netbox_v1.0.0 # unpacked
 ```
 
 Point Terraform at it explicitly:
