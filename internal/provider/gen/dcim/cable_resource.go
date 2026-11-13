@@ -48,9 +48,9 @@ var cableStatusValues = []string{
 // cableProfileValues lists the valid values of netbox_cable.profile.
 var cableProfileValues = []string{
 	"single-1c1p", "single-1c2p", "single-1c4p", "single-1c6p", "single-1c8p", "single-1c12p", "single-1c16p", "trunk-2c1p",
-	"trunk-2c2p", "trunk-2c4p", "trunk-2c4p-shuffle", "trunk-2c6p", "trunk-2c8p", "trunk-2c12p", "trunk-4c1p", "trunk-4c2p",
-	"trunk-4c4p", "trunk-4c4p-shuffle", "trunk-4c6p", "trunk-4c8p", "trunk-8c1p", "trunk-8c4p", "trunk-12c1p", "trunk-24c1p",
-	"breakout-1c2p-2c1p", "breakout-1c4p-4c1p", "breakout-1c6p-6c1p", "breakout-1c8p-8c1p", "breakout-2c4p-8c1p-shuffle",
+	"trunk-2c2p", "trunk-2c4p", "trunk-2c4p-shuffle", "trunk-2c6p", "trunk-2c8p", "trunk-2c12p", "trunk-3c8p", "trunk-3c12p",
+	"trunk-4c1p", "trunk-4c2p", "trunk-4c4p", "trunk-4c4p-shuffle", "trunk-4c6p", "trunk-4c8p", "trunk-4c12p", "trunk-8c1p",
+	"trunk-8c4p", "trunk-12c1p", "trunk-24c1p", "breakout-1c2p-2c1p", "breakout-1c4p-4c1p", "breakout-1c6p-6c1p", "breakout-1c8p-8c1p", "breakout-2c4p-8c1p-shuffle",
 }
 
 // cableLengthUnitValues lists the valid values of netbox_cable.length_unit.
@@ -202,7 +202,7 @@ func cableResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 		},
 		"profile": schema.StringAttribute{
-			MarkdownDescription: "Profile. Valid values: `single-1c1p`, `single-1c2p`, `single-1c4p`, `single-1c6p`, `single-1c8p`, `single-1c12p`, `single-1c16p`, `trunk-2c1p`, `trunk-2c2p`, `trunk-2c4p`, `trunk-2c4p-shuffle`, `trunk-2c6p`, `trunk-2c8p`, `trunk-2c12p`, `trunk-4c1p`, `trunk-4c2p`, `trunk-4c4p`, `trunk-4c4p-shuffle`, `trunk-4c6p`, `trunk-4c8p`, `trunk-8c1p`, `trunk-8c4p`, `trunk-12c1p`, `trunk-24c1p`, `breakout-1c2p-2c1p`, `breakout-1c4p-4c1p`, `breakout-1c6p-6c1p`, `breakout-1c8p-8c1p`, `breakout-2c4p-8c1p-shuffle`. Defaults to the NetBox server default when omitted.",
+			MarkdownDescription: "Profile. Valid values: `single-1c1p`, `single-1c2p`, `single-1c4p`, `single-1c6p`, `single-1c8p`, `single-1c12p`, `single-1c16p`, `trunk-2c1p`, `trunk-2c2p`, `trunk-2c4p`, `trunk-2c4p-shuffle`, `trunk-2c6p`, `trunk-2c8p`, `trunk-2c12p`, `trunk-3c8p`, `trunk-3c12p`, `trunk-4c1p`, `trunk-4c2p`, `trunk-4c4p`, `trunk-4c4p-shuffle`, `trunk-4c6p`, `trunk-4c8p`, `trunk-4c12p`, `trunk-8c1p`, `trunk-8c4p`, `trunk-12c1p`, `trunk-24c1p`, `breakout-1c2p-2c1p`, `breakout-1c4p-4c1p`, `breakout-1c6p-6c1p`, `breakout-1c8p-8c1p`, `breakout-2c4p-8c1p-shuffle`. Defaults to the NetBox server default when omitted.",
 			Optional:            true,
 			Computed:            true,
 			Validators:          []validator.String{stringvalidator.OneOf(cableProfileValues...)},
