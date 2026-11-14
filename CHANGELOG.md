@@ -6,6 +6,16 @@ All notable changes to this project are documented in this file. The format foll
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-14
+
+### Added
+
+- Support NetBox 4.7.5 ([#71](https://github.com/elliot/terraform-provider-netbox/pull/71))
+
+### Changed
+
+- `deps`: Update module github.com/hashicorp/terraform-json to v0.29.0 ([#67](https://github.com/elliot/terraform-provider-netbox/pull/67))
+
 ## [1.0.0] - 2026-11-02
 
 ### Changed
@@ -265,7 +275,8 @@ with `source = "elliot/netbox"`; the network mirror and `scripts/install.sh` rem
 
 See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/elliot/terraform-provider-netbox/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/elliot/terraform-provider-netbox/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.6.0...v1.0.0
 [0.6.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/elliot/terraform-provider-netbox/compare/v0.4.1...v0.5.0
