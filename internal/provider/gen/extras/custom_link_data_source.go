@@ -61,12 +61,11 @@ var customLinkFilterNames = []string{
 	"link_url__isw", "link_url__n", "link_url__nic", "link_url__nie", "link_url__niew", "link_url__nisw",
 	"link_url__regex", "modified_by_request", "name", "name__empty", "name__ic", "name__ie",
 	"name__iew", "name__iregex", "name__isw", "name__n", "name__nic", "name__nie",
-	"name__niew", "name__nisw", "name__regex", "new_window", "object_type", "object_type__ic",
-	"object_type__ie", "object_type__iew", "object_type__iregex", "object_type__isw", "object_type__n", "object_type__nic",
-	"object_type__nie", "object_type__niew", "object_type__nisw", "object_type__regex", "object_type_id", "object_type_id__n",
-	"owner", "owner__n", "owner_group", "owner_group__n", "owner_group_id", "owner_group_id__n",
-	"owner_id", "owner_id__n", "q", "updated_by_request", "weight", "weight__empty",
-	"weight__gt", "weight__gte", "weight__lt", "weight__lte", "weight__n",
+	"name__niew", "name__nisw", "name__regex", "new_window", "object_type", "object_type__n",
+	"object_type_id", "object_type_id__n", "owner", "owner__n", "owner_group", "owner_group__n",
+	"owner_group_id", "owner_group_id__n", "owner_id", "owner_id__n", "q", "updated_by_request",
+	"weight", "weight__empty", "weight__gt", "weight__gte", "weight__lt", "weight__lte",
+	"weight__n",
 }
 
 // customLinkDataAttributes returns the attributes shared by the singular and list data sources.

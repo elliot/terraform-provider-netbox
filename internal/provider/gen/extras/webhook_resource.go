@@ -170,7 +170,7 @@ func webhookResourceAttributes() map[string]schema.Attribute {
 			PlanModifiers:       []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 		},
 		"ca_file_path": schema.StringAttribute{
-			MarkdownDescription: "The specific CA certificate file to use for SSL verification. Leave blank to use the system defaults.",
+			MarkdownDescription: "The specific CA certificate file to use for SSL verification. If blank, verification uses NetBox's built-in CA bundle, not the system trust store. A private CA must be specified here.",
 			Optional:            true,
 			Validators:          []validator.String{stringvalidator.LengthAtMost(4096)},
 		},
