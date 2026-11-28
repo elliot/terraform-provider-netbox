@@ -37,7 +37,7 @@ type PatchedWebhookRequest struct {
 	Secret *string `json:"secret,omitempty"`
 	// Enable SSL certificate verification. Disable with caution!
 	SslVerification *bool `json:"ssl_verification,omitempty"`
-	// The specific CA certificate file to use for SSL verification. Leave blank to use the system defaults.
+	// The specific CA certificate file to use for SSL verification. If blank, verification uses NetBox's built-in CA bundle, not the system trust store. A private CA must be specified here.
 	CaFilePath NullableString `json:"ca_file_path,omitempty"`
 	// The maximum time (in seconds) to wait for a response before failing the request. Leave blank to use the system default (60 seconds).
 	Timeout              NullableInt32          `json:"timeout,omitempty"`

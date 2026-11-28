@@ -16813,17 +16813,7 @@ type ApiExtrasCustomFieldsListRequest struct {
 	nameRegex              *[]string
 	nullsFirst             *bool
 	objectType             *[]string
-	objectTypeIc           *[]string
-	objectTypeIe           *[]string
-	objectTypeIew          *[]string
-	objectTypeIregex       *[]string
-	objectTypeIsw          *[]string
 	objectTypeN            *[]string
-	objectTypeNic          *[]string
-	objectTypeNie          *[]string
-	objectTypeNiew         *[]string
-	objectTypeNisw         *[]string
-	objectTypeRegex        *[]string
 	objectTypeId           *[]int32
 	objectTypeIdN          *[]int32
 	offset                 *int32
@@ -17436,58 +17426,8 @@ func (r ApiExtrasCustomFieldsListRequest) ObjectType(objectType []string) ApiExt
 	return r
 }
 
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeIc(objectTypeIc []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeIc = &objectTypeIc
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeIe(objectTypeIe []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeIe = &objectTypeIe
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeIew(objectTypeIew []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeIew = &objectTypeIew
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeIregex(objectTypeIregex []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeIregex = &objectTypeIregex
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeIsw(objectTypeIsw []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeIsw = &objectTypeIsw
-	return r
-}
-
 func (r ApiExtrasCustomFieldsListRequest) ObjectTypeN(objectTypeN []string) ApiExtrasCustomFieldsListRequest {
 	r.objectTypeN = &objectTypeN
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeNic(objectTypeNic []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeNic = &objectTypeNic
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeNie(objectTypeNie []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeNie = &objectTypeNie
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeNiew(objectTypeNiew []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeNiew = &objectTypeNiew
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeNisw(objectTypeNisw []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeNisw = &objectTypeNisw
-	return r
-}
-
-func (r ApiExtrasCustomFieldsListRequest) ObjectTypeRegex(objectTypeRegex []string) ApiExtrasCustomFieldsListRequest {
-	r.objectTypeRegex = &objectTypeRegex
 	return r
 }
 
@@ -19080,61 +19020,6 @@ func (a *ExtrasAPIService) ExtrasCustomFieldsListExecute(r ApiExtrasCustomFields
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type", t, "form", "multi")
 		}
 	}
-	if r.objectTypeIc != nil {
-		t := *r.objectTypeIc
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIe != nil {
-		t := *r.objectTypeIe
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIew != nil {
-		t := *r.objectTypeIew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIregex != nil {
-		t := *r.objectTypeIregex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIsw != nil {
-		t := *r.objectTypeIsw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", t, "form", "multi")
-		}
-	}
 	if r.objectTypeN != nil {
 		t := *r.objectTypeN
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -19144,61 +19029,6 @@ func (a *ExtrasAPIService) ExtrasCustomFieldsListExecute(r ApiExtrasCustomFields
 			}
 		} else {
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__n", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNic != nil {
-		t := *r.objectTypeNic
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNie != nil {
-		t := *r.objectTypeNie
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNiew != nil {
-		t := *r.objectTypeNiew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNisw != nil {
-		t := *r.objectTypeNisw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", t, "form", "multi")
-		}
-	}
-	if r.objectTypeRegex != nil {
-		t := *r.objectTypeRegex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", t, "form", "multi")
 		}
 	}
 	if r.objectTypeId != nil {
@@ -21442,17 +21272,7 @@ type ApiExtrasCustomLinksListRequest struct {
 	nameRegex         *[]string
 	newWindow         *bool
 	objectType        *[]string
-	objectTypeIc      *[]string
-	objectTypeIe      *[]string
-	objectTypeIew     *[]string
-	objectTypeIregex  *[]string
-	objectTypeIsw     *[]string
 	objectTypeN       *[]string
-	objectTypeNic     *[]string
-	objectTypeNie     *[]string
-	objectTypeNiew    *[]string
-	objectTypeNisw    *[]string
-	objectTypeRegex   *[]string
 	objectTypeId      *[]int32
 	objectTypeIdN     *[]int32
 	offset            *int32
@@ -21943,58 +21763,8 @@ func (r ApiExtrasCustomLinksListRequest) ObjectType(objectType []string) ApiExtr
 	return r
 }
 
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeIc(objectTypeIc []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeIc = &objectTypeIc
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeIe(objectTypeIe []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeIe = &objectTypeIe
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeIew(objectTypeIew []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeIew = &objectTypeIew
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeIregex(objectTypeIregex []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeIregex = &objectTypeIregex
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeIsw(objectTypeIsw []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeIsw = &objectTypeIsw
-	return r
-}
-
 func (r ApiExtrasCustomLinksListRequest) ObjectTypeN(objectTypeN []string) ApiExtrasCustomLinksListRequest {
 	r.objectTypeN = &objectTypeN
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeNic(objectTypeNic []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeNic = &objectTypeNic
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeNie(objectTypeNie []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeNie = &objectTypeNie
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeNiew(objectTypeNiew []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeNiew = &objectTypeNiew
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeNisw(objectTypeNisw []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeNisw = &objectTypeNisw
-	return r
-}
-
-func (r ApiExtrasCustomLinksListRequest) ObjectTypeRegex(objectTypeRegex []string) ApiExtrasCustomLinksListRequest {
-	r.objectTypeRegex = &objectTypeRegex
 	return r
 }
 
@@ -22867,61 +22637,6 @@ func (a *ExtrasAPIService) ExtrasCustomLinksListExecute(r ApiExtrasCustomLinksLi
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type", t, "form", "multi")
 		}
 	}
-	if r.objectTypeIc != nil {
-		t := *r.objectTypeIc
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIe != nil {
-		t := *r.objectTypeIe
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIew != nil {
-		t := *r.objectTypeIew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIregex != nil {
-		t := *r.objectTypeIregex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIsw != nil {
-		t := *r.objectTypeIsw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", t, "form", "multi")
-		}
-	}
 	if r.objectTypeN != nil {
 		t := *r.objectTypeN
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -22931,61 +22646,6 @@ func (a *ExtrasAPIService) ExtrasCustomLinksListExecute(r ApiExtrasCustomLinksLi
 			}
 		} else {
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__n", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNic != nil {
-		t := *r.objectTypeNic
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNie != nil {
-		t := *r.objectTypeNie
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNiew != nil {
-		t := *r.objectTypeNiew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNisw != nil {
-		t := *r.objectTypeNisw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", t, "form", "multi")
-		}
-	}
-	if r.objectTypeRegex != nil {
-		t := *r.objectTypeRegex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", t, "form", "multi")
 		}
 	}
 	if r.objectTypeId != nil {
@@ -24821,17 +24481,7 @@ type ApiExtrasEventRulesListRequest struct {
 	nameNisw            *[]string
 	nameRegex           *[]string
 	objectType          *[]string
-	objectTypeIc        *[]string
-	objectTypeIe        *[]string
-	objectTypeIew       *[]string
-	objectTypeIregex    *[]string
-	objectTypeIsw       *[]string
 	objectTypeN         *[]string
-	objectTypeNic       *[]string
-	objectTypeNie       *[]string
-	objectTypeNiew      *[]string
-	objectTypeNisw      *[]string
-	objectTypeRegex     *[]string
 	objectTypeId        *[]int32
 	objectTypeIdN       *[]int32
 	offset              *int32
@@ -25250,58 +24900,8 @@ func (r ApiExtrasEventRulesListRequest) ObjectType(objectType []string) ApiExtra
 	return r
 }
 
-func (r ApiExtrasEventRulesListRequest) ObjectTypeIc(objectTypeIc []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeIc = &objectTypeIc
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeIe(objectTypeIe []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeIe = &objectTypeIe
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeIew(objectTypeIew []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeIew = &objectTypeIew
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeIregex(objectTypeIregex []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeIregex = &objectTypeIregex
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeIsw(objectTypeIsw []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeIsw = &objectTypeIsw
-	return r
-}
-
 func (r ApiExtrasEventRulesListRequest) ObjectTypeN(objectTypeN []string) ApiExtrasEventRulesListRequest {
 	r.objectTypeN = &objectTypeN
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeNic(objectTypeNic []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeNic = &objectTypeNic
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeNie(objectTypeNie []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeNie = &objectTypeNie
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeNiew(objectTypeNiew []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeNiew = &objectTypeNiew
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeNisw(objectTypeNisw []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeNisw = &objectTypeNisw
-	return r
-}
-
-func (r ApiExtrasEventRulesListRequest) ObjectTypeRegex(objectTypeRegex []string) ApiExtrasEventRulesListRequest {
-	r.objectTypeRegex = &objectTypeRegex
 	return r
 }
 
@@ -26215,61 +25815,6 @@ func (a *ExtrasAPIService) ExtrasEventRulesListExecute(r ApiExtrasEventRulesList
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type", t, "form", "multi")
 		}
 	}
-	if r.objectTypeIc != nil {
-		t := *r.objectTypeIc
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIe != nil {
-		t := *r.objectTypeIe
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIew != nil {
-		t := *r.objectTypeIew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIregex != nil {
-		t := *r.objectTypeIregex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIsw != nil {
-		t := *r.objectTypeIsw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", t, "form", "multi")
-		}
-	}
 	if r.objectTypeN != nil {
 		t := *r.objectTypeN
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -26279,61 +25824,6 @@ func (a *ExtrasAPIService) ExtrasEventRulesListExecute(r ApiExtrasEventRulesList
 			}
 		} else {
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__n", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNic != nil {
-		t := *r.objectTypeNic
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNie != nil {
-		t := *r.objectTypeNie
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNiew != nil {
-		t := *r.objectTypeNiew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNisw != nil {
-		t := *r.objectTypeNisw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", t, "form", "multi")
-		}
-	}
-	if r.objectTypeRegex != nil {
-		t := *r.objectTypeRegex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", t, "form", "multi")
 		}
 	}
 	if r.objectTypeId != nil {
@@ -27703,17 +27193,7 @@ type ApiExtrasExportTemplatesListRequest struct {
 	nameNisw            *[]string
 	nameRegex           *[]string
 	objectType          *[]string
-	objectTypeIc        *[]string
-	objectTypeIe        *[]string
-	objectTypeIew       *[]string
-	objectTypeIregex    *[]string
-	objectTypeIsw       *[]string
 	objectTypeN         *[]string
-	objectTypeNic       *[]string
-	objectTypeNie       *[]string
-	objectTypeNiew      *[]string
-	objectTypeNisw      *[]string
-	objectTypeRegex     *[]string
 	objectTypeId        *[]int32
 	objectTypeIdN       *[]int32
 	offset              *int32
@@ -28264,58 +27744,8 @@ func (r ApiExtrasExportTemplatesListRequest) ObjectType(objectType []string) Api
 	return r
 }
 
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeIc(objectTypeIc []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeIc = &objectTypeIc
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeIe(objectTypeIe []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeIe = &objectTypeIe
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeIew(objectTypeIew []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeIew = &objectTypeIew
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeIregex(objectTypeIregex []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeIregex = &objectTypeIregex
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeIsw(objectTypeIsw []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeIsw = &objectTypeIsw
-	return r
-}
-
 func (r ApiExtrasExportTemplatesListRequest) ObjectTypeN(objectTypeN []string) ApiExtrasExportTemplatesListRequest {
 	r.objectTypeN = &objectTypeN
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeNic(objectTypeNic []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeNic = &objectTypeNic
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeNie(objectTypeNie []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeNie = &objectTypeNie
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeNiew(objectTypeNiew []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeNiew = &objectTypeNiew
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeNisw(objectTypeNisw []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeNisw = &objectTypeNisw
-	return r
-}
-
-func (r ApiExtrasExportTemplatesListRequest) ObjectTypeRegex(objectTypeRegex []string) ApiExtrasExportTemplatesListRequest {
-	r.objectTypeRegex = &objectTypeRegex
 	return r
 }
 
@@ -29480,61 +28910,6 @@ func (a *ExtrasAPIService) ExtrasExportTemplatesListExecute(r ApiExtrasExportTem
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type", t, "form", "multi")
 		}
 	}
-	if r.objectTypeIc != nil {
-		t := *r.objectTypeIc
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIe != nil {
-		t := *r.objectTypeIe
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIew != nil {
-		t := *r.objectTypeIew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIregex != nil {
-		t := *r.objectTypeIregex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIsw != nil {
-		t := *r.objectTypeIsw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", t, "form", "multi")
-		}
-	}
 	if r.objectTypeN != nil {
 		t := *r.objectTypeN
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -29544,61 +28919,6 @@ func (a *ExtrasAPIService) ExtrasExportTemplatesListExecute(r ApiExtrasExportTem
 			}
 		} else {
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__n", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNic != nil {
-		t := *r.objectTypeNic
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNie != nil {
-		t := *r.objectTypeNie
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNiew != nil {
-		t := *r.objectTypeNiew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNisw != nil {
-		t := *r.objectTypeNisw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", t, "form", "multi")
-		}
-	}
-	if r.objectTypeRegex != nil {
-		t := *r.objectTypeRegex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", t, "form", "multi")
 		}
 	}
 	if r.objectTypeId != nil {
@@ -37839,17 +37159,7 @@ type ApiExtrasSavedFiltersListRequest struct {
 	nameNisw          *[]string
 	nameRegex         *[]string
 	objectType        *[]string
-	objectTypeIc      *[]string
-	objectTypeIe      *[]string
-	objectTypeIew     *[]string
-	objectTypeIregex  *[]string
-	objectTypeIsw     *[]string
 	objectTypeN       *[]string
-	objectTypeNic     *[]string
-	objectTypeNie     *[]string
-	objectTypeNiew    *[]string
-	objectTypeNisw    *[]string
-	objectTypeRegex   *[]string
 	objectTypeId      *[]int32
 	objectTypeIdN     *[]int32
 	offset            *int32
@@ -38167,58 +37477,8 @@ func (r ApiExtrasSavedFiltersListRequest) ObjectType(objectType []string) ApiExt
 	return r
 }
 
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeIc(objectTypeIc []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeIc = &objectTypeIc
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeIe(objectTypeIe []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeIe = &objectTypeIe
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeIew(objectTypeIew []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeIew = &objectTypeIew
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeIregex(objectTypeIregex []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeIregex = &objectTypeIregex
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeIsw(objectTypeIsw []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeIsw = &objectTypeIsw
-	return r
-}
-
 func (r ApiExtrasSavedFiltersListRequest) ObjectTypeN(objectTypeN []string) ApiExtrasSavedFiltersListRequest {
 	r.objectTypeN = &objectTypeN
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeNic(objectTypeNic []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeNic = &objectTypeNic
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeNie(objectTypeNie []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeNie = &objectTypeNie
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeNiew(objectTypeNiew []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeNiew = &objectTypeNiew
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeNisw(objectTypeNisw []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeNisw = &objectTypeNisw
-	return r
-}
-
-func (r ApiExtrasSavedFiltersListRequest) ObjectTypeRegex(objectTypeRegex []string) ApiExtrasSavedFiltersListRequest {
-	r.objectTypeRegex = &objectTypeRegex
 	return r
 }
 
@@ -38996,61 +38256,6 @@ func (a *ExtrasAPIService) ExtrasSavedFiltersListExecute(r ApiExtrasSavedFilters
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type", t, "form", "multi")
 		}
 	}
-	if r.objectTypeIc != nil {
-		t := *r.objectTypeIc
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIe != nil {
-		t := *r.objectTypeIe
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__ie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIew != nil {
-		t := *r.objectTypeIew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIregex != nil {
-		t := *r.objectTypeIregex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__iregex", t, "form", "multi")
-		}
-	}
-	if r.objectTypeIsw != nil {
-		t := *r.objectTypeIsw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__isw", t, "form", "multi")
-		}
-	}
 	if r.objectTypeN != nil {
 		t := *r.objectTypeN
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
@@ -39060,61 +38265,6 @@ func (a *ExtrasAPIService) ExtrasSavedFiltersListExecute(r ApiExtrasSavedFilters
 			}
 		} else {
 			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__n", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNic != nil {
-		t := *r.objectTypeNic
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nic", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNie != nil {
-		t := *r.objectTypeNie
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nie", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNiew != nil {
-		t := *r.objectTypeNiew
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__niew", t, "form", "multi")
-		}
-	}
-	if r.objectTypeNisw != nil {
-		t := *r.objectTypeNisw
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__nisw", t, "form", "multi")
-		}
-	}
-	if r.objectTypeRegex != nil {
-		t := *r.objectTypeRegex
-		if reflect.TypeOf(t).Kind() == reflect.Slice {
-			s := reflect.ValueOf(t)
-			for i := 0; i < s.Len(); i++ {
-				parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", s.Index(i).Interface(), "form", "multi")
-			}
-		} else {
-			parameterAddToHeaderOrQuery(localVarQueryParams, "object_type__regex", t, "form", "multi")
 		}
 	}
 	if r.objectTypeId != nil {
