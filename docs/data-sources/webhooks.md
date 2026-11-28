@@ -50,7 +50,7 @@ Read-Only:
 
 - `additional_headers` (String) User-supplied HTTP headers to be sent with the request in addition to the HTTP content type. Headers should be defined in the format <code>Name: Value</code>. Jinja2 template processing is supported with the same context as the request body (below). When interpolating untrusted data (such as object attributes) into a header value, apply the <code>header_safe</code> filter to guard against HTTP header injection, e.g. <code>X-Object: {{ data.name | header_safe }}</code>. Defaults to an empty string.
 - `body_template` (String) Jinja2 template for a custom request body. If blank, a JSON object representing the change will be included. Available context data includes: <code>event</code>, <code>model</code>, <code>timestamp</code>, <code>request</code>, and <code>data</code>. Defaults to an empty string.
-- `ca_file_path` (String) The specific CA certificate file to use for SSL verification. Leave blank to use the system defaults.
+- `ca_file_path` (String) The specific CA certificate file to use for SSL verification. If blank, verification uses NetBox's built-in CA bundle, not the system trust store. A private CA must be specified here.
 - `created` (String) Created.
 - `custom_fields` (String) All custom field values of the object as a JSON object (`jsondecode(...)`; `{}` when the object has none); selection values are unwrapped to the choice value and related objects to their ID.
 - `description` (String) Description. Defaults to an empty string.

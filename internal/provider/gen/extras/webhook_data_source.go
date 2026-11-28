@@ -121,7 +121,7 @@ func webhookDataAttributes(lookup bool) map[string]dsschema.Attribute {
 			Computed:            true,
 		},
 		"ca_file_path": dsschema.StringAttribute{
-			MarkdownDescription: "The specific CA certificate file to use for SSL verification. Leave blank to use the system defaults.",
+			MarkdownDescription: "The specific CA certificate file to use for SSL verification. If blank, verification uses NetBox's built-in CA bundle, not the system trust store. A private CA must be specified here.",
 			Computed:            true,
 		},
 		"timeout": dsschema.Int64Attribute{

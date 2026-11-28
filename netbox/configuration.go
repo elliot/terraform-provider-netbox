@@ -91,7 +91,7 @@ type Configuration struct {
 func NewConfiguration() *Configuration {
 	cfg := &Configuration{
 		DefaultHeader: make(map[string]string),
-		UserAgent:     "terraform-provider-netbox/4.7.5",
+		UserAgent:     "terraform-provider-netbox/4.7.6",
 		Debug:         false,
 		Servers: ServerConfigurations{
 			{
